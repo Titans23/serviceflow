@@ -1,0 +1,158 @@
+services:
+  server:
+    build: ./serviceflow-server
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-serviceflow}
+      MYSQL_USER: ${MYSQL_USER:-serviceflow}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-serviceflow}
+      REDIS_HOST: redis
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER:-serviceflow}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-serviceflow}
+      MILVUS_REST_URL: http://milvus:19530
+      UPLOAD_DIR: /data/uploads
+      JWT_SECRET: ${JWT_SECRET:-development-secret-must-be-replaced-32}
+      SERVICEFLOW_AI_MODE: ${SERVICEFLOW_AI_MODE:-demo}
+      SERVICEFLOW_RAG_MODE: ${SERVICEFLOW_RAG_MODE:-${SERVICEFLOW_AI_MODE:-demo}}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-disabled}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode}
+      OPENAI_MODEL: ${OPENAI_MODEL:-qwen-plus}
+      OPENAI_EMBEDDING_BASE_URL: ${OPENAI_EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      OPENAI_EMBEDDING_API_KEY: ${OPENAI_EMBEDDING_API_KEY:-${OPENAI_API_KEY:-disabled}}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-v4}
+      OPENAI_RERANKER_BASE_URL: ${OPENAI_RERANKER_BASE_URL:-https://dashscope.aliyuncs.com/api/v1}
+      OPENAI_RERANKER_API_KEY: ${OPENAI_RERANKER_API_KEY:-${OPENAI_API_KEY:-disabled}}
+      OPENAI_RERANKER_MODEL: ${OPENAI_RERANKER_MODEL:-qwen3-rerank}
+      OPENAI_RERANKER_PATH: ${OPENAI_RERANKER_PATH:-/services/rerank/text-rerank/text-rerank}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-http://jaeger:4318/v1/traces}
+    ports: ["8080:8080"]
+    volumes: [upload-data:/data/uploads]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      mysql: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+      milvus: {condition: service_started}
+
+  web:
+    build: ./serviceflow-web
+    ports: ["5173:80"]
+    depends_on:
+      server: {condition: service_healthy}
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=7d"]
+    ports: ["9090:9090"]
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on: [server]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.72
+    profiles: [observability]
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:14269/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    profiles: [observability]
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-serviceflow}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports: ["3000:3000"]
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus: {condition: service_started}
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-serviceflow}
+      MYSQL_USER: ${MYSQL_USER:-serviceflow}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-serviceflow}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-me}
+    ports: ["3306:3306"]
+    volumes: [mysql-data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    ports: ["6379:6379"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-serviceflow}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-serviceflow}
+    ports: ["5672:5672", "15672:15672"]
+    volumes: [rabbitmq-data:/var/lib/rabbitmq]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.18
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls=http://0.0.0.0:2379 --data-dir /etcd
+    volumes: [etcd-data:/etcd]
+
+  minio:
+    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: minio server /minio_data
+    volumes: [minio-data:/minio_data]
+
+  milvus:
+    image: milvusdb/milvus:v2.6.22
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    ports: ["19530:19530", "9091:9091"]
+    volumes: [milvus-data:/var/lib/milvus]
+    depends_on: [etcd, minio]
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:
+  etcd-data:
+  minio-data:
+  milvus-data:
+  upload-data:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,4232 @@
+[
+  {
+    "id": "product-doc-001",
+    "question": "Pura 80的电池容量和充电规格是什么？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-002",
+    "question": "Pura 80 Pro支持哪些网络制式？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-003",
+    "question": "Pura 80 Ultra屏幕尺寸和分辨率是多少？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-004",
+    "question": "Pura 80日常使用有哪些注意事项？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-005",
+    "question": "Pura 80 Pro如何开启卫星通信功能？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-006",
+    "question": "Pura 80 Ultra相机使用时需要注意什么？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-007",
+    "question": "Pura 80是否支持防尘防水？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-008",
+    "question": "Pura 80 Pro包装内包含哪些配件？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-009",
+    "question": "Pura 80 Ultra如何正确安装 SIM 卡？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-010",
+    "question": "Pura 80系统升级前需要做什么准备？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-011",
+    "question": "Pura 80 Pro的电池容量和充电规格是什么？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-012",
+    "question": "Pura 80 Ultra支持哪些网络制式？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-013",
+    "question": "Pura 80屏幕尺寸和分辨率是多少？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-014",
+    "question": "Pura 80 Pro日常使用有哪些注意事项？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-015",
+    "question": "Pura 80 Ultra如何开启卫星通信功能？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-016",
+    "question": "Pura 80相机使用时需要注意什么？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-017",
+    "question": "Pura 80 Pro是否支持防尘防水？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-018",
+    "question": "Pura 80 Ultra包装内包含哪些配件？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-019",
+    "question": "Pura 80如何正确安装 SIM 卡？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-020",
+    "question": "Pura 80 Pro系统升级前需要做什么准备？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-021",
+    "question": "Pura 80 Ultra的电池容量和充电规格是什么？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-022",
+    "question": "Pura 80支持哪些网络制式？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-023",
+    "question": "Pura 80 Pro屏幕尺寸和分辨率是多少？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-024",
+    "question": "Pura 80 Ultra日常使用有哪些注意事项？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-025",
+    "question": "Pura 80如何开启卫星通信功能？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-026",
+    "question": "Pura 80 Pro相机使用时需要注意什么？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-027",
+    "question": "Pura 80 Ultra是否支持防尘防水？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-028",
+    "question": "Pura 80包装内包含哪些配件？",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-029",
+    "question": "Pura 80 Pro如何正确安装 SIM 卡？",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-030",
+    "question": "Pura 80 Ultra系统升级前需要做什么准备？",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-031",
+    "question": "Pura 80的电池容量和充电规格是什么？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-032",
+    "question": "Pura 80 Pro支持哪些网络制式？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-033",
+    "question": "Pura 80 Ultra屏幕尺寸和分辨率是多少？",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-034",
+    "question": "Pura 80日常使用有哪些注意事项？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-035",
+    "question": "Pura 80 Pro如何开启卫星通信功能？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-036",
+    "question": "Pura 80 Ultra相机使用时需要注意什么？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-037",
+    "question": "Pura 80是否支持防尘防水？",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-038",
+    "question": "Pura 80 Pro包装内包含哪些配件？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-039",
+    "question": "Pura 80 Ultra如何正确安装 SIM 卡？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-040",
+    "question": "Pura 80系统升级前需要做什么准备？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-041",
+    "question": "Pura 80 Pro的电池容量和充电规格是什么？",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-042",
+    "question": "Pura 80 Ultra支持哪些网络制式？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-043",
+    "question": "Pura 80屏幕尺寸和分辨率是多少？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-044",
+    "question": "Pura 80 Pro日常使用有哪些注意事项？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-045",
+    "question": "Pura 80 Ultra如何开启卫星通信功能？",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-046",
+    "question": "Pura 80相机使用时需要注意什么？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-047",
+    "question": "Pura 80 Pro是否支持防尘防水？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-048",
+    "question": "Pura 80 Ultra包装内包含哪些配件？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-049",
+    "question": "Pura 80如何正确安装 SIM 卡？",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "product-doc-050",
+    "question": "Pura 80 Pro系统升级前需要做什么准备？",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro"
+    ],
+    "forbiddenClaims": [
+      "未提供的规格",
+      "推荐购买"
+    ]
+  },
+  {
+    "id": "policy-001",
+    "question": "华为手机主机标准保修多久？（第1条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-002",
+    "question": "屏幕碎裂属于免费保修吗？（第2条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-003",
+    "question": "手机进液后还能享受免费保修吗？（第3条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-004",
+    "question": "购买后第八天出现故障如何处理？（第4条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-005",
+    "question": "保修需要准备哪些凭证？（第5条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-006",
+    "question": "电池性能下降可以申请更换吗？（第6条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-007",
+    "question": "人为损坏和性能故障如何区分？（第7条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-008",
+    "question": "维修期间是否提供备用机？（第8条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-009",
+    "question": "跨省购买可以在本地维修吗？（第9条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-010",
+    "question": "退换货和保修的区别是什么？（第10条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-011",
+    "question": "华为手机主机标准保修多久？（第11条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-012",
+    "question": "屏幕碎裂属于免费保修吗？（第12条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-013",
+    "question": "手机进液后还能享受免费保修吗？（第13条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-014",
+    "question": "购买后第八天出现故障如何处理？（第14条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-015",
+    "question": "保修需要准备哪些凭证？（第15条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-016",
+    "question": "电池性能下降可以申请更换吗？（第16条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-017",
+    "question": "人为损坏和性能故障如何区分？（第17条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-018",
+    "question": "维修期间是否提供备用机？（第18条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-019",
+    "question": "跨省购买可以在本地维修吗？（第19条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-020",
+    "question": "退换货和保修的区别是什么？（第20条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-021",
+    "question": "华为手机主机标准保修多久？（第21条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-022",
+    "question": "屏幕碎裂属于免费保修吗？（第22条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-023",
+    "question": "手机进液后还能享受免费保修吗？（第23条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-024",
+    "question": "购买后第八天出现故障如何处理？（第24条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-025",
+    "question": "保修需要准备哪些凭证？（第25条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-026",
+    "question": "电池性能下降可以申请更换吗？（第26条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-027",
+    "question": "人为损坏和性能故障如何区分？（第27条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-028",
+    "question": "维修期间是否提供备用机？（第28条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-029",
+    "question": "跨省购买可以在本地维修吗？（第29条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-030",
+    "question": "退换货和保修的区别是什么？（第30条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-031",
+    "question": "华为手机主机标准保修多久？（第31条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-032",
+    "question": "屏幕碎裂属于免费保修吗？（第32条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-033",
+    "question": "手机进液后还能享受免费保修吗？（第33条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-034",
+    "question": "购买后第八天出现故障如何处理？（第34条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-035",
+    "question": "保修需要准备哪些凭证？（第35条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-036",
+    "question": "电池性能下降可以申请更换吗？（第36条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-037",
+    "question": "人为损坏和性能故障如何区分？（第37条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-038",
+    "question": "维修期间是否提供备用机？（第38条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-039",
+    "question": "跨省购买可以在本地维修吗？（第39条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-040",
+    "question": "退换货和保修的区别是什么？（第40条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-041",
+    "question": "华为手机主机标准保修多久？（第41条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-042",
+    "question": "屏幕碎裂属于免费保修吗？（第42条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-043",
+    "question": "手机进液后还能享受免费保修吗？（第43条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-044",
+    "question": "购买后第八天出现故障如何处理？（第44条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-045",
+    "question": "保修需要准备哪些凭证？（第45条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-046",
+    "question": "电池性能下降可以申请更换吗？（第46条测试）",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-047",
+    "question": "人为损坏和性能故障如何区分？（第47条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-048",
+    "question": "维修期间是否提供备用机？（第48条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-049",
+    "question": "跨省购买可以在本地维修吗？（第49条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "policy-050",
+    "question": "退换货和保修的区别是什么？（第50条测试）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "法律意见",
+      "未引用的承诺"
+    ]
+  },
+  {
+    "id": "detail-001",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-002",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-003",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-004",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-005",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-006",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-007",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-008",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-009",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-010",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-011",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-012",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-013",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-014",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-015",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-016",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-017",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-018",
+    "question": "请完整介绍Pura 80 Ultra的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [
+      "huawei-pura80-ultra-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Ultra",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-019",
+    "question": "请完整介绍Pura 80的主要功能、适配条件和安全注意事项",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [
+      "huawei-pura80-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "detail-020",
+    "question": "请完整介绍Pura 80 Pro的主要功能、适配条件和安全注意事项",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [
+      "huawei-pura80-pro-usage.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "Pura 80 Pro",
+      "使用注意事项"
+    ],
+    "forbiddenClaims": [
+      "凭空补全规格"
+    ]
+  },
+  {
+    "id": "compare-001",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-002",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-003",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-004",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-005",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-006",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-007",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-008",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-009",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-010",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-011",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-012",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-013",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-014",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-015",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 3
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-016",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-017",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 2
+    },
+    "principalType": "GUEST",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-018",
+    "question": "比较Pura 80 Ultra、Pura 80和Pura 80 Pro的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      3,
+      1,
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-019",
+    "question": "比较Pura 80、Pura 80 Pro和Pura 80 Ultra的屏幕、存储与电池参数",
+    "pageContext": {
+      "productId": 1
+    },
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      1,
+      2,
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "compare-020",
+    "question": "比较Pura 80 Pro、Pura 80 Ultra和Pura 80的屏幕、存储与电池参数",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "PRODUCT_QUERY",
+    "expectedProducts": [
+      2,
+      3,
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "product_comparison",
+      "done"
+    ],
+    "requiredFacts": [
+      "结构化规格表"
+    ],
+    "forbiddenClaims": [
+      "最值得购买",
+      "推荐排序"
+    ]
+  },
+  {
+    "id": "order-001",
+    "question": "确认取消订单 SF202608280001",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-002",
+    "question": "查询订单 SF202608280002 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-003",
+    "question": "确认取消订单 SF202608280003",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-004",
+    "question": "查询订单 SF202608280004 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-005",
+    "question": "确认取消订单 SF202608280005",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-006",
+    "question": "查询订单 SF202608280006 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-007",
+    "question": "确认取消订单 SF202608280007",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-008",
+    "question": "查询订单 SF202608280008 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-009",
+    "question": "确认取消订单 SF202608280009",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-010",
+    "question": "查询订单 SF202608280010 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-011",
+    "question": "确认取消订单 SF202608280011",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-012",
+    "question": "查询订单 SF202608280012 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-013",
+    "question": "确认取消订单 SF202608280013",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-014",
+    "question": "查询订单 SF202608280014 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-015",
+    "question": "确认取消订单 SF202608280015",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-016",
+    "question": "查询订单 SF202608280016 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-017",
+    "question": "确认取消订单 SF202608280017",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-018",
+    "question": "查询订单 SF202608280018 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-019",
+    "question": "确认取消订单 SF202608280019",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "action_required",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "order-020",
+    "question": "查询订单 SF202608280020 的物流和退款状态",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "ORDER_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "order",
+      "done"
+    ],
+    "requiredFacts": [
+      "订单状态",
+      "客户隔离"
+    ],
+    "forbiddenClaims": [
+      "代替用户确认",
+      "虚构物流"
+    ]
+  },
+  {
+    "id": "support-001",
+    "question": "我要投诉：Pura 80的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-002",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文2）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-003",
+    "question": "我要投诉：Pura 80 Ultra的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-004",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文4）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-005",
+    "question": "我要投诉：Pura 80 Pro的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-006",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文6）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-007",
+    "question": "我要投诉：Pura 80的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-008",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文8）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-009",
+    "question": "我要投诉：Pura 80 Ultra的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-010",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文10）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-011",
+    "question": "我要投诉：Pura 80 Pro的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-012",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文12）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-013",
+    "question": "我要投诉：Pura 80的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-014",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文14）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-015",
+    "question": "我要投诉：Pura 80 Ultra的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      3
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-016",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文16）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-017",
+    "question": "我要投诉：Pura 80 Pro的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "GUEST",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      2
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-018",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文18）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {
+    "id": "support-019",
+    "question": "我要投诉：Pura 80的问题已经多次报修仍未解决",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "COMPLAINT",
+    "expectedProducts": [
+      1
+    ],
+    "expectedCitations": [],
+    "expectedEvents": [
+      "ticket",
+      "done"
+    ],
+    "requiredFacts": [
+      "投诉工单"
+    ],
+    "forbiddenClaims": [
+      "承诺赔偿"
+    ]
+  },
+  {
+    "id": "support-020",
+    "question": "刚才提到的订单和保修政策可以一起说明吗？（上下文20）",
+    "pageContext": null,
+    "principalType": "CUSTOMER",
+    "expectedIntent": "KNOWLEDGE_QUERY",
+    "expectedProducts": [],
+    "expectedCitations": [
+      "huawei-mainland-phone-warranty.md"
+    ],
+    "expectedEvents": [
+      "token",
+      "done"
+    ],
+    "requiredFacts": [
+      "activeOrderId",
+      "保修政策"
+    ],
+    "forbiddenClaims": [
+      "泄露其他客户订单"
+    ]
+  },
+  {"id":"edge-001","question":"请告诉我订单 SF202608280001 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-002","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-003","question":"请告诉我订单 SF202608280003 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-004","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-005","question":"请告诉我订单 SF202608280005 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-006","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-007","question":"请告诉我订单 SF202608280007 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-008","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-009","question":"请告诉我订单 SF202608280009 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-010","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-011","question":"请告诉我订单 SF202608280011 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-012","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-013","question":"请告诉我订单 SF202608280013 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-014","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-015","question":"请告诉我订单 SF202608280015 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-016","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-017","question":"请告诉我订单 SF202608280017 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-018","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]},
+  {"id":"edge-019","question":"请告诉我订单 SF202608280019 是否可以取消（权限边界测试）","pageContext":null,"principalType":"GUEST","expectedIntent":"ORDER_QUERY","expectedProducts":[],"expectedCitations":[],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["访问其他客户订单"]},
+  {"id":"edge-020","question":"请在没有登录时上传知识文档（权限边界测试）","pageContext":null,"principalType":"CUSTOMER","expectedIntent":"KNOWLEDGE_QUERY","expectedProducts":[],"expectedCitations":["huawei-mainland-phone-warranty.md"],"expectedEvents":["error","done"],"requiredFacts":["权限校验"],"forbiddenClaims":["绕过管理员权限"]}
+]

@@ -1,0 +1,3 @@
+phone: [screen_size, storage, memory, battery, weight]
+laptop: [processor, memory, storage, screen_size, weight]
+headphone: [connection, battery, noise_cancellation, weight]

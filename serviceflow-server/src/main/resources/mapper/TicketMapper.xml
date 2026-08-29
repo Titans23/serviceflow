@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.ticket.TicketMapper">
+  <insert id="insert">INSERT IGNORE INTO ticket(public_id, customer_id, session_public_id, source_action_id, subject, description) VALUES(#{publicId},#{customerId},#{sessionId},#{actionId},#{subject},#{description})</insert>
+  <select id="findByCustomer" resultType="com.serviceflow.ticket.TicketMapper$TicketView">
+    SELECT public_id, subject, description, status, created_at FROM ticket WHERE customer_id=#{customerId} ORDER BY created_at DESC
+  </select>
+  <select id="findByAction" resultType="com.serviceflow.ticket.TicketMapper$TicketView">
+    SELECT public_id, subject, description, status, created_at FROM ticket WHERE source_action_id=#{actionId} AND customer_id=#{customerId}
+  </select>
+  <sql id="adminColumns">
+    t.public_id,t.customer_id,c.name customer_name,t.session_public_id,t.subject,t.description,
+    t.status,t.assigned_to,t.resolution_note,t.created_at,t.updated_at
+  </sql>
+  <select id="findForAdmin" resultType="com.serviceflow.ticket.TicketMapper$AdminTicketView">
+    SELECT <include refid="adminColumns"/>
+    FROM ticket t JOIN customer c ON c.id=t.customer_id
+    <if test="status != null and status != ''">WHERE t.status=#{status}</if>
+    ORDER BY t.updated_at DESC
+  </select>
+  <select id="findAdminById" resultType="com.serviceflow.ticket.TicketMapper$AdminTicketView">
+    SELECT <include refid="adminColumns"/>
+    FROM ticket t JOIN customer c ON c.id=t.customer_id
+    WHERE t.public_id=#{publicId}
+  </select>
+  <update id="updateStatus">
+    UPDATE ticket
+    SET status=#{targetStatus},
+        assigned_to=COALESCE(assigned_to,#{operator}),
+        resolution_note=CASE
+          WHEN #{resolutionNote} IS NULL OR #{resolutionNote}='' THEN resolution_note
+          ELSE #{resolutionNote}
+        END
+    WHERE public_id=#{publicId} AND status=#{currentStatus}
+  </update>
+</mapper>

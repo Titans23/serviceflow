@@ -1,0 +1,118 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: serviceflow
+  threads.virtual.enabled: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:serviceflow}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: ${MYSQL_USER:serviceflow}
+    password: ${MYSQL_PASSWORD:serviceflow}
+  data.redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:serviceflow}
+    password: ${RABBITMQ_PASSWORD:serviceflow}
+    listener.simple.default-requeue-rejected: false
+    publisher-confirm-type: correlated
+    publisher-returns: true
+  servlet.multipart:
+    max-file-size: 20MB
+    max-request-size: 21MB
+  ai.openai:
+    api-key: ${OPENAI_API_KEY:disabled}
+    base-url: ${OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode}
+    timeout: ${OPENAI_TIMEOUT:20s}
+    chat:
+      completions-path: /v1/chat/completions
+      options:
+        model: ${OPENAI_MODEL:qwen-plus}
+        temperature: 0.1
+    embedding:
+      base-url: ${OPENAI_EMBEDDING_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api-key: ${OPENAI_EMBEDDING_API_KEY:${OPENAI_API_KEY:disabled}}
+      embeddings-path: /embeddings
+      options.model: ${OPENAI_EMBEDDING_MODEL:text-embedding-v4}
+  ai.retry:
+    max-attempts: 2
+    backoff:
+      initial-interval: 200ms
+      multiplier: 2
+      max-interval: 1s
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration.map-underscore-to-camel-case: true
+management:
+  endpoints.web.exposure.include: health,info,prometheus
+  endpoint.health.probes.enabled: true
+  endpoint.health.group.readiness.include: readinessState,db,redis,rabbit,milvus
+  tracing:
+    sampling.probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp.tracing.endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+serviceflow:
+  jwt:
+    secret: ${JWT_SECRET:development-secret-must-be-replaced-32}
+    customer-ttl: 2h
+    guest-ttl: 30m
+  ai:
+    mode: ${SERVICEFLOW_AI_MODE:demo}
+    chat:
+      base-url: ${OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode}
+      api-key: ${OPENAI_API_KEY:disabled}
+      model: ${OPENAI_MODEL:qwen-plus}
+    embedding:
+      base-url: ${OPENAI_EMBEDDING_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api-key: ${OPENAI_EMBEDDING_API_KEY:${OPENAI_API_KEY:disabled}}
+      model: ${OPENAI_EMBEDDING_MODEL:text-embedding-v4}
+    reranker:
+      base-url: ${OPENAI_RERANKER_BASE_URL:https://dashscope.aliyuncs.com/api/v1}
+      api-key: ${OPENAI_RERANKER_API_KEY:${OPENAI_API_KEY:disabled}}
+      model: ${OPENAI_RERANKER_MODEL:qwen3-rerank}
+      path: ${OPENAI_RERANKER_PATH:/services/rerank/text-rerank/text-rerank}
+  upload-dir: ${UPLOAD_DIR:./data/uploads}
+  guest-rate-limit:
+    max-requests: 20
+    window: 10m
+  rag:
+    mode: ${SERVICEFLOW_RAG_MODE:${SERVICEFLOW_AI_MODE:demo}}
+    milvus-rest-url: ${MILVUS_REST_URL:http://localhost:19530}
+    connect-timeout: ${MILVUS_CONNECT_TIMEOUT:3s}
+    read-timeout: ${MILVUS_READ_TIMEOUT:10s}
+    collection-name: serviceflow_chunks
+    embedding-dimension: 1024
+  outbox:
+    poll-interval: 2s
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      external:
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+    instances:
+      chat: {base-config: external}
+      embedding: {base-config: external}
+      reranker: {base-config: external}
+      milvus: {base-config: external}
+  retry:
+    configs:
+      model-read:
+        max-attempts: 2
+        wait-duration: 200ms
+    instances:
+      chat: {base-config: model-read}
+      embedding: {base-config: model-read}
+      reranker: {base-config: model-read}
+  bulkhead:
+    instances:
+      chat: {max-concurrent-calls: 20, max-wait-duration: 0}
+      embedding: {max-concurrent-calls: 16, max-wait-duration: 0}
+      reranker: {max-concurrent-calls: 16, max-wait-duration: 0}
+      milvus: {max-concurrent-calls: 32, max-wait-duration: 0}

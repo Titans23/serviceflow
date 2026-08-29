@@ -1,0 +1,59 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "serviceflow-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "title": "HTTP request rate",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(http_server_requests_seconds_count{application=~\"serviceflow.*\"}[5m]))", "legendFormat": "requests/s"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "serviceflow-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "title": "HTTP P95 latency",
+      "type": "timeseries",
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket[5m])))", "legendFormat": "p95"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "serviceflow-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8},
+      "id": 3,
+      "title": "SSE active connections",
+      "type": "stat",
+      "targets": [{"expr": "serviceflow_sse_active", "legendFormat": "active"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "serviceflow-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
+      "id": 4,
+      "title": "RAG degraded responses",
+      "type": "stat",
+      "targets": [{"expr": "sum(serviceflow_rag_degraded_total)", "legendFormat": "degraded"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "serviceflow-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
+      "id": 5,
+      "title": "Knowledge outbox pending",
+      "type": "stat",
+      "targets": [{"expr": "serviceflow_outbox_pending", "legendFormat": "pending"}]
+    }
+  ],
+  "schemaVersion": 41,
+  "tags": ["serviceflow", "ai", "rag"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "title": "ServiceFlow Overview",
+  "uid": "serviceflow-overview",
+  "version": 1
+}

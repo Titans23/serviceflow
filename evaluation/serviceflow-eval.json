@@ -1,0 +1,14 @@
+[
+  {"id":"chat-001","question":"你好，你能做什么？","expectedIntent":"CHAT"},
+  {"id":"chat-002","question":"谢谢你的说明","expectedIntent":"CHAT"},
+  {"id":"product-001","question":"这款手机的电池和充电规格是什么？","pageProductId":1,"expectedIntent":"PRODUCT_QUERY"},
+  {"id":"product-002","question":"这款手机充电和防水需要注意什么？","pageProductId":2,"expectedIntent":"PRODUCT_QUERY","expectedCitation":"huawei-pura80-pro-usage.md"},
+  {"id":"product-003","question":"Pura 80 Ultra 支持什么卫星通信能力？","expectedIntent":"PRODUCT_QUERY","expectedCitation":"huawei-pura80-ultra-usage.md"},
+  {"id":"product-004","question":"HUAWEI-PURA80-12-256 的屏幕多大？","expectedIntent":"PRODUCT_QUERY","mustContain":"6.6","expectedAbsentEvent":"product_selection_required"},
+  {"id":"compare-001","question":"这款和 Pura 80 Pro、Pura 80 Ultra 有什么区别？","pageProductId":1,"expectedIntent":"PRODUCT_QUERY","expectedEvent":"product_comparison"},
+  {"id":"policy-001","question":"华为手机主机标准保修多久？","expectedIntent":"KNOWLEDGE_QUERY","expectedCitation":"huawei-mainland-phone-warranty.md","mustContainAny":["一年","1年","1 年","12 个月","12个月"]},
+  {"id":"policy-002","question":"购买后第八天出现非人为性能故障可以怎么处理？","expectedIntent":"KNOWLEDGE_QUERY","expectedCitation":"huawei-mainland-phone-warranty.md"},
+  {"id":"policy-003","question":"手机进液损坏属于免费保修吗？","expectedIntent":"KNOWLEDGE_QUERY","expectedCitation":"huawei-mainland-phone-warranty.md"},
+  {"id":"order-001","question":"帮我查询订单 SF202608280001","expectedIntent":"ORDER_QUERY"},
+  {"id":"complaint-001","question":"我要投诉，手机问题一直没有解决","expectedIntent":"COMPLAINT"}
+]

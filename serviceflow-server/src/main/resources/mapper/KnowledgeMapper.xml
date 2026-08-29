@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.knowledge.KnowledgeMapper">
+  <insert id="insertDocument">INSERT INTO knowledge_document(public_id,title,document_type,product_id) VALUES(#{publicId},#{title},#{documentType},#{productId})</insert>
+  <select id="findDocument" resultType="com.serviceflow.knowledge.KnowledgeMapper$DocumentRow">
+    SELECT id,public_id,title,document_type,product_id,active_version_id FROM knowledge_document WHERE public_id=#{publicId}
+  </select>
+  <select id="nextVersion" resultType="int">SELECT COALESCE(MAX(version_no),0)+1 FROM knowledge_document_version WHERE document_id=#{documentId}</select>
+  <insert id="insertVersion">INSERT INTO knowledge_document_version(document_id,version_no,source_name,storage_path,status) VALUES(#{documentId},#{versionNo},#{sourceName},#{storagePath},'PENDING')</insert>
+  <sql id="versionColumns">v.id,v.document_id,v.version_no,v.source_name,v.storage_path,v.status,v.error_message,d.title,d.document_type,d.product_id</sql>
+  <select id="findVersion" resultType="com.serviceflow.knowledge.KnowledgeMapper$VersionRow">
+    SELECT <include refid="versionColumns"/> FROM knowledge_document_version v JOIN knowledge_document d ON d.id=v.document_id WHERE v.document_id=#{documentId} AND v.version_no=#{versionNo}
+  </select>
+  <select id="findVersionById" resultType="com.serviceflow.knowledge.KnowledgeMapper$VersionRow">
+    SELECT <include refid="versionColumns"/> FROM knowledge_document_version v JOIN knowledge_document d ON d.id=v.document_id WHERE v.id=#{id}
+  </select>
+  <select id="list" resultType="com.serviceflow.knowledge.KnowledgeMapper$DocumentView">
+    SELECT d.public_id,d.title,d.document_type,d.product_id,d.active_version_id,
+      (SELECT v.id FROM knowledge_document_version v WHERE v.document_id=d.id ORDER BY v.version_no DESC LIMIT 1) latest_version_id,
+      (SELECT MAX(v.version_no) FROM knowledge_document_version v WHERE v.document_id=d.id) latest_version,
+      (SELECT v.status FROM knowledge_document_version v WHERE v.document_id=d.id ORDER BY v.version_no DESC LIMIT 1) latest_status,
+      (SELECT v.error_message FROM knowledge_document_version v WHERE v.document_id=d.id ORDER BY v.version_no DESC LIMIT 1) error_message,
+      d.created_at FROM knowledge_document d ORDER BY d.created_at DESC
+  </select>
+  <update id="markProcessing">UPDATE knowledge_document_version SET status='PROCESSING',error_message=NULL WHERE id=#{id} AND status='PENDING'</update>
+  <update id="markFailed">UPDATE knowledge_document_version SET status='FAILED',error_message=#{message} WHERE id=#{id}</update>
+  <update id="markPending">UPDATE knowledge_document_version SET status='PENDING',error_message=NULL WHERE id=#{id} AND status='FAILED'</update>
+  <update id="markReady">UPDATE knowledge_document_version SET status='READY',error_message=NULL WHERE id=#{id}</update>
+  <update id="activate">UPDATE knowledge_document SET active_version_id=#{versionId} WHERE id=#{documentId}</update>
+  <select id="activeVersionIds" resultType="long">
+    SELECT active_version_id FROM knowledge_document WHERE document_type=#{documentType} AND active_version_id IS NOT NULL
+    <if test="productIds != null and productIds.size() > 0">AND product_id IN <foreach collection="productIds" item="id" open="(" separator="," close=")">#{id}</foreach></if>
+  </select>
+  <insert id="enqueueOutbox">
+    INSERT INTO knowledge_ingest_outbox(document_version_id,event_type,payload_json)
+    VALUES(#{versionId},'KNOWLEDGE_VERSION_CREATED',CAST(#{payloadJson} AS JSON))
+  </insert>
+  <insert id="requeueOutbox">
+    INSERT INTO knowledge_ingest_outbox(document_version_id,event_type,payload_json,status,attempts,next_attempt_at,last_error,published_at)
+    VALUES(#{versionId},'KNOWLEDGE_VERSION_CREATED',CAST(#{payloadJson} AS JSON),'PENDING',0,CURRENT_TIMESTAMP(6),NULL,NULL)
+    ON DUPLICATE KEY UPDATE payload_json=VALUES(payload_json),status='PENDING',attempts=0,
+      next_attempt_at=CURRENT_TIMESTAMP(6),last_error=NULL,published_at=NULL
+  </insert>
+  <select id="dueOutbox" resultType="com.serviceflow.knowledge.KnowledgeMapper$OutboxRow">
+    SELECT id,document_version_id,payload_json,attempts,created_at
+    FROM knowledge_ingest_outbox
+    WHERE status='PENDING' AND attempts &lt; 5 AND next_attempt_at &lt;= CURRENT_TIMESTAMP(6)
+    ORDER BY id LIMIT #{limit} FOR UPDATE SKIP LOCKED
+  </select>
+  <update id="markOutboxPublished">
+    UPDATE knowledge_ingest_outbox SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP(6),last_error=NULL
+    WHERE id=#{id} AND status='PENDING'
+  </update>
+  <update id="markOutboxFailed">
+    UPDATE knowledge_ingest_outbox SET attempts=attempts+1,last_error=#{message},next_attempt_at=#{nextAttemptAt}
+    WHERE id=#{id} AND status='PENDING'
+  </update>
+  <select id="pendingOutboxCount" resultType="long">
+    SELECT COUNT(*) FROM knowledge_ingest_outbox WHERE status='PENDING'
+  </select>
+</mapper>

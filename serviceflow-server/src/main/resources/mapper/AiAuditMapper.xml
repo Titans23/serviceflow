@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.audit.AiAuditMapper">
+  <insert id="insert">
+    INSERT IGNORE INTO ai_answer_audit(
+      public_id,session_id,client_request_id,prompt_version,model_name,intent,
+      product_ids,citations,degraded,latency_ms,result_status,error_code,question,answer)
+    VALUES(
+      #{publicId},#{sessionId},#{clientRequestId},#{promptVersion},#{modelName},#{intent},
+      CAST(#{productIds} AS JSON),CAST(#{citations} AS JSON),#{degraded},#{latencyMs},
+      #{resultStatus},#{errorCode},#{question},#{answer})
+  </insert>
+  <select id="findRecent" resultType="com.serviceflow.audit.AiAuditMapper$AuditView">
+    SELECT a.public_id,s.public_id session_public_id,c.name customer_name,a.client_request_id,
+      a.prompt_version,a.model_name,a.intent,CAST(a.product_ids AS CHAR) product_ids_json,
+      CAST(a.citations AS CHAR) citations_json,a.degraded,a.latency_ms,a.result_status,
+      a.error_code,a.question,a.answer,a.created_at
+    FROM ai_answer_audit a
+    JOIN chat_session s ON s.id=a.session_id
+    JOIN customer c ON c.id=s.customer_id
+    ORDER BY a.created_at DESC
+    LIMIT #{limit}
+  </select>
+</mapper>
