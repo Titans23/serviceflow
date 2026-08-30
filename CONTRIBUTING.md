@@ -5,7 +5,7 @@
 Before opening a pull request, run:
 
 ```powershell
-cd serviceflow-server
+cd apps/serviceflow-server
 mvn verify
 
 cd ../serviceflow-web
@@ -13,6 +13,9 @@ npm ci
 npm run lint
 npm test
 npm run build
+
+cd ../..
+powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\validate-evaluation.ps1
 ```
 
 Cloud-model evaluation is intentionally excluded from pull-request checks. Never commit `.env`, API keys, access tokens, uploaded customer files, or unredacted model responses.
@@ -28,4 +31,4 @@ test(order): cover concurrent cancellation
 docs(adr): explain transactional outbox
 ```
 
-Recommended types are `feat`, `fix`, `refactor`, `test`, `docs`, `build`, and `chore`.\n
+Recommended types are `feat`, `fix`, `refactor`, `test`, `docs`, `build`, and `chore`.

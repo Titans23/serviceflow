@@ -1,7 +1,7 @@
 param(
     [string]$MilvusUrl = 'http://localhost:19530',
     [string]$Collection = 'serviceflow_chunks',
-    [string]$Output = "$PSScriptRoot\..\evaluation\reports\milvus-hybrid-verification.json"
+    [string]$Output = "$PSScriptRoot\..\..\quality\evaluation\reports\milvus-hybrid-verification.json"
 )
 
 $ErrorActionPreference = 'Stop'

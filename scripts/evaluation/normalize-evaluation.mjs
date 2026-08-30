@@ -3,7 +3,15 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
-const datasetPath = join(scriptDirectory, '..', 'evaluation', 'serviceflow-eval-200.json');
+const datasetPath = join(
+  scriptDirectory,
+  '..',
+  '..',
+  'quality',
+  'evaluation',
+  'datasets',
+  'serviceflow-eval-200.json',
+);
 const cases = JSON.parse(await readFile(datasetPath, 'utf8'));
 
 const products = [

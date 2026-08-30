@@ -1,7 +1,7 @@
 param(
     [string]$BaseUrl = 'http://localhost:8080/api',
-    [string]$Dataset = "$PSScriptRoot\..\evaluation\serviceflow-eval-200.json",
-    [string]$OutputDirectory = "$PSScriptRoot\..\evaluation\reports",
+    [string]$Dataset = "$PSScriptRoot\..\..\quality\evaluation\datasets\serviceflow-eval-200.json",
+    [string]$OutputDirectory = "$PSScriptRoot\..\..\quality\evaluation\reports",
     [string]$CustomerUsername = 'customer',
     [string]$CustomerPassword = $(if ($env:SERVICEFLOW_EVAL_CUSTOMER_PASSWORD) {
         $env:SERVICEFLOW_EVAL_CUSTOMER_PASSWORD

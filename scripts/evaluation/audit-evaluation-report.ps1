@@ -7,10 +7,10 @@ param(
 
 $ErrorActionPreference = 'Stop'
 if ([string]::IsNullOrWhiteSpace($Dataset)) {
-    $Dataset = Join-Path $PSScriptRoot '..\evaluation\serviceflow-eval-200.json'
+    $Dataset = Join-Path $PSScriptRoot '..\..\quality\evaluation\datasets\serviceflow-eval-200.json'
 }
 if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
-    $OutputDirectory = Join-Path $PSScriptRoot '..\evaluation\reports'
+    $OutputDirectory = Join-Path $PSScriptRoot '..\..\quality\evaluation\reports'
 }
 $raw = Get-Content -LiteralPath $Report -Raw -Encoding utf8 | ConvertFrom-Json
 $cases = Get-Content -LiteralPath $Dataset -Raw -Encoding utf8 | ConvertFrom-Json
@@ -92,7 +92,7 @@ $latencies = @($auditedResults.latencyMs | Sort-Object)
 $supportResults = @($auditedResults | Where-Object { $_.id -like 'support-*' })
 $reportObject = [pscustomobject][ordered]@{
     generatedAt = (Get-Date).ToString('o')
-    sourceReport = (Resolve-Path -LiteralPath $Report).Path
+    sourceReport = Split-Path -Leaf (Resolve-Path -LiteralPath $Report).Path
     note = 'Offline audit after correcting contradictory labels; no cloud requests were repeated.'
     total = $total
     passed = $passed

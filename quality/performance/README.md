@@ -4,19 +4,19 @@
 
 ```bash
 # 30 秒 CI Smoke（5 VU）
-k6 run performance/k6/serviceflow.js
+k6 run quality/performance/k6/serviceflow.js
 
 # 商品查询 100 VU / 5 分钟
-k6 run -e PROFILE=products -e BASE_URL=http://localhost:8080/api performance/k6/serviceflow.js
+k6 run -e PROFILE=products -e BASE_URL=http://localhost:8080/api quality/performance/k6/serviceflow.js
 
 # 订单只读查询（使用 CUSTOMER Token，仅查询，不产生副作用）
-k6 run -e PROFILE=orders -e ORDER_NO=SF202608280002 performance/k6/serviceflow.js
+k6 run -e PROFILE=orders -e ORDER_NO=SF202608280002 quality/performance/k6/serviceflow.js
 
 # Demo SSE 聊天 30 并发 / 2 分钟
-k6 run -e PROFILE=chat performance/k6/serviceflow.js
+k6 run -e PROFILE=chat quality/performance/k6/serviceflow.js
 ```
 
-`BASE_URL` 可以指向 `http://localhost:5173/api` 以覆盖 Nginx 代理。使用 `--summary-export=performance/reports/<run>.raw.json` 保存原始数据，报告需同时记录 CPU、内存、吞吐量、P50/P95/P99 和 Virtual Threads 开关。
+`BASE_URL` 可以指向 `http://localhost:5173/api` 以覆盖 Nginx 代理。使用 `--summary-export=quality/performance/reports/<run>.raw.json` 保存原始数据，报告需同时记录 CPU、内存、吞吐量、P50/P95/P99 和 Virtual Threads 开关。
 
 ## 验收门槛
 

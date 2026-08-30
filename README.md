@@ -2,7 +2,7 @@
 
 ServiceFlow 是一个用于个人简历展示的企业级电商智能客服模拟项目，覆盖“售前商品咨询 + 售后业务服务 + 人工工单运营”完整闭环。项目不是只返回固定文本的聊天 Demo：云模式会实际调用阿里云百炼的 Qwen Chat、`text-embedding-v4` 和 `qwen3-rerank`，使用 MySQL 业务事实、Milvus 混合检索、Redis 会话状态、RabbitMQ 异步知识入库，并通过 SSE 将结构化事件与回答增量返回 Vue 前端。
 
-> 项目定位是可复现、可讲解、可测试的企业系统模拟，不宣称具备真实生产 SLA。完整设计与全部源码实现说明见 [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md)。
+> 项目定位是可复现、可讲解、可测试的企业系统模拟，不宣称具备真实生产 SLA。完整设计与全部源码实现说明见 [技术报告](docs/technical-report.md)，文档入口见 [docs/README.md](docs/README.md)。
 
 ## 1. 核心能力
 
@@ -101,30 +101,32 @@ Spring Boot :8080 ───────────────► Prometheus :9
 
 ```text
 ServiceFlow/
-├─ serviceflow-server/
-│  ├─ src/main/java/com/serviceflow/
-│  │  ├─ agent/       LangGraph4j 客服工作流与状态
-│  │  ├─ audit/       AI 回答审计和指标
-│  │  ├─ auth/        登录、JWT 和当前身份
-│  │  ├─ chat/        会话、Redis 记忆、SSE、模型网关
-│  │  ├─ config/      安全、异常、RabbitMQ、配置属性
-│  │  ├─ knowledge/   文档上传、版本与异步消费
-│  │  ├─ order/       订单查询、取消、退款和幂等
-│  │  ├─ product/     商品目录、解析、导入和比较
-│  │  ├─ rag/         Embedding、Milvus、Reranker、Grader
-│  │  └─ ticket/      客户工单与后台状态机
-│  └─ src/main/resources/
-│     ├─ db/migration/ Flyway V1–V4
-│     ├─ mapper/       MyBatis XML
-│     └─ product-comparison-fields.yml
-├─ serviceflow-web/    Vue 3 前端
-├─ knowledge-source/   已核验的华为商品与政策文档
-├─ evaluation/         在线评测集与历史报告
-├─ scripts/            自动化评测脚本
-├─ monitoring/         Prometheus 配置
+├─ apps/
+│  ├─ serviceflow-server/       Spring Boot 后端应用
+│  │  ├─ src/main/java/com/serviceflow/
+│  │  │  ├─ agent/             LangGraph4j 工作流与状态
+│  │  │  ├─ auth|chat|audit/   身份、会话、SSE 与审计
+│  │  │  ├─ product|order/     商品与订单业务域
+│  │  │  ├─ knowledge|rag/     知识入库与混合检索
+│  │  │  ├─ ticket/            工单业务域
+│  │  │  └─ config/            横切配置与统一异常
+│  │  ├─ src/main/resources/   Flyway、MyBatis XML、业务配置
+│  │  └─ src/test/             单元、架构与集成测试
+│  └─ serviceflow-web/          Vue 3 前端应用与 Playwright
+├─ data/knowledge/              可公开、可追溯的知识样本
+├─ deploy/observability/        Prometheus 与 Grafana 配置
+├─ docs/                        架构、ADR、运行手册和技术报告
+├─ quality/
+│  ├─ evaluation/              数据集、在线评测和脱敏结果
+│  └─ performance/             k6 场景与基准结果
+├─ scripts/
+│  ├─ evaluation/              评测校验、执行与审计脚本
+│  └─ verification/            Milvus 等环境验收脚本
 ├─ docker-compose.yml
-└─ TECHNICAL_REPORT.md
+└─ README.md
 ```
+
+后端采用按业务域分包，而不是把所有 Controller、Service、Mapper 横向堆在一起；每个业务域内部保持协议入口、业务服务和数据访问职责清晰。根目录只保留仓库级入口和治理文件，运行资产、质量证据与业务数据分别归档。
 
 ## 5. 快速启动
 
@@ -170,7 +172,7 @@ docker compose up --build -d
 docker compose ps
 ```
 
-首次启动会创建持久卷并执行 Flyway 迁移；Milvus Collection 会在首次知识入库或检索时惰性初始化。知识文档需要在管理员页面上传；仓库中的 `knowledge-source/huawei` 提供了可演示文档。
+首次启动会创建持久卷并执行 Flyway 迁移；Milvus Collection 会在首次知识入库或检索时惰性初始化。知识文档需要在管理员页面上传；仓库中的 `data/knowledge/huawei` 提供了可演示文档。
 
 ### 5.4 访问地址
 
@@ -257,7 +259,7 @@ SSE 事件包括 `meta`、`token`、`product_selection_required`、`product_comp
 
 ## 8. 商品与知识数据
 
-Flyway V2 内置了经华为中国官网核验的 HUAWEI Pura 80、Pura 80 Pro 和 Pura 80 Ultra 结构化数据。价格是 2026-08-29 核验的官网起售价快照，不是实时成交价；来源登记在 [knowledge-source/huawei/README.md](knowledge-source/huawei/README.md)。
+Flyway V2 内置了经华为中国官网核验的 HUAWEI Pura 80、Pura 80 Pro 和 Pura 80 Ultra 结构化数据。价格是 2026-08-29 核验的官网起售价快照，不是实时成交价；来源登记在 [data/knowledge/huawei/README.md](data/knowledge/huawei/README.md)。
 
 结构化商品事实保存在 MySQL；功能说明、安全提示和保修政策保存在知识文档。接入企业目录时，可以从 PIM/ERP 导出后调用 `POST /api/admin/products/import`，一次最多 500 条，同 SKU 幂等更新。
 
@@ -285,7 +287,7 @@ Flyway V2 内置了经华为中国官网核验的 HUAWEI Pura 80、Pura 80 Pro �
 后端要求 JDK 21；本机 Java 版本不满足时可以使用 Docker 中的 Maven/JDK 21。
 
 ```powershell
-cd serviceflow-server
+cd apps/serviceflow-server
 mvn verify
 
 cd ../serviceflow-web
@@ -296,9 +298,9 @@ npm run build
 npx playwright install chromium
 npm run test:e2e
 
-cd ..
-powershell -ExecutionPolicy Bypass -File .\scripts\validate-evaluation.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\run-evaluation.ps1
+cd ../..
+powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\validate-evaluation.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 ```
 
 当前可复现验证基线：
@@ -307,8 +309,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\run-evaluation.ps1
 - 前端 ESLint、2 个 Vitest 测试、TypeScript 类型检查和 Vite 生产构建通过。
 - Playwright：2 条浏览器 E2E 通过；基础 Compose 的 server/web 均健康，readiness=`UP`。
 - Observability：Grafana `/api/health` 返回 `ok`，Jaeger UI 返回 200 且已接收 `serviceflow` trace。
-- k6 本地基准（Demo 模式，不调用云模型）：商品 100 VU/5 分钟 29,902 请求、0% 失败、P95 8 ms；订单 50 VU/3 分钟 8,952 请求、0% 失败、P95 10 ms；SSE 30 并发/2 分钟 0% 失败、P95 30 ms。SSE 已完成虚拟线程开/关对照（30/27 ms），原始 JSON 位于 `performance/reports/`。
-- 评测集结构校验：200/200 条通过；20 条 Smoke 通过率 100%。经授权执行一次真实百炼 200 条云评测：原始规则通过率 83.5%（其中 20 条对比用例的标签检查过严），离线修正标签后的可审计通过率 98.5%，Recall@5 97.69%、MRR 0.9769、nDCG@5 0.9769、意图/商品/事件/转人工准确率均 100%、事实幻觉率 0%。原始与审计报告分别见 `evaluation/results/cloud-evaluation-200-raw.*` 和 `evaluation/results/cloud-evaluation-200-audited.*`；未重复调用云模型。
+- k6 本地基准（Demo 模式，不调用云模型）：商品 100 VU/5 分钟 29,902 请求、0% 失败、P95 8 ms；订单 50 VU/3 分钟 8,952 请求、0% 失败、P95 10 ms；SSE 30 并发/2 分钟 0% 失败、P95 30 ms。SSE 已完成虚拟线程开/关对照（30/27 ms），结果位于 `quality/performance/reports/`。
+- 评测集结构校验：200/200 条通过；20 条 Smoke 通过率 100%。经授权执行一次真实百炼 200 条云评测：原始规则通过率 83.5%（其中 20 条对比用例的标签检查过严），离线修正标签后的可审计通过率 98.5%，Recall@5 97.69%、MRR 0.9769、nDCG@5 0.9769、意图/商品/事件/转人工准确率均 100%、事实幻觉率 0%。原始与审计报告分别见 `quality/evaluation/results/cloud-evaluation-200-raw.*` 和 `quality/evaluation/results/cloud-evaluation-200-audited.*`；未重复调用云模型。
 
 在线结果依赖云模型和网络，后续运行可能出现波动；报告只陈述实际执行结果，不把单次通过率当作长期 SLA。
 

@@ -1,5 +1,5 @@
 param(
-    [string]$Dataset = "$PSScriptRoot\..\evaluation\serviceflow-eval-200.json",
+    [string]$Dataset = "$PSScriptRoot\..\..\quality\evaluation\datasets\serviceflow-eval-200.json",
     [int]$SmokeCount = 20
 )
 

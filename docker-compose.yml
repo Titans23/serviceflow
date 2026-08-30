@@ -1,6 +1,6 @@
 services:
   server:
-    build: ./serviceflow-server
+    build: ./apps/serviceflow-server
     environment:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: ${MYSQL_DATABASE:-serviceflow}
@@ -41,7 +41,7 @@ services:
       milvus: {condition: service_started}
 
   web:
-    build: ./serviceflow-web
+    build: ./apps/serviceflow-web
     ports: ["5173:80"]
     depends_on:
       server: {condition: service_healthy}
@@ -51,7 +51,7 @@ services:
     command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=7d"]
     ports: ["9090:9090"]
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deploy/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     depends_on: [server]
 
@@ -80,8 +80,8 @@ services:
     ports: ["3000:3000"]
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./deploy/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
       prometheus: {condition: service_started}
 

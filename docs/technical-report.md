@@ -221,7 +221,7 @@ Vue Router 对管理页面设置 `requiresAdmin`，非管理员被送往登录�
 
 MySQL 8.4 用作确定性事实源，因为商品、订单、支付、工单和审计需要事务、唯一约束、外键和条件更新。MyBatis XML 被选中而不是 ORM，是为了让订单乐观锁、幂等写入、JSON CAST、动态知识版本过滤等 SQL 明确可见，便于面试解释和性能分析。
 
-Flyway 管理数据库演进，使任何新环境都能按 V1、V2、V3、V4 顺序得到相同 Schema 和演示数据。
+Flyway 管理数据库演进，使任何新环境都能按 V1–V5 顺序得到相同 Schema 和演示数据。
 
 ### 6.2 V1 核心表
 
@@ -790,7 +790,7 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 
 ### 18.4 在线评测实现
 
-`evaluation/serviceflow-eval-200.json` 包含 200 条脱敏用例：50 条商品说明、50 条售后政策、20 条商品详情、20 条商品比较、20 条订单与取消、20 条投诉与转人工、20 条上下文/权限/异常。`scripts/validate-evaluation.ps1` 先校验字段、意图枚举和唯一 ID，并选择 20 条 Smoke；`run-evaluation.ps1` 默认使用该数据集，并按 `principalType` 获取对应身份。
+`quality/evaluation/datasets/serviceflow-eval-200.json` 包含 200 条脱敏用例：50 条商品说明、50 条售后政策、20 条商品详情、20 条商品比较、20 条订单与取消、20 条投诉与转人工、20 条上下文/权限/异常。`scripts/evaluation/validate-evaluation.ps1` 先校验字段、意图枚举和唯一 ID，并选择 20 条 Smoke；`run-evaluation.ps1` 默认使用该数据集，并按 `principalType` 获取对应身份。
 
 `run-evaluation.ps1` 为每条用例创建独立 GUEST 会话，生成 UUID clientRequestId，调用实际 SSE 接口，解析 meta、done、事件名和 token 文本。
 
@@ -845,7 +845,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 - 多实例下的文档 version_no 强并发生成；
 - 自动清理失败版本已经写入的部分 Chunk；检索过滤能保证其不可见；
 - 审计数据保留与删除策略；
-- 公网生产仍需 HTTPS/WAF、Secret Manager、容量治理和合规评审；本仓库已完成本地 Compose E2E、Milvus Hybrid 验收、k6 基准和一次真实云评测，结果以 `evaluation/results/` 与 `performance/reports/` 为准。
+- 公网生产仍需 HTTPS/WAF、Secret Manager、容量治理和合规评审；本仓库已完成本地 Compose E2E、Milvus Hybrid 验收、k6 基准和一次真实云评测，结果以 `quality/evaluation/results/` 与 `quality/performance/reports/` 为准。
 
 ---
 
@@ -959,23 +959,24 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `V2__replace_demo_catalog_with_huawei_pura80.sql` | 华为真实结构化商品快照 |
 | `V3__add_operations_audit.sql` | AI 审计与工单运营字段 |
 | `V4__reliability_baseline.sql` | Chat 幂等表与知识 Outbox |
+| `V5__expand_local_order_fixtures.sql` | 可重复的本地订单与物流测试夹具 |
 | `product-comparison-fields.yml` | 类别比较字段白名单 |
 | `application.yml` | 后端运行配置 |
-| `serviceflow-server/pom.xml` | Java 21 编译、Spring Boot、LangGraph4j、MyBatis、Tika、测试与构建依赖 |
-| `serviceflow-server/Dockerfile` | Maven/JDK 21 多阶段后端镜像构建 |
+| `apps/serviceflow-server/pom.xml` | Java 21 编译、Spring Boot、LangGraph4j、MyBatis、Tika、测试与构建依赖 |
+| `apps/serviceflow-server/Dockerfile` | Maven/JDK 21 多阶段后端镜像构建 |
 | `.env.example` | Compose 与模型环境变量模板 |
-| `docker-compose.yml` | 九类运行服务与持久卷编排 |
-| `serviceflow-web/package.json` | Vue、Element Plus、Pinia、Router、Vitest 与 Vite 依赖和脚本 |
-| `serviceflow-web/vite.config.ts` | Vite 构建、测试与开发代理配置 |
-| `serviceflow-web/Dockerfile` | Node 构建与 Nginx 运行时镜像 |
-| `serviceflow-web/nginx.conf` | SPA 回退、静态资源和 `/api` 反向代理 |
-| `monitoring/prometheus.yml` | Prometheus 抓取配置 |
-| `observability/grafana/*` | Grafana 数据源、自动加载 Dashboard |
-| `knowledge-source/huawei/*` | 官方来源登记和四份知识文档 |
-| `evaluation/serviceflow-eval-200.json` | 200 条脱敏评测集 |
-| `scripts/validate-evaluation.ps1` | 评测结构校验与 Smoke 选择 |
-| `scripts/run-evaluation.ps1` | SSE 在线评测运行器与报告生成 |
-| `performance/k6/serviceflow.js` | 商品、订单、Demo SSE 三类 k6 场景 |
+| `docker-compose.yml` | 11 个应用、数据与观测服务及持久卷编排 |
+| `apps/serviceflow-web/package.json` | Vue、Element Plus、Pinia、Router、Vitest 与 Vite 依赖和脚本 |
+| `apps/serviceflow-web/vite.config.ts` | Vite 构建、测试与开发代理配置 |
+| `apps/serviceflow-web/Dockerfile` | Node 构建与 Nginx 运行时镜像 |
+| `apps/serviceflow-web/nginx.conf` | SPA 回退、静态资源和 `/api` 反向代理 |
+| `deploy/observability/prometheus/prometheus.yml` | Prometheus 抓取配置 |
+| `deploy/observability/grafana/*` | Grafana 数据源、自动加载 Dashboard |
+| `data/knowledge/huawei/*` | 官方来源登记和四份知识文档 |
+| `quality/evaluation/datasets/serviceflow-eval-200.json` | 200 条脱敏评测集 |
+| `scripts/evaluation/validate-evaluation.ps1` | 评测结构校验与 Smoke 选择 |
+| `scripts/evaluation/run-evaluation.ps1` | SSE 在线评测运行器与报告生成 |
+| `quality/performance/k6/serviceflow.js` | 商品、订单、Demo SSE 三类 k6 场景 |
 | 后端 `src/test` | 43 个单元/架构测试与 Testcontainers IT |
 | `client.test.ts` | 前端 SSE 数据解析测试 |
 | `e2e/*.spec.ts` | Playwright 游客流程和路由守卫 |

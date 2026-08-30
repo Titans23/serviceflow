@@ -31,15 +31,15 @@ jobs:
           java-version: '21'
           cache: maven
       - name: Run unit tests, formatting and coverage gate
-        working-directory: serviceflow-server
+        working-directory: apps/serviceflow-server
         run: mvn -B -DskipITs verify
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: backend-unit-reports
           path: |
-            serviceflow-server/target/surefire-reports
-            serviceflow-server/target/site/jacoco
+            apps/serviceflow-server/target/surefire-reports
+            apps/serviceflow-server/target/site/jacoco
 
   backend-integration:
     name: Backend integration tests
@@ -53,13 +53,13 @@ jobs:
           java-version: '21'
           cache: maven
       - name: Run Testcontainers integration suite
-        working-directory: serviceflow-server
+        working-directory: apps/serviceflow-server
         run: mvn -B verify
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: backend-integration-reports
-          path: serviceflow-server/target/failsafe-reports
+          path: apps/serviceflow-server/target/failsafe-reports
 
   frontend:
     name: Frontend lint, test and build
@@ -70,18 +70,18 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: serviceflow-web/package-lock.json
+          cache-dependency-path: apps/serviceflow-web/package-lock.json
       - name: Install dependencies
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         run: npm ci
       - name: Lint
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         run: npm run lint
       - name: Unit tests
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         run: npm test -- --run
       - name: Production build
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         run: npm run build
 
   compose-e2e:
@@ -94,7 +94,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: serviceflow-web/package-lock.json
+          cache-dependency-path: apps/serviceflow-web/package-lock.json
       - name: Start isolated Compose stack in demo mode
         run: docker compose up -d --build
       - name: Wait for web health endpoint
@@ -103,10 +103,10 @@ jobs:
           docker compose ps
           exit 1
       - name: Install frontend dependencies and browser
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         run: npm ci && npx playwright install --with-deps chromium
       - name: Run Playwright suite
-        working-directory: serviceflow-web
+        working-directory: apps/serviceflow-web
         env:
           CI: true
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:5173
@@ -115,7 +115,7 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: serviceflow-web/playwright-report
+          path: apps/serviceflow-web/playwright-report
       - name: Stop Compose stack
         if: always()
         run: docker compose down -v
