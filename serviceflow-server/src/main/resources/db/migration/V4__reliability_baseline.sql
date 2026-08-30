@@ -27,4 +27,4 @@ CREATE TABLE knowledge_ingest_outbox (
   CONSTRAINT fk_outbox_document_version FOREIGN KEY (document_version_id) REFERENCES knowledge_document_version(id),
   UNIQUE KEY uk_outbox_document_version(document_version_id),
   INDEX idx_outbox_due(status, next_attempt_at, id)
-);\n
+);

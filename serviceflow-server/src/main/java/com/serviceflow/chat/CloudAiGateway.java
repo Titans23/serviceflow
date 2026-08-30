@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnProperty(name = "serviceflow.ai.mode", havingValue = "cloud")
-public final class CloudAiGateway implements AiGateway {
+public class CloudAiGateway implements AiGateway {
     static final String PROMPT_VERSION = "2026-08-29.1";
     private static final Duration CALL_TIMEOUT = Duration.ofSeconds(20);
     private static final String INTENT_SYSTEM_PROMPT = "只返回以下一个枚举：CHAT, PRODUCT_QUERY, "

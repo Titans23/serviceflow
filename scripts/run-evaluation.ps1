@@ -1,14 +1,43 @@
 param(
     [string]$BaseUrl = 'http://localhost:8080/api',
     [string]$Dataset = "$PSScriptRoot\..\evaluation\serviceflow-eval-200.json",
-    [string]$OutputDirectory = "$PSScriptRoot\..\evaluation\reports"
+    [string]$OutputDirectory = "$PSScriptRoot\..\evaluation\reports",
+    [string]$CustomerUsername = 'customer',
+    [string]$CustomerPassword = $(if ($env:SERVICEFLOW_EVAL_CUSTOMER_PASSWORD) {
+        $env:SERVICEFLOW_EVAL_CUSTOMER_PASSWORD
+    } else {
+        'Customer123!'
+    }),
+    [string]$AdminUsername = 'admin',
+    [string]$AdminPassword = $(if ($env:SERVICEFLOW_EVAL_ADMIN_PASSWORD) {
+        $env:SERVICEFLOW_EVAL_ADMIN_PASSWORD
+    } else {
+        'Admin123!'
+    })
 )
 
 $ErrorActionPreference = 'Stop'
 $cases = Get-Content -LiteralPath $Dataset -Raw -Encoding utf8 | ConvertFrom-Json
-$guest = Invoke-RestMethod -Method Post -Uri "$BaseUrl/auth/guest"
-$headers = @{ Authorization = "Bearer $($guest.accessToken)" }
 $results = [System.Collections.Generic.List[object]]::new()
+
+function New-LoginHeaders([string]$Username, [string]$Password) {
+    $loginBody = @{ username = $Username; password = $Password } | ConvertTo-Json
+    $token = Invoke-RestMethod -Method Post -Uri "$BaseUrl/auth/login" `
+        -ContentType 'application/json; charset=utf-8' -Body $loginBody
+    return @{ Authorization = "Bearer $($token.accessToken)" }
+}
+
+$headersByPrincipal = @{}
+if (@($cases | Where-Object principalType -eq 'GUEST').Count -gt 0) {
+    $guest = Invoke-RestMethod -Method Post -Uri "$BaseUrl/auth/guest"
+    $headersByPrincipal.GUEST = @{ Authorization = "Bearer $($guest.accessToken)" }
+}
+if (@($cases | Where-Object principalType -eq 'CUSTOMER').Count -gt 0) {
+    $headersByPrincipal.CUSTOMER = New-LoginHeaders $CustomerUsername $CustomerPassword
+}
+if (@($cases | Where-Object principalType -eq 'ADMIN').Count -gt 0) {
+    $headersByPrincipal.ADMIN = New-LoginHeaders $AdminUsername $AdminPassword
+}
 
 function Normalize-AnswerText([string]$Text) {
     if ($null -eq $Text) { return '' }
@@ -16,6 +45,11 @@ function Normalize-AnswerText([string]$Text) {
 }
 
 foreach ($case in $cases) {
+    $principalType = if ($case.principalType) { [string]$case.principalType } else { 'GUEST' }
+    $headers = $headersByPrincipal[$principalType]
+    if ($null -eq $headers) {
+        throw "Unsupported principalType '$principalType' in case '$($case.id)'"
+    }
     $session = Invoke-RestMethod -Method Post -Uri "$BaseUrl/chat/sessions" -Headers $headers `
         -ContentType 'application/json; charset=utf-8' -Body (@{ title = "评测-$($case.id)" } | ConvertTo-Json)
     $context = if ($null -ne $case.pageContext) {
@@ -42,8 +76,10 @@ foreach ($case in $cases) {
         ForEach-Object { $_.Groups[1].Value.Trim() }
     $metaMatch = [regex]::Match($sseContent, '(?ms)^event:meta\r?\ndata:(\{.*?\})\r?\n\r?\n')
     $doneMatch = [regex]::Match($sseContent, '(?ms)^event:done\r?\ndata:(\{.*?\})\r?\n\r?\n')
+    $errorMatch = [regex]::Match($sseContent, '(?ms)^event:error\r?\ndata:(\{.*?\})\r?\n\r?\n')
     $meta = if ($metaMatch.Success) { $metaMatch.Groups[1].Value | ConvertFrom-Json } else { $null }
     $done = if ($doneMatch.Success) { $doneMatch.Groups[1].Value | ConvertFrom-Json } else { $null }
+    $errorEvent = if ($errorMatch.Success) { $errorMatch.Groups[1].Value | ConvertFrom-Json } else { $null }
     $tokenText = ([regex]::Matches($sseContent, '(?m)^data:(?!\{)(.*)$') |
         ForEach-Object { $_.Groups[1].Value }) -join ''
 
@@ -74,16 +110,22 @@ foreach ($case in $cases) {
             $normalizedAnswer.Contains((Normalize-AnswerText ([string]$_)))
         }).Count -gt 0
     }
-    $productPass = $true
     $expectedProducts = @($case.expectedProducts | Where-Object { $null -ne $_ })
-    if ($expectedProducts.Count -gt 0 -and $null -ne $meta -and $null -ne $meta.productIds) {
-        $productPass = @($expectedProducts | Where-Object { @($meta.productIds) -contains $_ }).Count -eq $expectedProducts.Count
-    }
+    $productPass = $expectedProducts.Count -eq 0 -or
+        ($null -ne $meta -and $null -ne $meta.productIds -and
+            @($expectedProducts | Where-Object { @($meta.productIds) -contains $_ }).Count -eq $expectedProducts.Count)
+    $forbiddenClaims = @($case.forbiddenClaims | Where-Object { $null -ne $_ })
+    $forbiddenClaimPass = @($forbiddenClaims | Where-Object {
+        $normalizedAnswer.Contains((Normalize-AnswerText ([string]$_)))
+    }).Count -eq 0
+    $expectsError = $expectedEvents -contains 'error'
+    $terminalPass = if ($expectsError) { $null -ne $errorEvent } else { $null -ne $done }
     $passed = $intentPass -and $citationPass -and $eventPass -and $absentEventPass -and
-        $factPass -and $productPass -and $null -ne $done
+        $factPass -and $productPass -and $forbiddenClaimPass -and $terminalPass
 
     $results.Add([pscustomobject]@{
         id = $case.id
+        principalType = $principalType
         passed = $passed
         expectedIntent = $case.expectedIntent
         actualIntent = if ($null -ne $meta) { $meta.intent } else { $null }
@@ -98,7 +140,8 @@ foreach ($case in $cases) {
             absentEvent = $absentEventPass
             requiredFact = $factPass
             product = $productPass
-            completed = $null -ne $done
+            forbiddenClaims = $forbiddenClaimPass
+            terminal = $terminalPass
         }
     })
 }
@@ -119,6 +162,8 @@ $report = [pscustomobject][ordered]@{
     intentAccuracy = [math]::Round((@($results | Where-Object { $_.checks.intent }).Count * 100.0 / $total), 2)
     citationAccuracy = [math]::Round((@($results | Where-Object { $_.checks.citation }).Count * 100.0 / $total), 2)
     eventAccuracy = [math]::Round((@($results | Where-Object { $_.checks.event }).Count * 100.0 / $total), 2)
+    productAccuracy = [math]::Round((@($results | Where-Object { $_.checks.product }).Count * 100.0 / $total), 2)
+    hallucinationRate = [math]::Round((@($results | Where-Object { -not $_.checks.forbiddenClaims }).Count * 100.0 / $total), 2)
     results = $results
 }
 $jsonPath = Join-Path $OutputDirectory "evaluation-$timestamp.json"
@@ -135,6 +180,8 @@ $lines = @(
     "- 平均端到端耗时：$($report.averageLatencyMs) ms",
     "- P50/P95：$($report.p50LatencyMs) / $($report.p95LatencyMs) ms",
     "- 意图/引用/事件准确率：$($report.intentAccuracy)% / $($report.citationAccuracy)% / $($report.eventAccuracy)%",
+    "- 商品识别准确率：$($report.productAccuracy)%",
+    "- 禁止声明命中率（事实幻觉代理指标）：$($report.hallucinationRate)%",
     '',
     '| 用例 | 结果 | 预期意图 | 实际意图 | 耗时(ms) |',
     '| --- | --- | --- | --- | --- |'
@@ -145,7 +192,7 @@ foreach ($result in $results) {
 }
 $lines | Set-Content -LiteralPath $markdownPath -Encoding utf8
 
-$report | Select-Object total, passed, passRate, averageLatencyMs, p50LatencyMs, p95LatencyMs, intentAccuracy, citationAccuracy, eventAccuracy | Format-List
+$report | Select-Object total, passed, passRate, averageLatencyMs, p50LatencyMs, p95LatencyMs, intentAccuracy, citationAccuracy, eventAccuracy, productAccuracy, hallucinationRate | Format-List
 "JSON report: $jsonPath"
 "Markdown report: $markdownPath"
 if ($passedCount -ne $total) { exit 1 }

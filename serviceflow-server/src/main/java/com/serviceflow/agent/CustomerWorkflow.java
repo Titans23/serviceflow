@@ -164,7 +164,9 @@ public final class CustomerWorkflow {
                             "degraded",
                             finalState.degraded(),
                             "citations",
-                            finalState.citations()));
+                            finalState.citations(),
+                            "productIds",
+                            state.productIds()));
             List<String> names = finalState.eventNames();
             List<String> payloads = finalState.eventPayloads();
             for (int i = 0; i < Math.min(names.size(), payloads.size()); i++) {
@@ -276,6 +278,7 @@ public final class CustomerWorkflow {
         boolean compare = state.query().contains("对比")
                 || state.query().contains("区别")
                 || state.query().contains("比较");
+        state.productIds().addAll(ids);
         if (compare) {
             if (ids.size() < 2) {
                 return new Result("请明确选择至少两个同类别商品后再比较。", List.of());
@@ -288,7 +291,6 @@ public final class CustomerWorkflow {
             return new Result("已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of());
         }
         ProductModels.ProductView product = products.get(ids.getFirst());
-        state.productIds().addAll(ids);
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
         String facts = writeJson(Map.of(
                 "id", product.id(),
@@ -325,6 +327,11 @@ public final class CustomerWorkflow {
     }
 
     private Result knowledge(ServiceFlowState state, BiConsumer<String, Object> events) {
+        if (state.query().contains("上传")
+                && (state.query().contains("知识") || state.query().contains("文档"))
+                && !"ADMIN".equals(state.principal().role())) {
+            return new Result("知识库上传与版本管理仅允许管理员操作，请联系管理员处理。", List.of());
+        }
         RagService.SearchResult result = rag.search(state.query(), "POLICY", List.of());
         if (!result.sufficient()) {
             if (state.principal().guest()) {

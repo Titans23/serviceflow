@@ -196,10 +196,11 @@ docker compose ps
 ### 5.5 启动可观测性组件
 
 ```powershell
+$env:TRACING_SAMPLING_PROBABILITY = '1.0'
 docker compose --profile observability up -d
 ```
 
-Grafana 默认账号为 `admin / serviceflow`（可通过 `GRAFANA_ADMIN_USER`、`GRAFANA_ADMIN_PASSWORD` 覆盖）。Prometheus 数据源和 ServiceFlow Dashboard 会自动加载；Jaeger 接收 OTLP HTTP traces。
+基础 Compose 默认将 Trace 采样率设为 0，避免未启动 Jaeger 时产生导出错误。启用观测 profile 时显式设为 1.0。Grafana 默认账号为 `admin / serviceflow`（可通过 `GRAFANA_ADMIN_USER`、`GRAFANA_ADMIN_PASSWORD` 覆盖）。Prometheus 数据源和 ServiceFlow Dashboard 会自动加载；Jaeger 接收 OTLP HTTP traces。
 
 ## 6. 推荐演示流程
 
@@ -285,7 +286,7 @@ Flyway V2 内置了经华为中国官网核验的 HUAWEI Pura 80、Pura 80 Pro �
 
 ```powershell
 cd serviceflow-server
-mvn test
+mvn verify
 
 cd ../serviceflow-web
 npm ci
@@ -302,9 +303,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\run-evaluation.ps1
 
 当前可复现验证基线：
 
-- 后端 `mvn -DskipITs verify`：43 个单元/架构测试通过，Spotless、Enforcer 和核心业务 JaCoCo 门禁通过。
+- 后端 `mvn verify`：43 个单元/架构测试和 3 个 Testcontainers 集成测试通过；真实启动 MySQL 8.4、Redis 7.4、RabbitMQ 4，Spotless、Enforcer 和核心业务 JaCoCo 门禁通过。
 - 前端 ESLint、2 个 Vitest 测试、TypeScript 类型检查和 Vite 生产构建通过。
-- 评测集结构校验：200/200 条通过；完整云评测和 Testcontainers/Compose E2E/k6 需要在 Docker 引擎和本机模型配置可用后执行。
+- Playwright：2 条浏览器 E2E 通过；基础 Compose 的 server/web 均健康，readiness=`UP`。
+- Observability：Grafana `/api/health` 返回 `ok`，Jaeger UI 返回 200 且已接收 `serviceflow` trace。
+- k6 Demo Smoke：5 VU/30 秒，300 请求、0% 失败；商品查询 P50/P95/P99 为 7/9/10 ms。完整 100 VU、订单、SSE 与 Virtual Threads 对照基准尚未执行。
+- 评测集结构校验：200/200 条通过；完整 200 条云评测尚未执行，运行前必须确认模型调用预算。
 
 在线结果依赖云模型和网络，后续运行可能出现波动；报告只陈述实际执行结果，不把单次通过率当作长期 SLA。
 

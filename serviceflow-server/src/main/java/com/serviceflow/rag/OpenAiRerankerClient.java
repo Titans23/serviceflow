@@ -12,17 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
-public final class OpenAiRerankerClient implements RerankerClient {
+public class OpenAiRerankerClient implements RerankerClient {
 
     private final ServiceFlowProperties.Ai.Reranker properties;
     private final RestClient client;
 
+    @Autowired
     public OpenAiRerankerClient(RestClient.Builder builder, ServiceFlowProperties properties) {
         this(builder, properties, true);
     }

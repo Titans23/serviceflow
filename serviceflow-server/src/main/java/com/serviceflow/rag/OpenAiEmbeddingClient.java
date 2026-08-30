@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnProperty(name = "serviceflow.rag.mode", havingValue = "cloud")
-public final class OpenAiEmbeddingClient implements EmbeddingClient {
+public class OpenAiEmbeddingClient implements EmbeddingClient {
 
     private static final Duration CALL_TIMEOUT = Duration.ofSeconds(20);
     private final EmbeddingModel model;

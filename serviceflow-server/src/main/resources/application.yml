@@ -76,8 +76,8 @@ serviceflow:
       path: ${OPENAI_RERANKER_PATH:/services/rerank/text-rerank/text-rerank}
   upload-dir: ${UPLOAD_DIR:./data/uploads}
   guest-rate-limit:
-    max-requests: 20
-    window: 10m
+    max-requests: ${SERVICEFLOW_GUEST_RATE_LIMIT_MAX_REQUESTS:20}
+    window: ${SERVICEFLOW_GUEST_RATE_LIMIT_WINDOW:10m}
   rag:
     mode: ${SERVICEFLOW_RAG_MODE:${SERVICEFLOW_AI_MODE:demo}}
     milvus-rest-url: ${MILVUS_REST_URL:http://localhost:19530}

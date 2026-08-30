@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
-public final class MilvusRagService implements RagService {
+public class MilvusRagService implements RagService {
 
     private static final Logger log = LoggerFactory.getLogger(MilvusRagService.class);
     private static final int RETRIEVAL_LIMIT = 20;

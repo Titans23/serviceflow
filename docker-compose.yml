@@ -15,6 +15,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:-development-secret-must-be-replaced-32}
       SERVICEFLOW_AI_MODE: ${SERVICEFLOW_AI_MODE:-demo}
       SERVICEFLOW_RAG_MODE: ${SERVICEFLOW_RAG_MODE:-${SERVICEFLOW_AI_MODE:-demo}}
+      SERVICEFLOW_GUEST_RATE_LIMIT_MAX_REQUESTS: ${SERVICEFLOW_GUEST_RATE_LIMIT_MAX_REQUESTS:-20}
+      SERVICEFLOW_GUEST_RATE_LIMIT_WINDOW: ${SERVICEFLOW_GUEST_RATE_LIMIT_WINDOW:-10m}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-disabled}
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode}
       OPENAI_MODEL: ${OPENAI_MODEL:-qwen-plus}
@@ -26,6 +28,7 @@ services:
       OPENAI_RERANKER_MODEL: ${OPENAI_RERANKER_MODEL:-qwen3-rerank}
       OPENAI_RERANKER_PATH: ${OPENAI_RERANKER_PATH:-/services/rerank/text-rerank/text-rerank}
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-http://jaeger:4318/v1/traces}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.0}
     ports: ["8080:8080"]
     volumes: [upload-data:/data/uploads]
     extra_hosts:
@@ -52,7 +55,7 @@ services:
     depends_on: [server]
 
   jaeger:
-    image: jaegertracing/all-in-one:1.72
+    image: jaegertracing/all-in-one:1.72.0
     profiles: [observability]
     environment:
       COLLECTOR_OTLP_ENABLED: "true"

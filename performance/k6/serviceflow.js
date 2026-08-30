@@ -10,6 +10,7 @@ const sseLatency = new Trend('serviceflow_sse_latency', true)
 const businessErrors = new Counter('serviceflow_business_errors')
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'p(90)', 'p(95)', 'p(99)', 'max'],
   scenarios:
     profile === 'products'
       ? { products: { executor: 'constant-vus', vus: 100, duration: '5m' } }

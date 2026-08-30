@@ -744,7 +744,7 @@ Docker Compose 适合个人项目复现完整中间件，避免要求面试官�
 - rabbitmq 4 management；
 - etcd + minio + milvus standalone；
 - prometheus 3.5；
-- Grafana 12 与 Jaeger 1.72（仅 `observability` profile）。
+- Grafana 12.1.1 与 Jaeger 1.72.0（仅 `observability` profile）。
 
 server 使用 uid 10001 的非 root 用户运行，上传目录授权给该用户。MySQL、Redis 和 RabbitMQ 定义健康检查；server 等待这些依赖健康后启动。Milvus 依赖 etcd 与 MinIO。
 
@@ -790,7 +790,7 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 
 ### 18.4 在线评测实现
 
-`evaluation/serviceflow-eval-200.json` 包含 200 条脱敏用例：50 条商品说明、50 条售后政策、20 条商品详情、20 条商品比较、20 条订单与取消、20 条投诉/上下文/权限/异常。`scripts/validate-evaluation.ps1` 先校验字段、意图枚举和唯一 ID，并选择 20 条 Smoke；`run-evaluation.ps1` 默认使用该数据集。
+`evaluation/serviceflow-eval-200.json` 包含 200 条脱敏用例：50 条商品说明、50 条售后政策、20 条商品详情、20 条商品比较、20 条订单与取消、20 条投诉与转人工、20 条上下文/权限/异常。`scripts/validate-evaluation.ps1` 先校验字段、意图枚举和唯一 ID，并选择 20 条 Smoke；`run-evaluation.ps1` 默认使用该数据集，并按 `principalType` 获取对应身份。
 
 `run-evaluation.ps1` 为每条用例创建独立 GUEST 会话，生成 UUID clientRequestId，调用实际 SSE 接口，解析 meta、done、事件名和 token 文本。
 
@@ -808,9 +808,11 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 
 ### 18.5 当前实测结果
 
-- 后端：43 个单元/架构测试通过；`mvn -DskipITs verify` 的 Spotless、Enforcer、核心业务 JaCoCo 门禁通过；
+- 后端：43 个单元/架构测试与 3 个 Testcontainers 集成测试通过；`mvn verify` 的 Spotless、Enforcer、核心业务 JaCoCo 门禁通过；
 - 前端：ESLint、2 个 Vitest、TypeScript 类型检查和 Vite 生产构建通过；
-- 评测集：结构校验 200/200 通过；完整云评测、Testcontainers、Compose Playwright 和 k6 需要 Docker 引擎与模型配置可用后执行；
+- 前端与运行环境：ESLint、Vitest、类型检查、生产构建和 2 条 Compose Playwright E2E 通过；server/web 健康，Grafana 与 Jaeger 可访问且 Jaeger 已接收 `serviceflow` trace；
+- 性能：k6 Demo Smoke（5 VU/30 秒）完成 300 请求且失败率 0%，商品查询 P50/P95/P99 为 7/9/10 ms；完整 100 VU、订单、SSE 与 Virtual Threads 对照仍待执行；
+- 评测集：结构校验 200/200 通过；完整云评测仍需确认模型预算后执行；
 - 本报告不伪造尚未执行的 Recall/MRR/nDCG、幻觉率或 P95 数字。
 
 ---
@@ -843,7 +845,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 - 多实例下的文档 version_no 强并发生成；
 - 自动清理失败版本已经写入的部分 Chunk；检索过滤能保证其不可见；
 - 审计数据保留与删除策略；
-- 完整 200 条云评测、Milvus 重量级集成和 k6 基准结果（脚本与 CI 已提供，需在本机执行）。
+- 完整 200 条云评测、Milvus Hybrid Search 重量级集成和 k6 基准结果（脚本与 CI 已提供，需在本机执行）。
 
 ---
 

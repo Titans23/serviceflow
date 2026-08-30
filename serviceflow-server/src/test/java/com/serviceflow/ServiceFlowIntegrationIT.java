@@ -1,9 +1,17 @@
 package com.serviceflow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpStatus.OK;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -13,7 +21,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.rabbitmq.listener.simple.auto-startup=false")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ServiceFlowIntegrationIT {
     @Container
     static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
@@ -26,6 +37,13 @@ class ServiceFlowIntegrationIT {
 
     @Container
     static final RabbitMQContainer RABBIT = new RabbitMQContainer("rabbitmq:4-management");
+
+    private final TestRestTemplate http;
+
+    @Autowired
+    ServiceFlowIntegrationIT(TestRestTemplate http) {
+        this.http = http;
+    }
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -53,4 +71,26 @@ class ServiceFlowIntegrationIT {
         assertThat(REDIS.isRunning()).isTrue();
         assertThat(RABBIT.isRunning()).isTrue();
     }
+
+    @Test
+    void readinessIsPublicAndUp() {
+        ResponseEntity<String> response = http.getForEntity("/actuator/health/readiness", String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody()).contains("\"status\":\"UP\"");
+    }
+
+    @Test
+    void guestTokenCanReadProductCatalog() {
+        TokenResponse token = http.postForObject("/auth/guest", null, TokenResponse.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token.accessToken());
+
+        ResponseEntity<String> response = http.exchange("/products", GET, new HttpEntity<>(headers), String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody()).contains("HUAWEI Pura 80");
+    }
+
+    private record TokenResponse(String accessToken) {}
 }
