@@ -1,4 +1,5 @@
 serviceflow-server/target/
+serviceflow-server/D*mvn_resp/
 serviceflow-web/node_modules/
 serviceflow-web/dist/
 serviceflow-web/*.tsbuildinfo

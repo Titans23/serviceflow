@@ -8,6 +8,8 @@ const productLatency = new Trend('serviceflow_product_latency', true)
 const orderLatency = new Trend('serviceflow_order_latency', true)
 const sseLatency = new Trend('serviceflow_sse_latency', true)
 const businessErrors = new Counter('serviceflow_business_errors')
+const customerUsername = __ENV.CUSTOMER_USERNAME || 'customer'
+const customerPassword = __ENV.CUSTOMER_PASSWORD || 'Customer123!'
 
 export const options = {
   summaryTrendStats: ['avg', 'min', 'med', 'p(90)', 'p(95)', 'p(99)', 'max'],
@@ -33,6 +35,25 @@ function guestToken() {
   return response.json('accessToken')
 }
 
+function customerToken() {
+  const response = http.post(
+    `${baseUrl}/auth/login`,
+    JSON.stringify({ username: customerUsername, password: customerPassword }),
+    { headers: { 'Content-Type': 'application/json' } },
+  )
+  check(response, { 'customer token issued': (r) => r.status === 200 && Boolean(r.json('accessToken')) }) || businessErrors.add(1)
+  return response.json('accessToken')
+}
+
+export function setup() {
+  return { guestToken: guestToken(), customerToken: customerToken() }
+}
+
+function requestId() {
+  const value = `${__VU.toString(16).padStart(8, '0')}${__ITER.toString(16).padStart(4, '0')}${Date.now().toString(16).padStart(12, '0')}`.slice(-24)
+  return `${value.slice(0, 8)}-${value.slice(8, 12)}-4${value.slice(13, 16)}-8${value.slice(17, 20)}-${value.slice(12).padEnd(12, '0').slice(0, 12)}`
+}
+
 function productQuery(token) {
   const started = Date.now()
   const response = http.get(`${baseUrl}/products?page=0&size=20`, { headers: { Authorization: `Bearer ${token}` } })
@@ -41,12 +62,11 @@ function productQuery(token) {
 }
 
 function orderQuery(token) {
-  const orderNo = __ENV.ORDER_NO
-  if (!orderNo) return
+  const orderNo = __ENV.ORDER_NO || 'SF202608280002'
   const started = Date.now()
   const response = http.get(`${baseUrl}/orders/${orderNo}`, { headers: { Authorization: `Bearer ${token}` } })
   orderLatency.add(Date.now() - started)
-  check(response, { 'order query returns a valid response': (r) => r.status === 200 || r.status === 404 }) || businessErrors.add(1)
+  check(response, { 'owned order query succeeds': (r) => r.status === 200 && r.json('orderNo') === orderNo }) || businessErrors.add(1)
 }
 
 function chatQuery(token) {
@@ -58,18 +78,16 @@ function chatQuery(token) {
   const started = Date.now()
   const response = http.post(
     `${baseUrl}/chat/sessions/${session.json('publicId')}/messages/stream`,
-    JSON.stringify({ message: '请介绍华为 Pura 80 的保修政策', clientRequestId: `${__VU}-${__ITER}-${Date.now()}` }),
+    JSON.stringify({ message: '请介绍华为 Pura 80 的保修政策', clientRequestId: requestId() }),
     { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, timeout: '95s' },
   )
   sseLatency.add(Date.now() - started)
-  check(response, { 'SSE chat completes': (r) => r.status === 200 && r.body.includes('event: done') }) || businessErrors.add(1)
+  check(response, { 'SSE chat completes': (r) => r.status === 200 && r.body.includes('event:done') }) || businessErrors.add(1)
 }
 
-export default function () {
-  const token = guestToken()
-  if (!token) return
-  if (profile === 'orders') orderQuery(token)
-  else if (profile === 'chat') chatQuery(token)
-  else productQuery(token)
+export default function (tokens) {
+  if (profile === 'orders') orderQuery(tokens.customerToken)
+  else if (profile === 'chat') chatQuery(tokens.guestToken)
+  else productQuery(tokens.guestToken)
   sleep(1)
 }

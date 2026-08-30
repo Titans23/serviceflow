@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -34,17 +33,11 @@ public class CloudAiGateway implements AiGateway {
     private static final String REWRITE_SYSTEM_PROMPT =
             "将用户问题改写成更适合知识库检索的一句话。保留型号、订单或政策关键词，" + "不回答问题，不添加未知事实，只输出改写结果。";
 
-    private final ChatModel chatModel;
     private final StreamingChatModel streamingChatModel;
     private final AiCallExecutor calls;
     private final ObjectMapper objectMapper;
 
-    public CloudAiGateway(
-            ChatModel chatModel,
-            StreamingChatModel streamingChatModel,
-            AiCallExecutor calls,
-            ObjectMapper objectMapper) {
-        this.chatModel = Objects.requireNonNull(chatModel, "chatModel must not be null");
+    public CloudAiGateway(StreamingChatModel streamingChatModel, AiCallExecutor calls, ObjectMapper objectMapper) {
         this.streamingChatModel = Objects.requireNonNull(streamingChatModel, "streamingChatModel must not be null");
         this.calls = Objects.requireNonNull(calls, "calls must not be null");
         this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
@@ -114,7 +107,11 @@ public class CloudAiGateway implements AiGateway {
     }
 
     private String complete(String systemPrompt, String userPrompt) {
-        return calls.execute("chat", CALL_TIMEOUT, () -> content(chatModel.call(prompt(systemPrompt, userPrompt))));
+        return calls.execute("chat", CALL_TIMEOUT, () -> streamingChatModel.stream(prompt(systemPrompt, userPrompt))
+                .map(this::content)
+                .collectList()
+                .map(parts -> String.join("", parts))
+                .block(CALL_TIMEOUT));
     }
 
     private Prompt prompt(String systemPrompt, String userPrompt) {

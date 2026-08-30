@@ -13,11 +13,25 @@ param(
         $env:SERVICEFLOW_EVAL_ADMIN_PASSWORD
     } else {
         'Admin123!'
-    })
+    }),
+    [ValidateRange(0, 200)]
+    [int]$Limit = 0,
+    [switch]$Smoke
 )
 
 $ErrorActionPreference = 'Stop'
 $cases = Get-Content -LiteralPath $Dataset -Raw -Encoding utf8 | ConvertFrom-Json
+if ($Smoke) {
+    $smokeCases = [System.Collections.Generic.List[object]]::new()
+    @('PRODUCT_QUERY', 'KNOWLEDGE_QUERY', 'ORDER_QUERY', 'COMPLAINT') | ForEach-Object {
+        $intent = $_
+        @($cases | Where-Object expectedIntent -eq $intent | Select-Object -First 5) |
+            ForEach-Object { $smokeCases.Add($_) }
+    }
+    $cases = @($smokeCases)
+} elseif ($Limit -gt 0) {
+    $cases = @($cases | Select-Object -First $Limit)
+}
 $results = [System.Collections.Generic.List[object]]::new()
 
 function New-LoginHeaders([string]$Username, [string]$Password) {

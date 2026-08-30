@@ -1,0 +1,17 @@
+﻿{
+    "generatedAt":  "2026-08-30T15:47:54.3125747+08:00",
+    "collection":  "serviceflow_chunks",
+    "vectorDimensions":  1024,
+    "seedChunkId":  "3d0d1b7c-8351-43be-8afe-eea815827da1",
+    "activeVersionId":  8,
+    "hybridResultCount":  1,
+    "topChunkId":  "3d0d1b7c-8351-43be-8afe-eea815827da1",
+    "inactiveVersionResultCount":  0,
+    "checks":  {
+                   "collectionExists":  true,
+                   "denseSearch":  true,
+                   "sparseBm25Search":  true,
+                   "rrfFusion":  true,
+                   "activeVersionFilter":  true
+               }
+}

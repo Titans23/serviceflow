@@ -156,6 +156,7 @@ public final class CustomerWorkflow {
             }
             Intent intent = Intent.valueOf(finalState.intent());
             state.intent(intent);
+            state.productIds().addAll(finalState.productIds());
             events.accept(
                     "meta",
                     Map.of(
@@ -219,7 +220,13 @@ public final class CustomerWorkflow {
         if (pageProductId <= 0 || classified == Intent.ORDER_QUERY || classified == Intent.COMPLAINT) {
             return classified;
         }
-        return query != null && PAGE_PRODUCT_REFERENCE.matcher(query).find() ? Intent.PRODUCT_QUERY : classified;
+        if (query == null || query.isBlank()) {
+            return classified;
+        }
+        return PAGE_PRODUCT_REFERENCE.matcher(query).find()
+                        || !modelMentions(query).isEmpty()
+                ? Intent.PRODUCT_QUERY
+                : classified;
     }
 
     static List<String> modelMentions(String query) {
@@ -252,6 +259,7 @@ public final class CustomerWorkflow {
                 "citations", result.citations(),
                 "degraded", result.degraded(),
                 "groundingContext", result.groundingContext() == null ? "" : result.groundingContext(),
+                "productIds", result.productIds(),
                 "eventNames", events.stream().map(Event::name).toList(),
                 "eventPayloads", events.stream().map(Event::payload).toList());
     }
@@ -281,14 +289,16 @@ public final class CustomerWorkflow {
         state.productIds().addAll(ids);
         if (compare) {
             if (ids.size() < 2) {
-                return new Result("请明确选择至少两个同类别商品后再比较。", List.of());
+                return new Result("请明确选择至少两个同类别商品后再比较。", List.of(), ids.stream().toList());
             }
             if (ids.size() > 3) {
-                return new Result("一次最多比较 3 个商品，请缩小比较范围。", List.of());
+                return new Result(
+                        "一次最多比较 3 个商品，请缩小比较范围。", List.of(), ids.stream().toList());
             }
             ProductModels.Comparison comparison = products.compare(ids.stream().toList());
             events.accept("product_comparison", comparison);
-            return new Result("已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of());
+            return new Result(
+                    "已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of(), ids.stream().toList());
         }
         ProductModels.ProductView product = products.get(ids.getFirst());
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
@@ -323,7 +333,8 @@ public final class CustomerWorkflow {
                         .distinct()
                         .toList(),
                 docs.degraded(),
-                "结构化商品事实：\n" + facts + "\n\n文档证据：\n" + evidence);
+                "结构化商品事实：\n" + facts + "\n\n文档证据：\n" + evidence,
+                ids.stream().toList());
     }
 
     private Result knowledge(ServiceFlowState state, BiConsumer<String, Object> events) {
@@ -429,13 +440,22 @@ public final class CustomerWorkflow {
         }
     }
 
-    public record Result(String answer, List<String> citations, boolean degraded, String groundingContext) {
+    public record Result(
+            String answer, List<String> citations, boolean degraded, String groundingContext, List<Long> productIds) {
         public Result(String answer, List<String> citations) {
-            this(answer, citations, false, null);
+            this(answer, citations, false, null, List.of());
         }
 
         public Result(String answer, List<String> citations, boolean degraded) {
-            this(answer, citations, degraded, null);
+            this(answer, citations, degraded, null, List.of());
+        }
+
+        public Result(String answer, List<String> citations, List<Long> productIds) {
+            this(answer, citations, false, null, productIds);
+        }
+
+        public Result(String answer, List<String> citations, boolean degraded, String groundingContext) {
+            this(answer, citations, degraded, groundingContext, List.of());
         }
     }
 
@@ -458,6 +478,7 @@ public final class CustomerWorkflow {
                 Map.entry("intent", Channels.base(() -> Intent.CHAT.name())),
                 Map.entry("answer", Channels.base(() -> "")),
                 Map.entry("citations", Channels.base(ArrayList::new)),
+                Map.entry("productIds", Channels.base(ArrayList::new)),
                 Map.entry("degraded", Channels.base(() -> false)),
                 Map.entry("groundingContext", Channels.base(() -> "")),
                 Map.entry("eventNames", Channels.base(ArrayList::new)),
@@ -497,6 +518,16 @@ public final class CustomerWorkflow {
         @SuppressWarnings("unchecked")
         List<String> citations() {
             return value("citations").map(v -> (List<String>) v).orElse(List.of());
+        }
+
+        List<Long> productIds() {
+            return value("productIds")
+                    .map(value -> ((List<?>) value)
+                            .stream()
+                                    .map(Number.class::cast)
+                                    .map(Number::longValue)
+                                    .toList())
+                    .orElse(List.of());
         }
 
         @SuppressWarnings("unchecked")

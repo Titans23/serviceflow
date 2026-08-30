@@ -1,0 +1,202 @@
+{
+    "root_group": {
+        "groups": {
+            "setup": {
+                "checks": {
+                    "guest token issued": {
+                        "name": "guest token issued",
+                        "path": "::setup::guest token issued",
+                        "id": "86093a14edfd588a4b4d5690c234cad9",
+                        "passes": 1,
+                        "fails": 0
+                    },
+                    "customer token issued": {
+                        "path": "::setup::customer token issued",
+                        "id": "680ce09fbc7839efd4a0d784ad3120cf",
+                        "passes": 1,
+                        "fails": 0,
+                        "name": "customer token issued"
+                    }
+                },
+                "name": "setup",
+                "path": "::setup",
+                "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+                "groups": {}
+            }
+        },
+        "checks": {
+            "owned order query succeeds": {
+                "name": "owned order query succeeds",
+                "path": "::owned order query succeeds",
+                "id": "cfeb77511a3b362c5280940f40ebb69d",
+                "passes": 8950,
+                "fails": 0
+            }
+        },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "metrics": {
+        "data_received": {
+            "count": 7743995,
+            "rate": 42856.665802248855
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 8952,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "http_req_blocked": {
+            "max": 31.40218,
+            "avg": 0.11615185578641768,
+            "min": 0.0017,
+            "med": 0.0043,
+            "p(90)": 0.0066,
+            "p(95)": 0.008101,
+            "p(99)": 1.8083129599999834
+        },
+        "http_req_tls_handshaking": {
+            "max": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0
+        },
+        "http_req_receiving": {
+            "p(99)": 1.5912789999999992,
+            "max": 14.400878,
+            "avg": 0.21952224597855144,
+            "min": 0.017601,
+            "med": 0.088503,
+            "p(90)": 0.48977030000000027,
+            "p(95)": 0.7088207999999998
+        },
+        "http_req_duration{expected_response:true}": {
+            "min": 2.90592,
+            "med": 5.628533,
+            "p(90)": 7.835535000000004,
+            "p(95)": 9.343816899999997,
+            "p(99)": 21.546160979999993,
+            "max": 270.51115,
+            "avg": 6.679310234249352
+        },
+        "http_req_waiting": {
+            "p(99)": 21.37980793999997,
+            "max": 270.29834,
+            "avg": 6.442563849419119,
+            "min": 2.812517,
+            "med": 5.427576999999999,
+            "p(90)": 7.5266498,
+            "p(95)": 9.011347799999992
+        },
+        "serviceflow_product_latency": {
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "thresholds": {
+                "p(95)<300": false
+            }
+        },
+        "serviceflow_sse_latency": {
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "data_sent": {
+            "count": 2918046,
+            "rate": 16148.993151156355
+        },
+        "iterations": {
+            "rate": 49.53091510649571,
+            "count": 8950
+        },
+        "serviceflow_order_latency": {
+            "max": 139,
+            "avg": 6.856536312849162,
+            "min": 3,
+            "med": 6,
+            "p(90)": 8,
+            "p(95)": 10,
+            "p(99)": 21.51000000000022,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_duration": {
+            "p(99)": 21.546160979999993,
+            "max": 270.51115,
+            "avg": 6.679310234249352,
+            "min": 2.90592,
+            "med": 5.628533,
+            "p(90)": 7.835535000000004,
+            "p(95)": 9.343816899999997
+        },
+        "vus": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "checks": {
+            "passes": 8952,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_sending": {
+            "max": 2.995241,
+            "avg": 0.017224138851653307,
+            "min": 0.004401,
+            "med": 0.0115,
+            "p(90)": 0.024101,
+            "p(95)": 0.03484699999999989,
+            "p(99)": 0.120905
+        },
+        "http_reqs": {
+            "count": 8952,
+            "rate": 49.54198346741337
+        },
+        "http_req_connecting": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 1.67391651,
+            "max": 29.49589,
+            "avg": 0.10978484763181409,
+            "min": 0,
+            "med": 0
+        },
+        "iteration_duration": {
+            "max": 1141.143484,
+            "avg": 1007.5147371997807,
+            "min": 1003.262518,
+            "med": 1006.4233260000001,
+            "p(90)": 1008.6887371,
+            "p(95)": 1010.224863,
+            "p(99)": 1022.40866969
+        }
+    },
+    "setup_data": {
+        "guestToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZXJ2aWNlZmxvdyIsInN1YiI6Imd1ZXN0Ojc2OGMyMDgxLWM5YTQtNDhkNS1hNzAxLTBmZDJjMmExMDFhYyIsInJvbGUiOiJHVUVTVCIsImV4cCI6MTc4ODA3NzEwNCwiaWF0IjoxNzg4MDc1MzA0fQ.p6t1BPAZNgijw2FL_PcIY9jAwYCRzYGgrLG4H2KoN-o",
+        "customerToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZXJ2aWNlZmxvdyIsImN1c3RvbWVySWQiOjEsInN1YiI6IjIiLCJyb2xlIjoiQ1VTVE9NRVIiLCJleHAiOjE3ODgwODI1MDQsImlhdCI6MTc4ODA3NTMwNH0.ZJlZMePB4rJuAwpwLL3RlDSQP9cS2NOd6kszjJSHGWM"
+    }
+}

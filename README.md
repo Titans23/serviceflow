@@ -307,8 +307,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\run-evaluation.ps1
 - 前端 ESLint、2 个 Vitest 测试、TypeScript 类型检查和 Vite 生产构建通过。
 - Playwright：2 条浏览器 E2E 通过；基础 Compose 的 server/web 均健康，readiness=`UP`。
 - Observability：Grafana `/api/health` 返回 `ok`，Jaeger UI 返回 200 且已接收 `serviceflow` trace。
-- k6 Demo Smoke：5 VU/30 秒，300 请求、0% 失败；商品查询 P50/P95/P99 为 7/9/10 ms。完整 100 VU、订单、SSE 与 Virtual Threads 对照基准尚未执行。
-- 评测集结构校验：200/200 条通过；完整 200 条云评测尚未执行，运行前必须确认模型调用预算。
+- k6 本地基准（Demo 模式，不调用云模型）：商品 100 VU/5 分钟 29,902 请求、0% 失败、P95 8 ms；订单 50 VU/3 分钟 8,952 请求、0% 失败、P95 10 ms；SSE 30 并发/2 分钟 0% 失败、P95 30 ms。SSE 已完成虚拟线程开/关对照（30/27 ms），原始 JSON 位于 `performance/reports/`。
+- 评测集结构校验：200/200 条通过；20 条 Smoke 通过率 100%。经授权执行一次真实百炼 200 条云评测：原始规则通过率 83.5%（其中 20 条对比用例的标签检查过严），离线修正标签后的可审计通过率 98.5%，Recall@5 97.69%、MRR 0.9769、nDCG@5 0.9769、意图/商品/事件/转人工准确率均 100%、事实幻觉率 0%。原始与审计报告分别见 `evaluation/results/cloud-evaluation-200-raw.*` 和 `evaluation/results/cloud-evaluation-200-audited.*`；未重复调用云模型。
 
 在线结果依赖云模型和网络，后续运行可能出现波动；报告只陈述实际执行结果，不把单次通过率当作长期 SLA。
 
@@ -316,7 +316,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\run-evaluation.ps1
 
 项目刻意不实现个性化推荐、营销排序、优惠计算、实时库存、下单支付、GraphRAG、多 Agent、NL2SQL 和模型微调。
 
-简历版项目已覆盖超时、并发舱壁、熔断、Tracing、CI 配置和测试脚手架；真正上线前仍需补齐 HTTPS/Secret Manager、多实例容量治理、合规评审、真实 200 条云评测、Playwright Compose 验收和 k6 基准结果。仓库不会伪造尚未执行的准确率或性能数字。
+简历版项目已覆盖超时、并发舱壁、熔断、Tracing、CI 配置、Playwright Compose 验收、k6 基准和真实云评测证据；真正公网生产仍需补齐 HTTPS/Secret Manager、多实例容量治理、合规评审、告警值班和容量压测。本地报告只陈述已执行结果，不把单次通过率当作长期 SLA。
 
 ## 11. 简历表述参考
 

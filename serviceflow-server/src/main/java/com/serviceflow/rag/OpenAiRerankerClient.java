@@ -1,6 +1,7 @@
 package com.serviceflow.rag;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.config.ServiceFlowProperties;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -23,14 +25,21 @@ public class OpenAiRerankerClient implements RerankerClient {
 
     private final ServiceFlowProperties.Ai.Reranker properties;
     private final RestClient client;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public OpenAiRerankerClient(RestClient.Builder builder, ServiceFlowProperties properties) {
-        this(builder, properties, true);
+    public OpenAiRerankerClient(
+            RestClient.Builder builder, ServiceFlowProperties properties, ObjectMapper objectMapper) {
+        this(builder, properties, objectMapper, true);
     }
 
-    OpenAiRerankerClient(RestClient.Builder builder, ServiceFlowProperties properties, boolean configureTimeout) {
+    OpenAiRerankerClient(
+            RestClient.Builder builder,
+            ServiceFlowProperties properties,
+            ObjectMapper objectMapper,
+            boolean configureTimeout) {
         this.properties = Objects.requireNonNull(properties.ai().reranker(), "Reranker configuration is required");
+        this.objectMapper = Objects.requireNonNull(objectMapper);
         if (configureTimeout) {
             SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
             requestFactory.setConnectTimeout(3_000);
@@ -50,15 +59,28 @@ public class OpenAiRerankerClient implements RerankerClient {
         }
         int limit = Math.max(1, Math.min(topN, documents.size()));
         List<String> texts = documents.stream().map(Document::text).toList();
-        JsonNode response = client.post()
+        String requestBody;
+        try {
+            requestBody = objectMapper.writeValueAsString(Map.of(
+                    "model", properties.model(),
+                    "input", Map.of("query", query, "documents", texts),
+                    "parameters", Map.of("top_n", limit, "return_documents", false)));
+        } catch (Exception exception) {
+            throw new IllegalStateException("Unable to serialize reranker request", exception);
+        }
+        String responseBody = client.post()
                 .uri(properties.path())
                 .headers(this::addAuthorization)
-                .body(Map.of(
-                        "model", properties.model(),
-                        "input", Map.of("query", query, "documents", texts),
-                        "parameters", Map.of("top_n", limit, "return_documents", false)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestBody)
                 .retrieve()
-                .body(JsonNode.class);
+                .body(String.class);
+        JsonNode response;
+        try {
+            response = objectMapper.readTree(responseBody);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Reranker endpoint returned invalid JSON", exception);
+        }
         return parseRanking(response, documents, limit);
     }
 

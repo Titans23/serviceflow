@@ -254,13 +254,13 @@ Flyway 管理数据库演进，使任何新环境都能按 V1、V2、V3、V4 顺
 - `knowledge_document`：逻辑文档和 `active_version_id`；
 - `knowledge_document_version`：文件版本、存储路径、状态和错误。
 
-### 6.3 后续迁移
+### 6.3 迁移落地记录
 
-V2 将最初的 ServiceFlow 示例商品替换成三款 HUAWEI Pura 80 系列数据，并同步修正演示订单金额。规格 JSON 保存来源 URL、核验日期和价格快照说明。
+V2 已将最初的 ServiceFlow 示例商品替换成三款 HUAWEI Pura 80 系列数据，并同步修正演示订单金额。规格 JSON 保存来源 URL、核验日期和价格快照说明。
 
-V3 增加 `ai_answer_audit`，并为工单增加处理人、处理备注、更新时间和状态时间索引。
+V3 已增加 `ai_answer_audit`，并为工单增加处理人、处理备注、更新时间和状态时间索引。
 
-V4 增加 `chat_request` 客户聊天幂等状态表和 `knowledge_ingest_outbox` 事务 Outbox。前者以 `(session_id, client_request_id)` 唯一键作为正式用户请求真相源；后者以 `document_version_id` 唯一键保证数据库提交与 RabbitMQ 发布之间可恢复。
+V4 已增加 `chat_request` 客户聊天幂等状态表和 `knowledge_ingest_outbox` 事务 Outbox。前者以 `(session_id, client_request_id)` 唯一键作为正式用户请求真相源；后者以 `document_version_id` 唯一键保证数据库提交与 RabbitMQ 发布之间可恢复。当前本地数据库通过 V5 补充可重复的订单夹具。
 
 ### 6.4 MyBatis 映射方式
 
@@ -401,11 +401,11 @@ chat:memory:{subject}:{sessionId}
 
 处理顺序：
 
-1. 先查已完成响应；游客查 Redis，客户查 MySQL assistant message；
+1. 先查已完成响应；游客查 Redis，客户查 MySQL `chat_request` 与 assistant message；
 2. 已完成则重放 `meta + token + done`，`replayed=true`；
-3. 未完成则用 Redis `SET NX` 获取 2 分钟请求锁；
-4. 锁已存在返回 `REQUEST_IN_PROGRESS`；
-5. finally 删除锁。
+3. 未完成则以 `(session_id, client_request_id)` 原子插入客户 `PROCESSING` 记录；
+4. 记录已存在且未超时返回 `REQUEST_IN_PROGRESS`，超过两分钟的遗留记录可被同一请求重新获取；
+5. 助手消息与 `COMPLETED` 更新在同一事务中提交，失败记录允许使用相同 ID 重试；游客仍使用 Redis 30 分钟幂等记录。
 
 游客的完成响应保存在 `chat:completed:{subject}:{session}:{request}` 30 分钟；正式回答依靠数据库唯一键 `(session_id, client_request_id)`。
 
@@ -811,9 +811,9 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 - 后端：43 个单元/架构测试与 3 个 Testcontainers 集成测试通过；`mvn verify` 的 Spotless、Enforcer、核心业务 JaCoCo 门禁通过；
 - 前端：ESLint、2 个 Vitest、TypeScript 类型检查和 Vite 生产构建通过；
 - 前端与运行环境：ESLint、Vitest、类型检查、生产构建和 2 条 Compose Playwright E2E 通过；server/web 健康，Grafana 与 Jaeger 可访问且 Jaeger 已接收 `serviceflow` trace；
-- 性能：k6 Demo Smoke（5 VU/30 秒）完成 300 请求且失败率 0%，商品查询 P50/P95/P99 为 7/9/10 ms；完整 100 VU、订单、SSE 与 Virtual Threads 对照仍待执行；
-- 评测集：结构校验 200/200 通过；完整云评测仍需确认模型预算后执行；
-- 本报告不伪造尚未执行的 Recall/MRR/nDCG、幻觉率或 P95 数字。
+- 性能：k6 Demo 模式商品 100 VU/5 分钟完成 29,902 请求、P95 8 ms；订单 50 VU/3 分钟完成 8,952 请求、P95 10 ms；SSE 30 并发/2 分钟失败率 0%、P95 30 ms，并完成虚拟线程开/关对照（30/27 ms）；
+- 评测集：结构校验 200/200、Smoke 20/20 通过；经授权执行一次真实百炼 200 条云评测，原始规则通过率 83.5%，离线修正标签后的可审计通过率 98.5%，Recall@5 97.69%、MRR 0.9769、nDCG@5 0.9769，意图/商品/事件/转人工准确率 100%，事实幻觉率 0%；
+- Milvus Hybrid 本地验收通过：Collection 维度 1024、活动版本过滤、非活动版本不可见、Dense/BM25/RRF 查询均通过。云评测、k6 和 Milvus 均保留脱敏结果文件，不重复调用云模型。
 
 ---
 
@@ -845,7 +845,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 - 多实例下的文档 version_no 强并发生成；
 - 自动清理失败版本已经写入的部分 Chunk；检索过滤能保证其不可见；
 - 审计数据保留与删除策略；
-- 完整 200 条云评测、Milvus Hybrid Search 重量级集成和 k6 基准结果（脚本与 CI 已提供，需在本机执行）。
+- 公网生产仍需 HTTPS/WAF、Secret Manager、容量治理和合规评审；本仓库已完成本地 Compose E2E、Milvus Hybrid 验收、k6 基准和一次真实云评测，结果以 `evaluation/results/` 与 `performance/reports/` 为准。
 
 ---
 

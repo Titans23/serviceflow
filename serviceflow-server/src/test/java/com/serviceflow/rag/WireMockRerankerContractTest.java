@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.serviceflow.config.ServiceFlowProperties;
@@ -49,7 +50,7 @@ class WireMockRerankerContractTest {
                 null,
                 null);
         var builder = RestClient.builder().requestFactory(new SimpleClientHttpRequestFactory());
-        var client = new OpenAiRerankerClient(builder, properties, false);
+        var client = new OpenAiRerankerClient(builder, properties, new ObjectMapper(), false);
 
         assertThat(client.rank("续航", List.of(new RerankerClient.Document("chunk-1", "电池续航")), 1))
                 .containsExactly("chunk-1");

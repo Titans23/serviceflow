@@ -1,0 +1,209 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "setup": {
+                "checks": {
+                    "guest token issued": {
+                        "name": "guest token issued",
+                        "path": "::setup::guest token issued",
+                        "id": "86093a14edfd588a4b4d5690c234cad9",
+                        "passes": 1,
+                        "fails": 0
+                    },
+                    "customer token issued": {
+                        "name": "customer token issued",
+                        "path": "::setup::customer token issued",
+                        "id": "680ce09fbc7839efd4a0d784ad3120cf",
+                        "passes": 1,
+                        "fails": 0
+                    }
+                },
+                "name": "setup",
+                "path": "::setup",
+                "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+                "groups": {}
+            }
+        },
+        "checks": {
+            "chat session created": {
+                "name": "chat session created",
+                "path": "::chat session created",
+                "id": "7910633bbba795ed56f1d8e543f603d2",
+                "passes": 3505,
+                "fails": 0
+            },
+            "SSE chat completes": {
+                "name": "SSE chat completes",
+                "path": "::SSE chat completes",
+                "id": "1713d63e24c46ab2792c4b324c9577e2",
+                "passes": 3505,
+                "fails": 0
+            }
+        },
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "serviceflow_product_latency": {
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0,
+            "min": 0,
+            "thresholds": {
+                "p(95)<300": false
+            }
+        },
+        "http_reqs": {
+            "count": 7012,
+            "rate": 57.75131012375141
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 12.6387715,
+            "p(90)": 19.80795320000001,
+            "p(95)": 23.78456,
+            "p(99)": 125.6007819000001,
+            "max": 973.754469,
+            "avg": 15.587805011694217,
+            "min": 2.008175
+        },
+        "data_received": {
+            "count": 5147751,
+            "rate": 42397.22824313341
+        },
+        "http_req_receiving": {
+            "avg": 1.0755089224187115,
+            "min": 0.040402,
+            "med": 1.0678435,
+            "p(90)": 2.2108605000000003,
+            "p(95)": 2.91243845,
+            "p(99)": 6.310200890000009,
+            "max": 34.094494
+        },
+        "iterations": {
+            "count": 3505,
+            "rate": 28.867418993689203
+        },
+        "http_req_sending": {
+            "med": 0.032102,
+            "p(90)": 0.049502,
+            "p(95)": 0.058802,
+            "p(99)": 0.09834900000000017,
+            "max": 0.773522,
+            "avg": 0.034675929834569394,
+            "min": 0.0102
+        },
+        "http_req_waiting": {
+            "min": 1.907877,
+            "med": 11.3612675,
+            "p(90)": 17.5538525,
+            "p(95)": 21.130465749999995,
+            "p(99)": 120.59335067000004,
+            "max": 966.693264,
+            "avg": 14.477620159440924
+        },
+        "serviceflow_order_latency": {
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_connecting": {
+            "avg": 0.04281669637763832,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 1.3419757900000033,
+            "max": 11.098624
+        },
+        "checks": {
+            "passes": 7012,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_blocked": {
+            "avg": 0.049814318739303844,
+            "min": 0.0022,
+            "med": 0.0053,
+            "p(90)": 0.0082,
+            "p(95)": 0.010201,
+            "p(99)": 1.4379224600000056,
+            "max": 11.145325
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 7012,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0
+        },
+        "vus_max": {
+            "value": 30,
+            "min": 30,
+            "max": 30
+        },
+        "http_req_duration": {
+            "med": 12.6387715,
+            "p(90)": 19.80795320000001,
+            "p(95)": 23.78456,
+            "p(99)": 125.6007819000001,
+            "max": 973.754469,
+            "avg": 15.587805011694217,
+            "min": 2.008175
+        },
+        "vus": {
+            "value": 22,
+            "min": 22,
+            "max": 30
+        },
+        "iteration_duration": {
+            "avg": 1032.2117180844496,
+            "min": 1014.600378,
+            "med": 1020.583728,
+            "p(90)": 1029.3244610000002,
+            "p(95)": 1036.7014234,
+            "p(99)": 1301.09838196,
+            "max": 2101.685431
+        },
+        "serviceflow_sse_latency": {
+            "avg": 26.435663338088446,
+            "min": 11,
+            "med": 16,
+            "p(90)": 23,
+            "p(95)": 30,
+            "p(99)": 290.96000000000004,
+            "max": 974,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "data_sent": {
+            "count": 3396691,
+            "rate": 27975.378684477368
+        }
+    },
+    "setup_data": {
+        "customerToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZXJ2aWNlZmxvdyIsImN1c3RvbWVySWQiOjEsInN1YiI6IjIiLCJyb2xlIjoiQ1VTVE9NRVIiLCJleHAiOjE3ODgwODI5MTMsImlhdCI6MTc4ODA3NTcxM30.P7_01gZO78BvJvZt4_Q1Z4LcLKRtcQlKfn-IeCu4R-Q",
+        "guestToken": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZXJ2aWNlZmxvdyIsInN1YiI6Imd1ZXN0OjVjYTk3M2ViLWQ2YTAtNGMzZS04ZDJhLTYyZjRjYWNhMjQzYiIsInJvbGUiOiJHVUVTVCIsImV4cCI6MTc4ODA3NzUxMiwiaWF0IjoxNzg4MDc1NzEyfQ.YUkH2YdVZ6idAGVSKdoW2E6m7stM-hmZgCxNLwsv708"
+    }
+}

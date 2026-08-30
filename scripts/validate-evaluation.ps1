@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$cases = @(Get-Content -LiteralPath $Dataset -Raw -Encoding utf8 | ConvertFrom-Json)
+$cases = Get-Content -LiteralPath $Dataset -Raw -Encoding utf8 | ConvertFrom-Json
 $required = @('id', 'question', 'pageContext', 'principalType', 'expectedIntent', 'expectedProducts', 'expectedCitations', 'expectedEvents', 'requiredFacts', 'forbiddenClaims')
 if ($cases.Count -ne 200) { throw "评测集必须包含 200 条，当前为 $($cases.Count) 条" }
 

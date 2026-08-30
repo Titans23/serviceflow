@@ -1,0 +1,9 @@
+title = "ServiceFlow secret scanning"
+
+# The example file intentionally contains empty placeholders only. Allowlisting
+# this path keeps historical placeholder values from failing CI while leaving
+# every real environment file and source file covered by Gitleaks.
+[allowlist]
+paths = [
+  '''(^|/)\.env\.example$'''
+]

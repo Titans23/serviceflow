@@ -14,29 +14,25 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.model.StreamingChatModel;
 import reactor.core.publisher.Flux;
 
 class CloudAiGatewayTest {
-    private ChatModel chatModel;
     private StreamingChatModel streamingChatModel;
     private CloudAiGateway gateway;
 
     @BeforeEach
     void setUp() {
-        chatModel = mock(ChatModel.class);
         streamingChatModel = mock(StreamingChatModel.class);
         gateway = new CloudAiGateway(
-                chatModel, streamingChatModel, new AiCallExecutor(new SimpleMeterRegistry()), new ObjectMapper());
+                streamingChatModel, new AiCallExecutor(new SimpleMeterRegistry()), new ObjectMapper());
     }
 
     @Test
     void classifiesUsingSpringAiResponse() {
-        when(chatModel.call(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
-                .thenReturn(response("PRODUCT_QUERY"));
+        streamReturns("PRODUCT_QUERY");
 
         assertThat(gateway.classify("这款手机怎么样")).isEqualTo(Intent.PRODUCT_QUERY);
     }
@@ -55,8 +51,9 @@ class CloudAiGatewayTest {
 
     @Test
     void rejectsResponseWithoutMessageContent() {
-        when(chatModel.call(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
-                .thenThrow(new IllegalStateException("no message content"));
+        when(streamingChatModel.stream(
+                        org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
+                .thenReturn(Flux.error(new IllegalStateException("no message content")));
 
         assertThatThrownBy(() -> gateway.classify("hello"))
                 .isInstanceOf(IllegalStateException.class)
@@ -65,8 +62,7 @@ class CloudAiGatewayTest {
 
     @Test
     void classifiesAfterACloudCall() {
-        when(chatModel.call(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
-                .thenReturn(response("CHAT"));
+        streamReturns("CHAT");
 
         assertThat(gateway.classify("你好")).isEqualTo(Intent.CHAT);
     }
@@ -75,8 +71,7 @@ class CloudAiGatewayTest {
     void evidenceEvaluationKeepsOnlyKnownDistinctChunkIds() throws Exception {
         String payload = new ObjectMapper()
                 .writeValueAsString(Map.of("sufficient", true, "rankedChunkIds", List.of("c2", "unknown", "c2", "c1")));
-        when(chatModel.call(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
-                .thenReturn(response(payload));
+        streamReturns(payload);
 
         AiGateway.EvidenceEvaluation result = gateway.evaluateEvidence(
                 "query",
@@ -90,5 +85,11 @@ class CloudAiGatewayTest {
 
     private ChatResponse response(String content) {
         return new ChatResponse(List.of(new Generation(new AssistantMessage(content))));
+    }
+
+    private void streamReturns(String content) {
+        when(streamingChatModel.stream(
+                        org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
+                .thenReturn(Flux.just(response(content)));
     }
 }

@@ -7,6 +7,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.config.ServiceFlowProperties;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class OpenAiRerankerClientTest {
     void setUp() {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
-        client = new OpenAiRerankerClient(builder, properties(), false);
+        client = new OpenAiRerankerClient(builder, properties(), new ObjectMapper(), false);
     }
 
     @Test
