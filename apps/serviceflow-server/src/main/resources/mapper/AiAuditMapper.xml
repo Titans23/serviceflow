@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.serviceflow.audit.AiAuditMapper">
+<mapper namespace="com.serviceflow.mapper.AiAuditMapper">
   <insert id="insert">
     INSERT IGNORE INTO ai_answer_audit(
       public_id,session_id,client_request_id,prompt_version,model_name,intent,
@@ -10,7 +10,7 @@
       CAST(#{productIds} AS JSON),CAST(#{citations} AS JSON),#{degraded},#{latencyMs},
       #{resultStatus},#{errorCode},#{question},#{answer})
   </insert>
-  <select id="findRecent" resultType="com.serviceflow.audit.AiAuditMapper$AuditView">
+  <select id="findRecent" resultType="com.serviceflow.model.AuditModels$AuditView">
     SELECT a.public_id,s.public_id session_public_id,c.name customer_name,a.client_request_id,
       a.prompt_version,a.model_name,a.intent,CAST(a.product_ids AS CHAR) product_ids_json,
       CAST(a.citations AS CHAR) citations_json,a.degraded,a.latency_ms,a.result_status,

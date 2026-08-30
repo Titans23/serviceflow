@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.serviceflow.chat.ChatMapper">
+<mapper namespace="com.serviceflow.mapper.ChatMapper">
   <insert id="insertSession">INSERT INTO chat_session(public_id,customer_id,title) VALUES(#{publicId},#{customerId},#{title})</insert>
-  <select id="findSession" resultType="com.serviceflow.chat.ChatModels$Session">
+  <select id="findSession" resultType="com.serviceflow.model.ChatModels$Session">
     SELECT public_id,title,created_at,updated_at FROM chat_session WHERE public_id=#{publicId} AND customer_id=#{customerId}
   </select>
-  <select id="listSessions" resultType="com.serviceflow.chat.ChatModels$Session">
+  <select id="listSessions" resultType="com.serviceflow.model.ChatModels$Session">
     SELECT public_id,title,created_at,updated_at FROM chat_session WHERE customer_id=#{customerId} ORDER BY updated_at DESC
   </select>
   <select id="sessionDatabaseId" resultType="long">SELECT id FROM chat_session WHERE public_id=#{publicId} AND customer_id=#{customerId}</select>
-  <select id="messages" resultType="com.serviceflow.chat.ChatModels$Message">
+  <select id="messages" resultType="com.serviceflow.model.ChatModels$Message">
     SELECT public_id,role,content,intent,CAST(metadata AS CHAR) metadata_json,created_at FROM chat_message WHERE session_id=#{sessionId} ORDER BY created_at
   </select>
-  <select id="completed" resultType="com.serviceflow.chat.ChatModels$Message">
+  <select id="completed" resultType="com.serviceflow.model.ChatModels$Message">
     SELECT public_id,role,content,intent,CAST(metadata AS CHAR) metadata_json,created_at FROM chat_message WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
   </select>
   <insert id="insertMessage">
@@ -23,7 +23,7 @@
     INSERT IGNORE INTO chat_request(session_id,client_request_id,status)
     VALUES(#{sessionId},#{clientRequestId},'PROCESSING')
   </insert>
-  <select id="request" resultType="com.serviceflow.chat.ChatMapper$RequestRow">
+  <select id="request" resultType="com.serviceflow.mapper.ChatMapper$RequestRow">
     SELECT status,user_message_id,assistant_message_id,updated_at
     FROM chat_request WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
   </select>

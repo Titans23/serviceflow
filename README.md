@@ -80,7 +80,7 @@ Nginx :5173
 Spring Boot :8080 ───────────────► Prometheus :9090
    │
    ├─ Security/JWT ── GUEST / CUSTOMER / ADMIN
-   ├─ ChatSessionService + ChatOrchestrator ─ 会话、幂等、工作流、SSE、审计
+   ├─ Service 接口 + service.impl 实现 ─ 会话、幂等、工作流、SSE、审计
    ├─ LangGraph4j ─── Intent Router
    │    ├─ Product ── MySQL Facts + Product Manual RAG
    │    ├─ Knowledge ─ Policy RAG + Rewrite
@@ -104,12 +104,15 @@ ServiceFlow/
 ├─ apps/
 │  ├─ serviceflow-server/       Spring Boot 后端应用
 │  │  ├─ src/main/java/com/serviceflow/
-│  │  │  ├─ agent/             LangGraph4j 工作流与状态
-│  │  │  ├─ auth|chat|audit/   身份、会话、SSE 与审计
-│  │  │  ├─ product|order/     商品与订单业务域
-│  │  │  ├─ knowledge|rag/     知识入库与混合检索
-│  │  │  ├─ ticket/            工单业务域
-│  │  │  └─ config/            横切配置与统一异常
+│  │  │  ├─ controller/        REST/SSE 协议入口
+│  │  │  ├─ service/           业务服务接口
+│  │  │  ├─ service/impl/      业务服务实现
+│  │  │  ├─ mapper/            MyBatis Mapper 接口
+│  │  │  ├─ model/             请求、响应与领域数据模型
+│  │  │  ├─ agent|ai|rag/      Agent 编排、模型适配与混合检索
+│  │  │  ├─ infrastructure/    Redis 会话与 RabbitMQ 入库设施
+│  │  │  ├─ security|web/      JWT 身份与 SSE 输出
+│  │  │  └─ config|exception/  横切配置与统一异常
 │  │  ├─ src/main/resources/   Flyway、MyBatis XML、业务配置
 │  │  └─ src/test/             单元、架构与集成测试
 │  └─ serviceflow-web/          Vue 3 前端应用与 Playwright
@@ -126,7 +129,7 @@ ServiceFlow/
 └─ README.md
 ```
 
-后端采用按业务域分包，而不是把所有 Controller、Service、Mapper 横向堆在一起；每个业务域内部保持协议入口、业务服务和数据访问职责清晰。根目录只保留仓库级入口和治理文件，运行资产、质量证据与业务数据分别归档。
+后端采用国内 Java 项目常见的分层包结构：Controller 只负责协议转换，Service 接口定义业务能力，`service.impl` 承担事务与编排，Mapper 专注 MyBatis 数据访问，Model 不依赖 Web 层。Agent、RAG、Redis 和消息组件保留独立包，避免把基础设施伪装成普通业务 Service。
 
 ## 5. 快速启动
 

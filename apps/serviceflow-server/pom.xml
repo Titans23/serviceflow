@@ -81,9 +81,9 @@
             <!-- Core transactional business services are the coverage gate. Web, mapper,
                  infrastructure and generated DTO paths are covered by integration/E2E suites. -->
             <includes>
-              <include>com/serviceflow/product/ProductService*</include>
-              <include>com/serviceflow/order/OrderService*</include>
-              <include>com/serviceflow/ticket/TicketService*</include>
+              <include>com/serviceflow/service/impl/ProductServiceImpl*</include>
+              <include>com/serviceflow/service/impl/OrderServiceImpl*</include>
+              <include>com/serviceflow/service/impl/TicketServiceImpl*</include>
             </includes>
             <excludes><exclude>com/serviceflow/**/*Models*</exclude><exclude>com/serviceflow/config/**</exclude><exclude>com/serviceflow/ServiceFlowApplication*</exclude></excludes>
           </configuration></execution>

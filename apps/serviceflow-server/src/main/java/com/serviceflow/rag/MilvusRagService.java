@@ -1,9 +1,9 @@
 package com.serviceflow.rag;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.serviceflow.chat.AiGateway;
+import com.serviceflow.ai.AiGateway;
 import com.serviceflow.config.ServiceFlowProperties;
-import com.serviceflow.knowledge.KnowledgeMapper;
+import com.serviceflow.mapper.KnowledgeMapper;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.micrometer.core.instrument.MeterRegistry;

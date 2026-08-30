@@ -1,6 +1,6 @@
 package com.serviceflow.rag;
 
-import com.serviceflow.chat.AiCallExecutor;
+import com.serviceflow.ai.AiCallExecutor;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;

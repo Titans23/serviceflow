@@ -1,6 +1,6 @@
 package com.serviceflow.agent;
 
-import com.serviceflow.auth.CurrentPrincipal;
+import com.serviceflow.security.CurrentPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 

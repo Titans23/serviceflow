@@ -55,7 +55,7 @@ Nginx / Vue SPA :5173
   ▼
 Spring Boot :8080
   ├─ Spring Security / JWT
-  ├─ ChatSessionService + ChatOrchestrator / LangGraph4j
+  ├─ ChatSessionService + ChatServiceImpl / LangGraph4j
   ├─ Product / Order / Ticket Services
   ├─ Knowledge Ingestion
   ├─ MyBatis → MySQL
@@ -116,6 +116,12 @@ Controller 立即返回 `SseEmitter`，实际模型调用在虚拟线程继续�
 DTO 主要使用 Java `record`，例如 `ChatModels.MessageRequest`、`OrderModels.OrderView` 和 `ServiceFlowProperties`。它们减少了可变状态和样板代码，并能直接映射 JSON 与 MyBatis 查询结果。
 
 `ServiceFlowApplication` 通过 `@EnableConfigurationProperties` 注册类型安全配置；`ServiceFlowProperties` 将 JWT、模型、Embedding、Reranker、限流和 Milvus 参数映射为嵌套 record。
+
+### 3.3 后端分层包结构
+
+后端采用 `controller / service / service.impl / mapper / model` 的传统 Java 分层。Controller 仅处理 HTTP、认证主体和 DTO；Service 接口定义业务能力；`service.impl` 实现事务、幂等和业务编排；Mapper 仅声明 MyBatis 数据访问；公共 record 位于 `model`，避免 Service 对 Mapper 内部类型形成反向依赖。
+
+Agent、AI、RAG、Redis、RabbitMQ、Security 和 SSE Writer 分别位于 `agent`、`ai`、`rag`、`infrastructure`、`security` 与 `web`，因为这些组件属于编排或基础设施能力，不应为了目录形式被包装成无意义的 Service 接口。`ArchitectureTest` 约束 Controller 不得依赖 Mapper 或 `service.impl`，Mapper 不得反向依赖 Service/Controller，并禁止字段注入。
 
 ---
 
@@ -443,7 +449,7 @@ chat:memory:{subject}:{sessionId}
 
 ### 10.3 回答生成策略
 
-`ChatOrchestrator.generateAnswer` 有三条明确路径：
+`ChatServiceImpl.generateAnswer` 有三条明确路径：
 
 1. CHAT：调用云模型流式生成，但 system prompt 限定客服范围；
 2. 有可信 groundingContext 且网关支持 Grounded Generation：把最近 8 条上下文、当前问题、MySQL 事实和文档证据注入模型；
@@ -676,7 +682,7 @@ AI 审计表展示客户、意图、模型、Prompt 版本、耗时、结果、�
 
 失败记录 FAILED、异常类名和空 answer。审计表以 `(session_id, client_request_id)` 唯一，Mapper 使用 `INSERT IGNORE` 避免重复记录。
 
-`ChatOrchestrator` 在获得请求幂等资格后记录 `System.nanoTime()`。回答持久化后写 success；运行时异常且尚未成功审计时写 failure。`audited` 标志防止回答已成功、随后 SSE 连接关闭导致重复记录失败。
+`ChatServiceImpl` 在获得请求幂等资格后记录 `System.nanoTime()`。回答持久化后写 success；运行时异常且尚未成功审计时写 failure。`audited` 标志防止回答已成功、随后 SSE 连接关闭导致重复记录失败。
 
 ### 15.3 指标
 
@@ -782,7 +788,7 @@ server 使用 uid 10001 的非 root 用户运行，上传目录授权给该用�
 
 `TicketServiceTest`：创建幂等、管理员过滤、合法前进、禁止跳级/回退、备注长度和并发更新冲突。
 
-`ArchitectureTest`：Controller 不依赖 Mapper、Mapper 不依赖 Service、禁止字段注入。`ServiceFlowIntegrationIT` 使用 Testcontainers 启动 MySQL、Redis、RabbitMQ 并验证应用上下文；需要本机 Docker 引擎。
+`ArchitectureTest`：Controller 不依赖 Mapper 或 `service.impl`，Mapper 不反向依赖 Service/Controller，分层包位置受约束，并禁止字段注入。`ServiceFlowIntegrationIT` 使用 Testcontainers 启动 MySQL、Redis、RabbitMQ 并验证应用上下文；需要本机 Docker 引擎。
 
 ### 18.3 前端测试与构建
 
@@ -866,7 +872,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | 文件 | 职责 |
 | --- | --- |
 | `AuthController.java` | GUEST Token、登录和 `/me` |
-| `AuthService.java` | 账号启用状态与 BCrypt 校验 |
+| `AuthService.java` / `AuthServiceImpl.java` | 登录能力接口、账号启用状态与 BCrypt 校验 |
 | `CurrentPrincipal.java` | 从 JWT 提取角色/customerId，执行客户身份要求 |
 | `JwtService.java` | 30 分钟 GUEST 与 2 小时用户 Token 签发 |
 | `UserMapper.java` / `UserMapper.xml` | 按用户名读取账号 |
@@ -879,9 +885,9 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `CloudAiGateway.java` | Spring AI ChatModel/StreamingChatModel Qwen 调用与领域 SSE 转换 |
 | `DemoAiGateway.java` | 无云服务时的最小演示实现 |
 | `ChatController.java` | 会话 REST、流式入口、确认入口和 SSE 错误 |
-| `ChatSessionService.java` | 会话创建、列表、历史和归属校验 |
-| `ChatOrchestrator.java` | 请求幂等、工作流执行、回答、持久化和审计 |
-| `ChatActionService.java` | 订单取消/转人工确认及副作用事件 |
+| `ChatSessionService.java` / `ChatSessionServiceImpl.java` | 会话接口、创建、列表、历史和归属校验 |
+| `ChatService.java` / `ChatServiceImpl.java` | 流式聊天接口、请求幂等、工作流执行、持久化和审计 |
+| `ChatActionService.java` / `ChatActionServiceImpl.java` | 订单取消/转人工确认及副作用事件 |
 | `ChatRequestStore.java` | CUSTOMER MySQL 请求幂等状态机 |
 | `SseEventWriter.java` | 统一 SSE 事件、稳定错误、连接生命周期和指标 |
 | `AiCallExecutor.java` | 模型调用超时、虚拟线程和失败指标 |
@@ -899,19 +905,19 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | --- | --- |
 | `ProductController.java` | 商品列表、详情、比较 API |
 | `ProductAdminController.java` | 管理员 JSON 批量导入 |
-| `ProductService.java` | 分页、事实转换、比较校验、SKU Upsert |
+| `ProductService.java` / `ProductServiceImpl.java` | 商品能力接口、分页、比较校验和 SKU Upsert |
 | `ProductModels.java` | 商品领域 DTO |
 | `ProductMapper.java` / `ProductMapper.xml` | 商品查询、解析、批量读回和 Upsert |
 | `OrderController.java` | 客户订单详情 API |
-| `OrderService.java` | 客户隔离、取消幂等、乐观锁和退款启动 |
+| `OrderService.java` / `OrderServiceImpl.java` | 订单能力接口、客户隔离、取消幂等和乐观锁 |
 | `OrderModels.java` | 订单、商品项、支付、物流与操作 DTO |
 | `OrderMapper.java` / `OrderMapper.xml` | 订单确定性 SQL |
 | `TicketController.java` | 客户工单列表 |
 | `TicketAdminController.java` | 管理员工单列表和状态更新 |
-| `TicketService.java` | 创建幂等与有限状态机 |
+| `TicketService.java` / `TicketServiceImpl.java` | 工单能力接口、创建幂等与有限状态机 |
 | `TicketMapper.java` / `TicketMapper.xml` | 工单查询和状态条件更新 |
 | `AiAuditController.java` | 管理员最近审计查询 |
-| `AiAuditService.java` | 成败审计和 Micrometer 指标 |
+| `AiAuditService.java` / `AiAuditServiceImpl.java` | 审计能力接口、成败记录和 Micrometer 指标 |
 | `AiAuditMapper.java` / `AiAuditMapper.xml` | 审计写入及客户/会话关联查询 |
 
 ### 20.5 知识与 RAG
@@ -920,7 +926,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | --- | --- |
 | `KnowledgeController.java` | 文档创建、新版本和列表 |
 | `KnowledgeVersionController.java` | 失败版本重试 |
-| `KnowledgeService.java` | 元数据/文件校验、持久化、Outbox 入队和激活 |
+| `KnowledgeService.java` / `KnowledgeServiceImpl.java` | 知识能力接口、文件校验、Outbox 入队和激活 |
 | `KnowledgeOutboxPublisher.java` | Outbox 锁定、Publisher Confirm、退避和指标 |
 | `DocumentConsumer.java` | Tika 解析、字符切块、Embedding/Milvus 入库 |
 | `KnowledgeMapper.java` / `KnowledgeMapper.xml` | 文档版本状态与活动版本 |

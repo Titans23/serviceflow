@@ -1,0 +1,15 @@
+package com.serviceflow.exception;
+
+public enum ErrorCode {
+    VALIDATION_ERROR,
+    REQUEST_IN_PROGRESS,
+    MODEL_TIMEOUT,
+    MODEL_UNAVAILABLE,
+    RAG_UNAVAILABLE,
+    SSE_CONNECTION_CLOSED,
+    FORBIDDEN,
+    NOT_FOUND,
+    CONFLICT,
+    BAD_REQUEST,
+    INTERNAL_ERROR
+}

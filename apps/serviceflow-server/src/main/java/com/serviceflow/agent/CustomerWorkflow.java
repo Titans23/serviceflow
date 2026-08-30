@@ -6,16 +6,16 @@ import static org.bsc.langgraph4j.action.AsyncEdgeAction.edge_async;
 import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serviceflow.auth.CurrentPrincipal;
-import com.serviceflow.chat.AiGateway;
-import com.serviceflow.chat.ChatMemory;
-import com.serviceflow.order.OrderModels;
-import com.serviceflow.order.OrderService;
-import com.serviceflow.product.ProductModels;
-import com.serviceflow.product.ProductService;
+import com.serviceflow.ai.AiGateway;
+import com.serviceflow.infrastructure.redis.ChatMemory;
+import com.serviceflow.model.OrderModels;
+import com.serviceflow.model.ProductModels;
+import com.serviceflow.model.TicketModels;
 import com.serviceflow.rag.RagService;
-import com.serviceflow.ticket.TicketMapper;
-import com.serviceflow.ticket.TicketService;
+import com.serviceflow.security.CurrentPrincipal;
+import com.serviceflow.service.OrderService;
+import com.serviceflow.service.ProductService;
+import com.serviceflow.service.TicketService;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -426,7 +426,7 @@ public final class CustomerWorkflow {
             return new Result("创建人工工单前请先登录客户账号。", List.of());
         }
         String requestId = state.clientRequestId() == null ? UUID.randomUUID().toString() : state.clientRequestId();
-        TicketMapper.TicketView ticket = tickets.createFromAction(
+        TicketModels.TicketView ticket = tickets.createFromAction(
                 requestId, state.principal().requireCustomerId(), state.sessionId(), "客户投诉", state.query());
         events.accept("ticket", ticket);
         return new Result("已创建人工工单 " + ticket.publicId() + "，客服将继续处理。", List.of());
