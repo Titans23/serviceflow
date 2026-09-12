@@ -15,7 +15,12 @@ const auth = useAuthStore()
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/products">商品目录</el-menu-item>
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/operations">运营中心</el-menu-item>
       </el-menu>
-      <div class="account"><span>{{ auth.role || '未连接' }}</span><el-button v-if="auth.role === 'GUEST'" type="primary" @click="$router.push('/login')">登录</el-button><el-button v-else @click="auth.logout()">退出</el-button></div>
+      <div class="account">
+        <span>{{ auth.role || '未连接' }}</span
+        ><el-button v-if="auth.role === 'GUEST'" type="primary" @click="$router.push('/login')"
+          >登录</el-button
+        ><el-button v-else @click="auth.logout()">退出</el-button>
+      </div>
     </el-header>
     <el-main><router-view /></el-main>
   </el-container>

@@ -21,8 +21,14 @@ public class ChatRequestStore {
         this.chats = chats;
     }
 
+    /**
+     * 为登录用户登记一次聊天请求，并决定当前调用能否获得执行权。
+     *
+     * <p>事务保证“登记请求、保存用户消息、关联两者”要么全部成功，要么一起回滚，避免留下不完整数据。
+     */
     @Transactional
     public BeginResult begin(long sessionId, String clientRequestId, String message) {
+        // 数据库唯一约束使同一会话中的 clientRequestId 只能插入一次；插入成功者获得首次执行权。
         if (chats.insertRequest(sessionId, clientRequestId) == 1) {
             String userMessageId = UUID.randomUUID().toString();
             chats.insertMessage(userMessageId, sessionId, null, "USER", message, null, "{}");
@@ -30,6 +36,7 @@ public class ChatRequestStore {
             return BeginResult.startedResult();
         }
 
+        // 重复请求若已经完成，则读取并返回旧答案，由上层通过 SSE 重放，避免再次调用 AI。
         ChatMapper.RequestRow request = chats.request(sessionId, clientRequestId);
         if (request != null && "COMPLETED".equals(request.status())) {
             ChatModels.Message completed = chats.completed(sessionId, clientRequestId);
@@ -38,10 +45,13 @@ public class ChatRequestStore {
             }
         }
 
+        // PROCESSING 超过阈值通常意味着原执行者异常退出；条件更新成功的调用获得恢复执行权。
         Instant staleBefore = Instant.now().minus(STALE_AFTER);
         if (chats.restartRequest(sessionId, clientRequestId, staleBefore) == 1) {
             return BeginResult.startedResult();
         }
+
+        // 请求仍由其他线程处理时明确返回冲突，防止两个 AI 调用同时生成同一条回答。
         throw new ServiceFlowException(HttpStatus.CONFLICT, ErrorCode.REQUEST_IN_PROGRESS, "请求正在处理中", true);
     }
 

@@ -1,30 +1,155 @@
-:root { font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif; color:#172033; background:#f5f7fb; }
-* { box-sizing:border-box; }
-body { margin:0; }
-a { color:inherit; text-decoration:none; }
-.shell { min-height:100vh; }
-.header { display:flex; align-items:center; gap:28px; background:white; border-bottom:1px solid #e6eaf0; }
-.brand { font-weight:800; font-size:21px; color:#2357d8; }
-.header .el-menu { flex:1; border:0; }
-.account { display:flex; align-items:center; gap:12px; }
-.page { max-width:1180px; margin:0 auto; }
-.page-title { margin:8px 0 22px; }
-.product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
-.product-card { height:100%; }
-.price { color:#e5484d; font-size:22px; font-weight:700; }
-.muted { color:#697386; }
-.chat-layout { display:grid; grid-template-columns:260px 1fr; height:calc(100vh - 112px); background:white; border-radius:12px; overflow:hidden; }
-.sessions { border-right:1px solid #e6eaf0; padding:14px; overflow:auto; }
-.session { padding:10px; border-radius:8px; cursor:pointer; }
-.session.active { background:#edf3ff; color:#2357d8; }
-.conversation { display:flex; flex-direction:column; min-width:0; }
-.messages { flex:1; padding:20px; overflow:auto; }
-.message { max-width:78%; margin:10px 0; padding:12px 15px; border-radius:12px; white-space:pre-wrap; line-height:1.65; }
-.message.USER { margin-left:auto; background:#2357d8; color:white; }
-.message.ASSISTANT { background:#f0f3f8; }
-.composer { display:flex; gap:10px; padding:14px; border-top:1px solid #e6eaf0; }
-.composer .el-textarea { flex:1; }
-.comparison { overflow:auto; }
-.spec-table { width:100%; border-collapse:collapse; background:white; }
-.spec-table th,.spec-table td { padding:12px; border:1px solid #e5e7eb; text-align:left; }
-.action-card { border:1px solid #f0b429; padding:12px; border-radius:10px; margin:10px 0; background:#fffaf0; }
+:root {
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #172033;
+  background: #f5f7fb;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.shell {
+  min-height: 100vh;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  background: white;
+  border-bottom: 1px solid #e6eaf0;
+}
+.brand {
+  font-weight: 800;
+  font-size: 21px;
+  color: #2357d8;
+}
+.header .el-menu {
+  flex: 1;
+  border: 0;
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.page-title {
+  margin: 8px 0 22px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+.product-card {
+  height: 100%;
+}
+.price {
+  color: #e5484d;
+  font-size: 22px;
+  font-weight: 700;
+}
+.muted {
+  color: #697386;
+}
+.chat-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: calc(100vh - 112px);
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sessions {
+  border-right: 1px solid #e6eaf0;
+  padding: 14px;
+  overflow: auto;
+}
+.session {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.session.active {
+  background: #edf3ff;
+  color: #2357d8;
+}
+.conversation {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.messages {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.message {
+  max-width: 78%;
+  margin: 10px 0;
+  padding: 12px 15px;
+  border-radius: 12px;
+  line-height: 1.65;
+}
+.message.USER {
+  margin-left: auto;
+  white-space: pre-wrap;
+  background: #2357d8;
+  color: white;
+}
+.message.ASSISTANT {
+  background: #f0f3f8;
+}
+.markdown > :first-child {
+  margin-top: 0;
+}
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 24px;
+}
+.composer {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid #e6eaf0;
+}
+.composer .el-textarea {
+  flex: 1;
+}
+.comparison {
+  overflow: auto;
+}
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+.spec-table th,
+.spec-table td {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+.action-card {
+  border: 1px solid #f0b429;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px 0;
+  background: #fffaf0;
+}

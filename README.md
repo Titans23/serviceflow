@@ -1,8 +1,8 @@
 # ServiceFlow
 
-ServiceFlow 是一个用于个人简历展示的企业级电商智能客服模拟项目，覆盖“售前商品咨询 + 售后业务服务 + 人工工单运营”完整闭环。项目不是只返回固定文本的聊天 Demo：云模式会实际调用阿里云百炼的 Qwen Chat、`text-embedding-v4` 和 `qwen3-rerank`，使用 MySQL 业务事实、Milvus 混合检索、Redis 会话状态、RabbitMQ 异步知识入库，并通过 SSE 将结构化事件与回答增量返回 Vue 前端。
+ServiceFlow 是一个企业级电商智能客服项目，覆盖“售前商品咨询 + 售后业务服务 + 人工工单运营”完整闭环。项目不是只返回固定文本的聊天 Demo：云模式会实际调用阿里云百炼的 Qwen Chat、`text-embedding-v4` 和 `qwen3-rerank`，使用 MySQL 业务事实、Milvus 混合检索、Redis 会话状态、RabbitMQ 异步知识入库，并通过 SSE 将结构化事件与回答增量返回 Vue 前端。
 
-> 项目定位是可复现、可讲解、可测试的企业系统模拟，不宣称具备真实生产 SLA。完整设计与全部源码实现说明见 [技术报告](docs/technical-report.md)，文档入口见 [docs/README.md](docs/README.md)。
+> 完整设计与全部源码实现说明见 [技术报告](docs/technical-report.md)，文档入口见 [docs/README.md](docs/README.md)。
 
 ## 1. 核心能力
 

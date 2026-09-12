@@ -29,6 +29,10 @@ public class KnowledgeOutboxPublisher {
         metrics.gauge("serviceflow.outbox.pending", mapper, KnowledgeMapper::pendingOutboxCount);
     }
 
+    /**
+     * 定时扫描已提交但尚未发布的 Outbox 事件，把 documentVersionId 投递到 RabbitMQ。
+     * HTTP 上传线程到此已经结束；后续解析和向量化由消息消费者异步完成。
+     */
     @Scheduled(fixedDelayString = "${serviceflow.outbox.poll-interval:2s}")
     @Transactional
     public void publishDue() {
@@ -40,11 +44,13 @@ public class KnowledgeOutboxPublisher {
                     operations.waitForConfirmsOrDie(5_000);
                     return null;
                 });
+                // RabbitMQ 确认收到消息后，才把 Outbox 事件标记为已发布。
                 mapper.markOutboxPublished(event.id());
                 metrics.counter("serviceflow.outbox.published").increment();
                 metrics.timer("serviceflow.outbox.lag")
                         .record(java.time.Duration.between(event.createdAt(), Instant.now()));
             } catch (Exception exception) {
+                // 发布失败时记录错误并指数退避，事件仍留在数据库中等待后续轮次重试。
                 long delaySeconds = Math.min(300, 1L << Math.min(event.attempts() + 1, 8));
                 String message = safeMessage(exception);
                 mapper.markOutboxFailed(event.id(), message, Instant.now().plus(delaySeconds, ChronoUnit.SECONDS));

@@ -56,15 +56,23 @@ public class CloudAiGateway implements AiGateway {
         }
     }
 
+    /**
+     * 调用 Spring AI 获取增量回答，并把每个非空文本片段交给上层回调。
+     *
+     * <p>这里不直接操作浏览器 SSE；tokenConsumer 负责决定如何保存或继续转发文本片段。
+     */
     @Override
     @CircuitBreaker(name = "chat")
     @Bulkhead(name = "chat", type = Bulkhead.Type.SEMAPHORE)
     public void streamAnswer(String systemPrompt, String userPrompt, Consumer<String> tokenConsumer) {
         Objects.requireNonNull(tokenConsumer, "tokenConsumer must not be null");
+
+        // Spring AI 返回连续的 ChatResponse；每产生一个文本片段就调用一次 tokenConsumer。
         streamingChatModel.stream(prompt(systemPrompt, userPrompt))
                 .map(this::content)
                 .filter(token -> !token.isEmpty())
                 .doOnNext(tokenConsumer)
+                // 等待上游流结束，最多 90 秒；该阻塞发生在 Controller 启动的虚拟线程中。
                 .blockLast(Duration.ofSeconds(90));
     }
 
@@ -79,9 +87,11 @@ public class CloudAiGateway implements AiGateway {
     @Bulkhead(name = "chat", type = Bulkhead.Type.SEMAPHORE)
     public EvidenceEvaluation evaluateEvidence(String query, List<EvidenceCandidate> candidates) {
         try {
+            // 将用户问题与候选证据整体交给聊天模型，要求它判断这些证据是否足以直接回答问题。
             String payload = objectMapper.writeValueAsString(Map.of("query", query, "candidates", candidates));
             String json = stripMarkdownFence(complete(EVIDENCE_SYSTEM_PROMPT, payload));
             EvaluationPayload evaluation = objectMapper.readValue(json, EvaluationPayload.class);
+            // 模型输出属于不可信输入：只接受本次候选集合中真实存在的 chunkId，防止模型编造 ID。
             List<String> allowed =
                     candidates.stream().map(EvidenceCandidate::chunkId).toList();
             List<String> ranked = evaluation.rankedChunkIds() == null
@@ -91,6 +101,7 @@ public class CloudAiGateway implements AiGateway {
                             .distinct()
                             .limit(5)
                             .toList();
+            // 即使模型声称证据充分，若没有返回任何合法分块，也必须判定为证据不足。
             return new EvidenceEvaluation(evaluation.sufficient() && !ranked.isEmpty(), ranked);
         } catch (Exception exception) {
             throw new IllegalStateException("Cloud evidence grader failed", exception);
@@ -102,6 +113,7 @@ public class CloudAiGateway implements AiGateway {
     @CircuitBreaker(name = "chat")
     @Bulkhead(name = "chat", type = Bulkhead.Type.SEMAPHORE)
     public String rewriteQuery(String query) {
+        // 只改写检索表达，不回答问题；空响应时退回原始问题。
         String rewritten = complete(REWRITE_SYSTEM_PROMPT, query);
         return rewritten.isBlank() ? query : rewritten.trim();
     }

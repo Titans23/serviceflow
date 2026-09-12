@@ -28,10 +28,12 @@ public class OpenAiEmbeddingClient implements EmbeddingClient {
     @CircuitBreaker(name = "embedding")
     @Bulkhead(name = "embedding", type = Bulkhead.Type.SEMAPHORE)
     public float[] embed(String text) {
+        // 空文本没有可表达的语义，也没有必要消耗一次外部模型调用。
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException("Embedding text must not be blank");
         }
 
+        // Spring AI 屏蔽具体供应商协议；AiCallExecutor 统一限制本次外部调用的最长等待时间。
         return calls.execute("embedding", CALL_TIMEOUT, () -> model.embed(text));
     }
 }

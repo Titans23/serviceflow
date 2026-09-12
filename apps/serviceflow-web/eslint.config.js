@@ -1,4 +1,5 @@
 import js from '@eslint/js'
+import eslintConfigPrettier from 'eslint-config-prettier'
 import vue from 'eslint-plugin-vue'
 import tseslint from 'typescript-eslint'
 import vueParser from 'vue-eslint-parser'
@@ -34,7 +35,7 @@ export default tseslint.config(
     },
     rules: {
       'vue/multi-word-component-names': 'off',
-      // Existing views intentionally keep compact templates; semantic Vue rules remain enabled.
+      // Prettier owns layout; ESLint remains responsible for semantic Vue rules.
       'vue/max-attributes-per-line': 'off',
       'vue/singleline-html-element-content-newline': 'off',
       'vue/mustache-interpolation-spacing': 'off',
@@ -43,4 +44,5 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  eslintConfigPrettier,
 )

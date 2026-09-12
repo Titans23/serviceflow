@@ -94,6 +94,7 @@ public final class CustomerWorkflow {
                             new JacksonStateSerializer<WorkflowGraphState>(WorkflowGraphState::new, objectMapper) {})
                     .build();
             this.graph = new StateGraph<>(WorkflowGraphState.SCHEMA, WorkflowGraphState::new)
+                    // 所有请求先经过 router：识别意图并把结果写入图状态的 intent 字段。
                     .addNode(
                             "router",
                             node_async(s -> Map.of("intent", routeIntent(s).name())))
@@ -154,6 +155,7 @@ public final class CustomerWorkflow {
             } finally {
                 expireCheckpointThread(state.sessionId());
             }
+            // 工作流结束后，将图状态中的意图复制回业务状态，供后续回答生成、审计和持久化使用。
             Intent intent = Intent.valueOf(finalState.intent());
             state.intent(intent);
             state.productIds().addAll(finalState.productIds());
@@ -201,7 +203,11 @@ public final class CustomerWorkflow {
         return result(result, events);
     }
 
+    /**
+     * 先由 AI 判断用户问题的基础意图，再结合当前商品页面和型号信息进行项目规则修正。
+     */
     private Intent routeIntent(WorkflowGraphState state) {
+        // 云模式调用大模型分类；演示模式使用关键词规则分类。
         Intent classified = ai.classify(state.query());
         Intent pageAware = prioritizePageProduct(classified, state.pageProductId(), state.query());
         if (pageAware != classified) {
@@ -301,7 +307,9 @@ public final class CustomerWorkflow {
                     "已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of(), ids.stream().toList());
         }
         ProductModels.ProductView product = products.get(ids.getFirst());
+        // 只检索当前商品的有效说明书分块，避免其他型号的文档混入回答依据。
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
+        // 数据库中的价格、型号和规格属于结构化事实，回答时优先级高于说明书文本。
         String facts = writeJson(Map.of(
                 "id", product.id(),
                 "sku", product.sku(),
@@ -312,11 +320,13 @@ public final class CustomerWorkflow {
                 "specs", product.specs(),
                 "listPrice", product.listPrice(),
                 "saleStatus", product.saleStatus()));
+        // 将检索分块连同来源标签拼成可追溯的文档证据，稍后作为大模型上下文。
         String evidence = docs.evidence().stream()
                 .map(item -> "[chunkId=" + item.chunkId() + "; title=" + item.title() + "; source=" + item.source()
                         + "]\n" + item.content())
                 .reduce((a, b) -> a + "\n\n" + b)
                 .orElse("暂无商品说明文档证据");
+        // 云端大模型不可用或不支持可信生成时，使用这段确定性的后端答案。
         String fallback = product.name() + "（" + product.model() + "），标价 ¥" + product.listPrice()
                 + "，状态 " + product.saleStatus() + "，规格：" + product.specs() + "。"
                 + (docs.evidence().isEmpty()
@@ -333,6 +343,7 @@ public final class CustomerWorkflow {
                         .distinct()
                         .toList(),
                 docs.degraded(),
+                // groundingContext 是交给大模型的可信依据，不是预先生成的最终答案。
                 "结构化商品事实：\n" + facts + "\n\n文档证据：\n" + evidence,
                 ids.stream().toList());
     }

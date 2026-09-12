@@ -9,15 +9,18 @@ import ProductAdminView from './views/ProductAdminView.vue'
 import OperationsView from './views/OperationsView.vue'
 
 const router = createRouter({
-  history:createWebHistory(),
-  routes:[
-    {path:'/',redirect:'/products'}, {path:'/products',component:ProductsView},
-    {path:'/products/:id',component:ProductDetailView}, {path:'/compare',component:CompareView},
-    {path:'/chat',component:ChatView}, {path:'/login',component:LoginView},
-    {path:'/admin/knowledge',component:KnowledgeView, meta:{requiresAdmin:true}},
-    {path:'/admin/products',component:ProductAdminView, meta:{requiresAdmin:true}},
-    {path:'/admin/operations',component:OperationsView, meta:{requiresAdmin:true}}
-  ]
+  history: createWebHistory(),
+  routes: [
+    { path: '/', redirect: '/products' },
+    { path: '/products', component: ProductsView },
+    { path: '/products/:id', component: ProductDetailView },
+    { path: '/compare', component: CompareView },
+    { path: '/chat', component: ChatView },
+    { path: '/login', component: LoginView },
+    { path: '/admin/knowledge', component: KnowledgeView, meta: { requiresAdmin: true } },
+    { path: '/admin/products', component: ProductAdminView, meta: { requiresAdmin: true } },
+    { path: '/admin/operations', component: OperationsView, meta: { requiresAdmin: true } },
+  ],
 })
 
 router.beforeEach((to) => {

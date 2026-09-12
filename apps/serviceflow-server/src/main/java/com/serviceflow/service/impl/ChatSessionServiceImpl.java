@@ -59,8 +59,14 @@ public final class ChatSessionServiceImpl implements ChatSessionService {
                 .toList();
     }
 
+    /**
+     * 校验登录用户是否拥有指定会话，并将对外使用的会话 UUID 转成数据库内部主键。
+     *
+     * <p>查询同时使用 chat_session.public_id 和当前用户的 customer_id，既完成 ID 转换，也防止用户访问他人的会话。
+     */
     @Override
     public Long requireCustomerSession(CurrentPrincipal principal, String sessionId) {
+        // sessionId 来自请求 URL，对应 chat_session.public_id；返回值对应 chat_session.id。
         Long id = chats.sessionDatabaseId(sessionId, principal.requireCustomerId());
         if (id == null) {
             throw new ResponseStatusException(NOT_FOUND, "会话不存在");

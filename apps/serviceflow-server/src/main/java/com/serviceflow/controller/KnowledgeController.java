@@ -22,6 +22,7 @@ public final class KnowledgeController {
         this.service = service;
     }
 
+    /** 接收管理员上传的 multipart 文档，并把标题、类型、关联商品和文件交给知识库服务。 */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     KnowledgeModels.Version create(
             @RequestParam String title,

@@ -76,6 +76,7 @@ public class MilvusRagService implements RagService {
 
             RankedEvidence ranked = rerank(query, hybrid(query, documentType, productIds, activeVersions));
             EvaluationResult evaluated = evaluate(query, ranked.evidence());
+            // 首轮证据不足时只进行一次查询改写与重试，避免无限检索循环。
             if (!evaluated.sufficient()) {
                 evaluated = evaluateRewrittenQuery(query, documentType, productIds, activeVersions, evaluated);
             }
@@ -106,11 +107,14 @@ public class MilvusRagService implements RagService {
             List<Long> activeVersions,
             EvaluationResult current) {
         try {
+            // 让模型把口语或模糊问题改写成更适合检索、且保留关键实体的一句话。
             String rewrittenQuery = aiGateway.rewriteQuery(query);
+            // 改写结果没有变化时，重复检索没有意义，直接保留首轮结果。
             if (rewrittenQuery.equalsIgnoreCase(query)) {
                 return current;
             }
 
+            // 使用改写后的问题完整重跑混合召回和重排，而不是只重新执行 Grader。
             RankedEvidence rewrittenRanked =
                     rerank(rewrittenQuery, hybrid(rewrittenQuery, documentType, productIds, activeVersions));
             EvaluationResult rewrittenEvaluation = evaluate(rewrittenQuery, rewrittenRanked.evidence());
@@ -119,12 +123,14 @@ public class MilvusRagService implements RagService {
                     rewrittenEvaluation.sufficient(),
                     rewrittenRanked.degraded() || rewrittenEvaluation.degraded());
         } catch (Exception exception) {
+            // 改写或第二轮检索失败时保留首轮证据，同时标记为不足且已降级。
             log.warn("Query rewrite failed; keeping original evidence", exception);
             return new EvaluationResult(current.evidence(), false, true);
         }
     }
 
     private List<Evidence> hybrid(String query, String documentType, List<Long> productIds, List<Long> activeVersions) {
+        // 稠密检索：先把用户问题 Embedding 成向量，用于匹配语义相近的切片。
         float[] vector = embed(query);
         String filter = "documentType == \"" + documentType + "\" and documentVersionId in " + activeVersions;
         if (productIds != null && !productIds.isEmpty()) {
@@ -142,8 +148,10 @@ public class MilvusRagService implements RagService {
                 filter,
                 "searchParams",
                 Map.of("metricType", "COSINE", "params", Map.of("ef", 64)));
+        // 稀疏检索：把原始问题交给 Milvus 的 BM25 分词和关键词权重计算，匹配精确词语。
         Map<String, Object> sparseSearch =
                 Map.of("data", List.of(query), "annsField", "sparseVector", "limit", RETRIEVAL_LIMIT, "filter", filter);
+        // 一次 hybrid_search 同时执行两路检索，再通过 RRF 融合两份候选排名。
         Map<String, Object> request = Map.of(
                 "collectionName", properties.rag().collectionName(),
                 "search", List.of(denseSearch, sparseSearch),
@@ -175,15 +183,18 @@ public class MilvusRagService implements RagService {
     }
 
     private RankedEvidence rerank(String query, List<Evidence> candidates) {
+        // 没有召回候选时无需调用外部重排模型。
         if (candidates.isEmpty()) {
             return new RankedEvidence(List.of(), false);
         }
 
         try {
+            // 重排模型直接比较“用户问题”和每个候选分块的原文，比只依赖召回排名判断得更细。
             List<RerankerClient.Document> documents = candidates.stream()
                     .map(item -> new RerankerClient.Document(item.chunkId(), item.content()))
                     .toList();
             List<String> ids = rerankerClient.rank(query, documents, RERANK_LIMIT);
+            // Reranker 只返回有序分块 ID；这里再映射回包含标题、来源和原文的完整证据对象。
             Map<String, Evidence> byId = new LinkedHashMap<>();
             candidates.forEach(item -> byId.put(item.chunkId(), item));
             List<Evidence> ranked = ids.stream()
@@ -196,6 +207,7 @@ public class MilvusRagService implements RagService {
             }
             return new RankedEvidence(ranked, false);
         } catch (Exception exception) {
+            // 重排是提升相关性的优化步骤；外部服务失败时退回 RRF 前五，避免整个问答不可用。
             log.warn("Reranker unavailable; using RRF top {}", RERANK_LIMIT, exception);
             metrics.counter("serviceflow.rag.reranker.degraded").increment();
             return new RankedEvidence(candidates.stream().limit(RERANK_LIMIT).toList(), true);
@@ -208,6 +220,7 @@ public class MilvusRagService implements RagService {
         }
 
         try {
+            // Grader 再检查重排后的分块能否直接支持答案，并可过滤掉仍然无关的证据。
             AiGateway.EvidenceEvaluation evaluation = aiGateway.evaluateEvidence(
                     query,
                     candidates.stream()
@@ -222,6 +235,7 @@ public class MilvusRagService implements RagService {
                     .toList();
             return new EvaluationResult(ranked, evaluation.sufficient(), false);
         } catch (Exception exception) {
+            // 判定器故障时保留已有证据，但将 sufficient=false，交给上层尝试改写查询后再次检索。
             log.warn("Evidence grader unavailable; using reranked evidence", exception);
             metrics.counter("serviceflow.rag.grader.degraded").increment();
             return new EvaluationResult(candidates.stream().limit(RERANK_LIMIT).toList(), false, true);
@@ -232,11 +246,13 @@ public class MilvusRagService implements RagService {
     @CircuitBreaker(name = "milvus")
     @Bulkhead(name = "milvus", type = Bulkhead.Type.SEMAPHORE)
     public void ingest(Chunk chunk) {
+        // demo 模式使用内置示例数据，不连接真实的 Embedding 服务和 Milvus。
         if (isDemoMode()) {
             return;
         }
 
         ensureCloudReady();
+        // 一条 Milvus 实体同时保存可追溯的原文/元数据，以及用于语义检索的稠密向量。
         Map<String, Object> entity = new LinkedHashMap<>();
         entity.put("chunkId", chunk.chunkId());
         entity.put("documentId", chunk.documentId());
@@ -247,8 +263,10 @@ public class MilvusRagService implements RagService {
         entity.put("category", chunk.category());
         entity.put("source", chunk.source());
         entity.put("content", chunk.content());
+        // 入库阶段把切片转换为向量；查询阶段会用同一套 Embedding 逻辑转换用户问题。
         entity.put("denseVector", embed(chunk.content()));
 
+        // 调用 Milvus REST API 后才产生真正的向量库写入副作用。
         JsonNode response = milvusClient
                 .post()
                 .uri("/v2/vectordb/entities/insert")
@@ -288,6 +306,7 @@ public class MilvusRagService implements RagService {
     private float[] embed(String text) {
         float[] vector = embeddingClient.embed(text);
         int expectedDimension = properties.rag().embeddingDimension();
+        // Milvus 的 FloatVector 字段维度固定；配置或模型不匹配时应在写入/检索前明确失败。
         if (vector.length != expectedDimension) {
             throw new IllegalStateException(
                     "Embedding dimension mismatch: expected " + expectedDimension + ", got " + vector.length);
@@ -342,6 +361,8 @@ public class MilvusRagService implements RagService {
             schema.put("autoId", false);
             schema.put("enableDynamicField", false);
             schema.put("fields", fields);
+            // Milvus 在写入 content 时自动运行 BM25，将关键词及其权重写入 sparseVector；
+            // 因此 ingest() 不需要像 denseVector 一样在 Java 中显式计算稀疏向量。
             schema.put(
                     "functions",
                     List.of(Map.of(

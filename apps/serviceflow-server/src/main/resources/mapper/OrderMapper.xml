@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.OrderMapper">
+  <!-- 所有订单查询都在数据库层限定 customer_id，防止越权读取。 -->
   <select id="findOwned" resultType="com.serviceflow.model.OrderModels$Order">
     SELECT id, order_no, customer_id, status, total_amount, version, created_at FROM customer_order WHERE order_no=#{orderNo} AND customer_id=#{customerId}
   </select>
@@ -13,16 +14,23 @@
   <select id="shipment" resultType="com.serviceflow.model.OrderModels$Shipment">
     SELECT description, location, occurred_at FROM shipment_event WHERE order_id=#{orderId} ORDER BY occurred_at DESC
   </select>
+  <!-- request_id 是业务幂等键；重复请求返回已经保存的操作结果。 -->
   <select id="findOperation" resultType="com.serviceflow.model.OrderModels$Operation">
     SELECT request_id, result_code, result_message FROM order_operation WHERE request_id=#{requestId}
   </select>
+  <!-- 唯一键冲突时 INSERT IGNORE 返回 0，表示另一个并发请求已经取得执行权。 -->
   <insert id="reserveOperation">
     INSERT IGNORE INTO order_operation(request_id, order_id, operation_type, result_code, result_message)
     VALUES(#{requestId}, #{orderId}, 'CANCEL', 'PROCESSING', '订单操作处理中')
   </insert>
+  <!--
+    乐观锁比较并更新 version。只有客户、旧版本和可取消状态全部匹配时才更新一行；
+    影响行数为 0 说明数据已变化，Service 会返回冲突结果。
+  -->
   <update id="cancel">
     UPDATE customer_order SET status='CANCELLED', version=version+1 WHERE id=#{id} AND customer_id=#{customerId} AND version=#{version} AND status IN ('CREATED','PAID','PROCESSING')
   </update>
+  <!-- 仅已支付订单进入退款处理中；未支付订单保持原退款状态。 -->
   <update id="startRefund">
     UPDATE payment SET refund_status=CASE WHEN status='PAID' THEN 'PROCESSING' ELSE refund_status END,
       refund_requested_at=CASE WHEN status='PAID' THEN CURRENT_TIMESTAMP(6) ELSE refund_requested_at END WHERE order_id=#{orderId}

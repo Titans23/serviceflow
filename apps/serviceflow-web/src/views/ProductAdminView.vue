@@ -23,7 +23,7 @@ async function importProducts() {
   try {
     const result = await api<{ imported: number; products: any[] }>('/admin/products/import', {
       method: 'POST',
-      body: JSON.stringify({ products })
+      body: JSON.stringify({ products }),
     })
     imported.value = result.products
     ElMessage.success(`已导入 ${result.imported} 个商品`)
@@ -56,11 +56,26 @@ async function loadFile(event: any) {
     />
     <el-card>
       <template #header>
-        <div class="card-header"><span>批量导入 JSON</span><el-upload :auto-upload="false" :show-file-list="false" :on-change="loadFile"><el-button>读取 JSON 文件</el-button></el-upload></div>
+        <div class="card-header">
+          <span>批量导入 JSON</span
+          ><el-upload :auto-upload="false" :show-file-list="false" :on-change="loadFile"
+            ><el-button>读取 JSON 文件</el-button></el-upload
+          >
+        </div>
       </template>
       <el-input v-model="jsonText" type="textarea" :rows="18" spellcheck="false" />
-      <div class="muted import-hint">字段要求：sku、name、brand、model、category、specs、listPrice、saleStatus（ON_SALE / OFF_SALE / DISCONTINUED）。同 SKU 会更新已有商品。请从 ERP 或商品主数据导出真实内容后再导入。</div>
-      <el-button type="primary" :loading="importing" style="margin-top: 14px" @click="importProducts">校验并导入</el-button>
+      <div class="muted import-hint">
+        字段要求：sku、name、brand、model、category、specs、listPrice、saleStatus（ON_SALE /
+        OFF_SALE / DISCONTINUED）。同 SKU 会更新已有商品。请从 ERP
+        或商品主数据导出真实内容后再导入。
+      </div>
+      <el-button
+        type="primary"
+        :loading="importing"
+        style="margin-top: 14px"
+        @click="importProducts"
+        >校验并导入</el-button
+      >
     </el-card>
     <el-card v-if="imported.length" style="margin-top: 20px">
       <template #header>本次导入结果</template>
@@ -77,6 +92,12 @@ async function loadFile(event: any) {
 </template>
 
 <style scoped>
-.card-header { display: flex; justify-content: space-between; align-items: center; }
-.import-hint { margin-top: 10px; }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.import-hint {
+  margin-top: 10px;
+}
 </style>

@@ -57,7 +57,9 @@ public class OpenAiRerankerClient implements RerankerClient {
         if (query == null || query.isBlank() || documents == null || documents.isEmpty()) {
             throw new IllegalArgumentException("Reranker query and documents are required");
         }
+        // topN 不能小于 1，也不能超过实际候选数。
         int limit = Math.max(1, Math.min(topN, documents.size()));
+        // API 接收查询文本和候选原文；分块 ID 留在本地，响应索引稍后再映射回 ID。
         List<String> texts = documents.stream().map(Document::text).toList();
         String requestBody;
         try {
@@ -107,6 +109,7 @@ public class OpenAiRerankerClient implements RerankerClient {
 
         List<RankedDocument> ranked = new ArrayList<>();
         for (JsonNode row : rows) {
+            // 大多数重排 API 返回候选数组中的下标；用该下标取回本地保留的分块 ID。
             int index = row.path("index").asInt(-1);
             if (index >= 0 && index < documents.size()) {
                 ranked.add(new RankedDocument(
@@ -116,6 +119,7 @@ public class OpenAiRerankerClient implements RerankerClient {
                         row.path("id").asText(), row.path("relevance_score").asDouble(0D)));
             }
         }
+        // 按相关性分数从高到低排序；最终只向上层返回去重后的分块 ID，而不是模型响应下标。
         ranked.sort(Comparator.comparingDouble(RankedDocument::score).reversed());
 
         Set<String> seen = new HashSet<>();

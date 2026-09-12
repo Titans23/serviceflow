@@ -50,6 +50,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         this.uploadRoot = Path.of(properties.uploadDir()).toAbsolutePath().normalize();
     }
 
+    /**
+     * 新建知识文档及其首个版本。数据库中的文档、版本和 Outbox 事件处于同一事务中。
+     */
     @Transactional
     @Override
     public KnowledgeModels.Version create(String title, String type, Long productId, MultipartFile file) {
@@ -95,6 +98,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "文档版本保存失败", exception);
         }
         KnowledgeModels.Version row = mapper.findVersion(document.id(), version);
+        // 不在 HTTP 请求中直接解析和向量化；先写 Outbox，事务提交后由定时发布器异步投递。
         mapper.enqueueOutbox(row.id(), outboxPayload(row.id()));
         return row;
     }

@@ -63,6 +63,11 @@ public final class ChatController {
         return sessions.messages(CurrentPrincipal.from(authentication), sessionId);
     }
 
+    /**
+     * 建立一次最长 120 秒的 SSE 连接。
+     *
+     * <p>Controller 立即把 emitter 交给 Spring，虚拟线程随后执行耗时的聊天流程，并通过同一个 emitter 分批发送事件。
+     */
     @PostMapping(value = "/sessions/{sessionId}/messages/stream", produces = "text/event-stream")
     SseEmitter stream(
             @PathVariable String sessionId,
@@ -70,10 +75,18 @@ public final class ChatController {
             Authentication authentication,
             HttpServletRequest httpRequest) {
         CurrentPrincipal principal = CurrentPrincipal.from(authentication);
+
+        // 访客没有账号级配额，因此先按访客标识和来源 IP 做请求频率限制。
         if (principal.guest()) limiter.check(principal.subject(), httpRequest.getRemoteAddr());
+
+        // emitter 代表服务端可持续写入的 HTTP 响应通道；超时后连接会被关闭。
         SseEmitter emitter = new SseEmitter(120_000L);
         events.track(emitter);
+
+        // 将阻塞式 AI 调用交给廉价的虚拟线程，避免长期占用当前 Tomcat 请求线程。
         Thread.startVirtualThread(() -> run(emitter, () -> chatService.stream(principal, sessionId, request, emitter)));
+
+        // 返回 emitter 后 HTTP 响应不会立刻结束，后续事件仍可由虚拟线程写入。
         return emitter;
     }
 
@@ -93,6 +106,9 @@ public final class ChatController {
         return emitter;
     }
 
+    /**
+     * 在虚拟线程中执行 SSE 业务操作，并把无法作为普通 HTTP 响应返回的异常转换成 SSE error 事件。
+     */
     private void run(SseEmitter emitter, Runnable operation) {
         try {
             operation.run();
@@ -100,20 +116,24 @@ public final class ChatController {
             log.error("Chat SSE operation failed", exception);
             try {
                 if (exception instanceof com.serviceflow.exception.ServiceFlowException serviceFlowException) {
+                    // 已知业务异常保留错误码、提示和是否可重试信息。
                     events.error(
                             emitter,
                             serviceFlowException.code(),
                             serviceFlowException.getMessage(),
                             serviceFlowException.retryable());
                 } else {
+                    // 未知异常不向前端暴露内部细节，统一转换成 INTERNAL_ERROR。
                     String message = exception instanceof ResponseStatusException status && status.getReason() != null
                             ? status.getReason()
                             : "服务暂时不可用，请稍后重试";
                     events.error(emitter, com.serviceflow.exception.ErrorCode.INTERNAL_ERROR, message, true);
                 }
             } catch (Exception sendFailure) {
+                // 浏览器可能已经断开，此时连 error 事件也无法发送，只记录日志。
                 log.debug("Unable to send SSE error because the connection is closed", sendFailure);
             } finally {
+                // 无论 error 事件是否发送成功，都结束服务器端的 SSE 响应。
                 emitter.complete();
             }
         }
