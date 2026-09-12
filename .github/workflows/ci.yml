@@ -96,7 +96,12 @@ jobs:
           cache: npm
           cache-dependency-path: apps/serviceflow-web/package-lock.json
       - name: Start isolated Compose stack in demo mode
-        run: docker compose up -d --build
+        run: |
+          # Demo-mode E2E does not call Milvus or the observability stack. Starting
+          # only the required services keeps the hosted runner small and reliable.
+          docker compose up -d mysql redis rabbitmq
+          docker compose build server web
+          docker compose up -d --no-deps server web
       - name: Wait for web health endpoint
         run: |
           for i in {1..60}; do curl --fail --silent http://localhost:5173/ && exit 0; sleep 2; done
@@ -116,6 +121,11 @@ jobs:
         with:
           name: playwright-report
           path: apps/serviceflow-web/playwright-report
+      - name: Show Compose diagnostics
+        if: failure()
+        run: |
+          docker compose ps
+          docker compose logs --no-color --tail=200
       - name: Stop Compose stack
         if: always()
         run: docker compose down -v
