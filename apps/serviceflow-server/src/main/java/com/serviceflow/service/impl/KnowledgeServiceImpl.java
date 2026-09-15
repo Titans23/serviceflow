@@ -124,7 +124,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Transactional
     @Override
     public void activate(KnowledgeModels.Version version) {
+        // 先把刚完成向量化的版本标记为 READY，表示它已经具备被检索的条件。
         mapper.markReady(version.id());
+        // 再更新逻辑文档的 active_version_id；两个 SQL 在同一事务中，要么一起成功，要么一起回滚。
+        // 因此旧版本会一直生效到新版本完整入库，避免用户检索到只写入一部分的新版本。
         mapper.activate(version.documentId(), version.id());
     }
 

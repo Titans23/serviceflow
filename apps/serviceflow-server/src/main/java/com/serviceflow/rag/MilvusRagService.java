@@ -69,6 +69,8 @@ public class MilvusRagService implements RagService {
 
         ensureCloudReady();
         try {
+            // Milvus 可能还保留失败版本或历史版本的 Chunk；先从 MySQL 取得当前生效版本 ID，
+            // 后续向量检索和 BM25 检索都用它们过滤，保证用户只看到已完整入库并激活的内容。
             List<Long> activeVersions = knowledgeMapper.activeVersionIds(documentType, productIds);
             if (activeVersions.isEmpty()) {
                 return new SearchResult(List.of(), false, false);
@@ -243,6 +245,8 @@ public class MilvusRagService implements RagService {
     }
 
     @Override
+    // CircuitBreaker：Milvus 连续故障达到阈值后暂时阻止继续调用，避免故障被不断放大。
+    // Bulkhead：用信号量限制同时访问 Milvus 的请求数，防止它拖慢并耗尽整个应用的线程。
     @CircuitBreaker(name = "milvus")
     @Bulkhead(name = "milvus", type = Bulkhead.Type.SEMAPHORE)
     public void ingest(Chunk chunk) {
