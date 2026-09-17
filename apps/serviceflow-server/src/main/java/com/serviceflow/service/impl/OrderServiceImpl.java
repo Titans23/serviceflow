@@ -50,7 +50,8 @@ public class OrderServiceImpl implements OrderService {
         // 真正的并发幂等控制：order_operation.request_id 有唯一约束。
         // 插入成功（1）表示当前请求取得执行权；返回 0 表示相同 requestId 已被另一个请求占用。
         if (mapper.reserveOperation(requestId, order.id()) == 0) {
-            return mapper.findOperation(requestId);
+            // 另一个事务已提交，但本事务的普通一致性读仍可能看不到它；使用当前读获取最终结果。
+            return mapper.findLatestOperation(requestId);
         }
 
         // 幂等键只能阻止“同一个 requestId”重复执行；不同 requestId 仍要依靠订单状态阻止重复取消。

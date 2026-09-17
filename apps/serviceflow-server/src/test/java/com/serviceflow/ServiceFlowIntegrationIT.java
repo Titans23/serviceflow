@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.serviceflow.mapper.OrderMapper;
+import com.serviceflow.model.OrderModels;
+import com.serviceflow.service.OrderService;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +15,13 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
@@ -39,10 +47,23 @@ class ServiceFlowIntegrationIT {
     static final RabbitMQContainer RABBIT = new RabbitMQContainer("rabbitmq:4-management");
 
     private final TestRestTemplate http;
+    private final JdbcTemplate jdbc;
+    private final OrderService orders;
+    private final OrderMapper orderMapper;
+    private final PlatformTransactionManager transactions;
 
     @Autowired
-    ServiceFlowIntegrationIT(TestRestTemplate http) {
+    ServiceFlowIntegrationIT(
+            TestRestTemplate http,
+            JdbcTemplate jdbc,
+            OrderService orders,
+            OrderMapper orderMapper,
+            PlatformTransactionManager transactions) {
         this.http = http;
+        this.jdbc = jdbc;
+        this.orders = orders;
+        this.orderMapper = orderMapper;
+        this.transactions = transactions;
     }
 
     @DynamicPropertySource
@@ -90,6 +111,43 @@ class ServiceFlowIntegrationIT {
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).contains("HUAWEI Pura 80");
+    }
+
+    @Test
+    void duplicateCancellationReadsCommittedResultDespiteAnOlderSnapshot() {
+        String orderNo = "SF-RACE-" + UUID.randomUUID();
+        String requestId = UUID.randomUUID().toString();
+        jdbc.update(
+                "INSERT INTO customer_order(order_no,customer_id,status,total_amount) VALUES (?,1,'PROCESSING',99)",
+                orderNo);
+        Long orderId = jdbc.queryForObject("SELECT id FROM customer_order WHERE order_no=?", Long.class, orderNo);
+        jdbc.update(
+                "INSERT INTO payment(order_id,status,refund_status,paid_at) VALUES (?,'PAID','NONE',CURRENT_TIMESTAMP(6))",
+                orderId);
+        TransactionTemplate staleTransaction = new TransactionTemplate(transactions);
+        staleTransaction.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+        TransactionTemplate winner = new TransactionTemplate(transactions);
+        winner.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        winner.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+
+        OrderModels.Operation replay = staleTransaction.execute(status -> {
+            // Open the losing request's snapshot before the other transaction commits.
+            assertThat(orderMapper.findOperation(requestId)).isNull();
+            OrderModels.Operation completed = winner.execute(ignored -> orders.cancel(orderNo, 1L, requestId));
+            assertThat(completed).isNotNull();
+            assertThat(completed.resultCode()).isEqualTo("CANCELLED");
+            return orders.cancel(orderNo, 1L, requestId);
+        });
+
+        assertThat(replay).isNotNull();
+        assertThat(replay.resultCode()).isEqualTo("CANCELLED");
+        assertThat(jdbc.queryForObject("SELECT version FROM customer_order WHERE id=?", Integer.class, orderId))
+                .isEqualTo(1);
+        assertThat(jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM order_operation WHERE request_id=?", Integer.class, requestId))
+                .isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT refund_status FROM payment WHERE order_id=?", String.class, orderId))
+                .isEqualTo("PROCESSING");
     }
 
     private record TokenResponse(String accessToken) {}

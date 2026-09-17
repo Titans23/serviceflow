@@ -1,0 +1,11 @@
+# Fill verified absolute local paths after SFT; do not set quantization_bit.
+model_name_or_path: __UNQUANTIZED_BASE_MODEL_PATH__
+adapter_name_or_path: __LORA_CHECKPOINT_PATH__
+template: qwen3
+enable_thinking: false
+trust_remote_code: false
+infer_dtype: bfloat16
+export_dir: __NEW_MERGED_MODEL_PATH__
+export_size: 5
+export_device: cpu
+export_legacy_format: false

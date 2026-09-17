@@ -1,0 +1,17 @@
+{
+  "version": "v1-independent-eval-20260916",
+  "purpose": "evaluation_only",
+  "split_before_authoring": true,
+  "entries": [
+    ["zh-cn15923093", "stylus-troubleshooting", "test"],
+    ["zh-cn07745964", "router-scheduling", "test"],
+    ["zh-cn00761174", "cpe-guest-network", "test"],
+    ["zh-cn15882470", "windows-s-pen", "test"],
+    ["zh-cn16056234", "mpen3-connection", "test"],
+    ["zh-cn16058629", "pencil-pro-restart", "test"],
+    ["zh-cn15851192", "custom-charge-limit", "test"],
+    ["zh-cn15812793", "vision-external-volume", "test"],
+    ["zh-cn15816937", "monitor-usbc-power", "test"],
+    ["zh-cn15866303", "windows-camera", "test"]
+  ]
+}

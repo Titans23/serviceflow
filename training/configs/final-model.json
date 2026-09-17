@@ -1,0 +1,12 @@
+{
+  "id": "serviceflow-grader-qwen3-8b",
+  "task": "evidence_grading_only",
+  "seed": 42,
+  "epoch": 2,
+  "selection_basis": "preregistered primary seed; validation-only epoch selection; real Java acceptance passed",
+  "deployment": "offline; retired v1 services stopped; not a full-task chatbot replacement",
+  "model_directory": "runtime-data/training/grader-specialist-exp-01/merged-seed-42-epoch-2",
+  "adapter_directory": "runtime-data/training/grader-specialist-exp-01/seed-42/epoch-adapters/epoch-2",
+  "checkpoint_directory": "runtime-data/training/grader-specialist-exp-01/seed-42/checkpoints/checkpoint-76",
+  "dataset_directory": "local-datasets/serviceflow/grader-specialist-exp-01"
+}

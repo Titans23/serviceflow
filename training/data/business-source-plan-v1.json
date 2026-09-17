@@ -1,0 +1,32 @@
+{
+  "version": "business-source-plan-v1",
+  "split_before_authoring": true,
+  "entries": [
+    ["zh-cn00836326", "privacy", "train"],
+    ["zh-cn15982053", "privacy", "train"],
+    ["zh-cn16037572", "children", "train"],
+    ["zh-cn16055266", "children", "train"],
+    ["zh-cn16000627", "contacts", "train"],
+    ["zh-cn00407117", "contacts", "train"],
+    ["zh-cn15502925", "contacts", "train"],
+    ["zh-cn15867462", "contacts", "train"],
+    ["zh-cn16030363", "hisuite", "train"],
+    ["zh-cn16084837", "hisuite", "train"],
+    ["zh-cn15920191", "printing", "train"],
+    ["zh-cn15849001", "printing", "train"],
+    ["zh-cn15900030", "bluetooth-audio", "train"],
+    ["zh-cn15972753", "bluetooth-audio", "train"],
+    ["zh-cn15807085", "wallet-nfc", "train"],
+    ["zh-cn15928401", "wallet-nfc", "train"],
+    ["zh-cn00409842", "wlan", "train"],
+    ["zh-cn15776599", "wlan", "train"],
+    ["zh-cn00409834", "wlan", "train"],
+    ["zh-cn16010663", "wlan", "train"],
+    ["zh-cn15996688", "screen-recording", "validation"],
+    ["zh-cn16070743", "screen-recording", "validation"],
+    ["zh-cn00415607", "biometric", "test"],
+    ["zh-cn00414693", "biometric", "test"],
+    ["zh-cn15958978", "wearable-notifications", "test"],
+    ["zh-cn16056611", "wearable-notifications", "test"]
+  ]
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Pinned vLLM 0.8.5; Grader-only local service, separate from chatbot routing.
+set -euo pipefail
+: "${MODEL_PATH:?Set the final seed-42 epoch-2 model directory}"
+: "${VLLM_API_KEY:?Set a private inference API key}"
+: "${CHAT_TEMPLATE:?Set the verified qwen3-nonthinking.jinja path}"
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+vllm serve "$MODEL_PATH" \
+  --served-model-name serviceflow-grader-qwen3-8b \
+  --host 127.0.0.1 --port 8000 \
+  --dtype bfloat16 --max-model-len 4096 \
+  --gpu-memory-utilization 0.65 --max-num-seqs 2 \
+  --enforce-eager --disable-log-requests \
+  --chat-template "$CHAT_TEMPLATE" \
+  --generation-config vllm

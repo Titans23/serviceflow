@@ -2,7 +2,11 @@
 
 ## Local checks
 
-Before opening a pull request, run:
+Before opening a pull request, run checks for the affected components using the commands below. Documentation-only changes require relevant content/link review; mark unrelated checks N/A with a reason. Cross-component changes require the corresponding combined checks. Full CI gates remain in place. Reuse passing local results while code and environment are unchanged; rerun affected checks after fixes.
+
+Use `npm ci` when dependencies are missing or the lockfile changed. Before integration checks, verify the configured data/services are isolated from production.
+
+Available commands:
 
 ```powershell
 cd apps/serviceflow-server

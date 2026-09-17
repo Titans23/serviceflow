@@ -99,10 +99,14 @@ class OrderServiceTest {
     @Test
     void handlesOperationReservationRaceAndCancelEligibility() {
         var reservedByOther = new OrderModels.Operation("request-5", "CANCELLED", "已取消");
-        when(mapper.findOperation("request-5")).thenReturn(null, reservedByOther);
+        when(mapper.findOperation("request-5")).thenReturn(null);
+        when(mapper.findLatestOperation("request-5")).thenReturn(reservedByOther);
         when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("CREATED"));
         when(mapper.reserveOperation("request-5", 10L)).thenReturn(0);
         assertThat(service.cancel("SF-1001", 7L, "request-5")).isSameAs(reservedByOther);
+        verify(mapper).findLatestOperation("request-5");
+        verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
+        verify(mapper, never()).startRefund(anyLong());
 
         when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("PAID"));
         assertThat(service.canCancel("SF-1001", 7L)).isTrue();

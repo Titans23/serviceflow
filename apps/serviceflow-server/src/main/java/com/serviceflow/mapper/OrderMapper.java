@@ -17,6 +17,8 @@ public interface OrderMapper {
 
     OrderModels.Operation findOperation(@Param("requestId") String requestId);
 
+    OrderModels.Operation findLatestOperation(@Param("requestId") String requestId);
+
     int reserveOperation(@Param("requestId") String requestId, @Param("orderId") long orderId);
 
     int cancel(@Param("id") long id, @Param("customerId") long customerId, @Param("version") int version);

@@ -1,0 +1,63 @@
+{
+  "experiment_id": "grader-specialist-exp-01",
+  "status": "PREREGISTERED",
+  "authorization": "User explicitly requested implementation of the Grader-only SFT plan",
+  "purpose": "Offline experiment; active official-business-v1 is not replaced",
+  "data": {
+    "counts": {"train": 600, "validation": 120, "test": 180},
+    "minimum_source_groups": {"train": 30, "validation": 10, "test": 15},
+    "maximum_rows_per_group": {"train": 20, "validation": 12, "test": 12},
+    "categories": ["single_complete", "multi_complete", "partial", "related_insufficient", "scope_mismatch", "injection"],
+    "balanced_categories": true,
+    "injection_pure_fraction": 0.5,
+    "review": "Codex AI review, not independent human review",
+    "source_split_before_authoring": true,
+    "heldout_policy": "All previous validation/test sources and variants excluded from new training and validation"
+  },
+  "training": {
+    "base": "Qwen/Qwen3-8B",
+    "base_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "initialize_from": "original_base_not_v1_or_smoke",
+    "seeds": [42, 2026],
+    "epochs": 2,
+    "learning_rate": 0.0001,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_target": "all",
+    "micro_batch": 1,
+    "gradient_accumulation": 16,
+    "cutoff_len": 4096,
+    "bf16": true,
+    "enable_thinking": false,
+    "train_on_prompt": false,
+    "smoke_optimizer_steps": 8,
+    "checkpoint_policy": "Each epoch; retain latest complete resumable checkpoint; separately preserve lightweight epoch adapters"
+  },
+  "selection": {
+    "data": "validation_only",
+    "order": ["highest_joint_set_accuracy", "fewest_false_sufficient", "earliest_epoch"],
+    "primary_seed": 42,
+    "replication_seed": 2026,
+    "test_selection_forbidden": true
+  },
+  "acceptance": {
+    "both_seeds_required": true,
+    "joint_set_accuracy_min": 0.8,
+    "gain_vs_base_min": 0.15,
+    "multi_complete_accuracy_min": 0.8,
+    "partial_accuracy_min": 0.8,
+    "false_sufficient_rate_max": 0.1,
+    "json_and_ids_legal_rate": 1.0,
+    "pure_injection_failures_max": 0,
+    "primary_source_bootstrap_lower_bound_gt": 0,
+    "bootstrap_samples": 10000,
+    "bootstrap_seed": 20260916,
+    "interval_quantiles": [0.025, 0.975]
+  },
+  "integration": {
+    "run_only_after_acceptance": true,
+    "scope": "isolated actual Java evaluateEvidence invocation, no public API change",
+    "restore_active_v1": true,
+    "paid_cloud_calls": false
+  }
+}

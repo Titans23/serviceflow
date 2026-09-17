@@ -1,0 +1,35 @@
+{
+  "status": "UNRESOLVED",
+  "seed": 42,
+  "template": "qwen3",
+  "enable_thinking": false,
+  "dataset_version": "UNRESOLVED",
+  "knowledge_snapshot": "UNRESOLVED",
+  "baseline_report": "UNRESOLVED",
+  "base_model": {
+    "original_id": "Qwen/Qwen3-8B",
+    "original_revision": "UNRESOLVED",
+    "download_provider": "modelscope",
+    "download_revision": "UNRESOLVED",
+    "local_path": "UNRESOLVED",
+    "files_sha256_manifest": "UNRESOLVED",
+    "license_record": "UNRESOLVED"
+  },
+  "training_environment": {
+    "python": "UNRESOLVED",
+    "torch": "UNRESOLVED",
+    "cuda_build": "UNRESOLVED",
+    "transformers": "UNRESOLVED",
+    "datasets": "UNRESOLVED",
+    "peft": "UNRESOLVED",
+    "accelerate": "UNRESOLVED",
+    "llamafactory_commit": "UNRESOLVED",
+    "pip_freeze_file": "UNRESOLVED"
+  },
+  "inference_environment": {
+    "python": "UNRESOLVED",
+    "torch": "UNRESOLVED",
+    "vllm": "UNRESOLVED",
+    "pip_freeze_file": "UNRESOLVED"
+  }
+}

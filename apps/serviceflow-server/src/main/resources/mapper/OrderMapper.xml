@@ -18,6 +18,11 @@
   <select id="findOperation" resultType="com.serviceflow.model.OrderModels$Operation">
     SELECT request_id, result_code, result_message FROM order_operation WHERE request_id=#{requestId}
   </select>
+  <!-- 唯一键冲突后使用共享锁当前读，避免 REPEATABLE READ 的旧快照仍返回空结果。
+       共享锁兼容多个重复请求，且不会把正常的首次查找变为缺失键的间隙锁。 -->
+  <select id="findLatestOperation" resultType="com.serviceflow.model.OrderModels$Operation" useCache="false" flushCache="true">
+    SELECT request_id, result_code, result_message FROM order_operation WHERE request_id=#{requestId} FOR SHARE
+  </select>
   <!-- 唯一键冲突时 INSERT IGNORE 返回 0，表示另一个并发请求已经取得执行权。 -->
   <insert id="reserveOperation">
     INSERT IGNORE INTO order_operation(request_id, order_id, operation_type, result_code, result_message)

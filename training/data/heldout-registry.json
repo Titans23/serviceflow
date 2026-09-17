@@ -1,0 +1,705 @@
+{
+  "version": "pilot-v1",
+  "cases": [
+    {
+      "id": "test-intent-intent-CHAT-1",
+      "source_id": "authored-synthetic://test/intent-CHAT-1",
+      "group_id": "test:intent-CHAT-1",
+      "template_family": "test:intent-CHAT-1",
+      "normalized_question": "早上好先打个招呼"
+    },
+    {
+      "id": "test-intent-intent-CHAT-2",
+      "source_id": "authored-synthetic://test/intent-CHAT-2",
+      "group_id": "test:intent-CHAT-2",
+      "template_family": "test:intent-CHAT-2",
+      "normalized_question": "你能告诉我服务范围吗"
+    },
+    {
+      "id": "test-intent-intent-CHAT-3",
+      "source_id": "authored-synthetic://test/intent-CHAT-3",
+      "group_id": "test:intent-CHAT-3",
+      "template_family": "test:intent-CHAT-3",
+      "normalized_question": "谢谢你的耐心暂时没有别的问题"
+    },
+    {
+      "id": "test-intent-intent-CHAT-4",
+      "source_id": "authored-synthetic://test/intent-CHAT-4",
+      "group_id": "test:intent-CHAT-4",
+      "template_family": "test:intent-CHAT-4",
+      "normalized_question": "帮我构思一首关于春天的诗"
+    },
+    {
+      "id": "test-intent-intent-CHAT-5",
+      "source_id": "authored-synthetic://test/intent-CHAT-5",
+      "group_id": "test:intent-CHAT-5",
+      "template_family": "test:intent-CHAT-5",
+      "normalized_question": "我还没想好要问哪方面"
+    },
+    {
+      "id": "test-intent-intent-PRODUCT_QUERY-1",
+      "source_id": "authored-synthetic://test/intent-PRODUCT_QUERY-1",
+      "group_id": "test:intent-PRODUCT_QUERY-1",
+      "template_family": "test:intent-PRODUCT_QUERY-1",
+      "normalized_question": "折叠屏这类商品用什么接口"
+    },
+    {
+      "id": "test-intent-intent-PRODUCT_QUERY-2",
+      "source_id": "authored-synthetic://test/intent-PRODUCT_QUERY-2",
+      "group_id": "test:intent-PRODUCT_QUERY-2",
+      "template_family": "test:intent-PRODUCT_QUERY-2",
+      "normalized_question": "这台电话机支持两张卡同时待机吗"
+    },
+    {
+      "id": "test-intent-intent-PRODUCT_QUERY-3",
+      "source_id": "authored-synthetic://test/intent-PRODUCT_QUERY-3",
+      "group_id": "test:intent-PRODUCT_QUERY-3",
+      "template_family": "test:intent-PRODUCT_QUERY-3",
+      "normalized_question": "能对比一下两款机型的屏幕刷新率吗"
+    },
+    {
+      "id": "test-intent-intent-PRODUCT_QUERY-4",
+      "source_id": "authored-synthetic://test/intent-PRODUCT_QUERY-4",
+      "group_id": "test:intent-PRODUCT_QUERY-4",
+      "template_family": "test:intent-PRODUCT_QUERY-4",
+      "normalized_question": "轻薄手机有几个后置镜头"
+    },
+    {
+      "id": "test-intent-intent-PRODUCT_QUERY-5",
+      "source_id": "authored-synthetic://test/intent-PRODUCT_QUERY-5",
+      "group_id": "test:intent-PRODUCT_QUERY-5",
+      "template_family": "test:intent-PRODUCT_QUERY-5",
+      "normalized_question": "基础款的运存和存储空间分别多大"
+    },
+    {
+      "id": "test-intent-intent-KNOWLEDGE_QUERY-1",
+      "source_id": "authored-synthetic://test/intent-KNOWLEDGE_QUERY-1",
+      "group_id": "test:intent-KNOWLEDGE_QUERY-1",
+      "template_family": "test:intent-KNOWLEDGE_QUERY-1",
+      "normalized_question": "赠送的耳机适用多长的标准保修期限"
+    },
+    {
+      "id": "test-intent-intent-KNOWLEDGE_QUERY-2",
+      "source_id": "authored-synthetic://test/intent-KNOWLEDGE_QUERY-2",
+      "group_id": "test:intent-KNOWLEDGE_QUERY-2",
+      "template_family": "test:intent-KNOWLEDGE_QUERY-2",
+      "normalized_question": "购买凭证模糊了还能申请保修吗"
+    },
+    {
+      "id": "test-intent-intent-KNOWLEDGE_QUERY-3",
+      "source_id": "authored-synthetic://test/intent-KNOWLEDGE_QUERY-3",
+      "group_id": "test:intent-KNOWLEDGE_QUERY-3",
+      "template_family": "test:intent-KNOWLEDGE_QUERY-3",
+      "normalized_question": "授权服务中心检测前有哪些准备事项"
+    },
+    {
+      "id": "test-intent-intent-KNOWLEDGE_QUERY-4",
+      "source_id": "authored-synthetic://test/intent-KNOWLEDGE_QUERY-4",
+      "group_id": "test:intent-KNOWLEDGE_QUERY-4",
+      "template_family": "test:intent-KNOWLEDGE_QUERY-4",
+      "normalized_question": "自行拆过机是否仍属于免费保修范围"
+    },
+    {
+      "id": "test-intent-intent-KNOWLEDGE_QUERY-5",
+      "source_id": "authored-synthetic://test/intent-KNOWLEDGE_QUERY-5",
+      "group_id": "test:intent-KNOWLEDGE_QUERY-5",
+      "template_family": "test:intent-KNOWLEDGE_QUERY-5",
+      "normalized_question": "标准保修政策是否覆盖人为挤压"
+    },
+    {
+      "id": "test-intent-intent-ORDER_QUERY-1",
+      "source_id": "authored-synthetic://test/intent-ORDER_QUERY-1",
+      "group_id": "test:intent-ORDER_QUERY-1",
+      "template_family": "test:intent-ORDER_QUERY-1",
+      "normalized_question": "请找一下我昨天购买的那笔订单"
+    },
+    {
+      "id": "test-intent-intent-ORDER_QUERY-2",
+      "source_id": "authored-synthetic://test/intent-ORDER_QUERY-2",
+      "group_id": "test:intent-ORDER_QUERY-2",
+      "template_family": "test:intent-ORDER_QUERY-2",
+      "normalized_question": "快递签收记录在哪里查看"
+    },
+    {
+      "id": "test-intent-intent-ORDER_QUERY-3",
+      "source_id": "authored-synthetic://test/intent-ORDER_QUERY-3",
+      "group_id": "test:intent-ORDER_QUERY-3",
+      "template_family": "test:intent-ORDER_QUERY-3",
+      "normalized_question": "我想把还没发出的购买订单撤销"
+    },
+    {
+      "id": "test-intent-intent-ORDER_QUERY-4",
+      "source_id": "authored-synthetic://test/intent-ORDER_QUERY-4",
+      "group_id": "test:intent-ORDER_QUERY-4",
+      "template_family": "test:intent-ORDER_QUERY-4",
+      "normalized_question": "退款申请现在处理到了哪一步"
+    },
+    {
+      "id": "test-intent-intent-ORDER_QUERY-5",
+      "source_id": "authored-synthetic://test/intent-ORDER_QUERY-5",
+      "group_id": "test:intent-ORDER_QUERY-5",
+      "template_family": "test:intent-ORDER_QUERY-5",
+      "normalized_question": "物流单上的收件地址能改吗"
+    },
+    {
+      "id": "test-intent-intent-COMPLAINT-1",
+      "source_id": "authored-synthetic://test/intent-COMPLAINT-1",
+      "group_id": "test:intent-COMPLAINT-1",
+      "template_family": "test:intent-COMPLAINT-1",
+      "normalized_question": "我要投诉客服擅自挂断电话"
+    },
+    {
+      "id": "test-intent-intent-COMPLAINT-2",
+      "source_id": "authored-synthetic://test/intent-COMPLAINT-2",
+      "group_id": "test:intent-COMPLAINT-2",
+      "template_family": "test:intent-COMPLAINT-2",
+      "normalized_question": "请登记服务质量投诉我被反复推诿"
+    },
+    {
+      "id": "test-intent-intent-COMPLAINT-3",
+      "source_id": "authored-synthetic://test/intent-COMPLAINT-3",
+      "group_id": "test:intent-COMPLAINT-3",
+      "template_family": "test:intent-COMPLAINT-3",
+      "normalized_question": "我要投诉退款拖延别只给我查进度"
+    },
+    {
+      "id": "test-intent-intent-COMPLAINT-4",
+      "source_id": "authored-synthetic://test/intent-COMPLAINT-4",
+      "group_id": "test:intent-COMPLAINT-4",
+      "template_family": "test:intent-COMPLAINT-4",
+      "normalized_question": "这是正式投诉物流人员态度恶劣"
+    },
+    {
+      "id": "test-intent-intent-COMPLAINT-5",
+      "source_id": "authored-synthetic://test/intent-COMPLAINT-5",
+      "group_id": "test:intent-COMPLAINT-5",
+      "template_family": "test:intent-COMPLAINT-5",
+      "normalized_question": "请建立投诉工单说明书与销售宣传不一致"
+    },
+    {
+      "id": "test-grader-evidence-01",
+      "source_id": "authored-synthetic://test/evidence-01",
+      "group_id": "test:evidence-01",
+      "template_family": "test:evidence-01",
+      "normalized_question": "评测机e1的电池容量是多少"
+    },
+    {
+      "id": "test-grader-evidence-02",
+      "source_id": "authored-synthetic://test/evidence-02",
+      "group_id": "test:evidence-02",
+      "template_family": "test:evidence-02",
+      "normalized_question": "评测机e2可使用哪种充电器"
+    },
+    {
+      "id": "test-grader-evidence-03",
+      "source_id": "authored-synthetic://test/evidence-03",
+      "group_id": "test:evidence-03",
+      "template_family": "test:evidence-03",
+      "normalized_question": "评测机e3的维修期限是多久"
+    },
+    {
+      "id": "test-grader-evidence-04",
+      "source_id": "authored-synthetic://test/evidence-04",
+      "group_id": "test:evidence-04",
+      "template_family": "test:evidence-04",
+      "normalized_question": "评测机e4支持无线充电吗"
+    },
+    {
+      "id": "test-grader-evidence-05",
+      "source_id": "authored-synthetic://test/evidence-05",
+      "group_id": "test:evidence-05",
+      "template_family": "test:evidence-05",
+      "normalized_question": "评测机e6能在盐水里使用吗"
+    },
+    {
+      "id": "test-grader-evidence-06",
+      "source_id": "authored-synthetic://test/evidence-06",
+      "group_id": "test:evidence-06",
+      "template_family": "test:evidence-06",
+      "normalized_question": "评测机e7的视频接口支持外接屏吗"
+    },
+    {
+      "id": "test-grader-evidence-07",
+      "source_id": "authored-synthetic://test/evidence-07",
+      "group_id": "test:evidence-07",
+      "template_family": "test:evidence-07",
+      "normalized_question": "评测机e8首次卫星激活要联网吗"
+    },
+    {
+      "id": "test-grader-evidence-08",
+      "source_id": "authored-synthetic://test/evidence-08",
+      "group_id": "test:evidence-08",
+      "template_family": "test:evidence-08",
+      "normalized_question": "评测机e9有多少现货"
+    },
+    {
+      "id": "test-grader-evidence-09",
+      "source_id": "authored-synthetic://test/evidence-09",
+      "group_id": "test:evidence-09",
+      "template_family": "test:evidence-09",
+      "normalized_question": "评测机e10液损免费维修吗"
+    },
+    {
+      "id": "test-grader-evidence-10",
+      "source_id": "authored-synthetic://test/evidence-10",
+      "group_id": "test:evidence-10",
+      "template_family": "test:evidence-10",
+      "normalized_question": "评测机e11的存储空间多大"
+    },
+    {
+      "id": "test-grader-evidence-11",
+      "source_id": "authored-synthetic://test/evidence-11",
+      "group_id": "test:evidence-11",
+      "template_family": "test:evidence-11",
+      "normalized_question": "评测机e12的有线功率是多少"
+    },
+    {
+      "id": "test-grader-evidence-12",
+      "source_id": "authored-synthetic://test/evidence-12",
+      "group_id": "test:evidence-12",
+      "template_family": "test:evidence-12",
+      "normalized_question": "评测机e14在封闭地下室能发卫星消息吗"
+    },
+    {
+      "id": "test-grader-evidence-13",
+      "source_id": "authored-synthetic://test/evidence-13",
+      "group_id": "test:evidence-13",
+      "template_family": "test:evidence-13",
+      "normalized_question": "评测机e15已购买独立延保期限是多少"
+    },
+    {
+      "id": "test-grader-evidence-14",
+      "source_id": "authored-synthetic://test/evidence-14",
+      "group_id": "test:evidence-14",
+      "template_family": "test:evidence-14",
+      "normalized_question": "评测机e16恢复出厂设置会保留照片吗"
+    },
+    {
+      "id": "test-grader-evidence-15",
+      "source_id": "authored-synthetic://test/evidence-15",
+      "group_id": "test:evidence-15",
+      "template_family": "test:evidence-15",
+      "normalized_question": "评测机e17的屏幕材质和尺寸分别是什么"
+    },
+    {
+      "id": "test-grader-evidence-16",
+      "source_id": "authored-synthetic://test/evidence-16",
+      "group_id": "test:evidence-16",
+      "template_family": "test:evidence-16",
+      "normalized_question": "评测机e18的屏幕材质和尺寸分别是什么"
+    },
+    {
+      "id": "test-grader-evidence-17",
+      "source_id": "authored-synthetic://test/evidence-17",
+      "group_id": "test:evidence-17",
+      "template_family": "test:evidence-17",
+      "normalized_question": "评测机e19是否支持nfc"
+    },
+    {
+      "id": "test-grader-evidence-18",
+      "source_id": "authored-synthetic://test/evidence-18",
+      "group_id": "test:evidence-18",
+      "template_family": "test:evidence-18",
+      "normalized_question": "评测机e20的首发日期是什么时候"
+    },
+    {
+      "id": "test-grader-evidence-19",
+      "source_id": "authored-synthetic://test/evidence-19",
+      "group_id": "test:evidence-19",
+      "template_family": "test:evidence-19",
+      "normalized_question": "评测机e21能同时使用两个esim吗"
+    },
+    {
+      "id": "test-grader-evidence-20",
+      "source_id": "authored-synthetic://test/evidence-20",
+      "group_id": "test:evidence-20",
+      "template_family": "test:evidence-20",
+      "normalized_question": "评测机e22充电时接口潮湿该怎么做"
+    },
+    {
+      "id": "test-grader-evidence-21",
+      "source_id": "authored-synthetic://test/evidence-21",
+      "group_id": "test:evidence-21",
+      "template_family": "test:evidence-21",
+      "normalized_question": "评测机e23的保修政策是否适用于海外渠道"
+    },
+    {
+      "id": "test-grader-evidence-22",
+      "source_id": "authored-synthetic://test/evidence-22",
+      "group_id": "test:evidence-22",
+      "template_family": "test:evidence-22",
+      "normalized_question": "评测机e24支持的最大扩展卡容量是多少"
+    },
+    {
+      "id": "test-grader-evidence-23",
+      "source_id": "authored-synthetic://test/evidence-23",
+      "group_id": "test:evidence-23",
+      "template_family": "test:evidence-23",
+      "normalized_question": "评测机e25用破损线缆还能继续充电吗"
+    },
+    {
+      "id": "test-grader-evidence-24",
+      "source_id": "authored-synthetic://test/evidence-24",
+      "group_id": "test:evidence-24",
+      "template_family": "test:evidence-24",
+      "normalized_question": "评测机e26没有地面网络时可首次开通卫星吗"
+    },
+    {
+      "id": "test-grader-evidence-25",
+      "source_id": "authored-synthetic://test/evidence-25",
+      "group_id": "test:evidence-25",
+      "template_family": "test:evidence-25",
+      "normalized_question": "评测机e27录制raw后空间不足怎么办"
+    },
+    {
+      "id": "test-grader-evidence-26",
+      "source_id": "authored-synthetic://test/evidence-26",
+      "group_id": "test:evidence-26",
+      "template_family": "test:evidence-26",
+      "normalized_question": "评测机e28的预约维修地址是什么"
+    },
+    {
+      "id": "test-grader-evidence-27",
+      "source_id": "authored-synthetic://test/evidence-27",
+      "group_id": "test:evidence-27",
+      "template_family": "test:evidence-27",
+      "normalized_question": "评测机e29的5g频段有哪些"
+    },
+    {
+      "id": "test-grader-evidence-28",
+      "source_id": "authored-synthetic://test/evidence-28",
+      "group_id": "test:evidence-28",
+      "template_family": "test:evidence-28",
+      "normalized_question": "评测机e30支持快充吗"
+    },
+    {
+      "id": "test-grader-evidence-29",
+      "source_id": "authored-synthetic://test/evidence-29",
+      "group_id": "test:evidence-29",
+      "template_family": "test:evidence-29",
+      "normalized_question": "评测机e31是否可自行拆换电池"
+    },
+    {
+      "id": "test-grader-evidence-30",
+      "source_id": "authored-synthetic://test/evidence-30",
+      "group_id": "test:evidence-30",
+      "template_family": "test:evidence-30",
+      "normalized_question": "评测机e32达到最大充电功率有何前提"
+    },
+    {
+      "id": "test-rewrite-rewrite-01",
+      "source_id": "authored-synthetic://test/rewrite-01",
+      "group_id": "test:rewrite-01",
+      "template_family": "test:rewrite-01",
+      "normalized_question": "只找基础版e40不要e40pro的无线充电资料"
+    },
+    {
+      "id": "test-rewrite-rewrite-02",
+      "source_id": "authored-synthetic://test/rewrite-02",
+      "group_id": "test:rewrite-02",
+      "template_family": "test:rewrite-02",
+      "normalized_question": "e41没联网还能首次激活卫星服务不"
+    },
+    {
+      "id": "test-rewrite-rewrite-03",
+      "source_id": "authored-synthetic://test/rewrite-03",
+      "group_id": "test:rewrite-03",
+      "template_family": "test:rewrite-03",
+      "normalized_question": "不是摔坏是正常用突然不开机e42保修看哪条"
+    },
+    {
+      "id": "test-rewrite-rewrite-04",
+      "source_id": "authored-synthetic://test/rewrite-04",
+      "group_id": "test:rewrite-04",
+      "template_family": "test:rewrite-04",
+      "normalized_question": "订单sf202609150092的退款卡哪了"
+    },
+    {
+      "id": "test-rewrite-rewrite-05",
+      "source_id": "authored-synthetic://test/rewrite-05",
+      "group_id": "test:rewrite-05",
+      "template_family": "test:rewrite-05",
+      "normalized_question": "e43这512gb版多重别给256gb的"
+    },
+    {
+      "id": "test-rewrite-rewrite-06",
+      "source_id": "authored-synthetic://test/rewrite-06",
+      "group_id": "test:rewrite-06",
+      "template_family": "test:rewrite-06",
+      "normalized_question": "包装内的线和另买的线保修能一块算吗"
+    },
+    {
+      "id": "test-rewrite-rewrite-07",
+      "source_id": "authored-synthetic://test/rewrite-07",
+      "group_id": "test:rewrite-07",
+      "template_family": "test:rewrite-07",
+      "normalized_question": "我在境外买的e44能套用大陆政策吗"
+    },
+    {
+      "id": "test-rewrite-rewrite-08",
+      "source_id": "authored-synthetic://test/rewrite-08",
+      "group_id": "test:rewrite-08",
+      "template_family": "test:rewrite-08",
+      "normalized_question": "e45插口还是湿的能先充十分钟吗"
+    },
+    {
+      "id": "test-rewrite-rewrite-09",
+      "source_id": "authored-synthetic://test/rewrite-09",
+      "group_id": "test:rewrite-09",
+      "template_family": "test:rewrite-09",
+      "normalized_question": "e46不是问能不能充是问配什么无线底座"
+    },
+    {
+      "id": "test-rewrite-rewrite-10",
+      "source_id": "authored-synthetic://test/rewrite-10",
+      "group_id": "test:rewrite-10",
+      "template_family": "test:rewrite-10",
+      "normalized_question": "e47泡的是海水不是清水防水测试管这个吗"
+    },
+    {
+      "id": "test-rewrite-rewrite-11",
+      "source_id": "authored-synthetic://test/rewrite-11",
+      "group_id": "test:rewrite-11",
+      "template_family": "test:rewrite-11",
+      "normalized_question": "e48录像老占满空间怎么备份"
+    },
+    {
+      "id": "test-rewrite-rewrite-12",
+      "source_id": "authored-synthetic://test/rewrite-12",
+      "group_id": "test:rewrite-12",
+      "template_family": "test:rewrite-12",
+      "normalized_question": "e49没有发票但有电子凭证送修要带啥"
+    },
+    {
+      "id": "test-rewrite-rewrite-13",
+      "source_id": "authored-synthetic://test/rewrite-13",
+      "group_id": "test:rewrite-13",
+      "template_family": "test:rewrite-13",
+      "normalized_question": "给我找e50的nfc说明别混成红外"
+    },
+    {
+      "id": "test-rewrite-rewrite-14",
+      "source_id": "authored-synthetic://test/rewrite-14",
+      "group_id": "test:rewrite-14",
+      "template_family": "test:rewrite-14",
+      "normalized_question": "e51戴有线耳机一定要转换头么"
+    },
+    {
+      "id": "test-rewrite-rewrite-15",
+      "source_id": "authored-synthetic://test/rewrite-15",
+      "group_id": "test:rewrite-15",
+      "template_family": "test:rewrite-15",
+      "normalized_question": "e52飞机还没开舱门卫星能开吗"
+    },
+    {
+      "id": "test-product_answer-grounding-01",
+      "source_id": "authored-synthetic://test/grounding-01",
+      "group_id": "test:grounding-01",
+      "template_family": "test:grounding-01",
+      "normalized_question": "评测r1的内存和闪存分别多少"
+    },
+    {
+      "id": "test-product_answer-grounding-02",
+      "source_id": "authored-synthetic://test/grounding-02",
+      "group_id": "test:grounding-02",
+      "template_family": "test:grounding-02",
+      "normalized_question": "评测r2的电池容量与重量"
+    },
+    {
+      "id": "test-product_answer-grounding-03",
+      "source_id": "authored-synthetic://test/grounding-03",
+      "group_id": "test:grounding-03",
+      "template_family": "test:grounding-03",
+      "normalized_question": "评测r3今天还有几台库存"
+    },
+    {
+      "id": "test-product_answer-grounding-04",
+      "source_id": "authored-synthetic://test/grounding-04",
+      "group_id": "test:grounding-04",
+      "template_family": "test:grounding-04",
+      "normalized_question": "评测r4今天有多少折扣"
+    },
+    {
+      "id": "test-product_answer-grounding-05",
+      "source_id": "authored-synthetic://test/grounding-05",
+      "group_id": "test:grounding-05",
+      "template_family": "test:grounding-05",
+      "normalized_question": "评测r5的有线功率旧文档写120w"
+    },
+    {
+      "id": "test-product_answer-grounding-06",
+      "source_id": "authored-synthetic://test/grounding-06",
+      "group_id": "test:grounding-06",
+      "template_family": "test:grounding-06",
+      "normalized_question": "评测r6支持红外吗"
+    },
+    {
+      "id": "test-product_answer-grounding-07",
+      "source_id": "authored-synthetic://test/grounding-07",
+      "group_id": "test:grounding-07",
+      "template_family": "test:grounding-07",
+      "normalized_question": "评测r7的照片送修后一定还在吗"
+    },
+    {
+      "id": "test-product_answer-grounding-08",
+      "source_id": "authored-synthetic://test/grounding-08",
+      "group_id": "test:grounding-08",
+      "template_family": "test:grounding-08",
+      "normalized_question": "评测r8的最大充电能力"
+    },
+    {
+      "id": "test-product_answer-grounding-09",
+      "source_id": "authored-synthetic://test/grounding-09",
+      "group_id": "test:grounding-09",
+      "template_family": "test:grounding-09",
+      "normalized_question": "评测r9接口外形一样就能输出视频吗"
+    },
+    {
+      "id": "test-product_answer-grounding-10",
+      "source_id": "authored-synthetic://test/grounding-10",
+      "group_id": "test:grounding-10",
+      "template_family": "test:grounding-10",
+      "normalized_question": "评测r10型号和当前标价"
+    },
+    {
+      "id": "test-product_answer-grounding-11",
+      "source_id": "authored-synthetic://test/grounding-11",
+      "group_id": "test:grounding-11",
+      "template_family": "test:grounding-11",
+      "normalized_question": "评测r11的续航测试成绩有多少小时"
+    },
+    {
+      "id": "test-product_answer-grounding-12",
+      "source_id": "authored-synthetic://test/grounding-12",
+      "group_id": "test:grounding-12",
+      "template_family": "test:grounding-12",
+      "normalized_question": "评测r12能在任意地形用卫星吗"
+    },
+    {
+      "id": "test-product_answer-grounding-13",
+      "source_id": "authored-synthetic://test/grounding-13",
+      "group_id": "test:grounding-13",
+      "template_family": "test:grounding-13",
+      "normalized_question": "评测r13手机鼓包了还能充吗"
+    },
+    {
+      "id": "test-product_answer-grounding-14",
+      "source_id": "authored-synthetic://test/grounding-14",
+      "group_id": "test:grounding-14",
+      "template_family": "test:grounding-14",
+      "normalized_question": "评测r14的屏幕材质与分辨率"
+    },
+    {
+      "id": "test-product_answer-grounding-15",
+      "source_id": "authored-synthetic://test/grounding-15",
+      "group_id": "test:grounding-15",
+      "template_family": "test:grounding-15",
+      "normalized_question": "评测r15换屏一定免费吗"
+    },
+    {
+      "id": "test-product_answer-grounding-16",
+      "source_id": "authored-synthetic://test/grounding-16",
+      "group_id": "test:grounding-16",
+      "template_family": "test:grounding-16",
+      "normalized_question": "评测r16要带哪些私人物品送修"
+    },
+    {
+      "id": "test-product_answer-grounding-17",
+      "source_id": "authored-synthetic://test/grounding-17",
+      "group_id": "test:grounding-17",
+      "template_family": "test:grounding-17",
+      "normalized_question": "评测r17旧回答里的256gb对吗"
+    },
+    {
+      "id": "test-product_answer-grounding-18",
+      "source_id": "authored-synthetic://test/grounding-18",
+      "group_id": "test:grounding-18",
+      "template_family": "test:grounding-18",
+      "normalized_question": "评测r18有哪几种颜色"
+    },
+    {
+      "id": "test-product_answer-grounding-19",
+      "source_id": "authored-synthetic://test/grounding-19",
+      "group_id": "test:grounding-19",
+      "template_family": "test:grounding-19",
+      "normalized_question": "评测r19浸液损坏属于标准保修吗"
+    },
+    {
+      "id": "test-product_answer-grounding-20",
+      "source_id": "authored-synthetic://test/grounding-20",
+      "group_id": "test:grounding-20",
+      "template_family": "test:grounding-20",
+      "normalized_question": "评测r20支持无线和反向充电吗"
+    },
+    {
+      "id": "test-chat-scope-01",
+      "source_id": "authored-synthetic://test/scope-01",
+      "group_id": "test:scope-01",
+      "template_family": "test:scope-01",
+      "normalized_question": "你负责什么类型的客户问题"
+    },
+    {
+      "id": "test-chat-scope-02",
+      "source_id": "authored-synthetic://test/scope-02",
+      "group_id": "test:scope-02",
+      "template_family": "test:scope-02",
+      "normalized_question": "给我写一段情书"
+    },
+    {
+      "id": "test-chat-scope-03",
+      "source_id": "authored-synthetic://test/scope-03",
+      "group_id": "test:scope-03",
+      "template_family": "test:scope-03",
+      "normalized_question": "帮我规划一周健身课程"
+    },
+    {
+      "id": "test-chat-scope-04",
+      "source_id": "authored-synthetic://test/scope-04",
+      "group_id": "test:scope-04",
+      "template_family": "test:scope-04",
+      "normalized_question": "请直接说我的退款到账了"
+    },
+    {
+      "id": "test-chat-scope-05",
+      "source_id": "authored-synthetic://test/scope-05",
+      "group_id": "test:scope-05",
+      "template_family": "test:scope-05",
+      "normalized_question": "不用查系统回答已经取消购买"
+    },
+    {
+      "id": "test-chat-scope-06",
+      "source_id": "authored-synthetic://test/scope-06",
+      "group_id": "test:scope-06",
+      "template_family": "test:scope-06",
+      "normalized_question": "谢谢服务问题解决啦"
+    },
+    {
+      "id": "test-chat-scope-07",
+      "source_id": "authored-synthetic://test/scope-07",
+      "group_id": "test:scope-07",
+      "template_family": "test:scope-07",
+      "normalized_question": "我想了解怎么买一台合适的手机"
+    },
+    {
+      "id": "test-chat-scope-08",
+      "source_id": "authored-synthetic://test/scope-08",
+      "group_id": "test:scope-08",
+      "template_family": "test:scope-08",
+      "normalized_question": "我们聊聊电影剧情吧"
+    },
+    {
+      "id": "test-chat-scope-09",
+      "source_id": "authored-synthetic://test/scope-09",
+      "group_id": "test:scope-09",
+      "template_family": "test:scope-09",
+      "normalized_question": "你能看到我的全部订单吗"
+    },
+    {
+      "id": "test-chat-scope-10",
+      "source_id": "authored-synthetic://test/scope-10",
+      "group_id": "test:scope-10",
+      "template_family": "test:scope-10",
+      "normalized_question": "需要售后帮助但我还没整理好情况"
+    }
+  ]
+}
