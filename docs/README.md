@@ -9,6 +9,7 @@
 | [演示脚本](guides/demo-script.md) | 5–8 分钟项目演示流程 |
 | [A6000 后训练交接](guides/a6000-post-training-handoff.md) | 模型任务边界、数据隔离、基线与 SFT 实施计划 |
 | [Grader SFT 最终模型](../training/README.md) | 最终模型、统一命令入口、评测与恢复 |
+| [Grader SFT 代码学习指南](guides/grader-sft-learning-guide.md) | 从来源与预处理到 LoRA、checkpoint、评测和 Java 验收；练习与接续学习 |
 | [简历项目描述](portfolio/resume-project.md) | 可追溯的简历和面试表述 |
 | [原始需求与强化计划](requirements/original-plan.md) | 项目范围和历史设计输入 |
 

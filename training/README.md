@@ -8,6 +8,8 @@
 
 [实验结果](reports/grader-specialist-exp-01-results.md) · [数据卡和预登记](reports/grader-specialist-exp-01.md) · [恢复指南](checkpoint-guide.md) · [代码结构](src/serviceflow_training/README.md)
 
+学习实现细节见 [Grader SFT 代码学习指南](../docs/guides/grader-sft-learning-guide.md)：数据来源、预处理、LoRA 与 loss、checkpoint、评分及 Java 验收，包含练习、答案和新上下文接续提示词。
+
 ## 一个入口
 
 从仓库根目录执行：
