@@ -1,0 +1,5 @@
+# Only for authorized synthetic cloud business checks; layer after the budget overlay.
+services:
+  server:
+    environment:
+      SERVICEFLOW_REFUND_SANDBOX_ENABLED: "true"

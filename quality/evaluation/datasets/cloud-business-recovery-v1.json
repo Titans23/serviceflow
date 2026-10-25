@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "name": "cloud-business-recovery-v1",
+  "classification": "project-authored development scenarios, not independent holdout",
+  "providerRequestLimit": 27,
+  "plannedNewChatTurns": 14,
+  "workers": 1,
+  "retries": 0,
+  "modelsFrom": ".env",
+  "newIngestion": false,
+  "serverRestarts": false,
+  "requiresSandbox": true,
+  "cases": [
+    {
+      "id": "happy-replay",
+      "messages": [
+        "查询订单 {orderNo} 的状态。",
+        "取消刚才那个订单。",
+        "刚才那单退款现在是什么状态？",
+        "刚才那单退款现在是什么状态？"
+      ]
+    },
+    {
+      "id": "order-switch",
+      "secondOrder": true,
+      "messages": [
+        "查询订单 {orderNo} 的状态。",
+        "再查询订单 {secondOrderNo} 的状态。",
+        "取消刚才那一单。"
+      ]
+    },
+    {
+      "id": "permissions",
+      "messages": [
+        "取消订单 {orderNo}。",
+        "取消订单 {orderNo}。",
+        "取消订单 {orderNo}。"
+      ]
+    },
+    {
+      "id": "rejected",
+      "messages": [
+        "取消订单 {orderNo}。"
+      ]
+    },
+    {
+      "id": "expired",
+      "messages": [
+        "取消订单 {orderNo}。"
+      ]
+    },
+    {
+      "id": "lost-response",
+      "messages": [
+        "查询订单 {orderNo} 的状态。",
+        "取消刚才那个订单。"
+      ]
+    }
+  ],
+  "scope": [
+    "existing cloud classification with server-bound order/action parameters",
+    "duplicate clientRequestId replay, duplicate/concurrent confirmations and sandbox callbacks",
+    "cross-session/customer/guest authorization",
+    "explicit reject, exact synthetic action-key eviction, committed confirmation response loss, read-only recovery"
+  ],
+  "limitations": [
+    "No native model-generated tool arguments: classification is model-based; order/action parameters are bound by server rules.",
+    "No provider budget reset, server restart, ingestion, automatic paid rerun or sample expansion.",
+    "Persist raw synthetic responses locally only; token/billing usage unknown stays null."
+  ]
+}
