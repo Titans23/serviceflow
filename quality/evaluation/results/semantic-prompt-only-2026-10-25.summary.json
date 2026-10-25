@@ -1,0 +1,90 @@
+{
+  "runId": "20261025-124807-63d875ee",
+  "mode": "cloud",
+  "split": "development",
+  "suiteSha256": "63b95e3a8bf7b407a003f5a4556efc6a51c78b48a5134969ac509988f5f062bf",
+  "packageFileSha256": {
+    "manifest.json": "675af115ab92c6d4af6f530497e3257f313d648962460869278a78729573dd82",
+    "catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+    "knowledge/pura80.md": "66a98729d7b9a911b26a9496c4b5b70fbd2c83aed3f92c5510a65b3a52af63e2",
+    "knowledge/pura80-pro.md": "2f20879d53ebefd64068606a6d2245a29b424bd85d612a6bd1d0f3d4a5215638",
+    "knowledge/mate70.md": "0b8379981323a0dbd20f5cd43626a1adc8fee5aeb0108259ba9d560e082c29b1",
+    "knowledge/mate70-pro-plus.md": "397a56ac3bb1b7f7df4518c9356fd58e369f72e4d494f600fc83e41fd1ab5769",
+    "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+    "knowledge/nova14-pro.md": "efefadd08c5c36aee3a12df30948ba60b21313d70bd11d7f4c4bd589f1e5fb5a",
+    "knowledge/nova14-ultra.md": "064afa490c53c1a0af67db81425585f996f162b22c9db95f5932573cb85429d7",
+    "knowledge/mate-x6.md": "566713ad91665ff48c8a813d525a32f2dfbd75045b450b1fca858a97e42098a0",
+    "knowledge/freebuds6.md": "e84db13907d9c48f728d068a5e37140a3b0305c000c465825d4ce047928dabb1",
+    "knowledge/freeclip.md": "81736940e6371fa46076aa7426d684503e2ff92609a19fc0e5810c628ae235c8",
+    "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+  },
+  "inventory": {
+    "package": {
+      "version": "retail-v1",
+      "products": 23,
+      "sources": 11,
+      "documents": 11,
+      "sections": 88
+    },
+    "suite": {
+      "cases": 12,
+      "chatTurns": 15,
+      "multiTurnCases": 1,
+      "assertionGroups": 63,
+      "splits": {
+        "development": 12,
+        "holdout": 0
+      }
+    }
+  },
+  "chatTurns": 15,
+  "workers": 3,
+  "caseIds": [
+    "knowledge-pura80-wireless",
+    "knowledge-pura80-system",
+    "knowledge-pura80-pro-system",
+    "knowledge-pura80-pro-wireless",
+    "knowledge-mate70-wireless",
+    "knowledge-mate70-pro-plus-upgrade",
+    "knowledge-nova14-headset",
+    "knowledge-nova14-pro-selfie",
+    "knowledge-nova14-ultra-usb",
+    "knowledge-nova14-ultra-headset",
+    "knowledge-nova14-ultra-wifi",
+    "semantic-explicit-product-switch"
+  ],
+  "cases": 12,
+  "passed": 12,
+  "checks": {
+    "httpStatus": {
+      "passed": 15,
+      "total": 15
+    },
+    "events": {
+      "passed": 15,
+      "total": 15
+    },
+    "noUnexpectedError": {
+      "passed": 15,
+      "total": 15
+    },
+    "intent": {
+      "passed": 15,
+      "total": 15
+    },
+    "products": {
+      "passed": 15,
+      "total": 15
+    },
+    "documentCitations": {
+      "passed": 15,
+      "total": 15
+    },
+    "phraseCoverage": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "semanticAccuracy": null,
+  "note": "规则/业务断言；短语覆盖不是事实正确率，引用文件指标不是 chunk 召回指标。"
+}

@@ -1,0 +1,36 @@
+{
+  "products": [
+    {
+      "sku": "APPLE-IP16-US-128",
+      "name": "iPhone 16 美国规格 128GB",
+      "brand": "Apple",
+      "model": "iPhone 16",
+      "category": "phone",
+      "specs": {
+        "storage": "128 GB",
+        "region": "United States",
+        "source_id": "iphone16-us",
+        "source_url": "https://support.apple.com/en-us/121029",
+        "source_checked_at": "2026-10-25"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "SAMSUNG-S24-US-128",
+      "name": "Galaxy S24 美国规格 128GB",
+      "brand": "Samsung",
+      "model": "Galaxy S24",
+      "category": "phone",
+      "specs": {
+        "storage": "128 GB",
+        "region": "United States",
+        "source_id": "galaxy-s24-us",
+        "source_url": "https://images.samsung.com/is/content/samsung/assets/us/2401/business/mobile/phones/galaxy/Galaxy_S24_Series_B2B_Spec_Sheet.pdf",
+        "source_checked_at": "2026-10-25"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    }
+  ]
+}

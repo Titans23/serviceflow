@@ -1,0 +1,11 @@
+{
+  "baselineFreeze": "cloud-baseline-freeze-2026-10-25.json",
+  "changedFrozenFiles": {
+    "apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java": "5586d76f3df1b99b1688be0307b1c2452014688ad4a8741dfea4c45795e87275"
+  },
+  "serverImageId": "sha256:43192dfc195d8389d9817a277a0d2c119aa5518625592151aa911cec5bf2efee",
+  "regressionRunId": "20261025-122539-b988d93a",
+  "holdoutExposed": true,
+  "independentHoldoutScore": null,
+  "originalDatasetChanged": false
+}

@@ -1,0 +1,14 @@
+{
+  "holdoutExposed": true,
+  "image": "sha256:1852f4a8cc5840723a1b6a07b1fbeb7ba94992b57b7357e7772591e99784d21a",
+  "changesSinceFreeze": {
+    "apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java": "d0149fa83d6d79111fa2294a5627bb1cac82016af14d6f6f02e6be2308463607",
+    "apps/serviceflow-server/src/main/java/com/serviceflow/ai/CloudAiGateway.java": "fce3da01a2fb715d4c82422d7610d51a6322260af5f3d863fc201f977de2b73f"
+  },
+  "runs": {
+    "semantic-post-repair-development": "20261025-130115-0cafdbb2",
+    "semantic-post-repair-known-holdout": "20261025-130141-d7af1937",
+    "semantic-post-repair-controls": "20261025-130151-af02a735"
+  },
+  "remainingFailure": "fresh-iphone-display"
+}

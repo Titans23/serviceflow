@@ -1,0 +1,106 @@
+{
+  "version": "serviceflow-eval-v2",
+  "origin": "project-authored",
+  "cases": [
+    {
+      "id": "policy-v2-1",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "手机保修政策需要购买凭证吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          },
+          "productId": "{{products.HUAWEI-PURA80-12-256}}"
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-3",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "保修政策是否覆盖人为损坏？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          },
+          "productId": "{{products.HUAWEI-PURA80-12-256}}"
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "guest-order-context",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要查询订单 SF000000000000。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "order",
+              "action_required"
+            ],
+            "textAll": [
+              [
+                "登录"
+              ]
+            ]
+          },
+          "productId": "{{products.HUAWEI-PURA80-12-256}}"
+        },
+        {
+          "type": "chat",
+          "message": "取消刚才那个订单。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "action_required"
+            ],
+            "textAll": [
+              [
+                "登录"
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

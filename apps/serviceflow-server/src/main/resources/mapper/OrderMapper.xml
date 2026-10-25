@@ -37,9 +37,14 @@
   </update>
   <!-- 仅已支付订单进入退款处理中；未支付订单保持原退款状态。 -->
   <update id="startRefund">
-    UPDATE payment SET refund_status=CASE WHEN status='PAID' THEN 'PROCESSING' ELSE refund_status END,
-      refund_requested_at=CASE WHEN status='PAID' THEN CURRENT_TIMESTAMP(6) ELSE refund_requested_at END WHERE order_id=#{orderId}
+    UPDATE payment SET refund_status='PROCESSING',refund_requested_at=CURRENT_TIMESTAMP(6)
+    WHERE order_id=#{orderId} AND status='PAID' AND refund_status='NONE'
   </update>
+  <insert id="createRefund">
+    INSERT INTO refund_request(public_id,order_id,amount)
+    SELECT #{publicId},o.id,o.total_amount FROM customer_order o JOIN payment p ON p.order_id=o.id
+    WHERE o.id=#{orderId} AND o.status='CANCELLED' AND p.status='PAID' AND p.refund_status='PROCESSING'
+  </insert>
   <update id="completeOperation">
     UPDATE order_operation SET result_code=#{code}, result_message=#{message} WHERE request_id=#{requestId}
   </update>

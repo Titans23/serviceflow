@@ -47,8 +47,8 @@ import org.springframework.stereotype.Service;
 public final class CustomerWorkflow {
 
     private static final Duration CHECKPOINT_TTL = Duration.ofMinutes(30);
-    private static final Pattern PAGE_PRODUCT_REFERENCE =
-            Pattern.compile("这款|这个|该机|这台|它|充电|电池|续航|防水|防尘|屏幕|拍照|相机|摄像|存储|内存|重量|尺寸|适配|兼容|支持|功能|使用");
+    private static final Pattern PAGE_PRODUCT_REFERENCE = Pattern.compile(
+            "这款|这个|该机|这台|它|充电|电池|续航|防水|防尘|屏幕|拍照|相机|摄像|存储|内存|重量|尺寸|适配|兼容|支持|功能|使用|配对|连接|重置|恢复出厂|重启|按键|手势|触控|音量");
     private static final String GRAPH_ID = "serviceflow-customer";
     private static final Logger log = LoggerFactory.getLogger(CustomerWorkflow.class);
     private static final Pattern ORDER_NO = Pattern.compile("SF\\d{12,}", Pattern.CASE_INSENSITIVE);
@@ -208,7 +208,13 @@ public final class CustomerWorkflow {
      */
     private Intent routeIntent(WorkflowGraphState state) {
         // 云模式调用大模型分类；演示模式使用关键词规则分类。
-        Intent classified = ai.classify(state.query());
+        String classificationQuery = state.pageProductId() > 0
+                ? "当前商品：" + products.get(state.pageProductId()).name() + "。\n用户问题：" + state.query()
+                : state.query();
+        Intent classified = ai.classify(classificationQuery);
+        if (classified != Intent.COMPLAINT && ORDER_NO.matcher(state.query()).find()) {
+            return Intent.ORDER_QUERY;
+        }
         Intent pageAware = prioritizePageProduct(classified, state.pageProductId(), state.query());
         if (pageAware != classified) {
             return pageAware;
@@ -216,6 +222,7 @@ public final class CustomerWorkflow {
         if (classified == Intent.CHAT
                 && (state.pageProductId() > 0
                         || !modelMentions(state.query()).isEmpty()
+                        || !skuMentions(state.query()).isEmpty()
                         || !products.resolve(state.query()).isEmpty())) {
             return Intent.PRODUCT_QUERY;
         }
@@ -240,7 +247,8 @@ public final class CustomerWorkflow {
             return List.of();
         }
         List<String> mentions = new ArrayList<>();
-        Matcher matcher = MODEL.matcher(query);
+        Matcher matcher = MODEL.matcher(
+                SKU.matcher(ORDER_NO.matcher(query).replaceAll("")).replaceAll(""));
         while (matcher.find()) {
             mentions.add(matcher.group().trim());
         }
@@ -257,6 +265,23 @@ public final class CustomerWorkflow {
             mentions.add(matcher.group().trim());
         }
         return mentions;
+    }
+
+    public Long resolveRememberedProduct(String query, Long rememberedId) {
+        if (rememberedId == null) {
+            return null;
+        }
+        List<ProductModels.ProductView> mentioned = modelMentions(query).stream()
+                .flatMap(model -> products.resolve(model).stream())
+                .toList();
+        return retainsRememberedProduct(query, products.get(rememberedId), mentioned) ? rememberedId : null;
+    }
+
+    static boolean retainsRememberedProduct(
+            String query, ProductModels.ProductView remembered, List<ProductModels.ProductView> mentioned) {
+        // An explicit SKU (including an unknown one) must be resolved without silently reusing old context.
+        return skuMentions(query).isEmpty()
+                && mentioned.stream().allMatch(product -> product.model().equalsIgnoreCase(remembered.model()));
     }
 
     private Map<String, Object> result(Result result, List<Event> events) {
@@ -289,9 +314,18 @@ public final class CustomerWorkflow {
                         candidates.isEmpty() ? "没有找到对应商品，请提供 SKU、型号或从商品页发起咨询。" : "找到多个可能的商品，请先选择具体型号。", List.of());
             }
         }
-        boolean compare = state.query().contains("对比")
-                || state.query().contains("区别")
-                || state.query().contains("比较");
+        boolean compare = isProductComparison(
+                state.query(), ids.stream().map(products::get).toList());
+        if (!compare && ids.size() > 1) {
+            if (state.pageProductId() == null) {
+                events.accept(
+                        "product_selection_required",
+                        ids.stream().map(products::get).toList());
+                return new Result("该型号有多个规格，请先选择具体商品。", List.of());
+            }
+            ids.clear();
+            ids.add(state.pageProductId());
+        }
         state.productIds().addAll(ids);
         if (compare) {
             if (ids.size() < 2) {
@@ -309,26 +343,13 @@ public final class CustomerWorkflow {
         ProductModels.ProductView product = products.get(ids.getFirst());
         // 只检索当前商品的有效说明书分块，避免其他型号的文档混入回答依据。
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
+        events.accept("rag_evidence", evidenceTrace(docs));
         // 数据库中的价格、型号和规格属于结构化事实，回答时优先级高于说明书文本。
-        String facts = writeJson(Map.of(
-                "id", product.id(),
-                "sku", product.sku(),
-                "name", product.name(),
-                "brand", product.brand(),
-                "model", product.model(),
-                "category", product.category(),
-                "specs", product.specs(),
-                "listPrice", product.listPrice(),
-                "saleStatus", product.saleStatus()));
-        // 将检索分块连同来源标签拼成可追溯的文档证据，稍后作为大模型上下文。
-        String evidence = docs.evidence().stream()
-                .map(item -> "[chunkId=" + item.chunkId() + "; title=" + item.title() + "; source=" + item.source()
-                        + "]\n" + item.content())
-                .reduce((a, b) -> a + "\n\n" + b)
-                .orElse("暂无商品说明文档证据");
+        Map<String, Object> customerFacts = customerFacts(product);
         // 云端大模型不可用或不支持可信生成时，使用这段确定性的后端答案。
-        String fallback = product.name() + "（" + product.model() + "），标价 ¥" + product.listPrice()
-                + "，状态 " + product.saleStatus() + "，规格：" + product.specs() + "。"
+        String fallback = product.name() + "（" + product.model() + "），"
+                + (product.listPrice() == null ? "暂无报价" : "标价 ¥" + product.listPrice())
+                + "，状态 " + product.saleStatus() + "，规格：" + customerFacts.get("规格") + "。"
                 + (docs.evidence().isEmpty()
                         ? "当前知识库没有该商品的说明文档，无法确认使用、适配或保修细节。"
                         : "\n说明文档摘要："
@@ -344,8 +365,57 @@ public final class CustomerWorkflow {
                         .toList(),
                 docs.degraded(),
                 // groundingContext 是交给大模型的可信依据，不是预先生成的最终答案。
-                "结构化商品事实：\n" + facts + "\n\n文档证据：\n" + evidence,
+                writeJson(com.serviceflow.ai.GroundedAnswerComposer.context(customerFacts, docs.evidence())),
                 ids.stream().toList());
+    }
+
+    static boolean isProductComparison(String query, List<ProductModels.ProductView> candidates) {
+        boolean requested = query.contains("对比") || query.contains("区别") || query.contains("比较");
+        // Multiple capacity SKUs inferred from one model name do not imply a cross-product comparison.
+        // A question about a device's inner/outer screen or left/right earbud still needs its manual.
+        return requested
+                && (candidates.stream()
+                                        .map(ProductModels.ProductView::model)
+                                        .distinct()
+                                        .count()
+                                > 1
+                        || skuMentions(query).stream()
+                                        .map(s -> s.toUpperCase(Locale.ROOT))
+                                        .distinct()
+                                        .count()
+                                > 1);
+    }
+
+    static List<Map<String, String>> evidenceTrace(RagService.SearchResult result) {
+        // Trace immutable chunk identifiers without exposing the retrieved document body in SSE metadata.
+        return result.evidence().stream()
+                .map(item -> Map.of("chunkId", item.chunkId(), "source", item.source()))
+                .toList();
+    }
+
+    static Map<String, Object> customerFacts(ProductModels.ProductView product) {
+        Map<String, Object> specs = new LinkedHashMap<>(product.specs());
+        // Keep provenance in the catalog, without turning import/audit metadata into customer answers.
+        specs.keySet()
+                .removeIf(
+                        key -> key.startsWith("source_") || key.equals("price_note") || key.equals("sale_status_note"));
+        return Map.of(
+                "名称",
+                product.name(),
+                "型号",
+                product.model(),
+                "SKU",
+                product.sku(),
+                "品牌",
+                product.brand(),
+                "类别",
+                product.category(),
+                "报价",
+                product.listPrice() == null ? "暂无报价" : "¥" + product.listPrice().toPlainString(),
+                "店铺销售状态",
+                product.saleStatus(),
+                "规格",
+                specs);
     }
 
     private Result knowledge(ServiceFlowState state, BiConsumer<String, Object> events) {
@@ -355,6 +425,7 @@ public final class CustomerWorkflow {
             return new Result("知识库上传与版本管理仅允许管理员操作，请联系管理员处理。", List.of());
         }
         RagService.SearchResult result = rag.search(state.query(), "POLICY", List.of());
+        events.accept("rag_evidence", evidenceTrace(result));
         if (!result.sufficient()) {
             if (state.principal().guest()) {
                 return new Result("暂未找到可靠政策依据；如需人工协助，请先登录客户账号。", List.of());

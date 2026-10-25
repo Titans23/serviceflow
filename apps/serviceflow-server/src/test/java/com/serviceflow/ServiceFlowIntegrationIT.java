@@ -1,12 +1,16 @@
 package com.serviceflow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.model.OrderModels;
+import com.serviceflow.model.RefundModels;
 import com.serviceflow.service.OrderService;
+import com.serviceflow.service.RefundService;
+import java.math.BigDecimal;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,7 @@ class ServiceFlowIntegrationIT {
     private final OrderService orders;
     private final OrderMapper orderMapper;
     private final PlatformTransactionManager transactions;
+    private final RefundService refunds;
 
     @Autowired
     ServiceFlowIntegrationIT(
@@ -58,12 +63,14 @@ class ServiceFlowIntegrationIT {
             JdbcTemplate jdbc,
             OrderService orders,
             OrderMapper orderMapper,
-            PlatformTransactionManager transactions) {
+            PlatformTransactionManager transactions,
+            RefundService refunds) {
         this.http = http;
         this.jdbc = jdbc;
         this.orders = orders;
         this.orderMapper = orderMapper;
         this.transactions = transactions;
+        this.refunds = refunds;
     }
 
     @DynamicPropertySource
@@ -148,6 +155,102 @@ class ServiceFlowIntegrationIT {
                 .isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT refund_status FROM payment WHERE order_id=?", String.class, orderId))
                 .isEqualTo("PROCESSING");
+    }
+
+    @Test
+    void cancellationFailureRetryLateCallbackAndSuccessStayConsistent() {
+        String orderNo = newOrder("PAID");
+        String refundId = UUID.randomUUID().toString();
+        orders.cancel(orderNo, 1, refundId);
+        assertThat(orders.get(orderNo, 1).refund().status()).isEqualTo("PROCESSING");
+        refunds.applySandboxEvent(refundId, refundEvent(1, "FAILED", "模拟通道故障"));
+        assertThat(orders.get(orderNo, 1).payment().refundStatus()).isEqualTo("FAILED");
+        assertThat(refunds.retry(refundId, 1).attemptNo()).isEqualTo(2);
+        assertThat(refunds.retry(refundId, 1).attemptNo()).isEqualTo(2);
+        assertThat(refunds.applySandboxEvent(refundId, refundEvent(1, "SUCCEEDED", ""))
+                        .disposition())
+                .isEqualTo("STALE_ATTEMPT");
+        assertThat(orders.get(orderNo, 1).payment().refundStatus()).isEqualTo("PROCESSING");
+        var success = refundEvent(2, "SUCCEEDED", "");
+        refunds.applySandboxEvent(refundId, success);
+        assertThat(refunds.applySandboxEvent(refundId, success).replayed()).isTrue();
+        assertThat(orders.get(orderNo, 1).status()).isEqualTo("CANCELLED");
+        assertThat(orders.get(orderNo, 1).payment().refundStatus()).isEqualTo("REFUNDED");
+        assertThatThrownBy(() -> refunds.applySandboxEvent(refundId, refundEvent(2, "FAILED", "迟到失败")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(eventCount(refundId)).isEqualTo(3);
+    }
+
+    @Test
+    void unpaidCancellationNeverCreatesARefundRequest() {
+        String orderNo = newOrder("PENDING");
+        orders.cancel(orderNo, 1, UUID.randomUUID().toString());
+        var order = orders.get(orderNo, 1);
+        assertThat(order.status()).isEqualTo("CANCELLED");
+        assertThat(order.refund()).isNull();
+        assertThat(order.payment().refundStatus()).isEqualTo("NONE");
+    }
+
+    @Test
+    void duplicateCallbacksFromTwoTransactionsProduceOneEvent() throws Exception {
+        String orderNo = newOrder("PAID");
+        String refundId = UUID.randomUUID().toString();
+        orders.cancel(orderNo, 1, refundId);
+        var event = refundEvent(1, "SUCCEEDED", "");
+        var start = new java.util.concurrent.CountDownLatch(1);
+        try (var executor = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+            java.util.concurrent.Callable<RefundModels.EventResult> callback = () -> {
+                start.await();
+                return refunds.applySandboxEvent(refundId, event);
+            };
+            var first = executor.submit(callback);
+            var second = executor.submit(callback);
+            start.countDown();
+            var a = first.get(20, java.util.concurrent.TimeUnit.SECONDS);
+            var b = second.get(20, java.util.concurrent.TimeUnit.SECONDS);
+            assertThat(a.replayed() ^ b.replayed()).isTrue();
+        }
+        assertThat(eventCount(refundId)).isEqualTo(1);
+        assertThat(orders.get(orderNo, 1).payment().refundStatus()).isEqualTo("REFUNDED");
+    }
+
+    @Test
+    void failedPaymentUpdateRollsBackRefundAndEventTogether() {
+        String orderNo = newOrder("PAID");
+        String refundId = UUID.randomUUID().toString();
+        orders.cancel(orderNo, 1, refundId);
+        jdbc.update(
+                "UPDATE payment SET refund_status='FAILED' WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                orderNo);
+        assertThatThrownBy(() -> refunds.applySandboxEvent(refundId, refundEvent(1, "SUCCEEDED", "")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(eventCount(refundId)).isZero();
+        assertThat(orders.get(orderNo, 1).refund().status()).isEqualTo("PROCESSING");
+    }
+
+    private String newOrder(String paymentStatus) {
+        String orderNo = "SF"
+                + String.format(
+                        "%020d",
+                        java.util.concurrent.ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
+        jdbc.update(
+                "INSERT INTO customer_order(order_no,customer_id,status,total_amount) VALUES (?,1,?,10)",
+                orderNo,
+                "PAID".equals(paymentStatus) ? "PAID" : "CREATED");
+        Long id = jdbc.queryForObject("SELECT id FROM customer_order WHERE order_no=?", Long.class, orderNo);
+        jdbc.update("INSERT INTO payment(order_id,status,refund_status) VALUES (?,?,'NONE')", id, paymentStatus);
+        return orderNo;
+    }
+
+    private RefundModels.SandboxEvent refundEvent(int attempt, String outcome, String reason) {
+        return new RefundModels.SandboxEvent(UUID.randomUUID().toString(), attempt, outcome, BigDecimal.TEN, reason);
+    }
+
+    private int eventCount(String publicId) {
+        return jdbc.queryForObject(
+                "SELECT COUNT(*) FROM refund_event e JOIN refund_request r ON r.id=e.refund_id WHERE r.public_id=?",
+                Integer.class,
+                publicId);
     }
 
     private record TokenResponse(String accessToken) {}

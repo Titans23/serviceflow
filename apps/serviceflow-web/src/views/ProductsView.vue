@@ -9,7 +9,7 @@ type Product = {
   brand: string
   model: string
   category: string
-  listPrice: number
+  listPrice: number | null
   saleStatus: string
   specs: Record<string, string>
 }
@@ -65,7 +65,7 @@ onMounted(load)
         ><el-tag>{{ p.category }}</el-tag>
         <h3>{{ p.name }}</h3>
         <p class="muted">{{ p.brand }} · {{ p.model }} · {{ p.sku }}</p>
-        <p class="price">¥{{ p.listPrice }}</p>
+        <p class="price">{{ p.listPrice == null ? '暂无报价' : `¥${p.listPrice}` }}</p>
         <el-space
           ><router-link :to="`/products/${p.id}`"
             ><el-button type="primary">查看详情</el-button></router-link

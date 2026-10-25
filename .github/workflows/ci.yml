@@ -20,6 +20,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  evaluation-contracts:
+    name: Data provenance and evaluation contracts (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -B scripts/evaluation/eval_v2.py validate
+      - run: python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/refund-sandbox-v1.json
+      - run: python -B -m unittest discover -s scripts/evaluation/tests
+      - name: Validate public-only cloud smoke inputs without API calls
+        run: |
+          python -B scripts/evaluation/prepare_cloud_smoke.py
+          python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/reports/cloud-smoke-inputs/suite.json --package quality/evaluation/reports/cloud-smoke-inputs/package
+
   backend-unit:
     name: Backend unit and quality gate
     runs-on: ubuntu-latest
@@ -85,9 +101,9 @@ jobs:
         run: npm run build
 
   compose-e2e:
-    name: Compose Playwright E2E
+    name: Live refund API scenarios and browser UI tests
     runs-on: ubuntu-latest
-    needs: [backend-integration, frontend]
+    needs: [backend-integration, frontend, evaluation-contracts]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -97,16 +113,31 @@ jobs:
           cache-dependency-path: apps/serviceflow-web/package-lock.json
       - name: Start isolated Compose stack in demo mode
         run: |
-          # Demo-mode E2E does not call Milvus or the observability stack. Starting
-          # only the required services keeps the hosted runner small and reliable.
-          docker compose up -d mysql redis rabbitmq
-          docker compose build server web
-          docker compose up -d --no-deps server web
+          docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
       - name: Wait for web health endpoint
         run: |
-          for i in {1..60}; do curl --fail --silent http://localhost:5173/ && exit 0; sleep 2; done
-          docker compose ps
+          for i in {1..60}; do curl --fail --silent http://localhost:15173/ && exit 0; sleep 2; done
+          docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml ps
           exit 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Import public data and wait for asynchronous ingestion
+        run: python -B scripts/evaluation/import_retail.py --wait-seconds 180
+      - name: Prepare synthetic orders in the isolated evaluation database
+        run: |
+          python -B scripts/evaluation/prepare_v2_fixtures.py --suite quality/evaluation/datasets/refund-sandbox-v1.json
+          fixture=$(find quality/evaluation/reports -name fixtures.sql -print -quit)
+          test -n "$fixture"
+          docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml exec -T mysql mysql --default-character-set=utf8mb4 -userviceflow -peval-only-password serviceflow_eval_v2 < "$fixture"
+          echo "REFUND_FIXTURES=${fixture%.sql}.json" >> "$GITHUB_ENV"
+      - name: Verify cancellation and refund over real HTTP and database
+        run: python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/datasets/refund-sandbox-v1.json --fixtures "$REFUND_FIXTURES" --mode demo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: refund-scenario-summaries
+          path: quality/evaluation/reports/**/summary.json
       - name: Install frontend dependencies and browser
         working-directory: apps/serviceflow-web
         run: npm ci && npx playwright install --with-deps chromium
@@ -114,7 +145,7 @@ jobs:
         working-directory: apps/serviceflow-web
         env:
           CI: true
-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:5173
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:15173
         run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
@@ -124,8 +155,8 @@ jobs:
       - name: Show Compose diagnostics
         if: failure()
         run: |
-          docker compose ps
-          docker compose logs --no-color --tail=200
+          docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml ps
+          docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml logs --no-color --tail=200
       - name: Stop Compose stack
         if: always()
-        run: docker compose down -v
+        run: docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml down -v

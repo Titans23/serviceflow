@@ -6,6 +6,7 @@ import com.serviceflow.model.KnowledgeModels;
 import com.serviceflow.rag.RagService;
 import com.serviceflow.service.KnowledgeService;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 public final class DocumentConsumer {
 
-    private static final int CHUNK_CHARS = 2_000;
-    private static final int OVERLAP_CHARS = 320;
     private static final int MAX_PARSED_CHARS = 2_000_000;
     private static final int MAX_ERROR_LENGTH = 500;
 
@@ -49,7 +48,10 @@ public final class DocumentConsumer {
 
         try (InputStream input = Files.newInputStream(Path.of(version.storagePath()))) {
             // Tika 屏蔽 PDF、Word、Markdown 等文件格式差异，统一提取为纯文本。
-            String text = tika.parseToString(input);
+            String text =
+                    version.sourceName().toLowerCase(java.util.Locale.ROOT).endsWith(".md")
+                            ? new String(input.readAllBytes(), StandardCharsets.UTF_8)
+                            : tika.parseToString(input);
             if (text.length() > MAX_PARSED_CHARS) {
                 throw new IllegalArgumentException("文档解析文本超过 2,000,000 字符");
             }
@@ -65,30 +67,23 @@ public final class DocumentConsumer {
     }
 
     /**
-     * 使用固定窗口切分文本。每块最多 2000 字符，相邻块重叠 320 字符，降低答案跨边界被切断的风险。
+     * FAQ 按二级标题切分；长段落保留重叠窗口。重试相同版本生成相同 Chunk ID。
      */
     private void ingestChunks(KnowledgeModels.Version version, String text) {
-        // 窗口每次前进 1680 字符，因此上一块末尾 320 字符会再次出现在下一块开头。
-        int step = CHUNK_CHARS - OVERLAP_CHARS;
-        for (int start = 0, index = 0; start < text.length(); start += step, index++) {
-            int end = Math.min(text.length(), start + CHUNK_CHARS);
-            String content = text.substring(start, end).trim();
-            if (!content.isBlank()) {
-                // 每个 Chunk 独立生成 ID，并携带文档、版本、类型和来源等检索过滤信息。
-                rag.ingest(new RagService.Chunk(
-                        UUID.randomUUID().toString(),
-                        version.documentId(),
-                        version.id(),
-                        version.documentType(),
-                        version.productId(),
-                        version.title(),
-                        version.documentType(),
-                        version.sourceName(),
-                        content));
-            }
-            if (end == text.length()) {
-                break;
-            }
+        int index = 0;
+        for (String content : KnowledgeChunker.split(text)) {
+            rag.ingest(new RagService.Chunk(
+                    UUID.nameUUIDFromBytes(
+                                    (version.id() + ":" + index++ + ":" + content).getBytes(StandardCharsets.UTF_8))
+                            .toString(),
+                    version.documentId(),
+                    version.id(),
+                    version.documentType(),
+                    version.productId(),
+                    version.title(),
+                    version.documentType(),
+                    version.sourceName(),
+                    content));
         }
     }
 

@@ -25,6 +25,8 @@ Jaeger <── OTLP Trace（observability profile）
 3. `ChatServiceImpl` 调用 `CustomerWorkflow`。Router 将请求分为 CHAT、PRODUCT_QUERY、KNOWLEDGE_QUERY、ORDER_QUERY 或 COMPLAINT。
 4. 产品请求先从 MySQL 读取结构化事实，再按 `productId` 和活动知识版本过滤 Milvus；比较事件仅使用类别白名单字段。
 5. RAG 执行 Dense + BM25、RRF、Rerank 和一次 Grader/Rewrite。Reranker 失败保留 RRF Top5 并标记降级；无证据不调用模型常识补全。
+
+商品事实回答采用受约束的证据选择：云模型返回本轮事实编号，后端校验编号后输出目录事实或完整检索段落，阻止自由扩写参数和使用条件。选择完成后再发送正文 token，因而不再逐 token 转发模型自由生成。事实选择是否相关、是否完整仍需要评测；原始资料错误也不会被这种机制自动纠正。`rag_evidence` SSE 元数据仅提供分块 ID 和来源，不包含原文。
 6. `SseEventWriter` 统一发出 `meta`、`token`、结构化业务事件、`done` 或稳定错误码，并在关闭/超时/异常时递减连接指标。
 7. 正式用户把用户消息、助手消息和请求状态在同一事务中完成；审计记录不包含完整问题、JWT 或 API Key。
 

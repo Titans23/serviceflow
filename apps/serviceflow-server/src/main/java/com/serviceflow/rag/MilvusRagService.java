@@ -289,6 +289,8 @@ public class MilvusRagService implements RagService {
             return;
         }
 
+        // Ingestion cleans the version before inserting its first chunk, including on a fresh database.
+        ensureCloudReady();
         JsonNode response = milvusClient
                 .post()
                 .uri("/v2/vectordb/entities/delete")

@@ -19,7 +19,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         mapper = mock(OrderMapper.class);
-        service = new OrderServiceImpl(mapper);
+        service = new OrderServiceImpl(mapper, mock(com.serviceflow.mapper.RefundMapper.class));
     }
 
     @Test
@@ -40,10 +40,13 @@ class OrderServiceTest {
         when(mapper.findOwned("SF-1001", 7L)).thenReturn(order);
         when(mapper.reserveOperation("request-2", 10L)).thenReturn(1);
         when(mapper.cancel(10L, 7L, 3)).thenReturn(1);
+        when(mapper.startRefund(10L)).thenReturn(1);
+        when(mapper.createRefund(10L, "request-2")).thenReturn(1);
 
         assertThat(service.cancel("SF-1001", 7L, "request-2").resultCode()).isEqualTo("CANCELLED");
         verify(mapper).cancel(10L, 7L, 3);
         verify(mapper).startRefund(10L);
+        verify(mapper).createRefund(10L, "request-2");
     }
 
     @Test
@@ -121,6 +124,44 @@ class OrderServiceTest {
         assertThatThrownBy(() -> service.cancel("SF-404", 7L, "request-6"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("无权访问");
+    }
+
+    @Test
+    void unpaidCancellationCreatesNoRefund() {
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("CREATED"));
+        when(mapper.reserveOperation("unpaid", 10L)).thenReturn(1);
+        when(mapper.cancel(10L, 7L, 3)).thenReturn(1);
+        when(mapper.payment(10L)).thenReturn(new OrderModels.Payment("PENDING", "NONE", null, null));
+
+        service.cancel("SF-1001", 7L, "unpaid");
+
+        verify(mapper, never()).createRefund(anyLong(), anyString());
+        verify(mapper).completeOperation("unpaid", "CANCELLED", "订单已取消，无需退款。");
+    }
+
+    @Test
+    void missingRefundRecordMustFailCancellationTransaction() {
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("PAID"));
+        when(mapper.reserveOperation("missing-refund", 10L)).thenReturn(1);
+        when(mapper.cancel(10L, 7L, 3)).thenReturn(1);
+        when(mapper.startRefund(10L)).thenReturn(1);
+
+        assertThatThrownBy(() -> service.cancel("SF-1001", 7L, "missing-refund"))
+                .isInstanceOf(IllegalStateException.class);
+        verify(mapper, never()).completeOperation(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void inconsistentPaidRefundStateMustFailCancellationTransaction() {
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("PAID"));
+        when(mapper.reserveOperation("bad-payment", 10L)).thenReturn(1);
+        when(mapper.cancel(10L, 7L, 3)).thenReturn(1);
+        when(mapper.payment(10L)).thenReturn(new OrderModels.Payment("PAID", "PROCESSING", Instant.now(), null));
+
+        assertThatThrownBy(() -> service.cancel("SF-1001", 7L, "bad-payment"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("支付退款状态异常");
+        verify(mapper, never()).completeOperation(anyString(), anyString(), anyString());
     }
 
     private OrderModels.Order order(String status) {

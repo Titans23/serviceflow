@@ -1,0 +1,7248 @@
+{
+  "version": "serviceflow-eval-v2",
+  "createdAt": "2026-10-23",
+  "origin": "project-authored",
+  "review": "AI-authored and source-checked; independent human semantic review pending",
+  "splitPolicy": "Product source families are disjoint; wording templates may be shared. This is a regression baseline, not real-user traffic or a training dataset.",
+  "cases": [
+    {
+      "id": "knowledge-pura80-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认屏幕尺寸如何理解，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.6 英寸为标称值，圆角显示区按矩形测量的对角线约 6.58 英寸，可视面积更小。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认实际可用空间，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "系统与软件占用部分空间，可用容量小于标称容量；不支持存储卡扩展。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认有线快充配套，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "达到最高 66 W 需配套 66 W 或以上华为超级快充套装，功率会随使用条件变化。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认无线快充配套，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-water",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认抗水实验边界，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "IP68 的实验使用 2 米深静止清水，持续 30 分钟，温差不超过 5 摄氏度；不能当作水下使用承诺。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "water"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-wet",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认进水与充电，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "防护会随磨损下降；潮湿时不要充电，浸液损坏不在该页面所述保修范围。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "wet"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认出厂系统与升级，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，但部分批次预装 6 或以上；需区分当前设备版本与出厂规格。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-video",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认慢动作录制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1080p 480fps 慢动作采用 AI 插帧，不代表所有拍摄模式均以该帧率输出。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "video"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-pura80-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80-12-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80-12-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80-12-256。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-pura80-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80-12-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80-12-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80-12-512。",
+          "productId": "{{products.HUAWEI-PURA80-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-pura80-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80-12-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80-12-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80-12-1TB。",
+          "productId": "{{products.HUAWEI-PURA80-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-pura80-pro-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认圆角显示区域，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.8 英寸为标称值，标准矩形对角线约 6.78 英寸，实际显示区域较小。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认存储扩展限制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "机身容量包括系统占用，不能把标称容量理解为全部可用；不支持存储卡扩展。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认百瓦快充条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 100 W 有线超级快充要求 100 W 华为快充套装，功率不是持续恒定值。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认无线充电附件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-water",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认抗水测试条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "IP68 以 2 米静止清水、30 分钟及不超过 5 摄氏度温差测试；IP69 是另一套喷水实验。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "water"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-wet",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认防护使用限制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "潮湿时禁止充电，防护会随磨损衰减；浸液损坏不在页面所述保修范围。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "wet"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认系统版本差异，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，支持升级到 6 或以上，部分批次可能出厂搭载新版。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-video",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认高帧率来源，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1080p 960fps 慢动作基于 AI 插帧；不同模式的像素和视频输出可能不同。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "video"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-pura80pro-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80PRO-12-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80pro-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80PRO-12-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80pro-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80PRO-12-256。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-pura80pro-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80PRO-12-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80pro-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80PRO-12-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80pro-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80PRO-12-512。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-pura80pro-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-PURA80PRO-12-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-pura80pro-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-PURA80PRO-12-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-pura80pro-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-PURA80PRO-12-1TB。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-mate70-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认屏幕测量，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.7 英寸按标准矩形对角线测量，圆角使实际可视区域更小。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认可用容量与扩展，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "机身容量含系统占用，实际可用空间更少；不支持存储卡扩展。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认有线快充条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 66 W 有线超级快充需要 66 W 或以上华为快充套装，实际功率随场景改变。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认无线快充条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-water",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认实验水深，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "IP68 实验条件为 4 米静止清水、30 分钟、温差不超过 5 摄氏度，不能替代实际使用限制。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "water"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-wet",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认磨损与浸液，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "防护并非永久；潮湿时不要充电，浸液损坏不在页面列明的保修范围。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "wet"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认先锋版系统，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "普通版本列 HarmonyOS 4.3，鸿蒙 NEXT 先锋版出厂为 5.0；4.3 设备支持升级至 5.0。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-camera",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认相机输出范围，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标称照片像素和最高 4K 录像并不代表所有拍摄模式输出相同，需看当前模式。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "camera"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-mate70-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATE70-12-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-mate70-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATE70-12-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-mate70-12-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATE70-12-256。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-mate70-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATE70-12-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATE70-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-mate70-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATE70-12-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATE70-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-mate70-12-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATE70-12-512。",
+          "productId": "{{products.HUAWEI-MATE70-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-mate70-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATE70-12-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATE70-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-mate70-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATE70-12-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATE70-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-mate70-12-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATE70-12-1TB。",
+          "productId": "{{products.HUAWEI-MATE70-12-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认屏幕可视区域，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.9 英寸按矩形对角线计量，圆角区域不能按完整矩形面积使用。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认存储卡限制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB 和 1 TB 是标称容量；系统占用空间，且不支持存储卡扩展。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认系统版本选择，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "普通版本和鸿蒙 NEXT 先锋版分别列 4.3 与 5.0，不能仅凭商品名确定设备当前系统。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-upgrade",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认系统升级说明，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "upgrade"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-weight",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认重量误差，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "约 226 g 包含电池；配置、制造和测量方式会带来差异。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "weight"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-battery",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认电池容量口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "5700 mAh 是典型值，5600 mAh 为额定值；电池为内置不可拆卸。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-photo",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认拍照模式差异，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标称相机像素是能力说明，不同拍摄模式的实际输出可能不同。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "photo"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-zoom",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认变焦口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "4 倍光学变焦是近似标称值；100 倍数字变焦与光学变焦是不同口径。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "zoom"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-mate70plus-16-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATE70PLUS-16-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-mate70plus-16-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATE70PLUS-16-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-mate70plus-16-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATE70PLUS-16-512。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-mate70plus-16-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATE70PLUS-16-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-mate70plus-16-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATE70PLUS-16-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-mate70plus-16-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATE70PLUS-16-1TB。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-nova14-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认圆角屏幕，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.7 英寸按矩形对角线测量，实际可视区域因圆角而减小。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认容量使用，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB 与 512 GB 是机身标称容量，软件占用使可用容量较少。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认快充配套要求，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "100 W 是最大有线充电能力，需匹配华为 100 W 超级快充套装，实际功率随场景变化。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-usb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认接口速率，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "虽然接口为 USB Type-C，数据协议仍为 USB 2.0，不能仅由接口形状推断速率。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "usb"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-headset",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认有线耳机兼容，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "Type-C 口支持数字耳机，其他耳机需搭配对应数字音频转换器。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "headset"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-wifi",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认无线网络速度，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "需要相应路由器支持；协议的理论峰值不是现场实测速率。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "wifi"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-battery",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认电池口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "典型容量为 5500 mAh，额定容量为 5400 mAh，电池内置不可拆卸。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-nfc",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认SIM 支付卡槽，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "SIM 卡支付使用的 SIM 卡需放入 SIM1 卡槽。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "nfc"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-nova14-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14-256。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-nova14-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14-512。",
+          "productId": "{{products.HUAWEI-NOVA14-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-nova14-pro-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认屏幕面积口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "6.78 英寸为矩形对角线尺寸，圆角使可视区域略小。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认可用存储空间，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "机身提供 256 GB、512 GB、1 TB 规格，实际可用空间扣除系统及软件占用。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认快充附件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需要华为 100 W 超级快充套装。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-power",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认实际充电功率，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高功率不是持续功率，充电会随不同使用场景调整。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "power"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-weight",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认不同版本重量，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "普通版约 207 g，昆仑版约 204 g；不能把其中一个重量套用到全部版本。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "weight"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-battery",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认电池容量差异，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "典型容量 5500 mAh，额定容量 5400 mAh；电池内置不可拆卸。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-selfie",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认前置变焦口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "前置支持 2 倍光学变焦与 5 倍数字变焦，两种数值不能等同。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "selfie"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-camera",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认照片输出，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "拍摄模式不同，输出像素和视频规格也可能不同。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "camera"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-nova14pro-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14PRO-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14pro-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14PRO-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14pro-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14PRO-256。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-nova14pro-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14PRO-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14pro-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14PRO-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14pro-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14PRO-512。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-nova14pro-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14PRO-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14pro-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14PRO-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14pro-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14PRO-1TB。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-nova14-ultra-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认圆角可视面积，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标称 6.81 英寸按矩形测量，实际显示区域略小。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-storage",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认存储口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB、512 GB、1 TB 为标称规格，系统与软件占用后可用空间较少。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-wired",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认百瓦充电条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需配套华为 100 W 超级快充套装，功率会动态调整。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-usb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认Type-C 不等于高速 USB，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "该机的数据接口为 Type-C，规格注明 USB 2.0。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "usb"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-headset",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认耳机转接，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "Type-C 口适配数字耳机；其他耳机需使用相应数字音频转换器。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "headset"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-wifi",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认路由器与网速，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "无线协议需要配套路由器支持；理论峰值不代表实际网络速度。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "wifi"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-battery",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认容量与拆卸，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "5500 mAh 为典型容量，5400 mAh 为额定容量，电池不可自行拆卸。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-nfc",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认支付卡槽条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "使用 SIM 卡支付时，应将相关 SIM 卡放在 SIM1 卡槽。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "nfc"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-nova14ultra-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14ULTRA-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14ultra-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14ULTRA-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14ultra-256",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14ULTRA-256。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-nova14ultra-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14ULTRA-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14ultra-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14ULTRA-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14ultra-512",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14ULTRA-512。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-nova14ultra-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-NOVA14ULTRA-1TB 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-1TB}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "1 TB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-nova14ultra-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-NOVA14ULTRA-1TB 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-nova14ultra-1tb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-NOVA14ULTRA-1TB。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-1TB}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-1TB}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-1TB}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-mate-x6-screen",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认内外屏区别，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "展开内屏为 7.93 英寸，折叠外屏为 6.45 英寸，均以矩形对角线计量。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "screen"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-storage",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认标准版与典藏版，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标准版为 12 GB RAM 配 256/512 GB；典藏版为 16 GB RAM 配 512 GB/1 TB，均不支持存储卡扩展。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "storage"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-battery",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认电池版本差异，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标准版典型电池为 5110 mAh，典藏版为 5200 mAh，不能混用。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-wired",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认快充条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 66 W 有线与 50 W 无线快充都需要相应华为配套设备，实际功率会变化。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "wired"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-water",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认IPX8 的边界，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "IPX8 实验使用 2 米静止清水、30 分钟和不超过 5 摄氏度温差；潮湿时不要充电。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "water"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-usb",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认线材与数据速率，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "USB 3.1 GEN1 需要支持该协议的数据线；标配线只支持 USB 2.0。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "usb"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-satellite",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认卫星能力按版本，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标准版列北斗卫星消息，典藏版另有天通卫星通信，运营商业务开通条件需另行满足。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "satellite"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate-x6-activation",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate X6，想确认北斗使用条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "citations": [
+              "mate-x6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "首次使用需要地面网络激活，使用时要空旷无遮蔽，适用地区为中国大陆、不含港澳台。",
+      "expectedEvidence": {
+        "sourceId": "mate-x6",
+        "sectionId": "activation"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-matex6-12-256",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATEX6-12-256 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "256 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-matex6-12-256",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATEX6-12-256 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-matex6-12-256",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATEX6-12-256。",
+          "productId": "{{products.HUAWEI-MATEX6-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-256}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "fact-huawei-matex6-12-512",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-MATEX6-12-512 的存储规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-MATEX6-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-512}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "512 GB",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-matex6-12-512",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-MATEX6-12-512 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-MATEX6-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-matex6-12-512",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-MATEX6-12-512。",
+          "productId": "{{products.HUAWEI-MATEX6-12-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-512}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATEX6-12-512}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-freebuds6-volume",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认调节音量，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "耳机上滑或下滑可调整音量。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "volume"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-charging",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认充电方式，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "充电盒支持 USB Type-C 有线和无线充电，不能把无线充电视为耳机本体直接充电。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "charging"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-time",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认充电时长口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "仅充电盒有线约 45 分钟，无线约 150 分钟；盒内耳机充电约 25 分钟。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "time"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-battery",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认续航条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "标称续航受音量、音源、干扰和功能开关影响；实验音乐测试使用 50% 音量等特定条件。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "battery"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-popup",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认弹窗的系统要求，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "靠近发现弹窗要求适配的华为手机或平板，EMUI 10.0 以上或 HarmonyOS 2.0 以上。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "popup"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-multi",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认多设备连接条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "多设备连接需要适配 HarmonyOS 3.0 或以上的华为手机或平板。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "multi"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-water",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认耳机与盒子防护不同，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "IP54 仅适用于耳机机身，充电盒不支持此等级；潮湿时不要充电。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "water"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freebuds6-latency",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeBuds 6，想确认低时延适配，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "citations": [
+              "freebuds6.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "约 90 ms 是实验室数据，需适配 EMUI 10.0 以上或 HarmonyOS 2.0 及以上的华为设备。",
+      "expectedEvidence": {
+        "sourceId": "freebuds6",
+        "sectionId": "latency"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-freebuds-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-FREEBUDS-6 的电池规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "单耳最小 39.5 mAh；充电盒最小 510 mAh",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-freebuds-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-FREEBUDS-6 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-freebuds-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-FREEBUDS-6。",
+          "productId": "{{products.HUAWEI-FREEBUDS-6}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREEBUDS-6}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "knowledge-freeclip-double",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认双击控制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "双击可播放或暂停音乐，也可接听或挂断电话。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "double"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-triple",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认切歌控制，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "敲击三下可以切换下一首。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "triple"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-gesture",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认不支持的手势，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "规格列明不支持滑动和按捏控制，不应套用其他耳机的操作方法。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "gesture"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-pair",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认进入配对，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "长按充电盒按键 2 秒可进入配对。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "pair"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-reset",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认恢复出厂设置，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "长按充电盒按键 10 秒执行恢复出厂设置，不能与普通配对操作混淆。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "reset"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-codec",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认音频编码支持，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "支持 SBC、AAC、L2HC；不支持 LHDC、LDAC 和 Apt-x。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "codec"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-l2hc",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认L2HC 使用条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "需要部分适配的华为手机或平板，并使用 HarmonyOS 3 或以上。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "l2hc"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-freeclip-charging",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 FreeClip，想确认充电接口，请说明适用条件。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "citations": [
+              "freeclip.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "充电盒支持 USB-C 有线充电，无线充电最高约 2 W。",
+      "expectedEvidence": {
+        "sourceId": "freeclip",
+        "sectionId": "charging"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "fact-huawei-freeclip-1",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请查 HUAWEI-FREECLIP-1 的电池规格，不要把别的版本参数混进来。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "单耳最小 55 mAh；充电盒最小 510 mAh",
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "price-huawei-freeclip-1",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商品 HUAWEI-FREECLIP-1 现在多少钱？如果目录没有报价请直接说明。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ],
+            "textNone": [
+              "¥0",
+              "免费赠送"
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "context-huawei-freeclip-1",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想咨询商品 HUAWEI-FREECLIP-1。",
+          "productId": "{{products.HUAWEI-FREECLIP-1}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "刚才这款的报价能确定吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-FREECLIP-1}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价",
+                "没有报价",
+                "未提供价格",
+                "没有可靠报价",
+                "价格未知"
+              ]
+            ]
+          }
+        }
+      ],
+      "requires": [
+        "retail-v1-catalog"
+      ]
+    },
+    {
+      "id": "chat-1",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "你好",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-2",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "谢谢你",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-3",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "你能帮我做哪些事情？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-4",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "可以用中文交流吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-5",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "先不用查商品，我只是打个招呼。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "晚上好，客服在吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-7",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "今天先聊到这里。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-8",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我不知道从哪里开始咨询。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-9",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "你是真人客服吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-10",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请介绍一下你的服务范围。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-11",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想了解这个客服系统能处理什么。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat-12",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "暂时没有具体的商品或订单问题。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "CHAT",
+            "absentEvents": [
+              "action_required",
+              "order",
+              "ticket"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "policy-v2-1",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "手机保修政策需要购买凭证吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-2",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "手机进液后的保修政策是什么？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-3",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "保修政策是否覆盖人为损坏？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-4",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "保修期如何确认？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-5",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "海外购买手机适用大陆保修政策吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "超出保修期限后按什么政策维修？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-7",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "保修政策里对非授权拆修怎么规定？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "policy-v2-8",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "policy-v2"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "没有可靠政策资料时可以转人工核实吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "KNOWLEDGE_QUERY"
+          }
+        }
+      ],
+      "referenceAnswer": "按实际入库的有效政策和适用地区作答；证据不足则明确说明并提供人工入口。",
+      "requires": [
+        "policy-knowledge"
+      ]
+    },
+    {
+      "id": "complaint-v2-1",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要投诉客服没有回复我的问题。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-2",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我有一项投诉，需要客服跟进。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-3",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要投诉物流长时间没有更新。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-4",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "投诉：收到的包装破损，请处理。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-5",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要投诉售后联系不上。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要投诉前一次处理没有解决问题。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-7",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "投诉订单服务体验，需要留下记录。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "complaint-v2-8",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "投诉：请给我一个可追踪的工单。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-1",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/tickets",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-2",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/tickets",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-3",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/ai-audits",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-4",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/ai-audits",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-5",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/knowledge-documents",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-6",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/admin/knowledge-documents",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-7",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/orders/SF000000000000",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-8",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/tickets",
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-9",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/orders/SF000000000000",
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "permission-10",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/products/import",
+          "body": {
+            "products": []
+          },
+          "expect": {
+            "status": 403
+          }
+        }
+      ]
+    },
+    {
+      "id": "cancel-paid",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "查询订单 {{orderNo}} 的状态。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.payment.refundStatus": "PROCESSING"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "cancel-unpaid",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "CREATED",
+        "paymentStatus": "PENDING",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "cancel-reject",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "REJECT",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "cancel-repeat-confirm",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.payment.refundStatus": "PROCESSING"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "cancel-shipped",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "查询订单 {{orderNo}} 的状态。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "那就取消刚才那个订单吧。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "action_required"
+            ]
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "SHIPPED",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "SHIPPED",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "cancel-delivered",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "查询订单 {{orderNo}} 的状态。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "那就取消刚才那个订单吧。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "action_required"
+            ]
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "DELIVERED",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "DELIVERED",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "order-owner-isolation",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "principal": "other",
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "other",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "confirm-owner-isolation",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "principal": "other",
+          "expect": {
+            "events": [
+              "error"
+            ],
+            "absentEvents": [
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "order-reference",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "查询订单 {{orderNo}} 的状态。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "取消刚才那个订单。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.payment.refundStatus": "PROCESSING"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    },
+    {
+      "id": "complaint-retry",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要投诉这次的服务，请创建工单。",
+          "expect": {
+            "events": [
+              "token",
+              "ticket",
+              "done"
+            ],
+            "intent": "COMPLAINT"
+          },
+          "requestKey": "same-request"
+        },
+        {
+          "type": "chat",
+          "message": "我要投诉这次的服务，请创建工单。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.replayed": true
+            }
+          },
+          "requestKey": "same-request"
+        }
+      ]
+    },
+    {
+      "id": "guest-order-context",
+      "principal": "guest",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我要查询订单 SF000000000000。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "order",
+              "action_required"
+            ],
+            "textAll": [
+              [
+                "登录"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "取消刚才那个订单。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "ORDER_QUERY",
+            "absentEvents": [
+              "action_required"
+            ],
+            "textAll": [
+              [
+                "登录"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "order-switch",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "查询订单 {{orderNo}} 的状态。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "查询订单 {{secondOrderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "order",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "chat",
+          "message": "取消刚才那个订单。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{secondOrderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true,
+        "secondOrder": true
+      }
+    },
+    {
+      "id": "reject-then-stale-confirm",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ],
+            "intent": "ORDER_QUERY"
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "REJECT",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "error"
+            ],
+            "absentEvents": [
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      }
+    }
+  ]
+}
+

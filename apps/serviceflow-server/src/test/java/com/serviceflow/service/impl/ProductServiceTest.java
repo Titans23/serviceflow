@@ -172,6 +172,38 @@ class ProductServiceTest {
                 .hasMessageContaining("完整结果");
     }
 
+    @Test
+    void importsUnknownPriceWithoutInventingAZeroPrice() {
+        var request = new ProductModels.ProductImport(
+                "source-phone", "Phone", "HUAWEI", "M", "phone", Map.of("storage", "256 GB"), null, "OFF_SALE");
+        when(mapper.findBySkus(List.of("SOURCE-PHONE")))
+                .thenReturn(List.of(new ProductModels.Product(
+                        100,
+                        "SOURCE-PHONE",
+                        "Phone",
+                        "HUAWEI",
+                        "M",
+                        "phone",
+                        "{\"storage\":\"256 GB\"}",
+                        null,
+                        "OFF_SALE")));
+        assertThat(service.importProducts(List.of(request))
+                        .products()
+                        .getFirst()
+                        .listPrice())
+                .isNull();
+        verify(mapper)
+                .upsert(
+                        eq("SOURCE-PHONE"),
+                        anyString(),
+                        anyString(),
+                        anyString(),
+                        anyString(),
+                        anyString(),
+                        isNull(),
+                        eq("OFF_SALE"));
+    }
+
     private ProductModels.Product product(long id, String name, String category, String specs) {
         return new ProductModels.Product(
                 id, "SKU-" + id, name, "ServiceFlow", name, category, specs, BigDecimal.valueOf(3999), "ON_SALE");

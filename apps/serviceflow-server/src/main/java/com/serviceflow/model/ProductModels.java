@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
@@ -57,7 +56,7 @@ public final class ProductModels {
             @NotBlank @Size(max = 100) String model,
             @NotBlank @Size(max = 64) String category,
             @NotEmpty Map<String, Object> specs,
-            @NotNull @DecimalMin(value = "0.00") BigDecimal listPrice,
+            @DecimalMin(value = "0.00") BigDecimal listPrice,
             @NotBlank String saleStatus) {}
 
     public record ImportResponse(int imported, List<ProductView> products) {}

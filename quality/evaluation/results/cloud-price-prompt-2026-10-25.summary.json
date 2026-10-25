@@ -1,0 +1,71 @@
+{
+  "runId": "20261025-115814-069d1a76",
+  "mode": "cloud",
+  "split": "development",
+  "suiteSha256": "955b150ad43845be652c5a056d7012ef1250802a6646d4270d7462bb7ecd4b6c",
+  "packageFileSha256": {
+    "manifest.json": "12cbb93c0789d83352394794b65928a9582afdfcc9b49619e412d5230268c54b",
+    "catalog.json": "2940d18e01dc591e9551535f9d0254118c950e0050a6faf8a8dad7879967be31",
+    "knowledge/pura80.md": "66a98729d7b9a911b26a9496c4b5b70fbd2c83aed3f92c5510a65b3a52af63e2",
+    "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+    "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+  },
+  "inventory": {
+    "package": {
+      "version": "retail-v1-cloud-smoke",
+      "products": 2,
+      "sources": 3,
+      "documents": 3,
+      "sections": 24
+    },
+    "suite": {
+      "cases": 1,
+      "chatTurns": 2,
+      "multiTurnCases": 1,
+      "assertionGroups": 11,
+      "splits": {
+        "development": 1,
+        "holdout": 0
+      }
+    }
+  },
+  "chatTurns": 2,
+  "cases": 1,
+  "passed": 0,
+  "checks": {
+    "httpStatus": {
+      "passed": 2,
+      "total": 2
+    },
+    "events": {
+      "passed": 2,
+      "total": 2
+    },
+    "noUnexpectedError": {
+      "passed": 2,
+      "total": 2
+    },
+    "intent": {
+      "passed": 2,
+      "total": 2
+    },
+    "products": {
+      "passed": 2,
+      "total": 2
+    },
+    "forbiddenPhrases": {
+      "passed": 0,
+      "total": 2
+    },
+    "json:events.meta.degraded": {
+      "passed": 2,
+      "total": 2
+    },
+    "phraseCoverage": {
+      "passed": 1,
+      "total": 1
+    }
+  },
+  "semanticAccuracy": null,
+  "note": "规则/业务断言；短语覆盖不是事实正确率，引用文件指标不是 chunk 召回指标。"
+}

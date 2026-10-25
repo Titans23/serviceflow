@@ -17,7 +17,7 @@ onMounted(async () => {
       ><el-tag>{{ product.saleStatus }}</el-tag>
       <h1>{{ product.name }}</h1>
       <p>{{ product.brand }} · {{ product.model }} · {{ product.sku }}</p>
-      <p class="price">¥{{ product.listPrice }}</p>
+      <p class="price">{{ product.listPrice == null ? '暂无报价' : `¥${product.listPrice}` }}</p>
       <el-descriptions title="规格" :column="2" border
         ><el-descriptions-item
           v-for="(value, key) in product.specs"

@@ -25,6 +25,8 @@ public interface OrderMapper {
 
     int startRefund(@Param("orderId") long orderId);
 
+    int createRefund(@Param("orderId") long orderId, @Param("publicId") String publicId);
+
     int completeOperation(
             @Param("requestId") String requestId, @Param("code") String code, @Param("message") String message);
 }

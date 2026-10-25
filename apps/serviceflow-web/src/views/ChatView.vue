@@ -81,16 +81,28 @@ async function askCandidate(candidate: any) {
   await send()
 }
 async function confirm(decision: string) {
-  if (!action.value) return
+  if (!action.value || sending.value) return
+  const pending = action.value
+  sending.value = true
   followOutput.value = true
-  const assistant = { role: 'ASSISTANT', content: '' }
+  const assistant: any = { role: 'ASSISTANT', content: '' }
   messages.value.push(assistant)
-  await stream(`/chat/actions/${action.value.actionId}/confirm`, { decision }, (name, data) => {
-    if (name === 'token') assistant.content += data
-    if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
-    nextTick(scroll)
-  })
-  action.value = null
+  try {
+    await stream(`/chat/actions/${pending.actionId}/confirm`, { decision }, (name, data) => {
+      if (name === 'token') assistant.content += data
+      if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
+      if (name === 'error') throw new Error(data.message)
+      nextTick(scroll)
+    })
+    action.value = null
+    if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+      assistant.order = await api(`/orders/${encodeURIComponent(pending.orderNo)}`)
+    }
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '确认操作失败')
+  } finally {
+    sending.value = false
+  }
 }
 function scroll(force = false) {
   if (box.value && (force || followOutput.value)) {
@@ -112,6 +124,7 @@ onMounted(async () => {
   await refresh()
   if (sessions.value.length) await select(sessions.value[0].publicId)
   else await create()
+  if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
 })
 </script>
 <template>
@@ -171,15 +184,16 @@ onMounted(async () => {
           </table>
           <el-card v-if="m.order" shadow="never"
             ><strong>订单 {{ m.order.orderNo }}</strong>
-            <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p></el-card
+            <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p>
+            <router-link :to="{ path: '/orders', query: { orderNo: m.order.orderNo } }">查看订单与退款进度</router-link></el-card
           >
           <div v-if="m.citations?.length" class="muted">引用：{{ m.citations.join('、') }}</div>
         </div>
         <div v-if="action" class="action-card">
           <strong>{{ action.message }}</strong>
           <div style="margin-top: 10px">
-            <el-button type="primary" @click="confirm('CONFIRM')">确认</el-button
-            ><el-button @click="confirm('REJECT')">取消</el-button>
+            <el-button type="primary" :disabled="sending" @click="confirm('CONFIRM')">确认</el-button
+            ><el-button :disabled="sending" @click="confirm('REJECT')">取消</el-button>
           </div>
         </div>
       </div>

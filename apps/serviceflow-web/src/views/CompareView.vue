@@ -53,7 +53,7 @@ async function compare() {
         <tbody>
           <tr>
             <th>标价</th>
-            <td v-for="p in result.products" :key="p.id">¥{{ p.listPrice }}</td>
+            <td v-for="p in result.products" :key="p.id">{{ p.listPrice == null ? '暂无报价' : `¥${p.listPrice}` }}</td>
           </tr>
           <tr>
             <th>可售状态</th>

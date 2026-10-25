@@ -66,7 +66,7 @@
       </plugin>
       <plugin>
         <groupId>com.diffplug.spotless</groupId><artifactId>spotless-maven-plugin</artifactId><version>2.44.5</version>
-        <configuration><java><palantirJavaFormat><version>2.50.0</version></palantirJavaFormat><removeUnusedImports/><trimTrailingWhitespace/><endWithNewline/></java></configuration>
+        <configuration><lineEndings>UNIX</lineEndings><java><palantirJavaFormat><version>2.50.0</version></palantirJavaFormat><removeUnusedImports/><trimTrailingWhitespace/><endWithNewline/></java></configuration>
         <executions><execution><goals><goal>check</goal></goals></execution></executions>
       </plugin>
       <plugin>
@@ -83,6 +83,7 @@
             <includes>
               <include>com/serviceflow/service/impl/ProductServiceImpl*</include>
               <include>com/serviceflow/service/impl/OrderServiceImpl*</include>
+              <include>com/serviceflow/service/impl/RefundServiceImpl*</include>
               <include>com/serviceflow/service/impl/TicketServiceImpl*</include>
             </includes>
             <excludes><exclude>com/serviceflow/**/*Models*</exclude><exclude>com/serviceflow/config/**</exclude><exclude>com/serviceflow/ServiceFlowApplication*</exclude></excludes>

@@ -194,8 +194,7 @@ public class ProductServiceImpl implements ProductService {
                 || item.category().trim().length() > 64
                 || item.specs() == null
                 || item.specs().isEmpty()
-                || item.listPrice() == null
-                || item.listPrice().signum() < 0
+                || (item.listPrice() != null && item.listPrice().signum() < 0)
                 || blank(item.saleStatus())) {
             throw new ResponseStatusException(BAD_REQUEST, "第 " + (index + 1) + " 个商品字段无效");
         }

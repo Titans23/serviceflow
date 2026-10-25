@@ -1,0 +1,549 @@
+{
+  "version": "serviceflow-eval-v2",
+  "origin": "project-authored",
+  "independence": "New manufacturer/source families; authored by the project, not third-party or human-independent annotation.",
+  "cases": [
+    {
+      "id": "fresh-iphone-usb-premise",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "usb"
+      },
+      "referenceAnswer": "否。USB 2，最高480Mb/s，不能从接口外形推导USB 3。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "线头是USB-C，所以传一段视频就有USB 3的速度吧？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-fast-charge",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "charging"
+      },
+      "referenceAnswer": "不能保证；20W或以上适配器及USB-C线的测试条件，实际时间有差异。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我只有旧的5W充电头，也一定能半小时到50%吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-box",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "box"
+      },
+      "referenceAnswer": "适配器和EarPods不在包装中；包含USB-C线。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "收到手机后需要自己准备电源适配器吗？包装里有耳机吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-brightness",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "brightness"
+      },
+      "referenceAnswer": "2000是户外峰值，典型最高1000，HDR峰值1600。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "商家说2000尼特就是室内任何时候的亮度，可靠吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-display",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "标准矩形对角线6.12，实际可视面积更小；标称6.1。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-sim",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "sim"
+      },
+      "referenceAnswer": "美国规格不兼容实体SIM，双eSIM。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我这张实体SIM能直接装进当前美国规格手机吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-s24-battery",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "galaxy-s24-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "galaxy-s24-us",
+        "sectionId": "battery"
+      },
+      "referenceAnswer": "4000为典型值，额定更低但本资料没有具体额定值，不应编造。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "4000mAh是每块电池保证达到的额定值吗？请给出额定数值。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          },
+          "productId": "{{products.SAMSUNG-S24-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-s24-note",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "galaxy-s24-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "galaxy-s24-us",
+        "sectionId": "notes"
+      },
+      "referenceAnswer": "不能这样承诺：Samsung Notes 200–4000字符，登录Samsung账号及联网。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我有100字的笔记，断网且不登录账号，Note Assist照样可以总结吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          },
+          "productId": "{{products.SAMSUNG-S24-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-s24-zoom",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "galaxy-s24-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "galaxy-s24-us",
+        "sectionId": "zoom"
+      },
+      "referenceAnswer": "包含数字变焦，可能有画质损失。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "拍远处招牌时30倍就是纯光学、完全没有画质损失吧？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          },
+          "productId": "{{products.SAMSUNG-S24-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-s24-unknown-watts",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "galaxy-s24-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "galaxy-s24-us",
+        "sectionId": "scope"
+      },
+      "referenceAnswer": "资料没有提供，不能确认任一功率。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请仅按当前资料确认：这台最高有线功率究竟25W还是45W？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          },
+          "productId": "{{products.SAMSUNG-S24-US-128}}"
+        }
+      ]
+    },
+    {
+      "id": "fresh-s24-correction",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "galaxy-s24-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "galaxy-s24-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "基础款6.2英寸FHD+，不能混入Ultra规格。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "这台的屏幕多大？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          },
+          "productId": "{{products.SAMSUNG-S24-US-128}}"
+        },
+        {
+          "type": "chat",
+          "message": "不是Ultra，我说的始终是当前基础款。请再确认分辨率。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fresh-iphone-followup",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "charging"
+      },
+      "referenceAnswer": "约30分钟最高50%，20W以上及USB-C线、受条件影响；适配器另售。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "有线充到一半大约要多久、配什么？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        },
+        {
+          "type": "chat",
+          "message": "那这个适配器就在包装里吧？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fresh-cross-brand-context",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us",
+        "galaxy-s24-us"
+      ],
+      "referenceAnswer": "先谈iPhone USB2 480Mb/s；切到S24后8GB内存128/256GB存储；代词仍指S24，空间有系统占用；再明确切回iPhone，盒内没有适配器。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "当前这款USB传数据能到什么速度？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        },
+        {
+          "type": "chat",
+          "message": "换成 SAMSUNG-S24-US-128，它的内存和存储选项有哪些？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "那它的128GB都能拿来存照片吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "再切回 APPLE-IP16-US-128，包装里有电源适配器吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fresh-price-unknown",
+      "principal": "customer",
+      "split": "holdout",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "referenceAnswer": "暂无报价；不知道准确售价，不从其他地区或历史起售价推断。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "不要说历史起售价，这个SKU现在具体卖多少钱？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "textAll": [
+              [
+                "暂无报价"
+              ]
+            ]
+          },
+          "productId": "{{products.APPLE-IP16-US-128}}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "runId": "20261025-122013-a7415868",
+  "mode": "cloud",
+  "split": "holdout",
+  "suiteSha256": "202b15c934ac383fcaa9c40aec2c9f42d4375c242cb59b1b3f0e672816b76503",
+  "packageFileSha256": {
+    "manifest.json": "675af115ab92c6d4af6f530497e3257f313d648962460869278a78729573dd82",
+    "catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+    "knowledge/pura80.md": "66a98729d7b9a911b26a9496c4b5b70fbd2c83aed3f92c5510a65b3a52af63e2",
+    "knowledge/pura80-pro.md": "2f20879d53ebefd64068606a6d2245a29b424bd85d612a6bd1d0f3d4a5215638",
+    "knowledge/mate70.md": "0b8379981323a0dbd20f5cd43626a1adc8fee5aeb0108259ba9d560e082c29b1",
+    "knowledge/mate70-pro-plus.md": "397a56ac3bb1b7f7df4518c9356fd58e369f72e4d494f600fc83e41fd1ab5769",
+    "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+    "knowledge/nova14-pro.md": "efefadd08c5c36aee3a12df30948ba60b21313d70bd11d7f4c4bd589f1e5fb5a",
+    "knowledge/nova14-ultra.md": "064afa490c53c1a0af67db81425585f996f162b22c9db95f5932573cb85429d7",
+    "knowledge/mate-x6.md": "566713ad91665ff48c8a813d525a32f2dfbd75045b450b1fca858a97e42098a0",
+    "knowledge/freebuds6.md": "e84db13907d9c48f728d068a5e37140a3b0305c000c465825d4ce047928dabb1",
+    "knowledge/freeclip.md": "81736940e6371fa46076aa7426d684503e2ff92609a19fc0e5810c628ae235c8",
+    "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+  },
+  "inventory": {
+    "package": {
+      "version": "retail-v1",
+      "products": 23,
+      "sources": 11,
+      "documents": 11,
+      "sections": 88
+    },
+    "suite": {
+      "cases": 200,
+      "chatTurns": 220,
+      "multiTurnCases": 30,
+      "assertionGroups": 820,
+      "splits": {
+        "development": 175,
+        "holdout": 25
+      }
+    }
+  },
+  "chatTurns": 28,
+  "workers": 3,
+  "caseIds": [
+    "knowledge-mate-x6-screen",
+    "knowledge-mate-x6-storage",
+    "knowledge-mate-x6-battery",
+    "knowledge-mate-x6-wired",
+    "knowledge-mate-x6-water",
+    "knowledge-mate-x6-usb",
+    "knowledge-mate-x6-satellite",
+    "knowledge-mate-x6-activation",
+    "fact-huawei-matex6-12-256",
+    "price-huawei-matex6-12-256",
+    "context-huawei-matex6-12-256",
+    "fact-huawei-matex6-12-512",
+    "price-huawei-matex6-12-512",
+    "context-huawei-matex6-12-512",
+    "knowledge-freeclip-double",
+    "knowledge-freeclip-triple",
+    "knowledge-freeclip-gesture",
+    "knowledge-freeclip-pair",
+    "knowledge-freeclip-reset",
+    "knowledge-freeclip-codec",
+    "knowledge-freeclip-l2hc",
+    "knowledge-freeclip-charging",
+    "fact-huawei-freeclip-1",
+    "price-huawei-freeclip-1",
+    "context-huawei-freeclip-1"
+  ],
+  "cases": 25,
+  "passed": 23,
+  "checks": {
+    "httpStatus": {
+      "passed": 28,
+      "total": 28
+    },
+    "events": {
+      "passed": 28,
+      "total": 28
+    },
+    "noUnexpectedError": {
+      "passed": 28,
+      "total": 28
+    },
+    "intent": {
+      "passed": 27,
+      "total": 28
+    },
+    "products": {
+      "passed": 26,
+      "total": 28
+    },
+    "documentCitations": {
+      "passed": 14,
+      "total": 16
+    },
+    "phraseCoverage": {
+      "passed": 6,
+      "total": 6
+    },
+    "forbiddenPhrases": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "semanticAccuracy": null,
+  "note": "规则/业务断言；短语覆盖不是事实正确率，引用文件指标不是 chunk 召回指标。",
+  "degradedTurns": 0,
+  "multiTurnCases": 3,
+  "semanticReviewPending": 19,
+  "chatLatencyMs": {
+    "samples": 28,
+    "p50": 5094.0,
+    "p95NearestRank": 12109
+  }
+}

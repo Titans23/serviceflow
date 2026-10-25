@@ -1,0 +1,19 @@
+{
+  "executedAt": "2026-10-24",
+  "environment": "fresh Testcontainers MySQL 8.4 / Redis 7.4 / RabbitMQ 4",
+  "tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cases": [
+    "unpaidCancellationNeverCreatesARefundRequest",
+    "duplicateCallbacksFromTwoTransactionsProduceOneEvent",
+    "readinessIsPublicAndUp",
+    "duplicateCancellationReadsCommittedResultDespiteAnOlderSnapshot",
+    "failedPaymentUpdateRollsBackRefundAndEventTogether",
+    "guestTokenCanReadProductCatalog",
+    "applicationContextLoadsAgainstRealInfrastructure",
+    "cancellationFailureRetryLateCallbackAndSuccessStayConsistent"
+  ],
+  "command": "mvn -o -B -DforkCount=0 failsafe:integration-test failsafe:verify"
+}

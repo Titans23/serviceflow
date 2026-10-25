@@ -1,0 +1,1001 @@
+{
+  "version": "serviceflow-eval-v2",
+  "name": "refund-sandbox-v1",
+  "origin": "project-authored",
+  "createdAt": "2026-10-24",
+  "requiresSandbox": true,
+  "cases": [
+    {
+      "id": "refund-success-replay",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "SUCCEEDED",
+              "body.payment.refundStatus": "REFUNDED",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "json": {
+              "body.replayed": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-failure-retry-late-success",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "FAILED",
+            "amount": 99,
+            "reason": "模拟支付通道故障"
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "FAILED",
+              "body.payment.refundStatus": "FAILED",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/retry",
+          "principal": "admin",
+          "body": {
+            "expectedAttemptNo": 1
+          },
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.attemptNo": 2
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/retry",
+          "principal": "admin",
+          "body": {
+            "expectedAttemptNo": 1
+          },
+          "expect": {
+            "json": {
+              "body.status": "PROCESSING",
+              "body.attemptNo": 2
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId2}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "json": {
+              "body.disposition": "STALE_ATTEMPT"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "PROCESSING",
+              "body.payment.refundStatus": "PROCESSING",
+              "body.refund.attemptNo": 2
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId3}}",
+            "attemptNo": 2,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "SUCCEEDED",
+              "body.payment.refundStatus": "REFUNDED",
+              "body.refund.attemptNo": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-event-payload-collision",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "FAILED",
+            "amount": 99,
+            "reason": "模拟支付通道故障"
+          },
+          "expect": {
+            "status": 409
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "SUCCEEDED",
+              "body.payment.refundStatus": "REFUNDED",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-wrong-amount",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 1,
+            "reason": ""
+          },
+          "expect": {
+            "status": 400
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "PROCESSING",
+              "body.payment.refundStatus": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-customer-forbidden",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "customer",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 403
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "PROCESSING",
+              "body.payment.refundStatus": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-unpaid",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "CREATED",
+        "paymentStatus": "PENDING",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund": null,
+              "body.payment.refundStatus": "NONE"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-terminal-conflict",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId2}}",
+            "attemptNo": 1,
+            "outcome": "FAILED",
+            "amount": 99,
+            "reason": "模拟支付通道故障"
+          },
+          "expect": {
+            "status": 409
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "SUCCEEDED",
+              "body.payment.refundStatus": "REFUNDED",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-future-attempt",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 2,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 409
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "PROCESSING",
+              "body.payment.refundStatus": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-event-bound-to-request",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true,
+        "secondOrder": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{refundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 200,
+            "json": {
+              "body.disposition": "APPLIED",
+              "body.replayed": false
+            }
+          }
+        },
+        {
+          "type": "chat",
+          "message": "请取消订单 {{secondOrderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{secondOrderNo}}",
+          "capture": {
+            "secondRefundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.refund.status": "PROCESSING"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "method": "POST",
+          "path": "/admin/refunds/{{secondRefundId}}/sandbox-events",
+          "principal": "admin",
+          "body": {
+            "eventId": "{{eventId}}",
+            "attemptNo": 1,
+            "outcome": "SUCCEEDED",
+            "amount": 99,
+            "reason": ""
+          },
+          "expect": {
+            "status": 409
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.status": "SUCCEEDED",
+              "body.payment.refundStatus": "REFUNDED",
+              "body.refund.attemptNo": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-confirmation-replay",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "fixture": {
+        "orderStatus": "PROCESSING",
+        "paymentStatus": "PAID",
+        "owner": "customer",
+        "amount": "99.00",
+        "synthetic": true
+      },
+      "steps": [
+        {
+          "type": "chat",
+          "message": "请取消订单 {{orderNo}}。",
+          "expect": {
+            "intent": "ORDER_QUERY",
+            "events": [
+              "token",
+              "action_required",
+              "done"
+            ]
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "capture": {
+            "refundId": "body.refund.publicId"
+          },
+          "expect": {
+            "json": {
+              "body.status": "CANCELLED",
+              "body.refund.status": "PROCESSING",
+              "body.refund.attemptNo": 1
+            }
+          }
+        },
+        {
+          "type": "confirm",
+          "decision": "CONFIRM",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "json": {
+              "events.done.resultCode": "CANCELLED"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "path": "/orders/{{orderNo}}",
+          "expect": {
+            "json": {
+              "body.refund.publicId": "{{refundId}}",
+              "body.refund.attemptNo": 1,
+              "body.refund.status": "PROCESSING"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,139 @@
+# 评测 v2 与取消—退款运行手册
+
+本轮把公开商品资料、可复现的多轮回归和退款状态流转连接起来。付款渠道仍是显式启用的管理员沙箱，没有真实资金转移。当前验证记录见 [2026-10-24 Docker 验收](../../quality/evaluation/results/v2-docker-verification-2026-10-24.md)，此前离线检查也保留在结果目录。
+
+2026-10-25 已完成[真实 RAG 小规模云验证](../../quality/evaluation/results/cloud-rag-smoke-2026-10-25.md)，范围与复现方式见第 7 节。
+
+同日完成[完整开发集、冻结留出与修复报告](../../quality/evaluation/results/cloud-final-evaluation-2026-10-25.md)，批次为 175 + 25 + 2 个场景。完整开发集需新建订单夹具，允许 192 轮聊天；留出集有 28 轮。`--workers 3` 可限制并发，`--case-ids` 可选择已知失败回归。原始留出已用于缺陷修复，后续重跑应标记为已见回归，不再视为独立留出成绩。
+
+## 1. 不依赖 Docker 的检查
+
+在仓库根目录执行，需 Python 3.10+、JDK 21、Node.js 与已安装的项目依赖：
+
+```powershell
+python -B scripts/evaluation/eval_v2.py validate
+python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/refund-sandbox-v1.json
+python -B -m unittest discover -s scripts/evaluation/tests
+python -B -m unittest discover -s training/tests
+
+Push-Location apps/serviceflow-server
+mvn -DskipITs verify
+Pop-Location
+Push-Location apps/serviceflow-web
+npm run lint
+npm test -- --run
+npm run build
+npm run test:e2e
+Pop-Location
+```
+
+本地 Maven 缓存齐全时可加 `-o`。Playwright 需要已安装 Chromium；这 6 条测试主要使用 API mock，不能代替后面的真实服务验证。无 Docker 时不要把 `-DskipITs` 的通过写成完整集成测试通过。
+
+## 2. Docker 可用后启动独立环境
+
+以下命令全部在仓库根目录运行。配置只使用公开演示凭据，不继承 `.env` 的云模型密钥；使用独立 project/volume、数据库 `serviceflow_eval_v2` 和 loopback 端口，MySQL/Redis/RabbitMQ 不暴露宿主端口。
+
+```powershell
+# Docker 安装在 D 盘且当前终端尚未更新 PATH 时：
+$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+& $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml config --quiet
+& $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
+Invoke-RestMethod http://127.0.0.1:18080/api/actuator/info
+```
+
+Web 地址为 `http://127.0.0.1:15173`，API 为 `http://127.0.0.1:18080/api`。info 应为 `aiMode=demo`、`ragMode=demo`、`evaluationEnabled=true`、`refundSandboxEnabled=true`。不要用主环境的数据库执行下面的夹具 SQL。
+
+服务器镜像使用 `build-settings.xml` 限定当前发布版依赖到 Maven Central，并用 BuildKit 缓存 Maven 下载；首次仍需联网。内存紧张时先完成构建/启动，再运行测试，避免同时启动两套 MySQL 和 Java 构建进程。仅运行数据库集成测试可在后端目录执行 `mvn -DforkCount=0 failsafe:integration-test failsafe:verify`，前提是已编译当前主代码和测试；这不等价于全量 verify。
+
+## 3. 导入公开商品与知识资料
+
+```powershell
+python -B scripts/evaluation/import_retail.py --base-url http://127.0.0.1:18080/api --wait-seconds 180
+```
+
+成功条件是包内文档最新版本均 READY 且成为活动版本。导入不会清空既有商品；新包售价未知，因此界面显示“暂无报价”。同型号容量 SKU 的说明书复用原文，不计算为独立知识增长。Demo 不创建真实 Milvus 向量，不能据此宣称检索质量通过。
+
+## 4. 新建合成订单并执行真实退款场景
+
+```powershell
+$suite = 'quality/evaluation/datasets/refund-sandbox-v1.json'
+python -B scripts/evaluation/prepare_v2_fixtures.py --suite $suite
+# 把下面路径替换为生成命令打印的本次目录，不要复用已被测过的订单。
+$fixtureDir = 'quality/evaluation/reports/fixtures-<本次编号>'
+$savedEncoding = $OutputEncoding
+try {
+    $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+    Get-Content -LiteralPath "$fixtureDir/fixtures.sql" -Encoding UTF8 |
+        & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml exec -T mysql mysql --default-character-set=utf8mb4 -userviceflow -peval-only-password serviceflow_eval_v2
+    if ($LASTEXITCODE -ne 0) { throw '夹具导入失败，不得继续评测' }
+} finally {
+    $OutputEncoding = $savedEncoding
+}
+python -B scripts/evaluation/eval_v2.py run --suite $suite --fixtures "$fixtureDir/fixtures.json" --mode demo
+```
+
+生成器只生成 SQL/JSON，不连接数据库；SQL 仅追加本次专属的两个客户账号与订单，先校验数据库名必须以 `serviceflow_eval_` 开头，事务内写入。不要加 mysql 的 `--force`，否则可能跳过保护错误。重复导入同一份夹具会因唯一约束失败，应生成新的一份。
+
+退款专项通过需满足 10 个场景全部通过，并核对摘要里每项断言的分母。它通过真实 HTTP 执行聊天、确认、订单读取、管理员回调和重试；与浏览器 API mock 测试是两组证据。本机已通过 10/10，CI 已配置这套流程，远程 CI 尚未触发。
+
+## 5. 主评测与真实模型
+
+主集仍需单独生成夹具：将 `--suite` 换为 `quality/evaluation/datasets/serviceflow-eval-v2.json`，在同一独立数据库追加导入新 SQL。运行默认 `--split development`，冻结实现后再跑 `--split holdout`。
+
+Demo 可检查业务/SSE/权限连通性，知识题失败应如实保留。真实 RAG 和回答质量需要另一个经批准的隔离 Cloud 环境，包含 Milvus、活动文档向量和模型配置；不要直接把 Demo 的导入回执视为云索引完成。上传资料和运行模型前应确定公开数据范围、预估调用数和预算，分别显式传入 `--allow-cloud-ingestion`、`--allow-cloud --max-chat-turns N --mode cloud`。本轮没有调用收费模型。
+
+主集全部有 220 个聊天步骤。`max-chat-turns` 只校验预定聊天数量，不控制单轮内部模型请求数或费用。数据来源与评分口径见[评测说明](../../quality/evaluation/README.md)。参考答案仍需独立人工语义复核。
+
+## 6. 业务边界与演示
+
+客户页 `/orders` 展示订单、退款金额、失败原因和处理次数，查询受订单所有者权限控制。客服聊天出现取消确认卡片后，由用户明确确认；拒绝确认、换订单、重复确认和发货后取消都有回归场景。
+
+管理员 `/admin/refunds` 默认只读。设置 `SERVICEFLOW_REFUND_SANDBOX_ENABLED=true` 才会创建回调/重试接口并显示按钮；必须同时具有 ADMIN 权限。流程：
+
+```text
+已付款且可取消订单 → 用户确认 → CANCELLED + refund PROCESSING（同一事务）
+PROCESSING → 模拟成功 → SUCCEEDED / payment REFUNDED
+PROCESSING → 模拟失败 → FAILED / payment FAILED
+FAILED → 管理员重试 → PROCESSING，attemptNo + 1
+未付款订单 → 用户确认 → CANCELLED，不创建退款任务
+```
+
+退款金额取原订单金额，每单唯一请求。回调记录唯一 eventId，校验退款、金额、次数、结果与原因；同事件相同内容重放不重复写状态，同 ID 不同内容拒绝。旧尝试的迟到结果只记审计，未来次数与同次冲突终态拒绝。请求、支付状态与事件在一个事务中提交，任一步失败一起回滚。重试使用 `expectedAttemptNo` 防止重复点击多增次数。
+
+V6 迁移允许未知商品报价；V7 增加退款请求/事件及支付 FAILED 状态。历史 `PROCESSING` 付款不自动伪造为新退款请求，升级已有数据库需另行核对历史记录。本机 8 个 Testcontainers 测试已通过，包括重复并发回调和事务回滚；完整检查仍可执行 `mvn verify`。
+
+真实支付接入仍需渠道请求、签名验证、对账、资金金额与币种校验、未知结果查询及补偿机制。当前全额退款沙箱不表示已具备这些能力，也不支持部分退款或退货逆向物流。
+
+停止独立环境可执行 `docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml down`，不加 `-v` 保留验证数据。删除卷属于清空数据库，应在确认不再需要后单独处理。
+
+## 7. 小规模真实 RAG 与 Cloud 验证
+
+此流程会调用收费的百炼服务。以下是已执行流程的复现说明；后续新运行仍需事先确认数据与费用范围。只使用公开资料和项目编写问题，不运行整个 200 场景集合。
+
+```powershell
+python -B scripts/evaluation/prepare_cloud_smoke.py
+python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/reports/cloud-smoke-inputs/suite.json --package quality/evaluation/reports/cloud-smoke-inputs/package
+
+$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+# 两套隔离环境使用相同宿主端口；停止 Demo，不删除数据卷。
+& $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml stop
+# .env 使用已有百炼配置；仅校验，禁止打印展开后的含密钥配置。
+& $docker compose --env-file .env -p serviceflow-cloud-eval -f deploy/evaluation-cloud-compose.yml config --quiet
+& $docker compose --env-file .env -p serviceflow-cloud-eval -f deploy/evaluation-cloud-compose.yml up -d --build --wait --wait-timeout 300
+
+python -B scripts/evaluation/import_retail.py --package quality/evaluation/reports/cloud-smoke-inputs/package --receipt quality/evaluation/reports/cloud-smoke-import.json --allow-cloud-ingestion --wait-seconds 180
+python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/reports/cloud-smoke-inputs/suite.json --package quality/evaluation/reports/cloud-smoke-inputs/package --mode cloud --allow-cloud --max-chat-turns 10
+```
+
+子包包含 Pura 80、nova 14 各一个 SKU 和一份手机保修资料，共 3 个文档 / 24 个章节；9 个场景共 10 轮对话，并要求无降级、正确引用。若只复测未知报价，用 `price-followup.json` 替换 suite，传 `--max-chat-turns 2`，不重跑其他场景。
+
+云环境数据库和向量卷独立于 Demo；不要把 Demo 的 READY 状态或导入回执直接当作云向量已就绪。入库失败时先查原因，再通过管理员知识库的重试功能重试原版本；不要通过重复上传掩盖失败。修复后的初始化逻辑可在全新集合上直接导入。
+
+完成后可停止云服务并恢复 Demo，保留全部云验证数据：
+
+```powershell
+& $docker compose --env-file .env -p serviceflow-cloud-eval -f deploy/evaluation-cloud-compose.yml stop
+& $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --no-build --wait --wait-timeout 180
+```
+
+本次云环境使用 Milvus 官方单机内置 etcd / 本地存储模式，免去外置 MinIO；没有迁移或替换主 Compose 的既有向量存储数据。各运行的输入和报告摘要保留 SHA-256，原始回答只存本机。

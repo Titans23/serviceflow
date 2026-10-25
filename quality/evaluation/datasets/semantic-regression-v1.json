@@ -1,0 +1,513 @@
+{
+  "version": "serviceflow-eval-v2",
+  "createdAt": "2026-10-23",
+  "origin": "project-authored",
+  "review": "AI-authored and source-checked; independent human semantic review pending",
+  "splitPolicy": "Product source families are disjoint; wording templates may be shared. This is a regression baseline, not real-user traffic or a training dataset.",
+  "cases": [
+    {
+      "id": "knowledge-pura80-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认无线快充配套，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80，想确认出厂系统与升级，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，但部分批次预装 6 或以上；需区分当前设备版本与出厂规格。",
+      "expectedEvidence": {
+        "sourceId": "pura80",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-system",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认系统版本差异，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，支持升级到 6 或以上，部分批次可能出厂搭载新版。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "system"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-pura80-pro-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Pura 80 Pro，想确认无线充电附件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-PURA80PRO-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80PRO-12-256}}"
+            ],
+            "citations": [
+              "pura80-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。",
+      "expectedEvidence": {
+        "sourceId": "pura80-pro",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-wireless",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70，想确认无线快充条件，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70-12-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70-12-256}}"
+            ],
+            "citations": [
+              "mate70.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。",
+      "expectedEvidence": {
+        "sourceId": "mate70",
+        "sectionId": "wireless"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-upgrade",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 Mate 70 Pro+，想确认系统升级说明，请说明适用条件。",
+          "productId": "{{products.HUAWEI-MATE70PLUS-16-512}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-MATE70PLUS-16-512}}"
+            ],
+            "citations": [
+              "mate70-pro-plus.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。",
+      "expectedEvidence": {
+        "sourceId": "mate70-pro-plus",
+        "sectionId": "upgrade"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-headset",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14，想确认有线耳机兼容，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14-256}}"
+            ],
+            "citations": [
+              "nova14.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "Type-C 口支持数字耳机，其他耳机需搭配对应数字音频转换器。",
+      "expectedEvidence": {
+        "sourceId": "nova14",
+        "sectionId": "headset"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-pro-selfie",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Pro，想确认前置变焦口径，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14PRO-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "前置支持 2 倍光学变焦与 5 倍数字变焦，两种数值不能等同。",
+      "expectedEvidence": {
+        "sourceId": "nova14-pro",
+        "sectionId": "selfie"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-usb",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认Type-C 不等于高速 USB，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "该机的数据接口为 Type-C，规格注明 USB 2.0。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "usb"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-headset",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认耳机转接，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "Type-C 口适配数字耳机；其他耳机需使用相应数字音频转换器。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "headset"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "knowledge-nova14-ultra-wifi",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我在看 nova 14 Ultra，想确认路由器与网速，请说明适用条件。",
+          "productId": "{{products.HUAWEI-NOVA14ULTRA-256}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14ULTRA-256}}"
+            ],
+            "citations": [
+              "nova14-ultra.md"
+            ]
+          }
+        }
+      ],
+      "referenceAnswer": "无线协议需要配套路由器支持；理论峰值不代表实际网络速度。",
+      "expectedEvidence": {
+        "sourceId": "nova14-ultra",
+        "sectionId": "wifi"
+      },
+      "requires": [
+        "retail-v1-knowledge"
+      ],
+      "metricsScope": "document-citation-and-human-semantic-review"
+    },
+    {
+      "id": "semantic-explicit-product-switch",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "pura80",
+        "nova14"
+      ],
+      "referenceAnswer": "先回答 Pura 80 最高66W；明确切到 nova 14 Pro 后为最高100W；后续代词继续 nova；显式商品页仍优先。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "这款有线快充最高多少？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ],
+            "textAll": [
+              [
+                "66"
+              ]
+            ]
+          },
+          "productId": "{{products.HUAWEI-PURA80-12-256}}"
+        },
+        {
+          "type": "chat",
+          "message": "改问 HUAWEI-NOVA14PRO-256，有线快充最高多少？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ],
+            "textAll": [
+              [
+                "100"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "它的前置摄像头变焦呢？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-NOVA14PRO-256}}"
+            ],
+            "citations": [
+              "nova14-pro.md"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "HUAWEI-NOVA14PRO-256 我稍后再看，先说当前商品页这款的快充。",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.HUAWEI-PURA80-12-256}}"
+            ],
+            "citations": [
+              "pura80.md"
+            ],
+            "textAll": [
+              [
+                "66"
+              ]
+            ]
+          },
+          "productId": "{{products.HUAWEI-PURA80-12-256}}"
+        }
+      ]
+    }
+  ]
+}

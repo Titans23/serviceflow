@@ -1,0 +1,64 @@
+# Explicit opt-in: --env-file .env -p serviceflow-cloud-eval -f this-file.
+# Uses the demo evaluation ports; stop serviceflow-eval first, preserving its volumes.
+services:
+  server:
+    extends: {file: evaluation-compose.yml, service: server}
+    image: serviceflow-eval-server:latest
+    mem_limit: 1g
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_cloud_v1
+      SERVICEFLOW_AI_MODE: cloud
+      SERVICEFLOW_RAG_MODE: cloud
+      SERVICEFLOW_REFUND_SANDBOX_ENABLED: "false"
+      SPRING_AI_MODEL_CHAT: openai
+      SPRING_AI_MODEL_EMBEDDING: none
+      SPRING_AI_OPENAI_CHAT_OPTIONS_MAX_TOKENS: "1024"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Existing cloud evaluation credential required}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode}
+      OPENAI_MODEL: ${OPENAI_MODEL:-qwen-plus}
+      OPENAI_EMBEDDING_BASE_URL: ${OPENAI_EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      OPENAI_EMBEDDING_API_KEY: ${OPENAI_EMBEDDING_API_KEY:-${OPENAI_API_KEY}}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-v4}
+      OPENAI_RERANKER_BASE_URL: ${OPENAI_RERANKER_BASE_URL:-https://dashscope.aliyuncs.com/api/v1}
+      OPENAI_RERANKER_API_KEY: ${OPENAI_RERANKER_API_KEY:-${OPENAI_API_KEY}}
+      OPENAI_RERANKER_MODEL: ${OPENAI_RERANKER_MODEL:-qwen3-rerank}
+      MILVUS_REST_URL: http://milvus:19530
+    depends_on:
+      milvus: {condition: service_healthy}
+  web:
+    extends: {file: evaluation-compose.yml, service: web}
+    image: serviceflow-eval-web:latest
+    mem_limit: 128m
+  mysql:
+    extends: {file: evaluation-compose.yml, service: mysql}
+    mem_limit: 768m
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_cloud_v1
+  redis:
+    extends: {file: evaluation-compose.yml, service: redis}
+    mem_limit: 128m
+  rabbitmq:
+    extends: {file: evaluation-compose.yml, service: rabbitmq}
+    mem_limit: 768m
+  milvus:
+    image: milvusdb/milvus:v2.6.22
+    mem_limit: 2g
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_USE_EMBED: "true"
+      ETCD_DATA_DIR: /var/lib/milvus/etcd
+      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+      COMMON_STORAGETYPE: local
+      DEPLOY_MODE: STANDALONE
+    volumes:
+      - eval-milvus:/var/lib/milvus
+      - ./milvus/embed-etcd.yaml:/milvus/configs/embedEtcd.yaml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+volumes:
+  eval-mysql:
+  eval-uploads:
+  eval-milvus:

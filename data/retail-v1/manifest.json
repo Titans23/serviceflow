@@ -1,0 +1,725 @@
+{
+  "version": "retail-v1",
+  "verifiedAt": "2026-10-23",
+  "origin": "official-facts-and-project-paraphrases",
+  "sources": [
+    {
+      "id": "pura80",
+      "url": "https://consumer.huawei.com/cn/phones/pura80/specs/",
+      "title": "HUAWEI Pura 80 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "pura80",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "pura80-pro",
+      "url": "https://consumer.huawei.com/cn/phones/pura80-pro/specs/",
+      "title": "HUAWEI Pura 80 Pro 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "pura80",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "mate70",
+      "url": "https://consumer.huawei.com/cn/phones/mate70/specs/",
+      "title": "HUAWEI Mate 70 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "mate70",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "mate70-pro-plus",
+      "url": "https://consumer.huawei.com/cn/phones/mate70-pro-plus/specs/",
+      "title": "HUAWEI Mate 70 Pro+ 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "mate70",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "nova14",
+      "url": "https://consumer.huawei.com/cn/phones/nova14/specs/",
+      "title": "HUAWEI nova 14 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "nova14",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "nova14-pro",
+      "url": "https://consumer.huawei.com/cn/phones/nova14-pro/specs/",
+      "title": "HUAWEI nova 14 Pro 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "nova14",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "nova14-ultra",
+      "url": "https://consumer.huawei.com/cn/phones/nova14-ultra/specs/",
+      "title": "HUAWEI nova 14 Ultra 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "nova14",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "mate-x6",
+      "url": "https://consumer.huawei.com/cn/phones/mate-x6/specs/",
+      "title": "HUAWEI Mate X6 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "mate-x6",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "freebuds6",
+      "url": "https://consumer.huawei.com/cn/headphones/freebuds6/specs/",
+      "title": "HUAWEI FreeBuds 6 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "freebuds6",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "freeclip",
+      "url": "https://consumer.huawei.com/cn/headphones/freeclip/specs/",
+      "title": "HUAWEI FreeClip 中国官网规格",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "freeclip",
+      "rights": "原页面版权归华为；本包仅包含事实与项目转述，不分发原网页。",
+      "review": "ai-reviewed-source-grounded; not independently human-reviewed"
+    },
+    {
+      "id": "phone-warranty",
+      "url": "https://consumer.huawei.com/cn/support/warranty-policy/smartphone/",
+      "title": "华为中国大陆手机保修政策",
+      "checkedAt": "2026-10-23",
+      "region": "中国大陆",
+      "sourceGroup": "policy-v2",
+      "rights": "原页面版权归华为；这里只发布项目转述。",
+      "review": "ai-reviewed-source-grounded; independent human review pending"
+    }
+  ],
+  "documents": [
+    {
+      "id": "pura80",
+      "title": "retail-v1/pura80",
+      "file": "knowledge/pura80.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-PURA80-12-256",
+        "HUAWEI-PURA80-12-512",
+        "HUAWEI-PURA80-12-1TB"
+      ],
+      "sourceIds": [
+        "pura80"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕尺寸如何理解",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "实际可用空间",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "有线快充配套",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "wireless",
+          "title": "无线快充配套",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "water",
+          "title": "抗水实验边界",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "wet",
+          "title": "进水与充电",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "system",
+          "title": "出厂系统与升级",
+          "sourceSection": "操作系统"
+        },
+        {
+          "id": "video",
+          "title": "慢动作录制",
+          "sourceSection": "后置摄像头"
+        }
+      ]
+    },
+    {
+      "id": "pura80-pro",
+      "title": "retail-v1/pura80-pro",
+      "file": "knowledge/pura80-pro.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-PURA80PRO-12-256",
+        "HUAWEI-PURA80PRO-12-512",
+        "HUAWEI-PURA80PRO-12-1TB"
+      ],
+      "sourceIds": [
+        "pura80-pro"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "圆角显示区域",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "存储扩展限制",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "百瓦快充条件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "wireless",
+          "title": "无线充电附件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "water",
+          "title": "抗水测试条件",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "wet",
+          "title": "防护使用限制",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "system",
+          "title": "系统版本差异",
+          "sourceSection": "操作系统"
+        },
+        {
+          "id": "video",
+          "title": "高帧率来源",
+          "sourceSection": "后置摄像头"
+        }
+      ]
+    },
+    {
+      "id": "mate70",
+      "title": "retail-v1/mate70",
+      "file": "knowledge/mate70.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-MATE70-12-256",
+        "HUAWEI-MATE70-12-512",
+        "HUAWEI-MATE70-12-1TB"
+      ],
+      "sourceIds": [
+        "mate70"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕测量",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "可用容量与扩展",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "有线快充条件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "wireless",
+          "title": "无线快充条件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "water",
+          "title": "实验水深",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "wet",
+          "title": "磨损与浸液",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "system",
+          "title": "先锋版系统",
+          "sourceSection": "操作系统"
+        },
+        {
+          "id": "camera",
+          "title": "相机输出范围",
+          "sourceSection": "后置摄像头"
+        }
+      ]
+    },
+    {
+      "id": "mate70-pro-plus",
+      "title": "retail-v1/mate70-pro-plus",
+      "file": "knowledge/mate70-pro-plus.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-MATE70PLUS-16-512",
+        "HUAWEI-MATE70PLUS-16-1TB"
+      ],
+      "sourceIds": [
+        "mate70-pro-plus"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕可视区域",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "存储卡限制",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "system",
+          "title": "系统版本选择",
+          "sourceSection": "操作系统"
+        },
+        {
+          "id": "upgrade",
+          "title": "系统升级说明",
+          "sourceSection": "操作系统"
+        },
+        {
+          "id": "weight",
+          "title": "重量误差",
+          "sourceSection": "尺寸与重量"
+        },
+        {
+          "id": "battery",
+          "title": "电池容量口径",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "photo",
+          "title": "拍照模式差异",
+          "sourceSection": "后置摄像头"
+        },
+        {
+          "id": "zoom",
+          "title": "变焦口径",
+          "sourceSection": "后置摄像头"
+        }
+      ]
+    },
+    {
+      "id": "nova14",
+      "title": "retail-v1/nova14",
+      "file": "knowledge/nova14.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-NOVA14-256",
+        "HUAWEI-NOVA14-512"
+      ],
+      "sourceIds": [
+        "nova14"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "圆角屏幕",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "容量使用",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "快充配套要求",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "usb",
+          "title": "接口速率",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "headset",
+          "title": "有线耳机兼容",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "wifi",
+          "title": "无线网络速度",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "battery",
+          "title": "电池口径",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "nfc",
+          "title": "SIM 支付卡槽",
+          "sourceSection": "NFC"
+        }
+      ]
+    },
+    {
+      "id": "nova14-pro",
+      "title": "retail-v1/nova14-pro",
+      "file": "knowledge/nova14-pro.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-NOVA14PRO-256",
+        "HUAWEI-NOVA14PRO-512",
+        "HUAWEI-NOVA14PRO-1TB"
+      ],
+      "sourceIds": [
+        "nova14-pro"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕面积口径",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "可用存储空间",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "快充附件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "power",
+          "title": "实际充电功率",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "weight",
+          "title": "不同版本重量",
+          "sourceSection": "尺寸与重量"
+        },
+        {
+          "id": "battery",
+          "title": "电池容量差异",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "selfie",
+          "title": "前置变焦口径",
+          "sourceSection": "前置摄像头"
+        },
+        {
+          "id": "camera",
+          "title": "照片输出",
+          "sourceSection": "前置摄像头"
+        }
+      ]
+    },
+    {
+      "id": "nova14-ultra",
+      "title": "retail-v1/nova14-ultra",
+      "file": "knowledge/nova14-ultra.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-NOVA14ULTRA-256",
+        "HUAWEI-NOVA14ULTRA-512",
+        "HUAWEI-NOVA14ULTRA-1TB"
+      ],
+      "sourceIds": [
+        "nova14-ultra"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "圆角可视面积",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "存储口径",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "wired",
+          "title": "百瓦充电条件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "usb",
+          "title": "Type-C 不等于高速 USB",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "headset",
+          "title": "耳机转接",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "wifi",
+          "title": "路由器与网速",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "battery",
+          "title": "容量与拆卸",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "nfc",
+          "title": "支付卡槽条件",
+          "sourceSection": "NFC"
+        }
+      ]
+    },
+    {
+      "id": "mate-x6",
+      "title": "retail-v1/mate-x6",
+      "file": "knowledge/mate-x6.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-MATEX6-12-256",
+        "HUAWEI-MATEX6-12-512"
+      ],
+      "sourceIds": [
+        "mate-x6"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "内外屏区别",
+          "sourceSection": "屏幕"
+        },
+        {
+          "id": "storage",
+          "title": "标准版与典藏版",
+          "sourceSection": "存储"
+        },
+        {
+          "id": "battery",
+          "title": "电池版本差异",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "wired",
+          "title": "快充条件",
+          "sourceSection": "充电"
+        },
+        {
+          "id": "water",
+          "title": "IPX8 的边界",
+          "sourceSection": "防尘抗水"
+        },
+        {
+          "id": "usb",
+          "title": "线材与数据速率",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "satellite",
+          "title": "卫星能力按版本",
+          "sourceSection": "数据连接"
+        },
+        {
+          "id": "activation",
+          "title": "北斗使用条件",
+          "sourceSection": "数据连接"
+        }
+      ]
+    },
+    {
+      "id": "freebuds6",
+      "title": "retail-v1/freebuds6",
+      "file": "knowledge/freebuds6.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-FREEBUDS-6"
+      ],
+      "sourceIds": [
+        "freebuds6"
+      ],
+      "sections": [
+        {
+          "id": "volume",
+          "title": "调节音量",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "charging",
+          "title": "充电方式",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "time",
+          "title": "充电时长口径",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "battery",
+          "title": "续航条件",
+          "sourceSection": "电池"
+        },
+        {
+          "id": "popup",
+          "title": "弹窗的系统要求",
+          "sourceSection": "无线连接"
+        },
+        {
+          "id": "multi",
+          "title": "多设备连接条件",
+          "sourceSection": "无线连接"
+        },
+        {
+          "id": "water",
+          "title": "耳机与盒子防护不同",
+          "sourceSection": "防水防尘等级"
+        },
+        {
+          "id": "latency",
+          "title": "低时延适配",
+          "sourceSection": "无线连接"
+        }
+      ]
+    },
+    {
+      "id": "freeclip",
+      "title": "retail-v1/freeclip",
+      "file": "knowledge/freeclip.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "HUAWEI-FREECLIP-1"
+      ],
+      "sourceIds": [
+        "freeclip"
+      ],
+      "sections": [
+        {
+          "id": "double",
+          "title": "双击控制",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "triple",
+          "title": "切歌控制",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "gesture",
+          "title": "不支持的手势",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "pair",
+          "title": "进入配对",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "reset",
+          "title": "恢复出厂设置",
+          "sourceSection": "设备控制"
+        },
+        {
+          "id": "codec",
+          "title": "音频编码支持",
+          "sourceSection": "音频编解码格式"
+        },
+        {
+          "id": "l2hc",
+          "title": "L2HC 使用条件",
+          "sourceSection": "音频编解码格式"
+        },
+        {
+          "id": "charging",
+          "title": "充电接口",
+          "sourceSection": "电池"
+        }
+      ]
+    },
+    {
+      "id": "phone-warranty",
+      "title": "retail-v1/phone-warranty",
+      "file": "knowledge/huawei-phone-warranty-v1.md",
+      "documentType": "POLICY",
+      "skus": [],
+      "sourceIds": [
+        "phone-warranty"
+      ],
+      "sections": [
+        {
+          "id": "scope",
+          "title": "渠道和地区",
+          "sourceSection": "一、前言"
+        },
+        {
+          "id": "term",
+          "title": "保修期限",
+          "sourceSection": "产品保修期限"
+        },
+        {
+          "id": "proof",
+          "title": "保修凭证",
+          "sourceSection": "支持的保修凭证"
+        },
+        {
+          "id": "start",
+          "title": "线上线下起算",
+          "sourceSection": "保修政策"
+        },
+        {
+          "id": "fault",
+          "title": "故障退换时间",
+          "sourceSection": "保修政策"
+        },
+        {
+          "id": "exclusion",
+          "title": "免费服务排除项",
+          "sourceSection": "下列情况不属于免费保退、保换、保修范围"
+        },
+        {
+          "id": "backup",
+          "title": "送修数据",
+          "sourceSection": "退换货及送修指引"
+        },
+        {
+          "id": "inspection",
+          "title": "检测与费用",
+          "sourceSection": "退换货及送修指引"
+        }
+      ]
+    }
+  ]
+}
+

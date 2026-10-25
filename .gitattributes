@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.ps1 text eol=crlf
+# Historical evidence packages retain their original trailing blank lines.
+data/retail-v*/** whitespace=-blank-at-eof
+quality/evaluation/datasets/*.json whitespace=-blank-at-eof

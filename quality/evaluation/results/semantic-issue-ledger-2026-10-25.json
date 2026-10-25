@@ -1,0 +1,25 @@
+{
+  "kind": "agent-adjudicated evidence audit; not independent human annotation",
+  "historicalScope": "Saved cloud development answers, catalog and cited source files; historical chunk traces unavailable",
+  "originalRun": "20261025-121350-7c6bdcfa",
+  "issues": [
+    {"caseId":"knowledge-pura80-wireless","finding":"Added an unlisted charger model and OS prerequisite","evidence":"pura80.md#wireless","classification":"unsupported extension"},
+    {"caseId":"knowledge-pura80-system","finding":"Added 30% battery, 5GB free space and service exclusions. The upgrade capability itself IS supported by catalog and current official source.","evidence":"pura80.md#system; catalog.os; official specs operating-system section","classification":"unsupported extension plus incomplete knowledge paraphrase"},
+    {"caseId":"knowledge-pura80-pro-system","finding":"Upgrade support is documented; account, 5GB and battery prerequisites are not","evidence":"pura80-pro.md#system","classification":"unsupported extension"},
+    {"caseId":"knowledge-pura80-pro-wireless","finding":"Added a 15W fallback and unverified accessory examples","evidence":"pura80-pro.md#wireless","classification":"unsupported extension"},
+    {"caseId":"knowledge-mate70-wireless","finding":"Added an OS prerequisite to the charging conditions","evidence":"mate70.md#wireless","classification":"unsupported extension"},
+    {"caseId":"knowledge-mate70-pro-plus-upgrade","finding":"Added bootloader and battery conditions; conflated factory edition and upgrade eligibility","evidence":"mate70-pro-plus.md#upgrade; #system","classification":"unsupported extension and version ambiguity"},
+    {"caseId":"knowledge-nova14-headset","finding":"Added certification requirements and hardware/connector exclusions","evidence":"nova14.md#headset","classification":"unsupported extension"},
+    {"caseId":"knowledge-nova14-pro-selfie","finding":"Added a 30cm condition and unconditional lossless/default-use claims","evidence":"nova14-pro.md#selfie","classification":"unsupported extension"},
+    {"caseId":"knowledge-nova14-ultra-usb","finding":"Inferred video-output and PD exclusions from USB 2.0","evidence":"nova14-ultra.md#usb","classification":"unsupported inference"},
+    {"caseId":"knowledge-nova14-ultra-headset","finding":"Added DAC implementation and package-content claims","evidence":"nova14-ultra.md#headset","classification":"unsupported extension"},
+    {"caseId":"knowledge-nova14-ultra-wifi","finding":"Core uncertainty statement was appropriate; unsolicited router advice was unnecessary. Not counted as a confirmed factual error.","evidence":"nova14-ultra.md#wifi","classification":"over-expansion control case"},
+    {"caseId":"semantic-explicit-product-switch","finding":"Explicit new SKU lost to remembered old product on two intermediate turns","evidence":"20261025-124626-2c6abe2a: product identity 2/4, references 1/4","classification":"multi-turn entity conflict"}
+  ],
+  "adjudicationCorrections": [
+    "Do not label Pura 80 or Pura 80 Pro upgrade support itself a hallucination: official source and catalog support it.",
+    "Do not treat absence from the paraphrased manual as contradiction when the catalog contains the fact.",
+    "Initial judge complaint-v2-2 flag lacked business event evidence; it is not established as an application defect.",
+    "This is targeted issue discovery, not a random sample or overall semantic error-rate estimate."
+  ]
+}

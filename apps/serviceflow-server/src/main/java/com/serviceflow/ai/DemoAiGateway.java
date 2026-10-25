@@ -16,6 +16,10 @@ public final class DemoAiGateway implements AiGateway {
         if (query.contains("投诉") || query.contains("人工客服")) {
             return Intent.COMPLAINT;
         }
+        // Ignore explicitly declined lookups, but preserve a request after a contrast or punctuation.
+        // Do not strip missing deliveries/refunds such as “没有收到订单”.
+        query = query.replaceAll("(?:不用|不需要|无需)(?:查询|查|咨询|了解).*?(?=[，。！？；,!?;\\n]|但是|但|不过|而是|$)", "")
+                .replaceAll("(?:暂时没有|目前没有|暂无)[^，。！？；,!?;\\n]*?(?:问题|需求)", "");
         if (query.contains("订单") || query.contains("物流") || query.contains("退款") || query.contains("取消")) {
             return Intent.ORDER_QUERY;
         }

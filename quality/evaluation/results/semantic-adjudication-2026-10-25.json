@@ -1,0 +1,243 @@
+{
+  "createdAt": "2026-10-25T05:03:55.417792+00:00",
+  "reviewer": "Coding agent evidence adjudication with Qwen screening; not independent human review",
+  "semanticAccuracy": null,
+  "scope": "Targeted review; cannot estimate overall production correctness or hallucination rate",
+  "development": {
+    "runId": "20261025-125513-826c80a4",
+    "cases": [
+      {
+        "caseId": "knowledge-pura80-wireless",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-pura80-system",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-pura80-pro-system",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-pura80-pro-wireless",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-mate70-wireless",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-upgrade",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-nova14-headset",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-nova14-pro-selfie",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-usb",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-headset",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-wifi",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "semantic-explicit-product-switch",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "consistent",
+        "turns": 4
+      }
+    ],
+    "retrievedUniqueChunks": 14
+  },
+  "firstHoldout": {
+    "runId": "20261025-125614-5d855325",
+    "cases": [
+      {
+        "caseId": "fresh-iphone-usb-premise",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-iphone-fast-charge",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-iphone-box",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-iphone-brightness",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-iphone-display",
+        "verdict": "not_answered",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-iphone-sim",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-battery",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-note",
+        "verdict": "not_answered",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-zoom",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-unknown-watts",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-correction",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "consistent",
+        "turns": 2
+      },
+      {
+        "caseId": "fresh-iphone-followup",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "consistent",
+        "turns": 2
+      },
+      {
+        "caseId": "fresh-cross-brand-context",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "consistent",
+        "turns": 4
+      },
+      {
+        "caseId": "fresh-price-unknown",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      }
+    ],
+    "retrievedUniqueChunks": 10,
+    "frozenFilesUnchangedAtCompletion": 161
+  },
+  "postHoldoutKnownCases": {
+    "runId": "20261025-130141-d7af1937",
+    "holdoutExposed": true,
+    "cases": [
+      {
+        "caseId": "fresh-iphone-display",
+        "verdict": "not_answered",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      },
+      {
+        "caseId": "fresh-s24-note",
+        "verdict": "supported_and_responsive",
+        "multiTurn": "not_applicable",
+        "turns": 1
+      }
+    ]
+  },
+  "developmentAfterRepair": {
+    "runId": "20261025-130115-0cafdbb2",
+    "answerComparison": "All 15 answers identical to reviewed development answers after whitespace normalization"
+  },
+  "automaticReviews": {
+    "semantic-baseline-20261025": {
+      "attempted": 200,
+      "invalidOrFailed": 2,
+      "validFlagged": 3,
+      "recordedUsageTokens": 265977
+    },
+    "semantic-calibration-max-20261025": {
+      "attempted": 4,
+      "invalidOrFailed": 4,
+      "validFlagged": 0,
+      "recordedUsageTokens": 0
+    },
+    "semantic-max-diagnostic-20261025": {
+      "attempted": 1,
+      "invalidOrFailed": 1,
+      "validFlagged": 0,
+      "recordedUsageTokens": 0
+    },
+    "semantic-calibration-plus-v2-20261025": {
+      "attempted": 4,
+      "invalidOrFailed": 2,
+      "validFlagged": 1,
+      "recordedUsageTokens": 3643
+    },
+    "semantic-development-final-review-20261025": {
+      "attempted": 12,
+      "invalidOrFailed": 0,
+      "validFlagged": 0,
+      "recordedUsageTokens": 15273
+    },
+    "semantic-holdout-first-review-20261025": {
+      "attempted": 14,
+      "invalidOrFailed": 1,
+      "validFlagged": 1,
+      "recordedUsageTokens": 16102
+    }
+  },
+  "unresolved": [
+    "fresh-iphone-display still returns no document evidence in the end-to-end run. Isolated Grader improvement did not establish full-pipeline recovery."
+  ],
+  "runtimeTradeoffs": [
+    "Extractive product answers reduce unsupported additions but can omit relevant facts and are less conversational.",
+    "Product output waits for fact selection; first-token latency was not measured separately.",
+    "No live customer traffic, independent human labels, real payment gateway or production SLA measured."
+  ]
+}

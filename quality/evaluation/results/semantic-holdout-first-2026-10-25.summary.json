@@ -1,0 +1,83 @@
+{
+  "runId": "20261025-125614-5d855325",
+  "mode": "cloud",
+  "split": "holdout",
+  "suiteSha256": "4b3a72a42520f456d68e7528af3f04d81dee6215dab5087741409e3aef7bccb2",
+  "packageFileSha256": {
+    "manifest.json": "e7e41a011b9500f8301d07174b8275a7cc17811b09e5fa371ff2b8f128df6cdd",
+    "catalog.json": "3d70cb486b64642a16496faa2a553ce6cf27eb359bc06a28b7c7f6b2f656c1b0",
+    "knowledge/iphone16-us.md": "2d964ee9054f5a0eeb38829f79b6292438677f76bc8dfd80a42aa49879182712",
+    "knowledge/galaxy-s24-us.md": "697e4517d543304e679461d4e57d5ee3205f163e068120fb6322b7e08fdbb37b"
+  },
+  "inventory": {
+    "package": {
+      "version": "retail-holdout-v2",
+      "products": 2,
+      "sources": 2,
+      "documents": 2,
+      "sections": 12
+    },
+    "suite": {
+      "cases": 14,
+      "chatTurns": 19,
+      "multiTurnCases": 3,
+      "assertionGroups": 76,
+      "splits": {
+        "development": 0,
+        "holdout": 14
+      }
+    }
+  },
+  "chatTurns": 19,
+  "workers": 3,
+  "caseIds": [
+    "fresh-iphone-usb-premise",
+    "fresh-iphone-fast-charge",
+    "fresh-iphone-box",
+    "fresh-iphone-brightness",
+    "fresh-iphone-display",
+    "fresh-iphone-sim",
+    "fresh-s24-battery",
+    "fresh-s24-note",
+    "fresh-s24-zoom",
+    "fresh-s24-unknown-watts",
+    "fresh-s24-correction",
+    "fresh-iphone-followup",
+    "fresh-cross-brand-context",
+    "fresh-price-unknown"
+  ],
+  "cases": 14,
+  "passed": 12,
+  "checks": {
+    "httpStatus": {
+      "passed": 19,
+      "total": 19
+    },
+    "events": {
+      "passed": 19,
+      "total": 19
+    },
+    "noUnexpectedError": {
+      "passed": 19,
+      "total": 19
+    },
+    "intent": {
+      "passed": 18,
+      "total": 19
+    },
+    "products": {
+      "passed": 18,
+      "total": 19
+    },
+    "documentCitations": {
+      "passed": 16,
+      "total": 18
+    },
+    "phraseCoverage": {
+      "passed": 1,
+      "total": 1
+    }
+  },
+  "semanticAccuracy": null,
+  "note": "规则/业务断言；短语覆盖不是事实正确率，引用文件指标不是 chunk 召回指标。"
+}

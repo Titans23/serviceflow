@@ -3,6 +3,7 @@ package com.serviceflow.service.impl;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.serviceflow.mapper.OrderMapper;
+import com.serviceflow.mapper.RefundMapper;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.service.OrderService;
 import java.util.Set;
@@ -14,14 +15,18 @@ import org.springframework.web.server.ResponseStatusException;
 public class OrderServiceImpl implements OrderService {
     private static final Set<String> CANCELLABLE = Set.of("CREATED", "PAID", "PROCESSING");
     private final OrderMapper mapper;
+    private final RefundMapper refunds;
 
-    public OrderServiceImpl(OrderMapper mapper) {
+    public OrderServiceImpl(OrderMapper mapper, RefundMapper refunds) {
         this.mapper = mapper;
+        this.refunds = refunds;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public OrderModels.OrderView get(String orderNo, long customerId) {
         OrderModels.Order order = owned(orderNo, customerId);
+        var refund = refunds.findByOrder(order.id());
         return new OrderModels.OrderView(
                 order.orderNo(),
                 order.status(),
@@ -30,7 +35,8 @@ public class OrderServiceImpl implements OrderService {
                 order.createdAt(),
                 mapper.items(order.id()),
                 mapper.payment(order.id()),
-                mapper.shipment(order.id()));
+                mapper.shipment(order.id()),
+                refund == null ? null : refund.view());
     }
 
     // 取消订单、发起退款、记录操作结果必须作为一个整体提交；方法抛出运行时异常时一起回滚。
@@ -68,8 +74,18 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 只有订单状态更新成功后才进入退款流程，最后把幂等记录从 PROCESSING 更新为最终结果。
-        mapper.startRefund(order.id());
-        mapper.completeOperation(requestId, "CANCELLED", "订单已取消；已支付款项将进入退款流程");
+        boolean refundStarted = mapper.startRefund(order.id()) == 1;
+        if (refundStarted) {
+            if (mapper.createRefund(order.id(), requestId) != 1) {
+                throw new IllegalStateException("Refund request could not be created; cancellation must roll back");
+            }
+        } else {
+            var payment = mapper.payment(order.id());
+            if (payment != null && "PAID".equals(payment.status())) {
+                throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "支付退款状态异常，取消操作已回滚");
+            }
+        }
+        mapper.completeOperation(requestId, "CANCELLED", refundStarted ? "订单已取消，已创建退款任务，请在订单详情查看处理进度。" : "订单已取消，无需退款。");
         return mapper.findOperation(requestId);
     }
 

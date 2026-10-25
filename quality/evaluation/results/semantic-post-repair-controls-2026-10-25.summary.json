@@ -1,0 +1,78 @@
+{
+  "runId": "20261025-130151-af02a735",
+  "mode": "cloud",
+  "split": "development",
+  "suiteSha256": "d9c7eba65c06856fd22d0f798754679a6845d5e56d0372d836883c10159ec1fb",
+  "packageFileSha256": {
+    "manifest.json": "8589cae8251b7db26d0bbe4f3cdc1c85fbadd1947a0fe61f6c4db426f80b7512",
+    "catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+    "knowledge/pura80.md": "f6a60ff7788477ebad99f6bd2921fb9bc6d250dcfd5becfc85dd20485a648eaa",
+    "knowledge/pura80-pro.md": "2f20879d53ebefd64068606a6d2245a29b424bd85d612a6bd1d0f3d4a5215638",
+    "knowledge/mate70.md": "0b8379981323a0dbd20f5cd43626a1adc8fee5aeb0108259ba9d560e082c29b1",
+    "knowledge/mate70-pro-plus.md": "397a56ac3bb1b7f7df4518c9356fd58e369f72e4d494f600fc83e41fd1ab5769",
+    "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+    "knowledge/nova14-pro.md": "efefadd08c5c36aee3a12df30948ba60b21313d70bd11d7f4c4bd589f1e5fb5a",
+    "knowledge/nova14-ultra.md": "064afa490c53c1a0af67db81425585f996f162b22c9db95f5932573cb85429d7",
+    "knowledge/mate-x6.md": "566713ad91665ff48c8a813d525a32f2dfbd75045b450b1fca858a97e42098a0",
+    "knowledge/freebuds6.md": "e84db13907d9c48f728d068a5e37140a3b0305c000c465825d4ce047928dabb1",
+    "knowledge/freeclip.md": "81736940e6371fa46076aa7426d684503e2ff92609a19fc0e5810c628ae235c8",
+    "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+  },
+  "inventory": {
+    "package": {
+      "version": "retail-v1.1",
+      "products": 23,
+      "sources": 11,
+      "documents": 11,
+      "sections": 88
+    },
+    "suite": {
+      "cases": 3,
+      "chatTurns": 4,
+      "multiTurnCases": 1,
+      "assertionGroups": 12,
+      "splits": {
+        "development": 3,
+        "holdout": 0
+      }
+    }
+  },
+  "chatTurns": 4,
+  "workers": 1,
+  "caseIds": [
+    "policy-v2-1",
+    "policy-v2-3",
+    "guest-order-context"
+  ],
+  "cases": 3,
+  "passed": 3,
+  "checks": {
+    "httpStatus": {
+      "passed": 4,
+      "total": 4
+    },
+    "events": {
+      "passed": 4,
+      "total": 4
+    },
+    "noUnexpectedError": {
+      "passed": 4,
+      "total": 4
+    },
+    "intent": {
+      "passed": 4,
+      "total": 4
+    },
+    "absentEvents": {
+      "passed": 2,
+      "total": 2
+    },
+    "phraseCoverage": {
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "semanticAccuracy": null,
+  "note": "规则/业务断言；短语覆盖不是事实正确率，引用文件指标不是 chunk 召回指标。",
+  "purpose": "development/control regression"
+}

@@ -1,0 +1,495 @@
+{
+  "products": [
+    {
+      "sku": "HUAWEI-PURA80-12-256",
+      "name": "HUAWEI Pura 80 256 GB",
+      "brand": "HUAWEI",
+      "model": "Pura 80",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.6 英寸",
+        "memory": "12 GB",
+        "storage": "256 GB",
+        "weight": "约 211 g",
+        "battery": "5600 mAh（典型值）",
+        "os": "HarmonyOS 5.1；官网注明可升级至 6 或以上，部分批次预装新版",
+        "source_id": "pura80",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-PURA80-12-512",
+      "name": "HUAWEI Pura 80 512 GB",
+      "brand": "HUAWEI",
+      "model": "Pura 80",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.6 英寸",
+        "memory": "12 GB",
+        "storage": "512 GB",
+        "weight": "约 211 g",
+        "battery": "5600 mAh（典型值）",
+        "os": "HarmonyOS 5.1；官网注明可升级至 6 或以上，部分批次预装新版",
+        "source_id": "pura80",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-PURA80-12-1TB",
+      "name": "HUAWEI Pura 80 1 TB",
+      "brand": "HUAWEI",
+      "model": "Pura 80",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.6 英寸",
+        "memory": "12 GB",
+        "storage": "1 TB",
+        "weight": "约 211 g",
+        "battery": "5600 mAh（典型值）",
+        "os": "HarmonyOS 5.1；官网注明可升级至 6 或以上，部分批次预装新版",
+        "source_id": "pura80",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "name": "HUAWEI Pura 80 Pro 256 GB",
+      "brand": "HUAWEI",
+      "model": "Pura 80 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.8 英寸",
+        "memory": "12 GB",
+        "storage": "256 GB",
+        "weight": "约 219 g",
+        "battery": "5700 mAh（典型值）",
+        "os": "HarmonyOS 5.1；部分批次预装 6 或以上",
+        "source_id": "pura80-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-PURA80PRO-12-512",
+      "name": "HUAWEI Pura 80 Pro 512 GB",
+      "brand": "HUAWEI",
+      "model": "Pura 80 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.8 英寸",
+        "memory": "12 GB",
+        "storage": "512 GB",
+        "weight": "约 219 g",
+        "battery": "5700 mAh（典型值）",
+        "os": "HarmonyOS 5.1；部分批次预装 6 或以上",
+        "source_id": "pura80-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-PURA80PRO-12-1TB",
+      "name": "HUAWEI Pura 80 Pro 1 TB",
+      "brand": "HUAWEI",
+      "model": "Pura 80 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.8 英寸",
+        "memory": "12 GB",
+        "storage": "1 TB",
+        "weight": "约 219 g",
+        "battery": "5700 mAh（典型值）",
+        "os": "HarmonyOS 5.1；部分批次预装 6 或以上",
+        "source_id": "pura80-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/pura80-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATE70-12-256",
+      "name": "HUAWEI Mate 70 256 GB",
+      "brand": "HUAWEI",
+      "model": "Mate 70",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.7 英寸",
+        "memory": "12 GB",
+        "storage": "256 GB",
+        "weight": "约 203 g",
+        "battery": "5300 mAh（典型值）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate70",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate70/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATE70-12-512",
+      "name": "HUAWEI Mate 70 512 GB",
+      "brand": "HUAWEI",
+      "model": "Mate 70",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.7 英寸",
+        "memory": "12 GB",
+        "storage": "512 GB",
+        "weight": "约 203 g",
+        "battery": "5300 mAh（典型值）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate70",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate70/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATE70-12-1TB",
+      "name": "HUAWEI Mate 70 1 TB",
+      "brand": "HUAWEI",
+      "model": "Mate 70",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.7 英寸",
+        "memory": "12 GB",
+        "storage": "1 TB",
+        "weight": "约 203 g",
+        "battery": "5300 mAh（典型值）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate70",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate70/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "name": "HUAWEI Mate 70 Pro+ 512 GB",
+      "brand": "HUAWEI",
+      "model": "Mate 70 Pro+",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.9 英寸",
+        "memory": "16 GB",
+        "storage": "512 GB",
+        "weight": "约 226 g",
+        "battery": "5700 mAh（典型值）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate70-pro-plus",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate70-pro-plus/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATE70PLUS-16-1TB",
+      "name": "HUAWEI Mate 70 Pro+ 1 TB",
+      "brand": "HUAWEI",
+      "model": "Mate 70 Pro+",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.9 英寸",
+        "memory": "16 GB",
+        "storage": "1 TB",
+        "weight": "约 226 g",
+        "battery": "5700 mAh（典型值）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate70-pro-plus",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate70-pro-plus/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14-256",
+      "name": "HUAWEI nova 14 256 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.7 英寸",
+        "storage": "256 GB",
+        "weight": "约 192 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14-512",
+      "name": "HUAWEI nova 14 512 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.7 英寸",
+        "storage": "512 GB",
+        "weight": "约 192 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "name": "HUAWEI nova 14 Pro 256 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.78 英寸",
+        "storage": "256 GB",
+        "weight": "普通版约 207 g；昆仑版约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14PRO-512",
+      "name": "HUAWEI nova 14 Pro 512 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.78 英寸",
+        "storage": "512 GB",
+        "weight": "普通版约 207 g；昆仑版约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14PRO-1TB",
+      "name": "HUAWEI nova 14 Pro 1 TB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Pro",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.78 英寸",
+        "storage": "1 TB",
+        "weight": "普通版约 207 g；昆仑版约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-pro",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-pro/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "name": "HUAWEI nova 14 Ultra 256 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Ultra",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.81 英寸",
+        "storage": "256 GB",
+        "weight": "约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-ultra",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-ultra/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14ULTRA-512",
+      "name": "HUAWEI nova 14 Ultra 512 GB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Ultra",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.81 英寸",
+        "storage": "512 GB",
+        "weight": "约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-ultra",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-ultra/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-NOVA14ULTRA-1TB",
+      "name": "HUAWEI nova 14 Ultra 1 TB",
+      "brand": "HUAWEI",
+      "model": "nova 14 Ultra",
+      "category": "phone",
+      "specs": {
+        "screen_size": "6.81 英寸",
+        "storage": "1 TB",
+        "weight": "约 204 g",
+        "battery": "5500 mAh（典型值）",
+        "os": "HarmonyOS 5.0",
+        "source_id": "nova14-ultra",
+        "source_url": "https://consumer.huawei.com/cn/phones/nova14-ultra/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATEX6-12-256",
+      "name": "HUAWEI Mate X6 256 GB",
+      "brand": "HUAWEI",
+      "model": "Mate X6",
+      "category": "phone",
+      "specs": {
+        "screen_size": "内屏 7.93 英寸；外屏 6.45 英寸",
+        "memory": "12 GB",
+        "storage": "256 GB",
+        "weight": "约 239 g（不含保护膜与内屏表面层）",
+        "battery": "5110 mAh（典型值，标准版）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate-x6",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate-x6/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-MATEX6-12-512",
+      "name": "HUAWEI Mate X6 512 GB",
+      "brand": "HUAWEI",
+      "model": "Mate X6",
+      "category": "phone",
+      "specs": {
+        "screen_size": "内屏 7.93 英寸；外屏 6.45 英寸",
+        "memory": "12 GB",
+        "storage": "512 GB",
+        "weight": "约 239 g（不含保护膜与内屏表面层）",
+        "battery": "5110 mAh（典型值，标准版）",
+        "os": "HarmonyOS 4.3；鸿蒙 NEXT 先锋版为 5.0",
+        "source_id": "mate-x6",
+        "source_url": "https://consumer.huawei.com/cn/phones/mate-x6/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-FREEBUDS-6",
+      "name": "HUAWEI FreeBuds 6",
+      "brand": "HUAWEI",
+      "model": "FreeBuds 6",
+      "category": "headphone",
+      "specs": {
+        "weight": "单耳约 4.9 g",
+        "battery": "单耳最小 39.5 mAh；充电盒最小 510 mAh",
+        "source_id": "freebuds6",
+        "source_url": "https://consumer.huawei.com/cn/headphones/freebuds6/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    },
+    {
+      "sku": "HUAWEI-FREECLIP-1",
+      "name": "HUAWEI FreeClip",
+      "brand": "HUAWEI",
+      "model": "FreeClip",
+      "category": "headphone",
+      "specs": {
+        "weight": "单耳约 5.6 g（±0.3 g）",
+        "battery": "单耳最小 55 mAh；充电盒最小 510 mAh",
+        "source_id": "freeclip",
+        "source_url": "https://consumer.huawei.com/cn/headphones/freeclip/specs/",
+        "source_checked_at": "2026-10-23",
+        "price_note": "未核验销售报价；null 表示未知，不是免费",
+        "sale_status_note": "OFF_SALE 是本演示目录的配置，不代表官网库存"
+      },
+      "listPrice": null,
+      "saleStatus": "OFF_SALE"
+    }
+  ]
+}
+

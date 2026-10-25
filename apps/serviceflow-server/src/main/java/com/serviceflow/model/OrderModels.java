@@ -30,7 +30,8 @@ public final class OrderModels {
             Instant createdAt,
             List<Item> items,
             Payment payment,
-            List<Shipment> shipment) {}
+            List<Shipment> shipment,
+            RefundModels.RefundView refund) {}
 
     public record Operation(String requestId, String resultCode, String resultMessage) {}
 }
