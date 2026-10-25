@@ -1,0 +1,79 @@
+{
+  "status": "authorized_fixed_scope_not_yet_executed",
+  "authorization": {"date":"2026-10-25","basis":"Supervising thread reviewed and approved this fixed batch under the user's project .env real-experiment authorization","scope":"4 cases, 7 turns, one process, <=63 provider attempts including failures, no reruns or sample expansion"},
+  "runner": "scripts/evaluation/run_rag_followup.py",
+  "stopOnExternalFailure": ["provider HTTP error including 429", "application model deadline or transport failure", "synchronous body IO failure", "SSE body error or EOF without DONE", "API transport/incomplete stream", "budget log incomplete", "process identity or frozen inputs/versions change"],
+  "baseImplementationCommit": "a533debd",
+  "suite": "quality/evaluation/datasets/rag-context-followup-v1.json",
+  "package": "data/retail-holdout-v2",
+  "modelsFrom": ".env",
+  "plannedModelNames": {
+    "chat": "qwen-plus",
+    "embedding": "text-embedding-v4",
+    "reranker": "qwen3-rerank"
+  },
+  "cases": 4,
+  "newChatTurns": 7,
+  "multiTurnCases": 2,
+  "repeatPolicy": {
+    "seenScreenQuestion": 2,
+    "locations": [
+      "seen-display-repeat:0",
+      "explicit-switch-pronoun:0"
+    ],
+    "freshSessionPerCase": true,
+    "automaticReruns": 0
+  },
+  "exposure": {
+    "seen": "Old failed screen wording in two fresh sessions",
+    "newWordings": "Explicit SKU switch, pronoun follow-up, unknown SKU/follow-up, partial unknown area; all development diagnostics on exposed source families"
+  },
+  "workers": 1,
+  "providerRequestCap": 63,
+  "worstCasePerTurn": {
+    "intent": 1,
+    "embedding": 2,
+    "rerank": 2,
+    "grader": 2,
+    "rewrite": 1,
+    "factSelection": 1
+  },
+  "budgetOverlay": "deploy/evaluation-rag-followup.yml",
+  "newIngestion": false,
+  "serverRestarts": false,
+  "modelProbes": 0,
+  "separateReviewerCalls": 0,
+  "requiredTraceSteps": [
+    "seen-display-repeat:0",
+    "explicit-switch-pronoun:0",
+    "explicit-switch-pronoun:1",
+    "explicit-switch-pronoun:2",
+    "natural-rewrite-partial:0"
+  ],
+  "expectedNoRagSteps": [
+    "unknown-sku-no-fallback:0",
+    "unknown-sku-no-fallback:1"
+  ],
+  "naturalSecondPassProbe": "natural-rewrite-partial:0",
+  "secondPassGate": "Only actual trace with rewrite and rewritten.retrieval/rerank/grader counts as observed. If absent, report not_observed; do not force grader output or add cases/reruns.",
+  "freezeBeforeExecution": [
+    "Specific approval for all public/synthetic inputs and <=63 total provider attempts including failures",
+    "Successful CI for the implementation and verified 63-request local HTTP cap",
+    "Record final Git/source/data/suite hashes, image and active versions, actual .env model names, containerId/StartedAt/RestartCount; no secrets exported",
+    "Same process, consumers disabled, single-attempt SDK/AOP/JDK; no other chats, ingestion, probes, restart or scaling"
+  ],
+  "adjudication": [
+    "Keep all seven slots including failures and not-attempted results; never select only successful replies.",
+    "Check original query, effective product scope and every pass query/filter/rank/decision; distinguish routing, recall, rerank, validated grader decision, rewrite and final fact selection.",
+    "Compare all final claims and qualifications against current catalog and actual captured chunk paragraphs; exact citations alone are not semantic correctness.",
+    "Require no old Apple identity/source after Samsung switch and no source facts for unknown SKU or unresolved pronoun.",
+    "For partial area question, require supported display correction plus explicit insufficiency for square-mm quantity; source has no such number.",
+    "Record repeat outcomes individually, actual attempts and HTTP latency; unknown token/currency remains null; no independent-human accuracy claim."
+  ],
+  "historyPreserved": {
+    "firstSourceHoldout": "12/14",
+    "exposedRegression": "1/2",
+    "priorRagDiagnostics": "3/3",
+    "businessBatch": "6/6"
+  }
+}

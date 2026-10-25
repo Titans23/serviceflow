@@ -1,0 +1,7 @@
+# Use only for the approved frozen seven-turn RAG follow-up; future reruns need new authorization.
+# Layer after evaluation-provider-budget.yml; one process, no restart or paid reruns.
+services:
+  server:
+    environment:
+      SERVICEFLOW_EVALUATION_PROVIDER_REQUEST_LIMIT: "63"
+      SERVICEFLOW_EVALUATION_STOP_ON_PROVIDER_FAILURE: "true"

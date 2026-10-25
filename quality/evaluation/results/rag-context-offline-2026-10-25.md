@@ -40,3 +40,5 @@
 更新后的完整浏览器套件16/16通过，明确区分7个真实后端恢复场景与9个mock界面/请求场景；没有跳过新上下文用例。机器可读结果见[摘要](rag-context-offline-2026-10-25.summary.json)。
 
 复现入口：后端 `ProductContextFlowTest,RagRewriteDiagnosticsTest`；前端 `e2e/visitor-product-flow.spec.ts`。修复前后输出及原始失败元数据只留在忽略的reports目录。后续小规模云方案独立冻结和审核，本检查点不授权执行。
+
+已另行准备并获总控限定审核的[7轮/最多63次provider尝试方案](rag-context-followup-plan-2026-10-25.md)，包含旧屏幕题两次初始采样、SKU切换/代词、未知SKU/代词和自然二轮探针。等待最终实施CI成功后执行；不保证自然触发改写，也不通过追加运行凑覆盖。

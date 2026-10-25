@@ -1,0 +1,239 @@
+{
+  "version": "serviceflow-eval-v2",
+  "origin": "project-authored",
+  "independence": "Frozen development diagnostics on exposed Apple/Samsung sources. The screen question repeats in two fresh sessions; not an independent holdout.",
+  "cases": [
+    {
+      "id": "seen-display-repeat",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "标准矩形对角线6.12英寸，实际可视面积更小；不能把圆角全部当成可视区。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ],
+            "json": {
+              "events.meta.citations": [
+                "iphone16-us.md"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "explicit-switch-pronoun",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us",
+        "galaxy-s24-us"
+      ],
+      "referenceAnswer": "首轮iPhone标准矩形测量不等于全部可视区域；后两轮均应是Galaxy S24，其圆角和摄像头开孔使实际可视面积较小。不得把iPhone段落或型号带入后两轮。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ],
+            "json": {
+              "events.meta.citations": [
+                "iphone16-us.md"
+              ]
+            }
+          }
+        },
+        {
+          "type": "chat",
+          "message": "改问 SAMSUNG-S24-US-128，标称6.2英寸是否表示圆角和开孔处也都能显示？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ],
+            "json": {
+              "events.meta.citations": [
+                "galaxy-s24-us.md"
+              ]
+            }
+          }
+        },
+        {
+          "type": "chat",
+          "message": "那它的圆角和摄像头开孔会减少实际可视区域吗？",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.SAMSUNG-S24-US-128}}"
+            ],
+            "citations": [
+              "galaxy-s24-us.md"
+            ],
+            "json": {
+              "events.meta.citations": [
+                "galaxy-s24-us.md"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "unknown-sku-no-fallback",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [],
+      "referenceAnswer": "未知SKU应要求提供明确商品；随后代词没有可靠商品指代，不得返回之前页面的iPhone或其他商品说明。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "改问 UNKNOWN-PHONE-999 的屏幕可视面积。",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done",
+              "product_selection_required"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [],
+            "citations": [],
+            "json": {
+              "events.meta.citations": []
+            },
+            "absentEvents": [
+              "rag_evidence",
+              "rag_diagnostic",
+              "product_comparison",
+              "action_required",
+              "ticket"
+            ],
+            "textNone": [
+              "iPhone",
+              "Galaxy",
+              "6.12",
+              "6.2",
+              "2000"
+            ]
+          }
+        },
+        {
+          "type": "chat",
+          "message": "那它的圆角呢？",
+          "expect": {
+            "events": [
+              "token",
+              "done",
+              "product_selection_required"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [],
+            "citations": [],
+            "json": {
+              "events.meta.citations": []
+            },
+            "absentEvents": [
+              "rag_evidence",
+              "rag_diagnostic",
+              "product_comparison",
+              "action_required",
+              "ticket"
+            ],
+            "textNone": [
+              "iPhone",
+              "Galaxy",
+              "6.12",
+              "6.2",
+              "2000"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "natural-rewrite-partial",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "能够纠正标准矩形6.12英寸不等于完整可视区；资料没有每个圆角损失多少平方毫米，不提供该数值或计算承诺，并明确剩余细节不足。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "6.12英寸把圆角全部算成可视区吗？还请给出每个圆角具体少了多少平方毫米。",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ],
+            "json": {
+              "events.meta.citations": [
+                "iphone16-us.md"
+              ]
+            },
+            "textAll": [
+              [
+                "资料不足"
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
