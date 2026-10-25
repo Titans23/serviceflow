@@ -74,4 +74,6 @@ python -B scripts/evaluation/semantic_review.py --runs $run --suite quality/eval
 
 原问题与改写问题分开：改写用于召回/重排，Grader始终按原问题判断。阶段证据可记录候选ID/排名、机制原因码、查询变化及耗时，正文仍单独保存在忽略目录。采集指定的RAG步骤必须使用 `--require-trace-steps CASE:INDEX ...`，缺任何指定trace时报告incomplete，不能因其他步骤有trace就宣称完整。
 
-[离线诊断验证](results/rag-diagnostics-validation-2026-10-25.md)明确区分工程模拟和真实云结果；[3轮/27次请求计划](results/rag-cloud-validation-plan-2026-10-25.json)尚未执行，仍需预算停止保障和新的具体授权。原12/14与已见1/2不变。
+[离线诊断验证](results/rag-diagnostics-validation-2026-10-25.md)区分工程模拟和云结果；此前3轮/27次计划已按授权完成[三例诊断](results/rag-cloud-diagnostics-2026-10-25.md)。随后[多轮商品范围及自然第二轮诊断](results/rag-context-followup-2026-10-25.md)在固定7轮内使用31/63次provider尝试，引用实际分块逐条裁决。原12/14与已见1/2保留，最新开发诊断不替代首次留出。
+
+旧200集的197/200是修正标签后的离线规则重评分；所谓Recall@5 97.69%实际按最终引用文件名计算，分母为130条要求引用题，命中127条。没有该批次召回候选排名、运行源码或模型配置冻结，不能把它当作当前chunk召回率、语义准确率或独立留出。[数字溯源](../../docs/portfolio/resume-project.md#数字怎么使用)保留生成时间、产物提交与适用条件，历史实验文件不改。

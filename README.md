@@ -1,6 +1,6 @@
 # ServiceFlow
 
-ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品咨询、订单取消与退款沙箱、人工工单运营。云模式接入阿里云百炼 Qwen Chat、`text-embedding-v4` 和 `qwen3-rerank`，使用 MySQL 业务事实、Milvus 混合检索、Redis 会话状态、RabbitMQ 异步知识入库，通过 SSE 向 Vue 前端返回结构化事件与回答增量。项目没有真实商户交易、支付通道或生产用户流量。
+ServiceFlow 将模型分类与证据选择接入有状态客服业务：商品咨询限定事实来源，订单取消经客户确认后事务执行，结果不明时查询持久账本，知识文档完整入库后才切换活动版本。后端采用Java 21/Spring Boot与LangGraph4j，前端通过POST SSE消费回答及业务事件；MySQL、Redis、Milvus和RabbitMQ分别承担业务状态、短期上下文、混合检索与异步入库。项目使用公开商品资料与合成订单，退款为沙箱，没有生产用户流量或真实支付渠道。
 
 > 完整设计与全部源码实现说明见 [技术报告](docs/technical-report.md)，文档入口见 [docs/README.md](docs/README.md)。
 
@@ -319,11 +319,12 @@ npx playwright install chromium
 npm run test:e2e
 
 cd ../..
-powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\validate-evaluation.ps1
-powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
+python -B scripts/evaluation/eval_v2.py validate
+python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/refund-sandbox-v1.json
+python -B -m unittest discover -s scripts/evaluation/tests
 ```
 
-当前验证入口见开头表格；[业务错误修复](quality/evaluation/results/cloud-business-error-repair-2026-10-25.md)记录最近一次后端离线门禁：124项中119通过、5项可选本地Grader跳过，格式、打包和覆盖率通过，Python工具38/38。[刷新验收](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)另记录前端13项单元、13项浏览器及对应真实数据库读回。不同检查点不合并成一次全系统验收。
+当前验证入口见开头表格及[实现检查点CI](https://github.com/Titans23/serviceflow/actions/runs/40189258274)；测试规模与版本绑定，不把旧124项门禁、13项浏览器或后续扩展数量长期写成“当前总数”。[上下文修复](quality/evaluation/results/rag-context-offline-2026-10-25.md)与[故障停止保护](quality/evaluation/results/rag-followup-guard-2026-10-25.md)保留相关验证；文档更新复用未改代码的通过结果。旧PowerShell 200集仅用于回溯，在线执行、独立夹具及数据/费用范围另见[运行手册](docs/guides/evaluation-and-refund.md)。
 
 远程结果以[ServiceFlow CI](https://github.com/Titans23/serviceflow/actions/workflows/ci.yml)对应提交为准。CI只运行离线模型替身与隔离Demo业务检查，不调用付费云模型。真实恢复浏览器用例需设置本轮 `RECOVERY_FIXTURES`；未设置会明确跳过，普通 `npm run test:e2e` 不能自动代表全部真实恢复场景已执行。
 
@@ -339,6 +340,6 @@ powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 
 ## 11. 简历表述参考
 
-> 基于Java 21、Spring Boot和LangGraph4j实现电商客服业务Agent：将订单取消拆分为身份校验、客户确认、事务执行和结果核验，使用MySQL操作账本及唯一退款请求约束副作用；在提交后丢响应、缓存丢失、服务重启和浏览器刷新等受测故障中，通过只读恢复避免自动重发取消。接入公开商品资料与云模型，实施带证据编号校验的事实回答，并分别记录规则评测、语义复核和首次留出结果。
+> 构建有状态客服Agent的业务执行与知识链路：以服务端待确认动作、订单条件更新及事务操作账本约束取消/退款副作用，响应不明时只读核验持久结果；商品问答按商品及活动版本过滤混合检索，并通过事实编号校验保留来源条件；以Transactional Outbox、Confirm和版本状态衔接异步入库与知识可见性。
 
-可选三条表述、代码证据和五个追问见[简历与面试材料](docs/portfolio/resume-project.md)。按本人实际参与和理解的部分描述贡献，如实说明AI辅助工作；仓库已有实现与测试通过不等于已核实个人独立完成。项目使用真实公开资料和云模型，但没有生产用户流量；退款是沙箱，未接真实支付渠道。
+可选项目要点、五条工程问题的代码证据、旧指标溯源见[简历与面试材料](docs/portfolio/resume-project.md)。按本人实际参与和理解的部分描述贡献，如实说明AI辅助工作；仓库实现与验证结果不能代替个人经历确认。

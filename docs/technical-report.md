@@ -1,5 +1,7 @@
 # ServiceFlow 详细技术设计与实现报告
 
+当前实现说明按2026-10-25代码核对；历史实验保留在各自报告，不把旧分数当作当前效果。求职入口见[简历与代码证据](portfolio/resume-project.md)，演示见[五分钟业务链](guides/demo-script.md)。
+
 ## 1. 项目定位、目标与范围
 
 ### 1.1 技术选型与原因
@@ -166,9 +168,9 @@ Chat 和 Embedding 已统一通过 Spring AI 1.1 的 `ChatModel`、`StreamingCha
 }
 ```
 
-低温度用于降低分类和事实回答的随机性。`StreamingChatModel.stream(prompt)` 返回增量 `ChatResponse`，网关把每个 text delta 转换为现有 SSE `token` 事件；Spring AI 处理供应商 SSE 行协议，应用层只处理领域事件。
+`CloudAiGateway`使用`StreamingChatModel`接收供应商delta。CHAT路径向浏览器转发文本；商品路径先在服务内收齐事实编号选择JSON，经`GroundedAnswerComposer`校验并拼接服务端事实，再发送SSE正文。供应商流式传输与用户看到的正文流式输出是不同层次。
 
-非流式调用用于分类、Grader 和 Rewrite。`AiCallExecutor` 统一施加连接/读取边界和指标，Resilience4j 只对未产生输出的网络异常、429 和 5xx 最多重试一次；流式首 token 后不重试，避免重复回答。
+分类、Grader和Rewrite也从供应商流收集完整文本，由`AiCallExecutor`施加调用deadline；`streamAnswer`本身有90秒等待边界。普通配置的SDK与Resilience4j各有重试设置，不能简单称为“所有请求最多两次”。隔离云预算overlay将相关重试设为1，并在实际HTTP客户端统一计数；27/63上限及故障停止仅在显式评测配置下启用，不是全局金额预算。
 
 证据 Grader 被要求只返回：
 
@@ -180,7 +182,7 @@ Chat 和 Embedding 已统一通过 Spring AI 1.1 的 `ChatModel`、`StreamingCha
 
 ### 4.4 Demo 模式
 
-`DemoAiGateway` 由条件配置在 `demo` 模式注册，使用关键词完成基础意图分类并返回固定范围文本。它的用途是让没有云 Key 的开发者验证页面和业务链路；云模式是当前完整演示路径。
+`DemoAiGateway`由条件配置在`demo`模式注册，使用关键词分类和固定文本。当前五分钟演示在Demo下展示真实HTTP/MySQL/Redis业务执行与恢复；真实云问答质量使用已保存报告说明，Demo不能证明模型或检索质量。
 
 ---
 
@@ -266,7 +268,7 @@ V2 已将最初的 ServiceFlow 示例商品替换成三款 HUAWEI Pura 80 系列
 
 V3 已增加 `ai_answer_audit`，并为工单增加处理人、处理备注、更新时间和状态时间索引。
 
-V4 已增加 `chat_request` 客户聊天幂等状态表和 `knowledge_ingest_outbox` 事务 Outbox。前者以 `(session_id, client_request_id)` 唯一键作为正式用户请求真相源；后者以 `document_version_id` 唯一键保证数据库提交与 RabbitMQ 发布之间可恢复。当前本地数据库通过 V5 补充可重复的订单夹具。
+V4增加`chat_request`与`knowledge_ingest_outbox`，分别以会话内请求唯一键和版本事件唯一键约束重复记录。V5是历史本地订单夹具迁移，含重置行为，不能用于新的评测隔离或被理解为无损升级保证；当前评测使用显式生成的独立合成夹具。V6允许未知报价为NULL，V7增加唯一订单退款请求、退款事件及尝试批次，取消事务不再只设置payment状态。已发布迁移保留原字节，不通过改历史文件伪造升级兼容。
 
 ### 6.4 MyBatis 映射方式
 
@@ -306,7 +308,7 @@ SQL 解析顺序覆盖 SKU、型号、完整名称和名称包含，精确匹配
 
 ### 7.4 页面上下文优先级
 
-商品详情页把 `productId` 放入聊天请求的 `pageContext`。路由时，如果问题出现“这款、屏幕、充电、防水、适配”等商品指代，页面上下文会把误分类的知识问题修正为 `PRODUCT_QUERY`。订单和投诉意图不会被页面商品上下文覆盖。
+商品详情页将`productId`作为绑定当前会话的入口提示；首次商品响应后不再逐轮重复传入，手动选择历史会话清除提示。`ChatServiceImpl.stream`将页面/记忆商品统一交给`resolveRememberedProduct`：明确新SKU/型号时重新解析，未知SKU清除旧指代，后续代词不能回退旧说明书。分类可使用当前商品名，规则再修正意图；订单与投诉边界仍优先，商品参数并非模型自由生成。
 
 ### 7.5 商品比较
 
@@ -383,7 +385,7 @@ START → router
 
 ### 9.1 技术选型与原因
 
-Redis 用于具有明确过期时间、无需永久保存且需要原子操作的数据：游客会话、最近消息、待确认动作、当前商品/订单、请求锁和限流计数。MySQL 则只保存正式客户的历史与审计。
+Redis保存游客会话、最近消息、待确认动作、当前商品/订单、访客请求锁和限流计数；MySQL保存客户正式会话、请求状态、业务事实、操作账本、退款和审计。图Checkpoint、近期记忆、聊天请求记录和业务操作账本用途不同，不能用Redis状态或Checkpoint代替副作用提交结果。
 
 ### 9.2 访客会话
 
@@ -419,7 +421,7 @@ chat:memory:{subject}:{sessionId}
 
 订单取消和低置信度转人工先写入 10 分钟 `PendingAction`。确认接口再次校验 action subject 与 customerId，拒绝其他用户确认该动作。
 
-用户拒绝时删除 action。确认订单取消时，actionId 同时作为订单操作 requestId；确认转人工时，actionId 作为 ticket source_action_id。因此即使重复确认，数据库幂等约束仍能阻止重复副作用。
+用户拒绝时删除action。确认取消时actionId作为操作requestId，确认转人工时作为ticket source_action_id。确认接口只接受decision，订单/客户参数取服务端PendingAction；取消服务再次校验归属，数据库幂等约束保护受测重复确认。动作过期不代表已取消或未执行，查询已提交结果走独立只读接口；并发确认与拒绝的原子裁决尚未保证。
 
 ### 9.6 GUEST 限流
 
@@ -441,6 +443,7 @@ chat:memory:{subject}:{sessionId}
 - `token`：回答增量；
 - `product_selection_required`：候选商品；
 - `product_comparison`：结构化对比；
+- `rag_evidence`：本轮分块ID/来源；`rag_diagnostic`：仅评测配置下的阶段记录ID；
 - `order`：订单卡片；
 - `action_required`：二次确认；
 - `ticket`：工单；
@@ -452,10 +455,10 @@ chat:memory:{subject}:{sessionId}
 `ChatServiceImpl.generateAnswer` 有三条明确路径：
 
 1. CHAT：调用云模型流式生成，但 system prompt 限定客服范围；
-2. 有可信 groundingContext 且网关支持 Grounded Generation：把最近 8 条上下文、当前问题、MySQL 事实和文档证据注入模型；
+2. 商品有groundingContext且网关支持时：最近8条消息只用于理解指代，模型返回`factIds/insufficient`；后端校验类型、数量及编号，输出当前目录事实或完整文档段落，必要时加固定不足说明，再按28字符发送；
 3. 订单、比较、投诉、无证据等确定性结果：按 28 字符切块模拟增量发送，不再让模型改写业务结果。
 
-商品 system prompt 明确规定：结构化事实优先，文档仅说明功能/使用/适配/保修/注意事项；不编造库存、优惠、承诺或售后规则。
+商品事实选择器不自由改写数值和条件；非法编号/格式报错。该约束减少扩写，却不能保证选择相关且完整，也会增加首字等待。它仅针对商品事实路径，不是整个系统的通用事实正确性证明。
 
 ### 10.4 前端 SSE 解析
 
@@ -495,7 +498,7 @@ content 启用 analyzer，并配置 Milvus BM25 Function 从 content 生成 spar
 
 ### 11.3 Embedding
 
-`OpenAiEmbeddingClient` 调用 `/embeddings`，请求 model 和单条 input，从 `data[0].embedding` 解析所有数值。空文本、空向量或非数值元素直接报错。
+`OpenAiEmbeddingClient`通过Spring AI `EmbeddingModel`接口调用；当前cloud bean是`OpenAiCompatibleEmbeddingModel`，用RestClient发送`/embeddings`，指定float格式并按返回index排序。空输入/向量报错，维度由RAG层复核；当前数值读取使用`asDouble()`转换，不能把严格非数值校验写成已实现能力。
 
 进入 Milvus 前，`MilvusRagService.embed` 强制检查向量维度为配置的 1024，防止更换模型后以错误维度写入 Collection。
 
@@ -508,7 +511,7 @@ content 启用 analyzer，并配置 Milvus BM25 Function 从 content 生成 spar
 每次搜索构造两个子请求：
 
 - Dense：query embedding，Top20，COSINE；
-- Sparse：原始 query，Top20，BM25。
+- Sparse：本轮检索query，Top20，BM25；第二轮可用改写query。
 
 Milvus 使用 RRF `k=60` 融合并输出 Top20。返回字段只取 chunkId、title、source、content，减少响应负载。
 
@@ -522,13 +525,13 @@ Milvus 使用 RRF `k=60` 融合并输出 Top20。返回字段只取 chunkId、ti
 
 Top5 交给 `AiGateway.evaluateEvidence`。Grader 只允许选择实际候选 ID，并返回 sufficient。
 
-若证据不足，RAG 调用 `rewriteQuery` 一次，再完整执行 Hybrid → Rerank → Grade。不会无限循环。Rewrite 失败时保留原证据但标记 insufficient 和 degraded。
+不足时仅改写一次并重跑Hybrid→Rerank→Grade；改写不变则不再检索。两轮固定documentType、productIds及活动版本，两次Grader始终判断原始问题，避免改写把难题变成另一道题。重排失败保留RRF Top5；Grader失败保留候选但判不足；改写/二次检索失败保留首轮证据并降级，首轮降级不会被后轮成功抹掉。评测trace记录各轮query、排名、决定与耗时，原因码不等于模型自然语言解释。
 
 Grader 本身不可用时，不把证据默认判定为充分：商品结构化事实仍可回答，政策问题进入证据不足/转人工流程，并设置 `degraded=true`。这样不会在 Grader 故障时扩大模型可回答范围。
 
 ### 11.8 商品与政策回答的差异
 
-商品分支先取 MySQL facts，再以 `documentType=PRODUCT_MANUAL + productId` 检索文档。groundingContext 分成“结构化商品事实”和“文档证据”。引用使用知识文档的 source name。
+商品分支先取MySQL facts，再按`PRODUCT_MANUAL + productId`检索，交给`GroundedAnswerComposer.context`生成可选择的事实列表，引用沿用证据source name。当前没有把RAG sufficient直接作为最终选择器的独立硬门槛：保留部分证据并由选择器判断剩余不足，实测样本不等于所有未知问题都能可靠识别。
 
 政策分支只检索 `POLICY`。证据充分时直接把文档片段作为确定性回答；证据不足时，游客被提示登录，正式客户获得 `CREATE_TICKET` 确认卡片。
 
@@ -555,7 +558,7 @@ RabbitMQ 只承担文档入库，没有被扩展成所有日志的通用总线�
 - 服务端生成 `{documentPublicId}/v{version}.{ext}` 路径；
 - normalize 后必须仍位于 uploadRoot 下。
 
-文件保存成功后在同一事务插入 PENDING 版本和 Outbox 行。事务提交后 `KnowledgeOutboxPublisher` 使用 Publisher Confirm 发布，成功才标记 PUBLISHED；数据库回滚时不会留下孤立消息，Broker 故障则由 Outbox 退避重试。
+文件保存后，PENDING版本与Outbox行在同一数据库事务登记。发布器读取已提交事件并等Confirm后标记PUBLISHED，故Broker暂时不可用不会丢失待发数据库记录。文件系统写入不属于MySQL事务，Confirm成功后数据库提交失败仍可能重复投递；不能据此宣称跨MySQL/RabbitMQ/Milvus的原子提交或exactly-once。
 
 ### 12.3 Queue 与 DLQ
 
@@ -569,18 +572,18 @@ Consumer 收到 versionId 后：
 
 1. 版本不存在或 READY：直接返回；
 2. `PENDING → PROCESSING` 条件更新失败：说明已被其他 Consumer 处理，返回；
-3. Tika 解析，限制最多 2,000,000 字符；
+3. Markdown按UTF-8读取，其他格式由Tika解析，限制最多2,000,000字符；
 4. 删除该 versionId 的旧向量；
 5. 分块、Embedding 并逐块写入 Milvus；
 6. 事务内将版本标记 READY，并更新 document.active_version_id。
 
 发生异常时写 FAILED 和最多 500 字符错误，再抛出异常进入 DLQ。旧 active_version_id 没有被提前修改，因此失败的新版本不会影响线上检索。
 
-管理员只能把 FAILED 版本重新置为 PENDING 并重新发消息。
+管理员只能把FAILED版本置回PENDING并重置Outbox。若进程在PROCESSING中崩溃，当前条件更新不会自动接管；不同版本并发完成也没有“仅较新版本可激活”的单调条件。这些是静态代码边界，尚无完整故障验证，不把普通READY导入当作崩溃/乱序恢复证明。
 
 ### 12.5 Chunk 策略
 
-当前实现按字符平铺：每块 2000 字符，重叠 320 字符，对应设计目标约 500 tokens / overlap 80，但代码没有使用 Tokenizer，因此报告应准确称为“字符近似切块”。每个 Chunk 使用独立 UUID，携带文档、版本、类型、商品、标题和来源元数据。
+`KnowledgeChunker.split`优先按`##`章节切分，向每节带入最多400字符的文档前言；无章节或过长正文采用最多2000字符、重叠320字符的窗口，不使用Tokenizer。`DocumentConsumer`按版本ID、块序号和内容生成nameUUID，同版本重试相同内容得到相同Chunk ID；重试前删除该版本旧向量。它不合并不同版本，也不证明并发删除/写入安全。
 
 当前版本号通过 `MAX(version_no)+1` 生成。在单管理员演示场景足够；真正多管理员并发上传同一文档时，应增加行锁或重试唯一键冲突。
 
@@ -614,17 +617,23 @@ Consumer 收到 versionId 后：
 
 `OrderService.cancel`：
 
-1. 查 `order_operation.request_id`，存在则直接返回历史结果；
-2. 验证订单属于客户；
+1. 先通过订单号和customerId验证归属，再查操作账本；
+2. 已有结果也校验requestId关联同一所有者和目标订单后返回，幂等键不能代替授权；
 3. `INSERT IGNORE` 预占 PROCESSING 操作记录；
-4. 若预占失败，读取其他请求已创建的结果；
+4. 预占失败使用绑定该订单的`FOR SHARE`当前读，避免REPEATABLE READ旧快照仍读不到已提交结果；
 5. 非可取消状态记录 `NOT_CANCELLABLE`；
 6. 条件 UPDATE 订单为 CANCELLED 并 version+1；
 7. 更新行数为 0，记录 `CONFLICT`；
-8. 成功后将已支付 payment 的 refund_status 设为 PROCESSING；
-9. 完成操作记录为 CANCELLED。
+8. 成功后将已支付payment置为PROCESSING，从数据库订单金额创建唯一refund_request；创建失败整笔回滚；
+9. 同事务完成操作记录。退款请求不等于资金到账。
 
 条件 SQL 同时检查 `id、customer_id、version、status IN (...)`。因此客户隔离与乐观锁都发生在最终写入语句，而不只依赖前置查询。
+
+### 13.5 退款与未知结果
+
+`RefundServiceImpl.applySandboxEvent`对退款行加锁，校验金额、eventId内容一致性、attemptNo及终态；旧批次记STALE_ATTEMPT，重试只推进当前失败批次，退款与payment状态在事务内一起更新。这是管理员沙箱，不接真实支付、渠道签名或对账。
+
+`ChatActionServiceImpl.result → OrderServiceImpl.cancellationResult`只查询本人已提交账本及订单，不要求动作缓存仍存在，也不触发取消/退款。前端缺失done时保留身份分区的sessionStorage线索并GET核验；404保持未知，退出/换账号清理，不自动重发确认。图Checkpoint无法替代该持久业务结果。
 
 ---
 
@@ -681,6 +690,8 @@ AI 审计表展示客户、意图、模型、Prompt 版本、耗时、结果、�
 - question、answer。
 
 失败记录 FAILED、异常类名和空 answer。审计表以 `(session_id, client_request_id)` 唯一，Mapper 使用 `INSERT IGNORE` 避免重复记录。
+
+`customer-v1`不是所有分类/Grader/选择提示词的完整版本指纹，实际配置模型名也不是供应商权重快照。当前审计保存问题/回答全文，不保证自动脱敏；原始记录不进入公共仓库。复现实验另冻结源码、配置范围与实际证据，不能只凭该审计字段声称可完全复现。
 
 `ChatServiceImpl` 在获得请求幂等资格后记录 `System.nanoTime()`。回答持久化后写 success；运行时异常且尚未成功审计时写 failure。`audited` 标志防止回答已成功、随后 SSE 连接关闭导致重复记录失败。
 
@@ -796,9 +807,9 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 
 ### 18.4 在线评测实现
 
-`quality/evaluation/datasets/serviceflow-eval-200.json` 包含 200 条脱敏用例：50 条商品说明、50 条售后政策、20 条商品详情、20 条商品比较、20 条订单与取消、20 条投诉与转人工、20 条上下文/权限/异常。`scripts/evaluation/validate-evaluation.ps1` 先校验字段、意图枚举和唯一 ID，并选择 20 条 Smoke；`run-evaluation.ps1` 默认使用该数据集，并按 `principalType` 获取对应身份。
+当前主入口是`serviceflow-eval-v2.json`与Python `eval_v2.py`，支持同会话多步、适用分母、合成订单夹具和状态读回。175开发/25首次留出按来源族隔离；后续暴露的留出只能作为已见回归。具体口径见[评测基线](../quality/evaluation/README.md)。旧`serviceflow-eval-200.json`和PowerShell脚本保留用于回溯，不是当前默认基线。
 
-`run-evaluation.ps1` 为每条用例创建独立 GUEST 会话，生成 UUID clientRequestId，调用实际 SSE 接口，解析 meta、done、事件名和 token 文本。
+旧`run-evaluation.ps1`按principalType获取身份，每题新建会话、只发一次问题，无法证明多轮一致性或确认后的数据库副作用；它解析meta、done、事件名和token文本。
 
 断言维度：
 
@@ -812,14 +823,14 @@ Vitest 验证 SSE JSON 事件和纯文本 token 解析；ESLint 检查 Vue/TypeS
 
 输出同时包含机器可读 JSON 和 Markdown 汇总；任一失败时脚本退出码为 1，可接入 CI。
 
-### 18.5 当前实测结果
+### 18.5 实现检查、历史规则与语义证据
 
-- 后端：43 个单元/架构测试与 3 个 Testcontainers 集成测试通过；`mvn verify` 的 Spotless、Enforcer、核心业务 JaCoCo 门禁通过；
-- 前端：ESLint、2 个 Vitest、TypeScript 类型检查和 Vite 生产构建通过；
-- 前端与运行环境：ESLint、Vitest、类型检查、生产构建和 2 条 Compose Playwright E2E 通过；server/web 健康，Grafana 与 Jaeger 可访问且 Jaeger 已接收 `serviceflow` trace；
-- 性能：k6 Demo 模式商品 100 VU/5 分钟完成 29,902 请求、P95 8 ms；订单 50 VU/3 分钟完成 8,952 请求、P95 10 ms；SSE 30 并发/2 分钟失败率 0%、P95 30 ms，并完成虚拟线程开/关对照（30/27 ms）；
-- 评测集：结构校验 200/200、Smoke 20/20 通过；经授权执行一次真实百炼 200 条云评测，原始规则通过率 83.5%，离线修正标签后的可审计通过率 98.5%，Recall@5 97.69%、MRR 0.9769、nDCG@5 0.9769，意图/商品/事件/转人工准确率 100%，事实幻觉率 0%；
-- Milvus Hybrid 本地验收通过：Collection 维度 1024、活动版本过滤、非活动版本不可见、Dense/BM25/RRF 查询均通过。云评测、k6 和 Milvus 均保留脱敏结果文件，不重复调用云模型。
+实现门禁以[对应提交CI](https://github.com/Titans23/serviceflow/actions/runs/40190346307)及各报告为准，不固定抄录旧测试数量。CI只用离线模型替身及隔离Demo服务；本次文档审查不重新运行应用测试。
+
+- 旧200条报告生成于2026-08-30：原始167/200，修正冲突标签后从保留摘要/事件离线重评分197/200，未分开发/留出。所谓Recall@5 97.69%实际是130条要求引用题中127条的最终文件名命中，不是召回/重排chunk排名；禁止短语未命中也不能称事实幻觉率0%。产物最早提交ea119b31，报告没有运行源码或模型配置冻结，不能套用当前版本。详见[数字溯源](portfolio/resume-project.md#数字怎么使用)，原实验文件不改。
+- v2历史开发175/175、首次华为留出23/25、新来源首次12/14、已见失败回归1/2均保留。模型筛查有漏判，最终逐项来源裁决仍无独立人工标签；不报告总体语义准确率。[最终云报告](../quality/evaluation/results/cloud-final-evaluation-2026-10-25.md)区分每次版本和分母。
+- [业务执行与恢复](../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)验证授权/参数/重复请求/丢响应，数据库读回约束副作用；[多轮RAG](../quality/evaluation/results/rag-context-followup-2026-10-25.md)核对当前商品与实际来源，观察到一次自然二轮后仍保留不足，不能据此推导检索提升或长期稳定性。
+- 历史k6是Demo模式，不含云模型延迟，虚拟线程开/关对照未证明显著收益；旧性能产物在`quality/performance/reports/`，不作为当前云问答吞吐或SLA。已有资料导入/活动版本记录也不证明所有消费崩溃窗口已恢复。
 
 ---
 
@@ -849,13 +860,14 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 - Secret Manager、密钥轮换和字段级加密；
 - 更完整的全局成本预算、动态配额和多租户治理；
 - 多实例下的文档 version_no 强并发生成；
+- 消费者PROCESSING崩溃后的自动接管、跨版本乱序完成时的单调激活；
 - 自动清理失败版本已经写入的部分 Chunk；检索过滤能保证其不可见；
 - 审计数据保留与删除策略；
-- 公网生产仍需 HTTPS/WAF、Secret Manager、容量治理和合规评审；本仓库已完成本地 Compose E2E、Milvus Hybrid 验收、k6 基准和一次真实云评测，结果以 `quality/evaluation/results/` 与 `quality/performance/reports/` 为准。
+- 并发确认与拒绝的原子裁决、真实支付结果不确定及渠道对账；已有Cloud和Demo的不同故障验收不得混为一次全系统可靠性证明。
 
 ---
 
-## 20. 全部源码职责索引
+## 20. 核心源码职责索引
 
 ### 20.1 应用与配置
 
@@ -891,6 +903,8 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `ChatRequestStore.java` | CUSTOMER MySQL 请求幂等状态机 |
 | `SseEventWriter.java` | 统一 SSE 事件、稳定错误、连接生命周期和指标 |
 | `AiCallExecutor.java` | 模型调用超时、虚拟线程和失败指标 |
+| `GroundedAnswerComposer.java` | 当前商品事实编号、整段条件保留与选择结果校验 |
+| `EvaluationProviderBudget.java` | 显式评测模式的共享出站计数与可选故障停止，不是全局金额预算 |
 | `ChatMemory.java` | Redis 游客会话、消息、完成结果、上下文和 PendingAction |
 | `GuestRateLimiter.java` | Redis Lua Token/IP 固定窗口限流 |
 | `ChatModels.java` | 请求、会话、消息和 SSE DTO |
@@ -912,6 +926,9 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `OrderService.java` / `OrderServiceImpl.java` | 订单能力接口、客户隔离、取消幂等和乐观锁 |
 | `OrderModels.java` | 订单、商品项、支付、物流与操作 DTO |
 | `OrderMapper.java` / `OrderMapper.xml` | 订单确定性 SQL |
+| `RefundService.java` / `RefundServiceImpl.java` | 沙箱事件、金额/批次/终态校验和失败重试 |
+| `RefundMapper.java` / `RefundMapper.xml` | 退款行锁、事件账本和payment状态迁移 |
+| `RefundAdminController.java` / `RefundSandboxController.java` | 管理员退款查询/重试与显式开启的沙箱回调 |
 | `TicketController.java` | 客户工单列表 |
 | `TicketAdminController.java` | 管理员工单列表和状态更新 |
 | `TicketService.java` / `TicketServiceImpl.java` | 工单能力接口、创建幂等与有限状态机 |
@@ -928,12 +945,14 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `KnowledgeVersionController.java` | 失败版本重试 |
 | `KnowledgeService.java` / `KnowledgeServiceImpl.java` | 知识能力接口、文件校验、Outbox 入队和激活 |
 | `KnowledgeOutboxPublisher.java` | Outbox 锁定、Publisher Confirm、退避和指标 |
-| `DocumentConsumer.java` | Tika 解析、字符切块、Embedding/Milvus 入库 |
+| `DocumentConsumer.java` / `KnowledgeChunker.java` | 解析、章节/字符窗口切块、确定性块ID与Embedding/Milvus入库 |
 | `KnowledgeMapper.java` / `KnowledgeMapper.xml` | 文档版本状态与活动版本 |
 | `RagService.java` | Chunk、Evidence 与 SearchResult 接口 |
 | `MilvusRagService.java` | Collection、Hybrid、RRF、Rerank、Grade、Rewrite 和降级 |
 | `EmbeddingClient.java` | Embedding 接口 |
 | `OpenAiEmbeddingClient.java` | Spring AI EmbeddingModel 适配 |
+| `OpenAiCompatibleEmbeddingModel.java` | 当前cloud EmbeddingModel的兼容HTTP实现 |
+| `RagTraceRecorder.java` | 仅评测开启的阶段query/排名/决定/耗时记录 |
 | `DemoEmbeddingClient.java` | 本地确定性 Embedding，供 Demo/测试使用 |
 | `RerankerClient.java` | Reranker 接口 |
 | `OpenAiRerankerClient.java` | 百炼 Reranker HTTP 适配与结果映射 |
@@ -947,6 +966,7 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `router.ts` | 路由表和管理员守卫 |
 | `api/client.ts` | REST 与 POST SSE Client |
 | `stores/auth.ts` | Token/角色 Session Storage 状态 |
+| `stores/pendingCancellation.ts` | 身份分区的待核验动作线索，不作为执行授权 |
 | `ProductsView.vue` | 商品列表和筛选 |
 | `ProductDetailView.vue` | 商品结构化详情与咨询入口 |
 | `CompareView.vue` | 同类别 2–3 商品比较 |
@@ -965,7 +985,8 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `V2__replace_demo_catalog_with_huawei_pura80.sql` | 华为真实结构化商品快照 |
 | `V3__add_operations_audit.sql` | AI 审计与工单运营字段 |
 | `V4__reliability_baseline.sql` | Chat 幂等表与知识 Outbox |
-| `V5__expand_local_order_fixtures.sql` | 可重复的本地订单与物流测试夹具 |
+| `V5__expand_local_order_fixtures.sql` | 历史开发夹具迁移，含重置行为；当前评测使用独立生成夹具 |
+| `V6__allow_unknown_catalog_price.sql` / `V7__refund_lifecycle.sql` | 未知报价、退款请求/事件与尝试批次 |
 | `product-comparison-fields.yml` | 类别比较字段白名单 |
 | `application.yml` | 后端运行配置 |
 | `apps/serviceflow-server/pom.xml` | Java 21 编译、Spring Boot、LangGraph4j、MyBatis、Tika、测试与构建依赖 |
@@ -979,13 +1000,13 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 | `deploy/observability/prometheus/prometheus.yml` | Prometheus 抓取配置 |
 | `deploy/observability/grafana/*` | Grafana 数据源、自动加载 Dashboard |
 | `data/knowledge/huawei/*` | 官方来源登记和四份知识文档 |
-| `quality/evaluation/datasets/serviceflow-eval-200.json` | 200 条脱敏评测集 |
+| `quality/evaluation/datasets/serviceflow-eval-v2.json` | 当前项目自编回归集，多轮及业务状态断言；旧200集另存 |
 | `scripts/evaluation/validate-evaluation.ps1` | 评测结构校验与 Smoke 选择 |
 | `scripts/evaluation/run-evaluation.ps1` | SSE 在线评测运行器与报告生成 |
 | `quality/performance/k6/serviceflow.js` | 商品、订单、Demo SSE 三类 k6 场景 |
-| 后端 `src/test` | 43 个单元/架构测试与 Testcontainers IT |
+| 后端 `src/test` | 单元/架构/HTTP替身与Testcontainers事务并发IT，数量随版本变化 |
 | `client.test.ts` | 前端 SSE 数据解析测试 |
-| `e2e/*.spec.ts` | Playwright 游客流程和路由守卫 |
+| `e2e/*.spec.ts` | 商品/界面mock与真实恢复浏览器场景分开，真实场景需独立夹具 |
 
 ---
 
@@ -993,9 +1014,11 @@ REST 错误使用统一 JSON，SSE 错误使用 `error` 事件。领域代码优
 
 ### 21.1 一分钟版本
 
-“ServiceFlow 是一个售前和售后一体化的智能客服模拟系统。商品价格规格走 MySQL 确定性事实，功能说明与售后政策走 Milvus Dense/BM25/RRF/Rerank 的 Advanced RAG，LangGraph4j 根据五类意图选择商品、知识、订单或投诉分支。Redis 保存游客会话、Checkpoint、限流、请求锁和待确认动作，RabbitMQ 异步完成知识文档入库。订单取消通过 request_id 幂等表和 version 乐观锁控制，明确投诉自动建单。系统还记录正式回答审计并输出 Prometheus 指标，通过在线评测脚本实际验证意图、引用、SSE 事件和关键事实。”
+“ServiceFlow处理客服咨询和需要确认的售后操作。模型参与分类和证据选择，商品范围、订单参数、权限和事务由后端约束。商品回答用活动版本下的混合检索和编号校验保留来源条件；取消订单以持久操作账本和同事务退款请求约束副作用，响应不明时先只读核验。知识更新经Outbox异步入库，完整写入后才切活动版本。重点是把模型输出接入可检查、可解释的业务状态迁移。”
 
 ### 21.2 可以深入追问的技术点
+
+五条可沿真实代码解释的“问题→实现/取舍→已有验证”见[简历证据表](portfolio/resume-project.md#从实现追问设计)：长耗时请求与重放、检索范围与改写、引用与事实约束、确认与未知结果、异步发布与版本可见性。先追踪一条输入到状态变化的路径，再解释技术选型；不要用框架名称或小批次通过率替代设计理由。
 
 - 为什么商品结构化事实不能放进 RAG；
 - 页面 productId 与模型意图冲突时如何确定优先级；

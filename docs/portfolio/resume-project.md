@@ -1,48 +1,43 @@
-# ServiceFlow：Agent实习简历与面试证据
+# ServiceFlow：简历表述与代码证据
 
-**ServiceFlow｜客服业务Agent：确认执行与未知结果恢复（Java / Spring Boot）**
+**ServiceFlow｜面向商品咨询与售后执行的有状态客服 Agent**
 
-以下3条是仓库已有验证证据支持的简历候选描述，可按版面选2–3条；仅使用自己确实参与且能沿代码解释的部分。仓库实现与测试通过本身不能证明个人独立完成；对AI辅助生成、修改和定位的部分如实说明，区分自己的设计判断、代码理解和实际验证工作。
+Java 21 / Spring Boot / LangGraph4j / MySQL / Redis / Milvus / RabbitMQ
 
-- 实现订单取消的“请求→待确认→授权执行→结果核验”链路，将身份、会话和目标订单绑定到服务端动作；以订单条件更新、唯一操作账本及同事务等额退款请求约束并发和重复执行。
-- 实现确认响应不完整时的只读恢复：同标签保存身份分区的动作标识，刷新/返回时查询本人已提交结果，404保持未知；恢复过程不自动重发取消，退出或换账号清理关联线索。
-- 构建真实模型接入下的业务故障验收：固定6个合成场景、14轮新聊天，79项业务检查通过，保留13次预期拒绝、14次模型分类请求计数及每轮完整响应耗时；验证参数篡改、权限、重复请求和提交后丢响应恢复。
+下面按工程问题组织，可按岗位和篇幅选3条；验证规模放在证据材料，不作为项目介绍的主语。
 
-## 描述与证据对应
+- **有状态编排与请求重放**：采用 MVC、虚拟线程和 POST SSE 承载模型及业务调用，以 LangGraph4j 路由客服分支；通过 MySQL 请求状态机、会话内请求唯一键及完成消息关联处理重复提交，Redis 保存短期上下文和待确认状态，区分回答重放与业务执行幂等。
+- **事实约束与检索范围**：将商品目录事实与文档证据分离，按商品、文档类型和活动版本限定 Dense/BM25 双路召回，以 RRF、Reranker、Grader 和一次查询改写筛选证据；商品回答改为模型选择事实编号、后端校验并输出完整段落，保留条件限定，抑制无依据扩写。
+- **有副作用操作与未知结果恢复**：将订单取消拆为服务端参数绑定、客户确认和事务执行，以客户归属、版本及状态条件更新、唯一操作账本和同事务退款请求约束并发副作用；提交后响应丢失时只读核验持久结果，避免客户端自动重发取消，退款沙箱回调按事件与尝试批次处理重复和迟到结果。
+- **异步知识版本发布**：将知识版本与 Outbox 同事务写入，使用 RabbitMQ Publisher Confirm、有限退避和消费者状态条件更新处理投递与重复消息；按章节切块并生成确定性 Chunk ID，全部写入 Milvus 后事务切换活动版本，使新版本处理失败时仍可查询旧活动资料。
 
-| 描述 | 代码阅读入口 | 已有运行证据 |
+## 从实现追问设计
+
+| 工程问题 | 具体实现与取舍 | 已有验证与适用边界 |
 | --- | --- | --- |
-| 授权、确认与幂等执行 | [待确认动作绑定](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java#L462)→[确认时检查本人并执行](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L42)→[取消事务](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L46)与[SQL约束](../../apps/serviceflow-server/src/main/resources/mapper/OrderMapper.xml#L17) | [真实模型业务报告](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)：订单A/B切换、夹带参数、并发确认及重复退款回调；[逐项摘要](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.summary.json) |
-| 未知结果只读恢复 | [本人结果查询](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L34)→[持久账本关联订单](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L104)；前端[缺少done后的处理](../../apps/serviceflow-web/src/views/ChatView.vue#L159)和[只读核验](../../apps/serviceflow-web/src/views/ChatView.vue#L169)，[身份分区标识](../../apps/serviceflow-web/src/stores/pendingCancellation.ts#L60) | [同标签刷新/身份隔离](../../quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)、[Demo响应丢失与服务重启](../../quality/evaluation/results/recovery-validation-2026-10-25.md)；本次云批次的lost-response单列在业务报告 |
-| 可复现验收与实际缺陷修复 | [固定场景](../../quality/evaluation/datasets/cloud-business-recovery-v1.json)、[运行脚本](../../scripts/evaluation/cloud_business_recovery.py)、[SSE错误映射](../../apps/serviceflow-server/src/main/java/com/serviceflow/controller/ChatController.java#L137) | [错误映射修复前后](../../quality/evaluation/results/cloud-business-error-repair-2026-10-25.md)、[CI异步等待缺口修复](../../quality/evaluation/results/cloud-business-ci-repair-2026-10-25.md)、[最新验收提交的成功CI](https://github.com/Titans23/serviceflow/actions/runs/40174356460) |
-| 可选补充：多轮商品与证据范围 | [当前商品归一化](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java)、[完整段落摘录](../../apps/serviceflow-server/src/main/java/com/serviceflow/ai/GroundedAnswerComposer.java)、[固定云验证器](../../scripts/evaluation/run_rag_followup.py) | [离线缺陷修复](../../quality/evaluation/results/rag-context-offline-2026-10-25.md)、[最新4场景/7轮开发诊断](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)：31/63次尝试，切换/代词、未知SKU边界与实际来源一致；自然二轮1次仍保留不足，没有新独立留出成绩 |
+| 长耗时调用与客户端重复提交如何分开处理？ | [ChatController.stream](../../apps/serviceflow-server/src/main/java/com/serviceflow/controller/ChatController.java#L75)用虚拟线程执行并返回SseEmitter；[ChatRequestStore.begin/complete](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/support/ChatRequestStore.java#L30)与[ChatMapper请求状态SQL](../../apps/serviceflow-server/src/main/resources/mapper/ChatMapper.xml#L34)将完成消息关联到请求；[CustomerWorkflow.execute](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java#L133)按会话运行图 | [真实业务报告](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)验证完成请求重放不再调用分类模型。虚拟线程降低阻塞编程成本，不能凭此宣称吞吐提升；过期PROCESSING接管也不是所有崩溃窗口的安全重放保证 |
+| 改写问题会不会换商品或改变判分问题？ | [ChatServiceImpl.stream](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java#L119)统一页面/记忆商品；[MilvusRagService.search/runPass](../../apps/serviceflow-server/src/main/java/com/serviceflow/rag/MilvusRagService.java#L67)固定本次商品与活动版本，两轮Grader均判原问题；[hybrid](../../apps/serviceflow-server/src/main/java/com/serviceflow/rag/MilvusRagService.java#L234)给Dense/BM25使用同一过滤条件 | [修复前后契约](../../quality/evaluation/results/rag-context-offline-2026-10-25.md)与[真实多轮来源核对](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)。自然二轮只观察到一次，未知面积事实依然不足；没有测得检索收益或长期稳定率 |
+| 引用正确为什么仍可能胡说？ | [GroundedAnswerComposer.context/compose](../../apps/serviceflow-server/src/main/java/com/serviceflow/ai/GroundedAnswerComposer.java#L31)保留整段事实并校验编号；[generateAnswer](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java#L203)先收齐选择结果，再发正文 | [语义修复与首次新来源留出](../../quality/evaluation/results/cloud-final-evaluation-2026-10-25.md#8-答案语义复核与第二批来源留出)保留修复前失败与后续裁决。牺牲自由表达及首字响应；选择仍可能不相关、不完整，不能称通用Agent或“零幻觉” |
+| 确认失败后怎样知道取消是否提交？ | [ChatActionServiceImpl.confirm](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L42)只用服务端动作参数；[OrderServiceImpl.cancel](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L46)先校验所有者，再走账本/条件更新/退款事务；[唯一键冲突后的当前读](../../apps/serviceflow-server/src/main/resources/mapper/OrderMapper.xml#L23)处理旧快照；[cancellationResult](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L104)只查已提交本人结果 | [数据库与重启恢复](../../quality/evaluation/results/recovery-validation-2026-10-25.md)、[同标签刷新/身份隔离](../../quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)。404保持未知，sessionStorage不是授权；关闭标签/跨设备、并发确认与拒绝、真实支付对账不在保证范围 |
+| 数据库提交、消息投递和向量可见性如何衔接？ | [KnowledgeServiceImpl.addVersion/activate](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/KnowledgeServiceImpl.java#L67)、[KnowledgeOutboxPublisher.publishDue](../../apps/serviceflow-server/src/main/java/com/serviceflow/infrastructure/messaging/KnowledgeOutboxPublisher.java#L38)、[DocumentConsumer.consume](../../apps/serviceflow-server/src/main/java/com/serviceflow/infrastructure/messaging/DocumentConsumer.java#L38)及[KnowledgeMapper](../../apps/serviceflow-server/src/main/resources/mapper/KnowledgeMapper.xml#L25)分别负责提交、确认投递、状态领取和活动指针 | 已有[资料导入验收](../../quality/evaluation/results/v2-docker-verification-2026-10-24.md)与[真实云数据环境记录](../../quality/evaluation/results/cloud-final-evaluation-2026-10-25.md)。Confirm后数据库提交失败仍可能重复投递；消费者在PROCESSING时崩溃的自动恢复、同文档并发上传和乱序激活未被完整保证，不宣称exactly-once |
 
-## 面试追问与回答要点
+## 数字怎么使用
 
-**模型和项目代码分别决定什么？**
+最新业务/RAG小批次用于证明明确的执行与证据边界，不用于把个人项目包装成生产规模。面试被问到验证时，可展开[业务报告](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)、[多轮RAG报告](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)和相应CI；简历正文不必堆场景数、检查数和单次延迟。
 
-云模型通过[CloudAiGateway](../../apps/serviceflow-server/src/main/java/com/serviceflow/ai/CloudAiGateway.java#L49)分类，工作流还会进行[规则修正](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java#L209)。订单参数从当前消息或会话状态提取，确认接口使用服务端动作，退款金额取数据库订单总额。本次没有单独保存原始分类输出，SSE intent是修正后结果，不能发布模型原始分类准确率或称为模型自主生成工具参数。
+旧简历里的两个指标能找到来源，但使用条件必须讲清：
 
-商品回答中，模型选择当前事实编号，后端只拼接验证过的完整事实段落；范围解析、参数绑定和数值出处由代码约束。[最新RAG报告](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)逐项核对来源，但不把摘录约束包装为通用Agent能力。自然二轮的屏幕段落首轮已在第1；二次重检没有得到缺失面积数字，不能声称带来召回提升或解决未知事实。
+| 旧表述 | 核验结果 | 可用措辞 |
+| --- | --- | --- |
+| “200云场景197通过 / 98.5%” | [原始报告](../../quality/evaluation/results/cloud-evaluation-200-raw.md)于2026-08-30生成，原始167/200；[审计报告](../../quality/evaluation/results/cloud-evaluation-200-audited.md)修正冲突标签后从保留摘要/事件离线重评分为197/200，没有重新请求模型。[审计脚本](../../scripts/evaluation/audit-evaluation-report.ps1#L25)执行短语/事件规则；旧200条没有开发/留出split | “建立固定回归集并保留原始运行与标签审计结果。”需要报数时同时说167/200原始、197/200离线规则审计，不能写成当前回答准确率或留出成绩 |
+| “Recall@5 97.69%” | [计算代码](../../scripts/evaluation/audit-evaluation-report.ps1#L62)只看最终引用文件名的前5项，130条要求引用的题中127条命中文件名；不是Dense召回或Rerank候选chunk的排名，缺失的阶段数据无法补造 | 从简历删除该Recall表述；可解释为历史“预期引用文件命中127/130”。不声称提高了召回率 |
 
-**重复聊天、重复确认和重复退款回调如何处理？**
+两份旧报告最早可追溯的产物提交为 [ea119b31](https://github.com/Titans23/serviceflow/commit/ea119b31)，当时路径是 `evaluation/`，随后在 `b363d4a0` 移至 `quality/evaluation/`。这是产物提交，不是报告记录的运行提交。报告没有冻结源码/镜像或记录实际模型配置；该提交配置默认是qwen-plus、text-embedding-v4、qwen3-rerank，但环境变量可覆盖，不能据此认定那次运行实用了哪些版本。后续v2开发/首次留出及语义复核另见[最终报告](../../quality/evaluation/results/cloud-final-evaluation-2026-10-25.md)，不得混用分母或覆盖旧失败。
 
-[聊天请求处理](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java#L78)在已完成的clientRequestId上重放结果，避免再调用模型；取消用actionId关联唯一操作账本，并核对客户与订单；退款请求与取消同事务创建，回调按事件和尝试状态处理。证据支持受测重复/并发路径中的单次副作用，不扩展成跨系统、真实支付的exactly-once保证。
+## 个人贡献与展示
 
-**为什么没收到确认响应时不直接重试？404意味着什么？**
+LangGraph4j提供图和Checkpoint，Spring AI提供协议接口，模型提供分类/证据选择能力，MySQL提供事务及约束。项目代码实现的是范围解析、业务协议、参数与身份绑定、SQL状态迁移、故障时结果核验和验证工具；Checkpoint本身不使退款安全重放。
 
-事务可能已提交而客户端没收到done。恢复GET只查本人操作账本和订单当前状态，不确认或执行；404只说明当前没有可访问的已提交结果，可能尚未完成，继续保持未知。sessionStorage是关联线索，不是授权来源；关闭标签、清空存储或跨设备恢复不在当前保证范围内。
+个人贡献仍需本人确认：哪些设计由你提出、哪些代码由你编写或修改、哪些由AI辅助、哪些验证由你独立解释和执行。选用上面的简历条目前，应能顺着链接解释输入、事务边界、失败分支及证据；不能把仓库已有能力一概写成“个人独立研发”。本轮仅核验代码与已有证据，没有替你认领开发经历。
 
-**79/79和14轮具体说明什么？服务重启也属于这个云成绩吗？**
-
-79是固定脚本中的业务断言数。6场景中只有happy-replay、order-switch、lost-response是同会话连续多轮；14是整批新聊天回合数，不是14段多轮对话。当前云批次使用14次真实分类请求，未重启server；服务重启证据来自另一次无云调用的Demo验收。合成99元订单、沙箱回调和数据库状态都是真实服务操作，资金转移、银行到账和对账未接入。token与金额未知保留null。
-
-**实际定位过什么问题，如何避免把失败藏掉？**
-
-过期动作及包装后的业务拒绝曾返回可重试INTERNAL_ERROR；新增7项回归在修复前6项失败，修复后保留稳定业务码和重试属性，并实际复验HTTP。之后CI曾因404浏览器场景尚未等完3次响应就断言而失败，修复为逐步等待真实404，仍要求确认1次、数据库零副作用。原CI失败、本地复验与最终成功CI都保留在对应报告，未为CI追加付费模型重跑。
-
-## 框架与个人贡献边界
-
-LangGraph4j提供状态图、Checkpoint和Saver；Spring AI提供协议适配，Qwen提供模型能力，MySQL提供事务与唯一约束。可讲的项目实现是业务状态及授权规则、确认协议、参数绑定、操作账本、退款状态处理、前端未知结果恢复和故障验收。Checkpoint不等于可安全重放的业务提交；项目未自研这些框架、模型或支付渠道。按自己确实理解和参与的部分表述贡献，阅读顺序可沿第一张表逐段追踪。
-
-现场展示按[五分钟脚本](../guides/demo-script.md)准备，引用现有云报告；不在面试时临时启动付费实验。历史RAG规则分数、首次留出、模型筛查和来源核对保持各自口径，不与本页79项业务检查合并成“模型准确率”。
+现场按[五分钟脚本](../guides/demo-script.md)展示一次确认、一次拒绝和一次未知结果恢复；RAG使用已保存的来源证据。业务优先，现场不启动付费批次，不展示令牌、原始模型记录或真实用户内容。
