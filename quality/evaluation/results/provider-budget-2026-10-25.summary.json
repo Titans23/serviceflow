@@ -11,7 +11,7 @@
   "redirectTargetRequests": 0,
   "postCapAttemptsBlockedBeforeSending": 3,
   "firstBlockedAttempt": 28,
-  "automaticRetries": {"springAi": 1, "resilienceChat": 1, "resilienceEmbedding": 1, "resilienceReranker": 1, "jdkHttpClientExchangeLimit": 1},
+  "singleAttemptSettings": {"springAi": 1, "resilienceChat": 1, "resilienceEmbedding": 1, "resilienceReranker": 1, "jdkHttpClientExchangeLimit": 1},
   "ordinaryMode": {"budgetBean": false, "resilienceMaxAttempts": 2, "systemPropertyChanged": false},
   "backendVerification": {"tests": 117, "passed": 112, "skippedOptionalLocalGrader": 5, "failures": 0, "errors": 0, "formatPackageCoverageGate": "passed"},
   "composeQuietValidation": "passed",

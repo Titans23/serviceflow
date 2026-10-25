@@ -4,15 +4,16 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 
 > 完整设计与全部源码实现说明见 [技术报告](docs/technical-report.md)，文档入口见 [docs/README.md](docs/README.md)。
 
-> 2026-10-24 新增：[23 SKU 公开数据包](data/retail-v1/README.md)、[多轮评测 v2](quality/evaluation/README.md)、[取消—退款运行手册](docs/guides/evaluation-and-refund.md)。本地数据库迁移、数据导入与真实退款接口已验收；真实模型质量仍待验证，详见[Docker 验证记录](quality/evaluation/results/v2-docker-verification-2026-10-24.md)。
+当前展示主线是**业务Agent的授权、确认、幂等执行与故障恢复**。先看[约5分钟演示脚本](docs/guides/demo-script.md)，按[隔离运行手册](docs/guides/evaluation-and-refund.md)准备真实业务服务；演示不需要付费模型。
 
-> 2026-10-25 更新：[真实 RAG 小规模云验证](quality/evaluation/results/cloud-rag-smoke-2026-10-25.md)已完成。修复首次入库的集合初始化与回答中的内部字段泄露，抽样引用检查 8/8 通过；尚不代表全量模型质量。
+| 当前证据 | 结果与边界 |
+| --- | --- |
+| [取消→退款与丢响应恢复](quality/evaluation/results/recovery-validation-2026-10-25.md) | 31项检查；提交后丢响应、丢动作缓存、server重启后仍可查本人结果，操作和等额退款各1条。退款为管理员沙箱，无真实资金。 |
+| [刷新与身份隔离](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md) | 13项浏览器验收，区分7个真实后端恢复场景与6个mock界面场景。未知结果只读核验，不自动重发确认；不保证跨设备恢复。 |
+| [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。规则成绩不是全量语义正确率，屏幕反问题仍待真实云诊断。 |
+| [RAG诊断与请求预算](quality/evaluation/results/provider-budget-validation-2026-10-25.md) | 阶段trace和3例诊断已准备；本地HTTP证明27次provider上限、失败计数、第28次发送前拒绝。新云验证尚未执行。 |
 
-> 最新：[完整云评测与语义复核报告](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md)：历史开发集175/175、首次华为留出23/25；新来源首次留出12/14，已见失败复测1/2，仍有一个屏幕反问用例未回答。商品事实改为有编号校验的证据摘录，多轮SKU切换已验证；规则、模型筛查和代理证据核对分别记录，不宣称全量语义正确率。
-
-> 求职定位：[业务Agent执行与恢复路线](docs/project-assessment-2026-10-23.md)。后续聚焦取消→退款链的授权、确认、幂等、结果核验和故障恢复，复用既有工作流与追踪；不继续以扩商品数量、商城UI或中间件为目标。每个通过验证的进展点提交并推送，checkpoint存在不等于安全重放。
-
-> 执行恢复检查点：[丢失确认响应、动作缓存和server重启后的验收](quality/evaluation/results/recovery-validation-2026-10-25.md)。复用取消账本提供本人只读结果查询；前端缺少done时核验结果，不自动重发副作用。后续已补[同标签刷新/返回与身份隔离恢复](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)：13项浏览器测试通过，退出/换账号清理本地标识；不宣称跨设备或整个浏览器存储失效后的恢复。
+公开资料入口：[原始23 SKU数据包](data/retail-v1/README.md)、[数据与评测口径](quality/evaluation/README.md)。后续取舍见[求职路线](docs/project-assessment-2026-10-23.md)；历史结果保留在各阶段报告，不覆盖首次留出成绩。
 
 ## 1. 核心能力
 
@@ -32,6 +33,8 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 - 取消订单需要二次确认；`CREATED / PAID / PROCESSING` 可取消，发货后拒绝并提示退货政策。
 - 订单取消使用业务幂等记录、客户隔离和 `id + customer_id + version + status` 条件更新。
 - 已付款取消在同一事务创建唯一退款请求；支持失败原因、重试、重复/迟到/冲突回调处理。管理员沙箱默认关闭，不转移真实资金；客户可在订单页刷新退款进度。
+- 确认响应缺少终止done时保留待核验标识，只读查询本人操作账本和当前订单状态；404保持未知，不自动重发取消。
+- 同标签刷新或返回客服页可继续只读核验；退出/换账号清理标识，陈旧标识与回包不能跨身份展示。
 - 明确投诉自动创建工单；普通问题证据不足时先询问是否转人工。
 - 管理员工单按 `OPEN → ASSIGNED → RESOLVED → CLOSED` 单向流转。
 
@@ -39,13 +42,14 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 
 - 五类意图：`CHAT`、`PRODUCT_QUERY`、`KNOWLEDGE_QUERY`、`ORDER_QUERY`、`COMPLAINT`。
 - LangGraph4j 负责路由和状态化工作流，Redis Saver 保存 30 分钟 Checkpoint。
+- 框架提供状态图与Checkpoint，项目实现路由和工具执行边界；订单事务结果由MySQL账本核验，Checkpoint不等于安全业务重放。
 - 商品回答组合 MySQL 结构化事实与 `PRODUCT_MANUAL` 文档证据。
 - 政策回答只检索 `POLICY` 活动版本。
 - Milvus 执行 Dense Top20 + BM25 Top20 + RRF(k=60)，云 Reranker 取 Top5，再由结构化 Grader 判断证据充分性。
 - 证据不足时最多改写查询一次；Reranker 或 Grader 故障会标记 `degraded=true`。
 - 无证据时禁止凭模型常识编造商品能力、适配性或售后规则。
 
-### 企业化模拟能力
+### 工程与评测
 
 - GUEST、CUSTOMER、ADMIN 三类身份与 JWT RBAC。
 - 访客 Token 30 分钟，正式用户 Token 2 小时。
@@ -147,7 +151,9 @@ ServiceFlow/
 ### 5.1 前置条件
 
 - Docker Desktop，包含 Docker Compose。
-- 阿里云百炼 API Key；如果只想查看页面和固定演示结果，也可以使用默认 `demo` 模式。
+- 业务执行与恢复演示使用隔离Demo模式，不需要API Key；真实云问答才需要阿里云百炼配置与数据/费用授权。
+
+求职展示直接使用[五分钟脚本的准备步骤](docs/guides/demo-script.md)，地址为15173/18080。以下5.2–5.5是主Compose的通用开发启动，地址为5173/8080，默认Demo回答不能证明真实RAG质量。
 
 ### 5.2 配置环境变量
 
@@ -220,16 +226,9 @@ docker compose --profile observability up -d
 
 ## 6. 推荐演示流程
 
-1. 以游客身份打开商品中心，进入 HUAWEI Pura 80 Pro 详情页。
-2. 点击“咨询此商品”，询问“这款手机充电和防水需要注意什么？”。
-3. 观察流式回答、引用以及商品页面上下文。
-4. 询问“这款和 Pura 80、Pura 80 Ultra 有什么区别？”，观察结构化比较卡片。
-5. 登录客户账号，查询订单 `SF202608280001`。
-6. 询问取消该订单，观察 `action_required` 二次确认事件。
-7. 发起明确投诉，观察自动创建工单。
-8. 登录管理员账号进入运营中心，查看 AI 审计并流转工单。
-9. 在知识库页面上传新版本，观察 `PENDING → PROCESSING → READY`。
-10. 打开 Grafana 查询 API、SSE、RAG、模型和 Outbox 面板，必要时在 Jaeger 查看同一 trace。
+按[约5分钟业务Agent脚本](docs/guides/demo-script.md)展示：已有证据与权限边界→客户确认→取消和退款沙箱→缺少done、刷新、换账号→只读核验与数据库单次副作用。准备阶段生成全新合成夹具，现场只运行选定浏览器场景并读回结果；不现场安装依赖、上传资料或跑全套测试。
+
+LangGraph4j、Spring AI和Qwen分别提供工作流、协议适配及模型能力，MySQL提供事务基础。项目贡献在业务状态约束、授权/确认协议、幂等账本、受约束证据选择及可复现的故障验证；不把框架、模型或真实支付渠道写成自研。
 
 ## 7. 主要接口
 
@@ -323,14 +322,11 @@ powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\validate-evaluatio
 powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 ```
 
-本轮验证状态（2026-10-24，详细命令见[离线记录](quality/evaluation/results/v2-implementation-verification-2026-10-24.md)及[Docker 验证记录](quality/evaluation/results/v2-docker-verification-2026-10-24.md)）：
+当前验证入口见开头表格；[预算检查点摘要](quality/evaluation/results/provider-budget-2026-10-25.summary.json)记录最近一次后端离线门禁：117项中112通过、5项可选本地Grader跳过，格式、打包和覆盖率通过。Python采集器沿用未修改版本32/32的结果；[刷新验收](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)记录前端13项单元、13项浏览器及对应真实数据库读回。不同检查点不合并成一次全系统验收。
 
-- 后端原有 83 个本地测试和核心业务 JaCoCo 门禁通过；本轮另有 2 个 Demo 意图回归测试通过，Spotless 通过。需要专用模型的 Grader 验收未执行。
-- 评测工具 24 个测试、训练工具 70 个离线测试通过；主集与退款专项结构、来源和章节引用校验通过。
-- 前端 ESLint、2 个 Vitest、类型检查和生产构建通过；6 条浏览器测试使用 API mock，不能据此宣称后端端到端通过。
-- 独立 Docker 环境已健康运行：8 个 Testcontainers 测试、10/10 个退款 HTTP 场景通过；23 SKU 导入成功，24 个文档对象均 READY 且重复导入不增加版本。迁移在全新数据库通过，远程 CI 尚未触发。
-- development 在 Demo 模式为 111/175 场景通过，剩余 64 个场景仅文档引用未通过；意图 191/191、商品 ID 144/144、HTTP 状态 225/225，全部业务状态断言通过。Demo 使用内置示例知识，此结果不代表真实 RAG 质量；25 个 holdout 场景未运行。
-- v2 完整 Cloud 验证：开发集 175/175，首次 holdout 23/25；两个路由缺陷修复后的已知问题回归 2/2，原始 holdout 分数保持不变。语义准确率仍待独立复核。历史 v1 云报告保留在 `quality/evaluation/results/cloud-evaluation-200-*`，其中 98.5% 是离线规则审计通过率，旧引用指标基于文件名匹配，不是 chunk 召回率；旧短语规则不能支持“事实幻觉率 0%”的结论。
+远程结果以[ServiceFlow CI](https://github.com/Titans23/serviceflow/actions/workflows/ci.yml)对应提交为准。CI只运行离线模型替身与隔离Demo业务检查，不调用付费云模型。真实恢复浏览器用例需设置本轮 `RECOVERY_FIXTURES`；未设置会明确跳过，普通 `npm run test:e2e` 不能自动代表全部真实恢复场景已执行。
+
+历史[离线记录](quality/evaluation/results/v2-implementation-verification-2026-10-24.md)、[Docker验收](quality/evaluation/results/v2-docker-verification-2026-10-24.md)和旧云报告保留各自版本及分母。旧98.5%是规则审计通过率，文件名引用不是chunk召回率；不能据此宣称“事实幻觉率0%”。
 
 在线结果依赖云模型和网络，后续运行可能出现波动；报告只陈述实际执行结果，不把单次通过率当作长期 SLA。
 
@@ -342,6 +338,6 @@ powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 
 ## 11. 简历表述参考
 
-> 基于 Java 21、Spring Boot、LangGraph4j、MyBatis、Redis、RabbitMQ、Milvus 与 Vue 3 实现售前/售后一体化智能客服系统；设计五类意图路由和 MySQL 事实 + Advanced RAG 双数据源回答链路，完成 Dense/BM25/RRF/Rerank/Grader/Query Rewrite 检索流程；通过 Redis 实现访客会话、Graph Checkpoint、原子限流和请求幂等，通过订单乐观锁、操作幂等表和工单状态机保证业务一致性，并构建 AI 回答审计、Prometheus 指标及可重复在线评测闭环。
+> 基于Java 21、Spring Boot和LangGraph4j实现电商客服业务Agent：将订单取消拆分为身份校验、客户确认、事务执行和结果核验，使用MySQL操作账本及唯一退款请求约束副作用；在提交后丢响应、缓存丢失、服务重启和浏览器刷新等受测故障中，通过只读恢复避免自动重发取消。接入公开商品资料与云模型，实施带证据编号校验的事实回答，并分别记录规则评测、语义复核和首次留出结果。
 
-面试时应明确：这是一个使用真实云模型与真实公开商品资料的企业级模拟项目，不是已经承载真实用户流量的商业生产系统。
+面试时明确使用了哪些框架与模型、自己实现了哪些业务约束，以及证据覆盖范围。项目使用真实公开资料和云模型，但没有生产用户流量；退款是沙箱，未接真实支付渠道。
