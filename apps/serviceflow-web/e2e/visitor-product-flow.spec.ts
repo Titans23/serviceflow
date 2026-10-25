@@ -38,6 +38,93 @@ test('guest is redirected away from admin routes', async ({ page }) => {
   await expect(page).toHaveURL(/\/login\?redirect=/)
 })
 
+for (const policyFirst of [false, true]) {
+  test(`page product hint follows explicit switches (policy first: ${policyFirst})`, async ({
+    page,
+  }) => {
+    const payloads: any[] = []
+    await page.route('**/api/chat/sessions', async (route) => {
+      await route.fulfill({
+        json: route.request().method() === 'POST' ? { publicId: 'scope-session' } : [],
+      })
+    })
+    await page.route('**/api/chat/sessions/scope-session/messages', async (route) => {
+      await route.fulfill({ json: [] })
+    })
+    await page.route('**/api/chat/sessions/scope-session/messages/stream', async (route) => {
+      payloads.push(route.request().postDataJSON())
+      const request = route.request().postDataJSON()
+      const policy = request.message.includes('保修政策')
+      const id = request.pageContext ? 1 : 2
+      await route.fulfill({
+        contentType: 'text/event-stream',
+        body:
+          `event: meta\ndata: ${JSON.stringify({ intent: policy ? 'KNOWLEDGE_QUERY' : 'PRODUCT_QUERY', productIds: policy ? [] : [id] })}\n\n` +
+          'event: token\ndata: 有来源的回答\n\nevent: done\ndata: {}\n\n',
+      })
+    })
+    await page.goto('/chat?productId=1')
+    const messages = [
+      ...(policyFirst ? ['保修政策是什么？'] : []),
+      '它的屏幕怎样？',
+      '改问 SAMSUNG-S24-US-128 的屏幕',
+      '它的圆角呢？',
+    ]
+    for (const message of messages) {
+      await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill(message)
+      await page.getByRole('button', { name: '发送', exact: true }).click()
+      await expect(page.getByRole('button', { name: '发送', exact: true })).toBeEnabled()
+    }
+    expect(payloads.map((p) => p.pageContext)).toEqual([
+      ...(policyFirst ? [{ productId: 1 }] : []),
+      { productId: 1 },
+      null,
+      null,
+    ])
+    await page.getByRole('button', { name: '新建会话', exact: true }).click()
+    await expect(page.locator('.message')).toHaveCount(0)
+    await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill('它的屏幕怎样？')
+    await page.getByRole('button', { name: '发送', exact: true }).click()
+    await expect(page.getByRole('button', { name: '发送', exact: true })).toBeEnabled()
+    expect(payloads.at(-1).pageContext).toEqual({ productId: 1 })
+  })
+}
+
+test('unsent page hint is cleared when the customer selects another historical session', async ({
+  page,
+}) => {
+  const payloads: any[] = []
+  await page.route('**/api/chat/sessions', async (route) => {
+    await route.fulfill({
+      json: [
+        { publicId: 'initial-session', title: '入口自动选择' },
+        { publicId: 'other-session', title: '另一段历史会话' },
+      ],
+    })
+  })
+  await page.route('**/api/chat/sessions/*/messages', async (route) => {
+    await route.fulfill({ json: [] })
+  })
+  await page.route('**/api/chat/sessions/other-session/messages/stream', async (route) => {
+    payloads.push(route.request().postDataJSON())
+    await route.fulfill({
+      contentType: 'text/event-stream',
+      body:
+        'event: meta\ndata: {"intent":"PRODUCT_QUERY","productIds":[2]}\n\n' +
+        'event: token\ndata: 当前历史会话商品\n\nevent: done\ndata: {}\n\n',
+    })
+  })
+  await page.goto('/chat?productId=1')
+  await expect(page.locator('.session.active')).toHaveText('入口自动选择')
+  await page.getByText('另一段历史会话', { exact: true }).click()
+  await expect(page.locator('.session.active')).toHaveText('另一段历史会话')
+  await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill('它的屏幕呢？')
+  await page.getByRole('button', { name: '发送', exact: true }).click()
+  await expect(page.getByRole('button', { name: '发送', exact: true })).toBeEnabled()
+  expect(payloads).toHaveLength(1)
+  expect(payloads[0].pageContext).toBeNull()
+})
+
 test('chat renders safe markdown and keeps the composer visible after a long comparison', async ({
   page,
 }) => {

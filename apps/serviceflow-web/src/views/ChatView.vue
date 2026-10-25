@@ -32,6 +32,7 @@ const auth = useAuthStore(),
 let pendingAssistant: any
 let pendingSession = ''
 const productId = route.query.productId ? Number(route.query.productId) : undefined
+let entryPageContext: { sessionId: string; productId: number } | null = null
 async function refresh() {
   sessions.value = await api('/chat/sessions')
 }
@@ -41,9 +42,10 @@ async function create() {
     body: JSON.stringify({ title: productId ? '商品咨询' : '新会话' }),
   })
   await refresh()
-  await select(session.publicId)
+  await select(session.publicId, true)
 }
-async function select(id: string) {
+async function select(id: string, useEntryHint = false) {
+  entryPageContext = useEntryHint && productId ? { sessionId: id, productId } : null
   current.value = id
   messages.value = await api(`/chat/sessions/${id}/messages`)
   followOutput.value = true
@@ -54,6 +56,7 @@ async function send() {
   if (!input.value.trim() || sending.value) return
   if (!current.value) await create()
   const text = input.value
+  const sourceSession = current.value
   input.value = ''
   followOutput.value = true
   messages.value.push({ role: 'USER', content: text })
@@ -66,11 +69,16 @@ async function send() {
       {
         message: text,
         clientRequestId: crypto.randomUUID(),
-        pageContext: productId ? { productId } : null,
+        pageContext:
+          entryPageContext?.sessionId === sourceSession
+            ? { productId: entryPageContext.productId }
+            : null,
       },
       (name, data) => {
         if (name === 'token') assistant.content += data
         if (name === 'meta') {
+          if (data.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sourceSession)
+            entryPageContext = null
           assistant.citations = data.citations
           assistant.degraded = data.degraded
         }
@@ -239,7 +247,7 @@ onMounted(async () => {
   await auth.ensureGuest()
   await restoreCancellation()
   await refresh()
-  if (sessions.value.length) await select(sessions.value[0].publicId)
+  if (sessions.value.length) await select(sessions.value[0].publicId, true)
   else await create()
   if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
 })

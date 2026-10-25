@@ -121,6 +121,10 @@ public final class ChatMemory {
         }
     }
 
+    public void clearActiveProduct(String subject, String sessionId) {
+        redis.delete(activeProductKey(subject, sessionId));
+    }
+
     public String putAction(PendingAction action) {
         try {
             String id = UUID.randomUUID().toString();

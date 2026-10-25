@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-25",
+  "baselineCommit": "bbc0583b",
+  "newRemoteModelCalls": 0,
+  "historicalEvidence": {
+    "failedRegressionRun": "20261025-130141-d7af1937",
+    "screenCase": "fresh-iphone-display",
+    "screenProductIds": [29],
+    "screenFinalEvidenceCount": 0,
+    "screenHasStageDiagnostic": false,
+    "laterDiagnosticRun": "20261025-142414-01840242",
+    "laterDiagnosticCases": 3,
+    "laterDiagnosticRewriteObserved": false,
+    "historicalRootCause": "unconfirmed; final-only failure and later first-pass success do not prove causality"
+  },
+  "confirmedIndependentDefect": "Repeated browser pageContext bypassed explicit product-switch resolution and could feed the old product into retrieval and fact selection.",
+  "before": {
+    "backendContextCases": {"total": 3, "failed": 2, "passed": 1},
+    "browserPayloadCases": {"total": 1, "failed": 1}
+  },
+  "after": {
+    "backend": {"tests": 129, "passed": 124, "skippedOptionalLocalGrader": 5, "failures": 0, "errors": 0, "formatPackageCoverage": "passed"},
+    "contextFlowContracts": {"passed": 3, "usesRealModel": false, "usesRealGraphOrDatabase": false, "actualProductBranchAndComposer": true},
+    "ragDiagnosticsContracts": {"passed": 10, "newTwoPassCases": 2, "transport": "loopback HTTP stub; deterministic gateway"},
+    "frontendLintTypesBuild": "passed",
+    "frontendUnit": {"passed": 13},
+    "productMockBrowser": {"passed": 6},
+    "fullBrowser": {"passed": 16, "liveRecovery": 7, "mockUiAndPayload": 9, "workers": 4},
+    "demoRecovery": {"passed": 31, "fixtureRunId": "202610251857504227", "realServices": ["HTTP", "MySQL", "Redis", "server restart"], "cloudModels": false},
+    "pythonTools": {"passed": 38}
+  },
+  "contextBoundaries": [
+    "Explicit SKU overrides conflicting entry product; unresolved SKU clears previous product reference.",
+    "Following pronoun uses newly selected product; unknown SKU followed by pronoun cannot reuse old manual.",
+    "Entry hint binds to initial/new session, survives policy-only turn, is consumed by product intent and cleared on manual history selection.",
+    "Second retrieval retains product/type/version filters even when rewritten query names another brand.",
+    "Both graders judge original query; successful second pass feeds current evidence into real grounded composer.",
+    "Failed second retrieval preserves first partial evidence and reports insufficient/degraded."
+  ],
+  "initialLocalContainerFailure": "Docker daemon unavailable; retained logs, restarted existing Docker and reran isolated Demo checks successfully",
+  "historicalScoresPreserved": {"firstSourceHoldout": "12/14", "exposedRegression": "1/2", "ragDiagnostics": "3/3", "businessBatch": "6/6"},
+  "limitations": ["Offline contracts are not model semantic accuracy.", "Original screen refusal remains causally unresolved.", "No new real-model second-pass execution has occurred.", "No original datasets, model prompts, authorization or cancellation confirmation rules changed."]
+}

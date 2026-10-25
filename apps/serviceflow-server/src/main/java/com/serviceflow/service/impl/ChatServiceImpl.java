@@ -116,15 +116,17 @@ public final class ChatServiceImpl implements ChatService {
         ServiceFlowState state = null;
         boolean audited = false;
         try {
-            state = new ServiceFlowState(
-                    sessionId,
-                    principal,
-                    request.message(),
+            Long contextProduct =
                     request.pageContext() != null && request.pageContext().productId() != null
                             ? request.pageContext().productId()
-                            : workflow.resolveRememberedProduct(
-                                    request.message(), memory.activeProduct(principal.subject(), sessionId)),
-                    request.clientRequestId());
+                            : memory.activeProduct(principal.subject(), sessionId);
+            Long resolvedContext = workflow.resolveRememberedProduct(request.message(), contextProduct);
+            if (contextProduct != null && resolvedContext == null) {
+                // An explicit switch (including an unknown SKU) invalidates the old reference until resolved.
+                memory.clearActiveProduct(principal.subject(), sessionId);
+            }
+            state = new ServiceFlowState(
+                    sessionId, principal, request.message(), resolvedContext, request.clientRequestId());
             // 暂时把工作流视为黑盒：输入本次请求状态，输出业务结果，并把过程中产生的事件转发给前端。
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> events.send(emitter, name, data));
             if (state.productIds().size() == 1) {

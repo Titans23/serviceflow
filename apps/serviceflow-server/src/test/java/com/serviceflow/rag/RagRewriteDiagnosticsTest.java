@@ -33,6 +33,7 @@ class RagRewriteDiagnosticsTest {
     private AiGateway ai;
     private MilvusRagService rag;
     private RerankerClient reranker;
+    private EmbeddingClient embedding;
     private SimpleMeterRegistry metrics;
 
     @TempDir
@@ -50,7 +51,7 @@ class RagRewriteDiagnosticsTest {
         http.start();
         ai = mock(AiGateway.class);
         reranker = mock(RerankerClient.class);
-        var embedding = mock(EmbeddingClient.class);
+        embedding = mock(EmbeddingClient.class);
         when(embedding.embed(anyString())).thenReturn(new float[] {1});
         var knowledge = mock(KnowledgeMapper.class);
         when(knowledge.activeVersionIds(anyString(), anyList())).thenReturn(List.of(25L));
@@ -202,6 +203,78 @@ class RagRewriteDiagnosticsTest {
         assertThat(result.evidence()).hasSize(1);
         assertThat(trace(result).path("stages").get(3).path("reason").asText())
                 .isEqualTo("rewrite_path_failed:IllegalStateException");
+    }
+
+    @Test
+    void twoPassesKeepProductVersionAndOriginalQuestionThroughFinalFactSelection() throws Exception {
+        String rewritten = "Galaxy S24 的圆角屏幕可视区域"; // Deliberate entity drift cannot change the database scope.
+        when(ai.rewriteQuery(ORIGINAL)).thenReturn(rewritten);
+        when(reranker.rank(anyString(), anyList(), anyInt()))
+                .thenAnswer(call -> List.of(((List<RerankerClient.Document>) call.getArgument(1))
+                        .getFirst()
+                        .id()));
+        when(ai.evaluateEvidence(anyString(), anyList())).thenAnswer(call -> {
+            var candidates = (List<AiGateway.EvidenceCandidate>) call.getArgument(1);
+            String id = candidates.getFirst().chunkId();
+            return new AiGateway.EvidenceEvaluation(id.equals("fixture-display"), List.of(id));
+        });
+        http.stubFor(post(urlEqualTo("/v2/vectordb/entities/hybrid_search"))
+                .withRequestBody(matchingJsonPath("$.search[1].data[0]", equalTo(rewritten)))
+                .willReturn(okJson(new ObjectMapper()
+                        .writeValueAsString(Map.of(
+                                "code",
+                                0,
+                                "data",
+                                List.of(Map.of(
+                                        "chunkId",
+                                        "fixture-display",
+                                        "title",
+                                        "iPhone 16 美国规格",
+                                        "source",
+                                        "iphone16-us.md",
+                                        "content",
+                                        fixture.path("display").asText(),
+                                        "distance",
+                                        0.9)))))));
+        var result = rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L));
+        assertThat(result.sufficient()).isTrue();
+        assertThat(result.degraded()).isFalse();
+        verify(ai, times(2)).evaluateEvidence(eq(ORIGINAL), anyList());
+        verify(embedding).embed(ORIGINAL);
+        verify(embedding).embed(rewritten);
+        String filter = "documentType == \"PRODUCT_MANUAL\" and documentVersionId in [25] and productId in [29]";
+        http.verify(
+                2,
+                postRequestedFor(urlEqualTo("/v2/vectordb/entities/hybrid_search"))
+                        .withRequestBody(matchingJsonPath("$.search[0].filter", equalTo(filter)))
+                        .withRequestBody(matchingJsonPath("$.search[1].filter", equalTo(filter))));
+        var record = trace(result);
+        assertThat(record.path("stages").size()).isEqualTo(7);
+        assertThat(record.path("productIds").get(0).asLong()).isEqualTo(29);
+        assertThat(record.path("activeVersionIds").get(0).asLong()).isEqualTo(25);
+        var mapper = new ObjectMapper();
+        var context = com.serviceflow.ai.GroundedAnswerComposer.context(
+                Map.of("名称", "iPhone 16", "SKU", "APPLE-IP16-US-128"), result.evidence());
+        int id = ((List<?>) context.get("facts")).size() - 1;
+        String answer = com.serviceflow.ai.GroundedAnswerComposer.compose(
+                mapper.writeValueAsString(context), "{\"factIds\":[" + id + "],\"insufficient\":false}", mapper);
+        assertThat(answer).contains("实际可视面积更小").doesNotContain("户外峰值", "Galaxy");
+    }
+
+    @Test
+    void failedSecondRecallKeepsFirstPartialEvidenceAndOriginalScope() throws Exception {
+        when(ai.evaluateEvidence(anyString(), anyList()))
+                .thenReturn(new AiGateway.EvidenceEvaluation(false, List.of("fixture-brightness")));
+        when(ai.rewriteQuery(ORIGINAL)).thenReturn(DRIFTED);
+        http.stubFor(post(urlEqualTo("/v2/vectordb/entities/hybrid_search"))
+                .withRequestBody(matchingJsonPath("$.search[1].data[0]", equalTo(DRIFTED)))
+                .willReturn(serverError()));
+        var result = rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L));
+        assertThat(result.sufficient()).isFalse();
+        assertThat(result.degraded()).isTrue();
+        assertThat(result.evidence()).extracting(RagService.Evidence::chunkId).containsExactly("fixture-brightness");
+        verify(ai).evaluateEvidence(eq(ORIGINAL), anyList());
+        assertThat(trace(result).path("stages").get(4).path("reason").asText()).startsWith("retrieval_failed:");
     }
 
     @Test
