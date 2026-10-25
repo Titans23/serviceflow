@@ -2,6 +2,8 @@ package com.serviceflow.controller;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+import com.serviceflow.exception.ErrorCode;
+import com.serviceflow.exception.ServiceFlowException;
 import com.serviceflow.infrastructure.redis.GuestRateLimiter;
 import com.serviceflow.model.ChatModels;
 import com.serviceflow.model.OrderModels;
@@ -121,20 +123,7 @@ public final class ChatController {
         } catch (Exception exception) {
             log.error("Chat SSE operation failed", exception);
             try {
-                if (exception instanceof com.serviceflow.exception.ServiceFlowException serviceFlowException) {
-                    // 已知业务异常保留错误码、提示和是否可重试信息。
-                    events.error(
-                            emitter,
-                            serviceFlowException.code(),
-                            serviceFlowException.getMessage(),
-                            serviceFlowException.retryable());
-                } else {
-                    // 未知异常不向前端暴露内部细节，统一转换成 INTERNAL_ERROR。
-                    String message = exception instanceof ResponseStatusException status && status.getReason() != null
-                            ? status.getReason()
-                            : "服务暂时不可用，请稍后重试";
-                    events.error(emitter, com.serviceflow.exception.ErrorCode.INTERNAL_ERROR, message, true);
-                }
+                sendFailure(emitter, exception);
             } catch (Exception sendFailure) {
                 // 浏览器可能已经断开，此时连 error 事件也无法发送，只记录日志。
                 log.debug("Unable to send SSE error because the connection is closed", sendFailure);
@@ -143,5 +132,30 @@ public final class ChatController {
                 emitter.complete();
             }
         }
+    }
+
+    private void sendFailure(SseEmitter emitter, Exception exception) {
+        // Graph/executor wrappers must not turn permission or expired-action denials into retryable failures.
+        for (Throwable cause = exception; cause != null; cause = cause.getCause()) {
+            if (cause instanceof ServiceFlowException known) {
+                events.error(emitter, known.code(), known.getMessage(), known.retryable());
+                return;
+            }
+            if (cause instanceof ResponseStatusException status) {
+                ErrorCode code =
+                        switch (status.getStatusCode().value()) {
+                            case 400 -> ErrorCode.BAD_REQUEST;
+                            case 403 -> ErrorCode.FORBIDDEN;
+                            case 404 -> ErrorCode.NOT_FOUND;
+                            case 409 -> ErrorCode.CONFLICT;
+                            default -> null;
+                        };
+                if (code != null) {
+                    events.error(emitter, code, status.getReason() == null ? "操作被拒绝" : status.getReason(), false);
+                    return;
+                }
+            }
+        }
+        events.error(emitter, ErrorCode.INTERNAL_ERROR, "服务暂时不可用，请稍后重试", true);
     }
 }
