@@ -8,6 +8,7 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 
 | 当前证据 | 结果与边界 |
 | --- | --- |
+| [真实模型多轮业务恢复](quality/evaluation/results/cloud-business-recovery-2026-10-25.md) | `.env`模型接入6个合成业务场景、14轮，79项检查通过；参数绑定、权限、重复请求及丢响应恢复均有数据库读回。模型负责分类，退款为沙箱。 |
 | [取消→退款与丢响应恢复](quality/evaluation/results/recovery-validation-2026-10-25.md) | 31项检查；提交后丢响应、丢动作缓存、server重启后仍可查本人结果，操作和等额退款各1条。退款为管理员沙箱，无真实资金。 |
 | [刷新与身份隔离](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md) | 13项浏览器验收，区分7个真实后端恢复场景与6个mock界面场景。未知结果只读核验，不自动重发确认；不保证跨设备恢复。 |
 | [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。最新三例定向诊断3/3，完整段落和实际引用一致；不覆盖历史成绩或宣称全量语义正确率。 |
@@ -322,7 +323,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\validate-evaluatio
 powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 ```
 
-当前验证入口见开头表格；[预算检查点摘要](quality/evaluation/results/provider-budget-2026-10-25.summary.json)记录最近一次后端离线门禁：117项中112通过、5项可选本地Grader跳过，格式、打包和覆盖率通过。Python采集器沿用未修改版本32/32的结果；[刷新验收](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)记录前端13项单元、13项浏览器及对应真实数据库读回。不同检查点不合并成一次全系统验收。
+当前验证入口见开头表格；[业务错误修复](quality/evaluation/results/cloud-business-error-repair-2026-10-25.md)记录最近一次后端离线门禁：124项中119通过、5项可选本地Grader跳过，格式、打包和覆盖率通过，Python工具38/38。[刷新验收](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)另记录前端13项单元、13项浏览器及对应真实数据库读回。不同检查点不合并成一次全系统验收。
 
 远程结果以[ServiceFlow CI](https://github.com/Titans23/serviceflow/actions/workflows/ci.yml)对应提交为准。CI只运行离线模型替身与隔离Demo业务检查，不调用付费云模型。真实恢复浏览器用例需设置本轮 `RECOVERY_FIXTURES`；未设置会明确跳过，普通 `npm run test:e2e` 不能自动代表全部真实恢复场景已执行。
 

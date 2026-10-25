@@ -28,3 +28,5 @@ python -u -B scripts/evaluation/cloud_business_recovery.py --docker $docker --al
 首次使用新后端代码时须先构建server镜像。脚本自行追加全新合成客户/订单；不会上传资料、清库或清空Redis。运行后停止Cloud并按运行手册恢复Demo。一次失败不会自动触发第二个付费批次；需要先保存结果、定位并做必要离线回归。
 
 准备检查点：38项Python工具测试通过，CLI和Compose合并配置校验通过，未进行云调用。Demo真实HTTP预检发现不存在动作返回SSE `INTERNAL_ERROR`、`retryable=true`；这不是有效的失效/权限拒绝，验收脚本明确不能将其算通过。先修正该错误映射并验证，再开始固定云批次。
+
+后续已修复并完成一次：[6/6场景、79/79检查、14次provider尝试](cloud-business-recovery-2026-10-25.md)，记录全部预期拒绝与耗时。未重跑或增加样本，下一次付费运行须明确新的数据/费用范围。

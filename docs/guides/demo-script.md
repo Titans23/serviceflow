@@ -60,4 +60,6 @@ LangGraph4j提供状态图和Checkpoint，Spring AI提供模型协议适配，Qw
 
 已有[31项恢复检查](../../quality/evaluation/results/recovery-after-2026-10-25.summary.json)与[13项浏览器验收](../../quality/evaluation/results/recovery-refresh-2026-10-25.summary.json)支持当前展示，其中浏览器验收区分7个真实后端恢复场景与6个mock界面场景。关闭标签、清空存储或跨设备的自动恢复不在保证范围内。
 
+另有[一次真实模型多轮业务验收](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)：6场景、14轮、79项检查，模型参与意图分类，订单/退款参数和副作用仍由后端约束。现场可展示该证据，不需要临时启动付费批次；它不包含本次云模式的浏览器/服务重启验收。
+
 云质量保留首次新来源留出12/14、已见失败回归1/2。[最新3例屏幕/亮度云诊断](../../quality/evaluation/results/rag-cloud-diagnostics-2026-10-25.md)经授权完成，实际15次provider请求，3例段落与引用核对通过；这是开发诊断，没有触发改写，也未确证旧失败根因。后续重跑需要新授权，不在五分钟业务演示中触发。退款渠道是项目沙箱，未实现真实支付签名、资金结算和对账。

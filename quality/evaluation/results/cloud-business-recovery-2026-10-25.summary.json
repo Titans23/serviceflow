@@ -1,0 +1,674 @@
+{
+  "codeCommit": "56c0cb62de9ba760bb4e8de043aa5dc7a2f134cc",
+  "planSha256": "ef001f37352a4e5cf480db6200397ef9456c67ea2adf96dfbe52dcba4e82cfbb",
+  "models": {
+    "OPENAI_EMBEDDING_MODEL": "text-embedding-v4",
+    "OPENAI_MODEL": "qwen-plus",
+    "OPENAI_RERANKER_MODEL": "qwen3-rerank"
+  },
+  "containerId": "f12fb2681346b79618ad2384683c7b803dd273bea7ef512c4bfac5a2687da056",
+  "imageId": "sha256:ec8b0117808854550705d5c0275f57de6548af859a9424ccfcaef4ac458aefaa",
+  "startedAt": "2026-10-25T07:39:03.502001042Z",
+  "restartCount": 0,
+  "caseResults": [
+    {
+      "id": "happy-replay",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "first query resolves expected order",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "duplicate chat is replayed without another provider call",
+          "passed": true
+        },
+        {
+          "name": "concurrent confirmations return same action/result",
+          "passed": true
+        },
+        {
+          "name": "exactly one committed cancellation and equal-amount refund",
+          "passed": true
+        },
+        {
+          "name": "durable operation requestId equals confirmed action",
+          "passed": true
+        },
+        {
+          "name": "follow-up resolves same order and processing refund",
+          "passed": true
+        },
+        {
+          "name": "sandbox callback applied once and duplicate replayed",
+          "passed": true
+        },
+        {
+          "name": "follow-up sees final refund on correct order",
+          "passed": true
+        },
+        {
+          "name": "refund callback has one event and no duplicate operation",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 5437,
+      "providerBefore": 0,
+      "providerAfter": 4,
+      "finalOrderState": {
+        "order": "CANCELLED",
+        "version": "1",
+        "refund": "REFUNDED",
+        "operations": "1",
+        "refundRequests": "1",
+        "refundAmount": "99.00",
+        "events": "1"
+      }
+    },
+    {
+      "id": "order-switch",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "query selects orderNo",
+          "passed": true
+        },
+        {
+          "name": "query selects secondOrderNo",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "confirmation uses server-bound action",
+          "passed": true
+        },
+        {
+          "name": "exactly one committed cancellation and equal-amount refund",
+          "passed": true
+        },
+        {
+          "name": "durable operation requestId equals confirmed action",
+          "passed": true
+        },
+        {
+          "name": "injected previous order/amount cannot redirect effects",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 3172,
+      "providerBefore": 4,
+      "providerAfter": 7,
+      "finalOrderState": {
+        "order": "PROCESSING",
+        "version": "0",
+        "refund": "NONE",
+        "operations": "0",
+        "refundRequests": "0",
+        "refundAmount": "0.00",
+        "events": "0"
+      },
+      "secondOrderState": {
+        "order": "CANCELLED",
+        "version": "1",
+        "refund": "PROCESSING",
+        "operations": "1",
+        "refundRequests": "1",
+        "refundAmount": "99.00",
+        "events": "0"
+      }
+    },
+    {
+      "id": "permissions",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "foreign session denied before model",
+          "passed": true
+        },
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "other customer cannot select owner order",
+          "passed": true
+        },
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "guest receives login boundary without order/action",
+          "passed": true
+        },
+        {
+          "name": "other cannot confirm owner action",
+          "passed": true
+        },
+        {
+          "name": "other cannot read owner result",
+          "passed": true
+        },
+        {
+          "name": "guest cannot confirm owner action",
+          "passed": true
+        },
+        {
+          "name": "guest cannot read owner result",
+          "passed": true
+        },
+        {
+          "name": "admin cannot confirm owner action",
+          "passed": true
+        },
+        {
+          "name": "admin cannot read owner result",
+          "passed": true
+        },
+        {
+          "name": "permission checks do not call model",
+          "passed": true
+        },
+        {
+          "name": "unauthorized attempts have zero side effects",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 4703,
+      "providerBefore": 7,
+      "providerAfter": 10,
+      "finalOrderState": {
+        "order": "PROCESSING",
+        "version": "0",
+        "refund": "NONE",
+        "operations": "0",
+        "refundRequests": "0",
+        "refundAmount": "0.00",
+        "events": "0"
+      }
+    },
+    {
+      "id": "rejected",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "explicit rejection completes",
+          "passed": true
+        },
+        {
+          "name": "rejected action cannot execute or recover a result",
+          "passed": true
+        },
+        {
+          "name": "rejection has zero side effects",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 1828,
+      "providerBefore": 10,
+      "providerAfter": 11,
+      "finalOrderState": {
+        "order": "PROCESSING",
+        "version": "0",
+        "refund": "NONE",
+        "operations": "0",
+        "refundRequests": "0",
+        "refundAmount": "0.00",
+        "events": "0"
+      }
+    },
+    {
+      "id": "expired",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "evict only this synthetic action key",
+          "passed": true
+        },
+        {
+          "name": "missing action remains unknown and non-executable",
+          "passed": true
+        },
+        {
+          "name": "expired action has zero side effects",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 1782,
+      "providerBefore": 11,
+      "providerAfter": 12,
+      "finalOrderState": {
+        "order": "PROCESSING",
+        "version": "0",
+        "refund": "NONE",
+        "operations": "0",
+        "refundRequests": "0",
+        "refundAmount": "0.00",
+        "events": "0"
+      }
+    },
+    {
+      "id": "lost-response",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "session created",
+          "passed": true
+        },
+        {
+          "name": "initial order resolved",
+          "passed": true
+        },
+        {
+          "name": "model routed to ORDER_QUERY",
+          "passed": true
+        },
+        {
+          "name": "pending confirmation received",
+          "passed": true
+        },
+        {
+          "name": "pending tool arguments bound to authenticated owner/session/order",
+          "passed": true
+        },
+        {
+          "name": "client-visible order matches bound order",
+          "passed": true
+        },
+        {
+          "name": "pending action has zero business effects",
+          "passed": true
+        },
+        {
+          "name": "real upstream committed but downstream received no response",
+          "passed": true
+        },
+        {
+          "name": "exactly one committed cancellation and equal-amount refund",
+          "passed": true
+        },
+        {
+          "name": "durable operation requestId equals confirmed action",
+          "passed": true
+        },
+        {
+          "name": "evict only this synthetic action key",
+          "passed": true
+        },
+        {
+          "name": "read-only recovery returns committed owner order",
+          "passed": true
+        },
+        {
+          "name": "read-only recovery returns committed owner order",
+          "passed": true
+        },
+        {
+          "name": "missing action cannot be reconfirmed",
+          "passed": true
+        },
+        {
+          "name": "recovery leaves model budget and business effects unchanged",
+          "passed": true
+        }
+      ],
+      "elapsedMs": 3984,
+      "providerBefore": 12,
+      "providerAfter": 14,
+      "finalOrderState": {
+        "order": "CANCELLED",
+        "version": "1",
+        "refund": "PROCESSING",
+        "operations": "1",
+        "refundRequests": "1",
+        "refundAmount": "99.00",
+        "events": "0"
+      }
+    }
+  ],
+  "providerAttempts": 14,
+  "providerLimit": 27,
+  "sameProcess": true,
+  "tokenUsage": null,
+  "currencyCost": null,
+  "usageNote": "Provider usage not retained by these adapters; no billing query performed.",
+  "plannedCases": 6,
+  "passed": 6,
+  "failed": 0,
+  "notAttempted": 0,
+  "newChatAttempts": 14,
+  "scope": "real cloud classification, deterministic server-bound tools, synthetic orders and refund sandbox; development verification",
+  "runId": "cloud-business-20261025-153943-f97fefb0",
+  "date": "2026-10-25",
+  "checks": {
+    "passed": 79,
+    "total": 79
+  },
+  "actualModelUse": "14 real qwen-plus classification attempts; server binds tool parameters; no embedding/rerank/generation path observed",
+  "newPaidBatches": 1,
+  "automaticPaidReruns": 0,
+  "httpAttemptsRecorded": 42,
+  "concurrentConfirmationAttempts": 2,
+  "expectedDeniedRequests": [
+    {
+      "case": "permissions",
+      "step": "other-owner-session",
+      "httpStatus": 200,
+      "sseCode": "NOT_FOUND",
+      "retryable": false,
+      "elapsedMs": 32,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "chat-1",
+      "httpStatus": 200,
+      "sseCode": "NOT_FOUND",
+      "retryable": false,
+      "elapsedMs": 547,
+      "providerDelta": 1
+    },
+    {
+      "case": "permissions",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 200,
+      "sseCode": "FORBIDDEN",
+      "retryable": false,
+      "elapsedMs": 15,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "read-result",
+      "httpStatus": 404,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 16,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 403,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 15,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "read-result",
+      "httpStatus": 403,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 31,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 200,
+      "sseCode": "FORBIDDEN",
+      "retryable": false,
+      "elapsedMs": 15,
+      "providerDelta": 0
+    },
+    {
+      "case": "permissions",
+      "step": "read-result",
+      "httpStatus": 403,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 16,
+      "providerDelta": 0
+    },
+    {
+      "case": "rejected",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 200,
+      "sseCode": "NOT_FOUND",
+      "retryable": false,
+      "elapsedMs": 15,
+      "providerDelta": 0
+    },
+    {
+      "case": "rejected",
+      "step": "read-result",
+      "httpStatus": 404,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 16,
+      "providerDelta": 0
+    },
+    {
+      "case": "expired",
+      "step": "read-result",
+      "httpStatus": 404,
+      "sseCode": null,
+      "retryable": null,
+      "elapsedMs": 16,
+      "providerDelta": 0
+    },
+    {
+      "case": "expired",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 200,
+      "sseCode": "NOT_FOUND",
+      "retryable": false,
+      "elapsedMs": 31,
+      "providerDelta": 0
+    },
+    {
+      "case": "lost-response",
+      "step": "confirm-CONFIRM",
+      "httpStatus": 200,
+      "sseCode": "NOT_FOUND",
+      "retryable": false,
+      "elapsedMs": 16,
+      "providerDelta": 0
+    }
+  ],
+  "modelChatLatencyMs": {
+    "count": 14,
+    "perAttempt": [
+      406,
+      437,
+      484,
+      500,
+      531,
+      531,
+      547,
+      547,
+      547,
+      578,
+      657,
+      687,
+      703,
+      1297
+    ],
+    "p50": 547.0,
+    "max": 1297,
+    "total": 8452
+  },
+  "totalRecordedHttpLatencyMs": 9155,
+  "responseLoss": {
+    "downstreamReceivedNoResponse": true,
+    "realUpstreamCommitted": true,
+    "elapsedMs": 594
+  },
+  "toolArgumentChecks": {
+    "pendingActions": 6,
+    "allOwnerSessionOrderTypeBindingsMatch": true,
+    "operationIdsMatchConfirmedActions": true,
+    "untrustedConfirmationFields": {
+      "orderNo": "previous order A while B pending",
+      "customerId": -1,
+      "amount": 0.01
+    },
+    "injectedFieldsCannotRedirectEffects": true
+  },
+  "independentReadback": {
+    "allSevenOrdersMatchRecordedStates": true,
+    "sameProcess": true,
+    "sameCodeAndPlan": true
+  },
+  "fixtureSqlSha256": "442a2cd0d4b1be6b0b883d45c0448fd28304a1e03f95117e05f90b037206b98c",
+  "observedDefect": {
+    "beforeCloudBatch": "Expired action incorrectly exposed retryable INTERNAL_ERROR; wrapped business/model errors lost attributes",
+    "fixCommit": "56c0cb62de9ba760bb4e8de043aa5dc7a2f134cc",
+    "beforeTests": {
+      "tests": 7,
+      "failures": 6
+    },
+    "afterTests": {
+      "tests": 124,
+      "passed": 119,
+      "skipped": 5,
+      "failures": 0
+    },
+    "realDemoHttpBefore": {
+      "code": "INTERNAL_ERROR",
+      "retryable": true
+    },
+    "realDemoHttpAfter": {
+      "code": "NOT_FOUND",
+      "retryable": false
+    }
+  },
+  "limitations": [
+    "Synthetic development batch, not independent holdout or production traffic.",
+    "Model classifies; tool parameters and refund execution are deterministic server code.",
+    "Only happy-replay, order-switch and lost-response have sequential multi-turn customer dialogue; permission case uses separate identities/sessions.",
+    "No server restart within the cloud batch; earlier Demo-only restart evidence remains separate.",
+    "Refund is a sandbox; no real payment channel, transfer, reconciliation or bank confirmation.",
+    "Unknown usage/currency preserved null; model API attempt counts are not token or money usage.",
+    "Raw model responses, JWTs and credentials are excluded from public results.",
+    "SSE intent is post-rule workflow intent; original classifier outputs are not separately retained, so no raw model intent-accuracy claim is made."
+  ],
+  "recordedBusinessHttpAttemptsIncludingConcurrent": 44,
+  "successfulPreflightAndAuthenticationHttpInvocations": 5,
+  "totalBackendHttpInvocations": 49,
+  "preflightAndAuthenticationLatencyMs": null,
+  "faultProxyClientAttempts": 1,
+  "httpAccountingNote": "44 individually timed business HTTP attempts including two concurrent confirmations; plus one actuator-info preflight and four successful token acquisitions, whose separate latency was not retained. One additional loopback proxy-client attempt injects response loss.",
+  "configurationSource": "project .env; runtime and Compose provider configuration compared in memory; shell OPENAI overrides removed"
+}

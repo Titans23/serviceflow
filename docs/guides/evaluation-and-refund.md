@@ -172,3 +172,9 @@ Pop-Location
 两个浏览器验收分别覆盖：真实提交后移除done且首次查询断网，手动再查走真实API；确认请求未到服务端且真实查询404，保留未知状态并可继续咨询。均从MySQL读回操作/退款计数，不能用全部API mock替代。浏览器trace/截图关闭，避免将测试登录令牌放入产物。未设置 `RECOVERY_FIXTURES` 时这两个用例明确跳过；CI会先生成夹具再实际执行。
 
 刷新专项另覆盖5例：提交后刷新成功核验并清理、404跨刷新/导航保留、实际登录换账号/退出与陈旧记录隔离、损坏/读取不可用提示、写入失败时仅保留当前页核验。CI会通过同一 `RECOVERY_FIXTURES` 执行全部7个真实恢复用例；不设置夹具时明确跳过，不能计为通过。
+
+## 9. 真实模型多轮业务验收
+
+[已完成的一次固定批次](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)使用项目 `.env`：6个合成场景、14轮，79项检查通过，14/27次provider请求；记录参数绑定、权限、聊天/确认/回调重放及提交后丢响应恢复。模型只负责分类，确认和退款使用后端参数；没有真实资金。原始响应留在本机，预期拒绝、未知token/费用与耗时如实保留。
+
+复现入口与边界见[批次计划](../../quality/evaluation/results/cloud-business-plan-2026-10-25.md)。显式叠加 `evaluation-cloud-compose.yml`、`evaluation-provider-budget.yml`、`evaluation-cloud-refund.yml`；最后一层仅为独立Cloud评测开启管理员退款沙箱。脚本 `cloud_business_recovery.py --allow-cloud --allow-isolated-faults` 需要未使用的预算进程，自动生成全新合成夹具，禁止后台入库、重启补额度或自动付费重跑。不要修改默认Cloud配置的沙箱关闭值来代替显式profile。
