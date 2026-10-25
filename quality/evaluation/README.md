@@ -69,3 +69,9 @@ python -B scripts/evaluation/semantic_review.py --runs $run --suite quality/eval
 ```
 
 在第一轮新留出前冻结代码、镜像、资料、问题与标签；开发回归和留出结果分别报告。完整说明见[最终评测报告](results/cloud-final-evaluation-2026-10-25.md)。
+
+## RAG阶段诊断（仅隔离评测）
+
+原问题与改写问题分开：改写用于召回/重排，Grader始终按原问题判断。阶段证据可记录候选ID/排名、机制原因码、查询变化及耗时，正文仍单独保存在忽略目录。采集指定的RAG步骤必须使用 `--require-trace-steps CASE:INDEX ...`，缺任何指定trace时报告incomplete，不能因其他步骤有trace就宣称完整。
+
+[离线诊断验证](results/rag-diagnostics-validation-2026-10-25.md)明确区分工程模拟和真实云结果；[3轮/27次请求计划](results/rag-cloud-validation-plan-2026-10-25.json)尚未执行，仍需预算停止保障和新的具体授权。原12/14与已见1/2不变。

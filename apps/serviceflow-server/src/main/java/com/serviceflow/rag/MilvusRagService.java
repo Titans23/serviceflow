@@ -34,6 +34,7 @@ public class MilvusRagService implements RagService {
     private final KnowledgeMapper knowledgeMapper;
     private final AiGateway aiGateway;
     private final MeterRegistry metrics;
+    private final RagTraceRecorder diagnostics;
     private final AtomicBoolean collectionReady = new AtomicBoolean();
 
     public MilvusRagService(
@@ -42,13 +43,15 @@ public class MilvusRagService implements RagService {
             RerankerClient rerankerClient,
             KnowledgeMapper knowledgeMapper,
             AiGateway aiGateway,
-            MeterRegistry metrics) {
+            MeterRegistry metrics,
+            RagTraceRecorder diagnostics) {
         this.properties = Objects.requireNonNull(properties, "properties must not be null");
         this.embeddingClient = Objects.requireNonNull(embeddingClient, "embeddingClient must not be null");
         this.rerankerClient = Objects.requireNonNull(rerankerClient, "rerankerClient must not be null");
         this.knowledgeMapper = Objects.requireNonNull(knowledgeMapper, "knowledgeMapper must not be null");
         this.aiGateway = Objects.requireNonNull(aiGateway, "aiGateway must not be null");
         this.metrics = Objects.requireNonNull(metrics, "metrics must not be null");
+        this.diagnostics = Objects.requireNonNull(diagnostics, "diagnostics must not be null");
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(properties.rag().connectTimeout());
         requestFactory.setReadTimeout(properties.rag().readTimeout());
@@ -68,37 +71,50 @@ public class MilvusRagService implements RagService {
         }
 
         ensureCloudReady();
+        var trace = diagnostics.begin(query, documentType, productIds);
         try {
             // Milvus 可能还保留失败版本或历史版本的 Chunk；先从 MySQL 取得当前生效版本 ID，
             // 后续向量检索和 BM25 检索都用它们过滤，保证用户只看到已完整入库并激活的内容。
             List<Long> activeVersions = knowledgeMapper.activeVersionIds(documentType, productIds);
+            trace.versions(activeVersions);
             if (activeVersions.isEmpty()) {
-                return new SearchResult(List.of(), false, false);
+                trace.stage("versions", query, List.of(), List.of(), "no_active_versions", false, false, started);
+                return diagnosed(trace, new SearchResult(List.of(), false, false), started);
             }
 
-            RankedEvidence ranked = rerank(query, hybrid(query, documentType, productIds, activeVersions));
-            EvaluationResult evaluated = evaluate(query, ranked.evidence());
+            EvaluationResult evaluated =
+                    runPass(query, query, documentType, productIds, activeVersions, "initial", trace);
+            boolean firstPassDegraded = evaluated.degraded();
             // 首轮证据不足时只进行一次查询改写与重试，避免无限检索循环。
             if (!evaluated.sufficient()) {
-                evaluated = evaluateRewrittenQuery(query, documentType, productIds, activeVersions, evaluated);
+                evaluated = evaluateRewrittenQuery(query, documentType, productIds, activeVersions, evaluated, trace);
             }
 
             SearchResult result = new SearchResult(
-                    evaluated.evidence(), evaluated.sufficient(), ranked.degraded() || evaluated.degraded());
+                    evaluated.evidence(), evaluated.sufficient(), firstPassDegraded || evaluated.degraded());
             metrics.counter("serviceflow.rag.search", "status", "success").increment();
             if (result.degraded()) {
                 metrics.counter("serviceflow.rag.degraded").increment();
             }
             metrics.timer("serviceflow.rag.search.duration")
                     .record(java.time.Duration.ofNanos(System.nanoTime() - started));
-            return result;
+            return diagnosed(trace, result, started);
         } catch (Exception exception) {
             log.warn("Milvus hybrid search unavailable; returning no evidence", exception);
             metrics.counter("serviceflow.rag.search", "status", "failed").increment();
             metrics.counter("serviceflow.rag.degraded").increment();
             metrics.timer("serviceflow.rag.search.duration")
                     .record(java.time.Duration.ofNanos(System.nanoTime() - started));
-            return new SearchResult(List.of(), false, true);
+            trace.stage(
+                    "search",
+                    query,
+                    List.of(),
+                    List.of(),
+                    "search_failed:" + exception.getClass().getSimpleName(),
+                    false,
+                    true,
+                    started);
+            return diagnosed(trace, new SearchResult(List.of(), false, true), started);
         }
     }
 
@@ -107,28 +123,112 @@ public class MilvusRagService implements RagService {
             String documentType,
             List<Long> productIds,
             List<Long> activeVersions,
-            EvaluationResult current) {
+            EvaluationResult current,
+            RagTraceRecorder.Trace trace) {
+        long started = System.nanoTime();
         try {
             // 让模型把口语或模糊问题改写成更适合检索、且保留关键实体的一句话。
             String rewrittenQuery = aiGateway.rewriteQuery(query);
+            trace.stage(
+                    "rewrite",
+                    rewrittenQuery,
+                    current.evidence(),
+                    current.evidence(),
+                    rewrittenQuery.equalsIgnoreCase(query) ? "unchanged" : "query_changed",
+                    false,
+                    false,
+                    started);
             // 改写结果没有变化时，重复检索没有意义，直接保留首轮结果。
             if (rewrittenQuery.equalsIgnoreCase(query)) {
                 return current;
             }
 
             // 使用改写后的问题完整重跑混合召回和重排，而不是只重新执行 Grader。
-            RankedEvidence rewrittenRanked =
-                    rerank(rewrittenQuery, hybrid(rewrittenQuery, documentType, productIds, activeVersions));
-            EvaluationResult rewrittenEvaluation = evaluate(rewrittenQuery, rewrittenRanked.evidence());
-            return new EvaluationResult(
-                    rewrittenEvaluation.evidence(),
-                    rewrittenEvaluation.sufficient(),
-                    rewrittenRanked.degraded() || rewrittenEvaluation.degraded());
+            // Retrieval may use a rewrite; sufficiency must always answer the original user's question.
+            return runPass(query, rewrittenQuery, documentType, productIds, activeVersions, "rewritten", trace);
         } catch (Exception exception) {
             // 改写或第二轮检索失败时保留首轮证据，同时标记为不足且已降级。
             log.warn("Query rewrite failed; keeping original evidence", exception);
+            trace.stage(
+                    "rewrite_path",
+                    query,
+                    current.evidence(),
+                    current.evidence(),
+                    "rewrite_path_failed:" + exception.getClass().getSimpleName(),
+                    false,
+                    true,
+                    started);
             return new EvaluationResult(current.evidence(), false, true);
         }
+    }
+
+    private EvaluationResult runPass(
+            String originalQuery,
+            String retrievalQuery,
+            String documentType,
+            List<Long> productIds,
+            List<Long> versions,
+            String pass,
+            RagTraceRecorder.Trace trace) {
+        long started = System.nanoTime();
+        List<Evidence> candidates;
+        try {
+            candidates = hybrid(retrievalQuery, documentType, productIds, versions);
+        } catch (RuntimeException error) {
+            trace.stage(
+                    pass + ".retrieval",
+                    retrievalQuery,
+                    List.of(),
+                    List.of(),
+                    "retrieval_failed:" + error.getClass().getSimpleName(),
+                    false,
+                    true,
+                    started);
+            throw error;
+        }
+        trace.stage(
+                pass + ".retrieval",
+                retrievalQuery,
+                List.of(),
+                candidates,
+                candidates.isEmpty() ? "empty_recall" : "hybrid_rrf",
+                false,
+                false,
+                started);
+        started = System.nanoTime();
+        RankedEvidence ranked = rerank(retrievalQuery, candidates);
+        trace.stage(
+                pass + ".rerank",
+                retrievalQuery,
+                candidates,
+                ranked.evidence(),
+                candidates.isEmpty()
+                        ? "skipped_empty"
+                        : ranked.degraded() ? "reranker_error_rrf_top5" : "reranker_top5",
+                false,
+                ranked.degraded(),
+                started);
+        started = System.nanoTime();
+        EvaluationResult result = evaluate(originalQuery, ranked.evidence());
+        trace.stage(
+                pass + ".grader",
+                originalQuery,
+                ranked.evidence(),
+                result.evidence(),
+                ranked.evidence().isEmpty()
+                        ? "skipped_empty"
+                        : result.degraded()
+                                ? "grader_error_candidates_retained"
+                                : result.sufficient() ? "grader_sufficient" : "grader_insufficient",
+                result.sufficient(),
+                result.degraded(),
+                started);
+        return new EvaluationResult(result.evidence(), result.sufficient(), ranked.degraded() || result.degraded());
+    }
+
+    private SearchResult diagnosed(RagTraceRecorder.Trace trace, SearchResult result, long started) {
+        return new SearchResult(
+                result.evidence(), result.sufficient(), result.degraded(), trace.finish(result, started));
     }
 
     private List<Evidence> hybrid(String query, String documentType, List<Long> productIds, List<Long> activeVersions) {

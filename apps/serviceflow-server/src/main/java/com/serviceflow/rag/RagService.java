@@ -22,5 +22,9 @@ public interface RagService {
 
     record Evidence(String chunkId, String title, String source, String content, double score) {}
 
-    record SearchResult(List<Evidence> evidence, boolean sufficient, boolean degraded) {}
+    record SearchResult(List<Evidence> evidence, boolean sufficient, boolean degraded, String diagnosticId) {
+        public SearchResult(List<Evidence> evidence, boolean sufficient, boolean degraded) {
+            this(evidence, sufficient, degraded, null);
+        }
+    }
 }

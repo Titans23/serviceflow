@@ -44,7 +44,8 @@ class MilvusCollectionInitializationTest {
                 mock(RerankerClient.class),
                 mock(KnowledgeMapper.class),
                 mock(AiGateway.class),
-                new SimpleMeterRegistry());
+                new SimpleMeterRegistry(),
+                new RagTraceRecorder(false, "", new com.fasterxml.jackson.databind.ObjectMapper()));
     }
 
     @AfterEach

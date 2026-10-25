@@ -107,7 +107,8 @@ class CloudEvidenceSafetyTest {
                 mock(RerankerClient.class),
                 mock(KnowledgeMapper.class),
                 failing,
-                metrics);
+                metrics,
+                new com.serviceflow.rag.RagTraceRecorder(false, "", new ObjectMapper()));
         var evidence = List.of(new RagService.Evidence("a", "资料", "fixture", "屏幕为六英寸。", 1.0));
         Object result = ReflectionTestUtils.invokeMethod(rag, "evaluate", "屏幕尺寸？", evidence);
         assertThat((Boolean) ReflectionTestUtils.invokeMethod(result, "sufficient"))

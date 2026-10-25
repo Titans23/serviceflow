@@ -63,6 +63,9 @@ info:
     evaluationEnabled: ${SERVICEFLOW_EVALUATION_ENABLED:false}
     refundSandboxEnabled: ${SERVICEFLOW_REFUND_SANDBOX_ENABLED:false}
 serviceflow:
+  evaluation:
+    enabled: ${SERVICEFLOW_EVALUATION_ENABLED:false}
+    rag-diagnostics-dir: ${SERVICEFLOW_RAG_DIAGNOSTICS_DIR:}
   refund:
     sandbox-enabled: ${SERVICEFLOW_REFUND_SANDBOX_ENABLED:false}
   jwt:

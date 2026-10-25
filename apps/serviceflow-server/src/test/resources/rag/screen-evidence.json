@@ -1,0 +1,11 @@
+{
+  "origin": "Saved project-authored scenario and source paragraphs; gateway outcomes in tests are simulated, not captured cloud responses",
+  "caseId": "fresh-iphone-display",
+  "sourcePackage": "data/retail-holdout-v2",
+  "sourceFile": "iphone16-us.md",
+  "sourceUrl": "https://support.apple.com/en-us/121029",
+  "query": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+  "display": "6.1英寸为标称 OLED 屏幕尺寸；标准矩形对角线为6.12英寸，实际可视面积更小。",
+  "brightness": "亮度：典型最高1000尼特，HDR峰值1600尼特，户外峰值2000尼特。不能把户外峰值当成所有场景的持续亮度。",
+  "syntheticDriftedQuery": "这款手机的户外峰值亮度是多少？"
+}

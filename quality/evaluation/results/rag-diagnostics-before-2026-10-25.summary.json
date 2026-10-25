@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "616e92e5d668494a2dae6f008905e5adb1204644",
+  "mode": "deterministic gateway and loopback HTTP stubs; no cloud calls",
+  "tests": 2,
+  "failures": 2,
+  "errors": 0,
+  "cases": [
+    {
+      "name": "rewrittenRetrievalMustStillBeGradedAgainstOriginalUserQuestion",
+      "failure": "Expecting value to be false but was true"
+    },
+    {
+      "name": "aRecoveredSecondPassMustNotHideTheFirstGraderFailure",
+      "failure": "Expecting value to be true but was false"
+    }
+  ],
+  "scope": "Implementation invariants, not proof of the original live screen-case root cause"
+}

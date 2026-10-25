@@ -344,6 +344,7 @@ public final class CustomerWorkflow {
         // 只检索当前商品的有效说明书分块，避免其他型号的文档混入回答依据。
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
         events.accept("rag_evidence", evidenceTrace(docs));
+        if (docs.diagnosticId() != null) events.accept("rag_diagnostic", Map.of("traceId", docs.diagnosticId()));
         // 数据库中的价格、型号和规格属于结构化事实，回答时优先级高于说明书文本。
         Map<String, Object> customerFacts = customerFacts(product);
         // 云端大模型不可用或不支持可信生成时，使用这段确定性的后端答案。
@@ -426,6 +427,7 @@ public final class CustomerWorkflow {
         }
         RagService.SearchResult result = rag.search(state.query(), "POLICY", List.of());
         events.accept("rag_evidence", evidenceTrace(result));
+        if (result.diagnosticId() != null) events.accept("rag_diagnostic", Map.of("traceId", result.diagnosticId()));
         if (!result.sufficient()) {
             if (state.principal().guest()) {
                 return new Result("暂未找到可靠政策依据；如需人工协助，请先登录客户账号。", List.of());

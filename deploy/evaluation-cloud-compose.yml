@@ -9,6 +9,7 @@ services:
       MYSQL_DATABASE: serviceflow_eval_cloud_v1
       SERVICEFLOW_AI_MODE: cloud
       SERVICEFLOW_RAG_MODE: cloud
+      SERVICEFLOW_RAG_DIAGNOSTICS_DIR: /data/evaluation/rag-traces
       SERVICEFLOW_REFUND_SANDBOX_ENABLED: "false"
       SPRING_AI_MODEL_CHAT: openai
       SPRING_AI_MODEL_EMBEDDING: none
@@ -23,6 +24,8 @@ services:
       OPENAI_RERANKER_API_KEY: ${OPENAI_RERANKER_API_KEY:-${OPENAI_API_KEY}}
       OPENAI_RERANKER_MODEL: ${OPENAI_RERANKER_MODEL:-qwen3-rerank}
       MILVUS_REST_URL: http://milvus:19530
+    volumes:
+      - ../quality/evaluation/reports/rag-traces:/data/evaluation/rag-traces
     depends_on:
       milvus: {condition: service_healthy}
   web:
