@@ -41,9 +41,9 @@ Pop-Location
 python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/rag-diagnostics-v1.json --package data/retail-holdout-v2
 ```
 
-## 待授权的三例云诊断命令
+## 三例云诊断命令（后续已执行一次）
 
-[计划](rag-cloud-validation-plan-2026-10-25.json)和[可执行用例](../datasets/rag-diagnostics-v1.json)固定为1个已见屏幕问题、2个新措辞；均属于开发诊断，不能称为独立留出。此处命令仅供批准后执行，本检查点没有执行它们。
+[计划](rag-cloud-validation-plan-2026-10-25.json)和[可执行用例](../datasets/rag-diagnostics-v1.json)固定为1个已见屏幕问题、2个新措辞；均属于开发诊断，不能称为独立留出。本离线检查点当时只准备命令；后续经授权已[执行一次并完整记录](rag-cloud-diagnostics-2026-10-25.md)，实际15次provider请求。后续重跑仍需新授权，不自动补充额度或重复执行。
 
 ```powershell
 $docker = 'D:\Applications\Docker\resources\bin\docker.exe'

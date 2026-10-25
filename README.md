@@ -10,8 +10,8 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 | --- | --- |
 | [取消→退款与丢响应恢复](quality/evaluation/results/recovery-validation-2026-10-25.md) | 31项检查；提交后丢响应、丢动作缓存、server重启后仍可查本人结果，操作和等额退款各1条。退款为管理员沙箱，无真实资金。 |
 | [刷新与身份隔离](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md) | 13项浏览器验收，区分7个真实后端恢复场景与6个mock界面场景。未知结果只读核验，不自动重发确认；不保证跨设备恢复。 |
-| [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。规则成绩不是全量语义正确率，屏幕反问题仍待真实云诊断。 |
-| [RAG诊断与请求预算](quality/evaluation/results/provider-budget-validation-2026-10-25.md) | 阶段trace和3例诊断已准备；本地HTTP证明27次provider上限、失败计数、第28次发送前拒绝。新云验证尚未执行。 |
+| [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。最新三例定向诊断3/3，完整段落和实际引用一致；不覆盖历史成绩或宣称全量语义正确率。 |
+| [RAG诊断与请求预算](quality/evaluation/results/rag-cloud-diagnostics-2026-10-25.md) | 三例trace完整，15次provider请求，运行期间无重启/数据改变。27次硬上限另有本地HTTP证明。本次未触发改写，旧失败根因和长期稳定性仍未确证。 |
 
 公开资料入口：[原始23 SKU数据包](data/retail-v1/README.md)、[数据与评测口径](quality/evaluation/README.md)。后续取舍见[求职路线](docs/project-assessment-2026-10-23.md)；历史结果保留在各阶段报告，不覆盖首次留出成绩。
 

@@ -1,5 +1,6 @@
 {
-  "status": "prepared_only_not_executed",
+  "status": "executed_once_no_extra_paid_rerun_authorized",
+  "execution": {"runId":"20261025-142414-01840242","codeCommit":"044aef81fb0fbf5c49d7a9759f5760782543bf2d","providerAttempts":15,"results":"rag-cloud-diagnostics-2026-10-25.summary.json"},
   "requiresNewPaidAuthorization": true,
   "purpose": "Inspect the existing screen-case failure with stage evidence, then test two unseen phrasings; not a new independent benchmark",
   "package": "data/retail-holdout-v2",

@@ -1,0 +1,800 @@
+{
+  "runId": "20261025-142414-01840242",
+  "date": "2026-10-25",
+  "codeCommit": "044aef81fb0fbf5c49d7a9759f5760782543bf2d",
+  "classification": "targeted exposed-source development diagnostics; not independent holdout",
+  "models": {
+    "OPENAI_MODEL": "qwen-plus",
+    "OPENAI_EMBEDDING_MODEL": "text-embedding-v4",
+    "OPENAI_RERANKER_MODEL": "qwen3-rerank"
+  },
+  "credentialSource": "D:/learn_project/ServiceFlow/.env",
+  "ruleResults": {
+    "cases": 3,
+    "passed": 3
+  },
+  "diagnosticCoverage": {
+    "status": "complete_for_required_steps",
+    "requiredSteps": [
+      "seen-screen:0",
+      "unseen-screen-wording:0",
+      "unseen-brightness-control:0"
+    ],
+    "recordedSteps": [
+      "seen-screen:0",
+      "unseen-screen-wording:0",
+      "unseen-brightness-control:0"
+    ],
+    "missingSteps": []
+  },
+  "capturedIntermediateChunks": 6,
+  "caseResults": [
+    {
+      "id": "seen-screen",
+      "rulesPassed": true,
+      "latencyMs": 4375,
+      "activeVersionIds": [
+        25
+      ],
+      "finalEvidenceSections": [
+        "display"
+      ],
+      "finalTextEqualsWholeSourceParagraphAfterProductPrefix": true,
+      "citationSupportsAnswer": true,
+      "agentSemanticReview": "supported for this question; no independent human label",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "stage": "initial.retrieval",
+          "reason": "hybrid_rrf",
+          "elapsedMs": 396.483667,
+          "degraded": false,
+          "decisions": [],
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "stage": "initial.rerank",
+          "reason": "reranker_top5",
+          "elapsedMs": 183.770869,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ]
+        },
+        {
+          "stage": "initial.grader",
+          "reason": "grader_sufficient",
+          "elapsedMs": 1513.407432,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ],
+          "sufficient": true
+        }
+      ]
+    },
+    {
+      "id": "unseen-screen-wording",
+      "rulesPassed": true,
+      "latencyMs": 3031,
+      "activeVersionIds": [
+        25
+      ],
+      "finalEvidenceSections": [
+        "display"
+      ],
+      "finalTextEqualsWholeSourceParagraphAfterProductPrefix": true,
+      "citationSupportsAnswer": true,
+      "agentSemanticReview": "supported for this question; no independent human label",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "stage": "initial.retrieval",
+          "reason": "hybrid_rrf",
+          "elapsedMs": 222.318133,
+          "degraded": false,
+          "decisions": [],
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 3,
+              "section": "usb"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 4,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "stage": "initial.rerank",
+          "reason": "reranker_top5",
+          "elapsedMs": 199.796926,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 4,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 3,
+              "section": "usb"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 4,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 2,
+              "section": "box"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 3,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 5,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "stage": "initial.grader",
+          "reason": "grader_sufficient",
+          "elapsedMs": 1395.260715,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 2,
+              "section": "box"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 3,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 5,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ],
+          "sufficient": true
+        }
+      ]
+    },
+    {
+      "id": "unseen-brightness-control",
+      "rulesPassed": true,
+      "latencyMs": 2828,
+      "activeVersionIds": [
+        25
+      ],
+      "finalEvidenceSections": [
+        "brightness"
+      ],
+      "finalTextEqualsWholeSourceParagraphAfterProductPrefix": true,
+      "citationSupportsAnswer": true,
+      "agentSemanticReview": "supported for this question; no independent human label",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "stage": "initial.retrieval",
+          "reason": "hybrid_rrf",
+          "elapsedMs": 151.963673,
+          "degraded": false,
+          "decisions": [],
+          "input": [],
+          "output": [
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 1,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 2,
+              "section": "charging"
+            },
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 3,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 4,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "stage": "initial.rerank",
+          "reason": "reranker_top5",
+          "elapsedMs": 213.146582,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 2,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 3,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 4,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 1,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 2,
+              "section": "charging"
+            },
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 3,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 4,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 1,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 2,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            }
+          ]
+        },
+        {
+          "stage": "initial.grader",
+          "reason": "grader_sufficient",
+          "elapsedMs": 1409.531417,
+          "degraded": false,
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            }
+          ],
+          "input": [
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 1,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 2,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 1,
+              "section": "brightness"
+            }
+          ],
+          "sufficient": true
+        }
+      ]
+    }
+  ],
+  "runtime": {
+    "containerId": "c2c0c01d4737174f319613ede565979845d1b6bdcc10ec8e8e7f959c66e92c0a",
+    "imageId": "sha256:648f3caf3183e8de855410e878f00284e23972785f6d02c8922ba5cc473ad1ce",
+    "startedAt": "2026-10-25T06:23:22.478940312Z",
+    "restartCount": 0
+  },
+  "codeAndDataHashesUnchanged": true,
+  "activeVersionsUnchanged": true,
+  "providerBudget": {
+    "limit": 27,
+    "actualAdmittedAttempts": 15,
+    "exhausted": false,
+    "processRestarted": false,
+    "ingestion": false,
+    "automaticRetries": false,
+    "paidReruns": 0,
+    "estimatedBreakdownFromExecutedStages": {
+      "intentChat": 3,
+      "embedding": 3,
+      "rerank": 3,
+      "graderChat": 3,
+      "factSelectionChat": 3,
+      "rewriteChat": 0
+    }
+  },
+  "latencyMs": {
+    "perCase": [
+      4375,
+      3031,
+      2828
+    ],
+    "totalClientChatLatency": 10234,
+    "p50": 3031,
+    "max": 4375
+  },
+  "tokenUsage": null,
+  "currencyCost": null,
+  "usageLimitation": "Application does not retain provider usage for these streaming/custom adapters; no billing query performed.",
+  "semanticAccuracy": null,
+  "independentHumanLabels": 0,
+  "newMultiTurnCases": 0,
+  "findings": [
+    "All expected sections ranked first in initial recall, rerank and final evidence.",
+    "All three graders accepted first-pass evidence; historical rejection did not reproduce.",
+    "No rewrite path executed; this run cannot establish the cause of the earlier failure or robustness to model variation.",
+    "Screen variants produced the same complete source paragraph; brightness qualifications were preserved.",
+    "No implementation defect observed within this three-turn scope; no fix or extra paid rerun performed."
+  ],
+  "sourceVerification": {
+    "url": "https://support.apple.com/en-us/121029",
+    "section": "Display",
+    "checkedAt": "2026-10-25",
+    "method": "Primary-source review plus exact answer-to-local-paragraph and chunk-to-paragraph checks; local text is a project paraphrase."
+  },
+  "historicalScoresPreserved": {
+    "firstSourceHoldout": "12/14",
+    "previousExposedRegression": "1/2"
+  },
+  "frozenInputHashes": {
+    "data/retail-holdout-v2/README.md": "e2582bddb82038793ad8a1866ee18570735a77644670e9e0e75db8b69c113483",
+    "data/retail-holdout-v2/catalog.json": "d34b1caf87bf0c42ec391a22c7410fb0188a7e8897dec6fb545b55b07d310301",
+    "data/retail-holdout-v2/knowledge/galaxy-s24-us.md": "924a53ccb217bdcd91f59983fedcc06e4d24508990249cf6495de65775318dcb",
+    "data/retail-holdout-v2/knowledge/iphone16-us.md": "87026335b75c634f23a87714726671929f67432b085c661897adfaa830bf60f4",
+    "data/retail-holdout-v2/manifest.json": "aed546870781e5cf0e531683965634853b11a3c72e52573ecf9d3470d3789fe3",
+    "quality/evaluation/datasets/rag-diagnostics-v1.json": "ad77013fd3dc7e51ffbb11781bc236edc79ea24b159a52afd47bfb3406880738",
+    "quality/evaluation/results/rag-cloud-validation-plan-2026-10-25.json": "758d894ecdc292f9f097d1171ba42dcfd34cf8db745c23e748e2305b39b49ace"
+  },
+  "localArtifacts": "Ignored reports preserve responses, per-case completed records, all stage traces/candidates, runtime snapshots and admission timestamps; public files exclude raw responses and credentials."
+}
