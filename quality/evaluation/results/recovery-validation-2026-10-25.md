@@ -1,5 +1,7 @@
 # 取消结果不确定与重启恢复验收
 
+本报告对应37afd11f的当前页恢复检查点；后续同标签刷新/返回恢复见[刷新恢复验收](recovery-refresh-validation-2026-10-25.md)，下文保留当时验证范围。
+
 2026-10-25，隔离 `serviceflow-eval`，AI/RAG均为Demo，未调用付费模型或真实支付渠道。原基线 `f8af6c2b` 的 [GitHub CI](https://github.com/Titans23/serviceflow/actions/runs/40164330079) 已成功；这不能替代本次改动的验证。
 
 ## 先复现的故障

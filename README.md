@@ -12,7 +12,7 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 
 > 求职定位：[业务Agent执行与恢复路线](docs/project-assessment-2026-10-23.md)。后续聚焦取消→退款链的授权、确认、幂等、结果核验和故障恢复，复用既有工作流与追踪；不继续以扩商品数量、商城UI或中间件为目标。每个通过验证的进展点提交并推送，checkpoint存在不等于安全重放。
 
-> 执行恢复检查点：[丢失确认响应、动作缓存和server重启后的验收](quality/evaluation/results/recovery-validation-2026-10-25.md)。复用取消账本提供本人只读结果查询；前端缺少done时核验结果，不自动重发副作用。31项真实服务检查及2条真实后端浏览器恢复路径已验证，页面刷新后的自动恢复仍未覆盖。
+> 执行恢复检查点：[丢失确认响应、动作缓存和server重启后的验收](quality/evaluation/results/recovery-validation-2026-10-25.md)。复用取消账本提供本人只读结果查询；前端缺少done时核验结果，不自动重发副作用。后续已补[同标签刷新/返回与身份隔离恢复](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)：13项浏览器测试通过，退出/换账号清理本地标识；不宣称跨设备或整个浏览器存储失效后的恢复。
 
 ## 1. 核心能力
 

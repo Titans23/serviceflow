@@ -1,0 +1,73 @@
+{
+  "runId": "202610251333432707",
+  "baselineCommit": "37afd11ff2bd5ce7a2739600528b91649197fcf5",
+  "cloudCalls": 0,
+  "storageScope": "one sessionStorage marker, same browser tab; no credentials or answer text",
+  "cases": {
+    "committed": {
+      "passed": true,
+      "realBackend": true,
+      "confirmations": 1,
+      "reads": 2,
+      "markerCleared": true,
+      "markerSavedBeforeConfirmation": true,
+      "databaseState": "CANCELLED\t1\t1\t1"
+    },
+    "unknown": {
+      "passed": true,
+      "realBackend": true,
+      "confirmations": 1,
+      "reads": 3,
+      "markerRetained": true,
+      "chatUsable": true,
+      "databaseState": "PROCESSING\t0\t0\t0"
+    },
+    "identity": {
+      "passed": true,
+      "realBackend": true,
+      "accountChange": true,
+      "logout": true,
+      "staleMarkerSuppressed": true,
+      "confirmations": 1,
+      "reads": 1,
+      "databaseState": "PROCESSING\t0\t0\t0"
+    },
+    "invalid-storage": {
+      "passed": true,
+      "corruptWarning": true,
+      "unavailableWarning": true,
+      "sideEffects": 0,
+      "reads": 0
+    },
+    "write-failure": {
+      "passed": true,
+      "realBackend": true,
+      "persistenceClaimed": false,
+      "currentPageRecoveryAvailable": true,
+      "confirmations": 1,
+      "reads": 1,
+      "databaseState": "PROCESSING\t0\t0\t0"
+    }
+  },
+  "checks": {
+    "frontendUnit": {
+      "passed": 13,
+      "total": 13
+    },
+    "browser": {
+      "passed": 13,
+      "total": 13,
+      "liveRecovery": 7,
+      "mockUi": 6
+    },
+    "httpRecovery": {
+      "passed": 31,
+      "total": 31
+    }
+  },
+  "limitations": [
+    "Closing the tab, clearing storage, logout or account change removes this local recovery marker.",
+    "Storage fault injection targets the recovery marker; this does not establish authentication availability when all browser storage is blocked.",
+    "Backend authorization remains authoritative; cached identity is only a display and storage partition."
+  ]
+}

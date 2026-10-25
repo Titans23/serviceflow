@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import MarkdownIt from 'markdown-it'
 import { api, stream } from '../api/client'
 import { useAuthStore } from '../stores/auth'
+import {
+  clearPendingCancellation,
+  currentCancellationOwner,
+  loadPendingCancellation,
+  savePendingCancellation,
+  type PendingCancellation,
+} from '../stores/pendingCancellation'
 
 const markdown = new MarkdownIt({ html: false, breaks: true, linkify: true })
 
@@ -20,6 +27,7 @@ const auth = useAuthStore(),
   action = ref<any>(),
   unverifiedAction = ref<any>(),
   recoveredCancellation = ref<any>(),
+  recoveryStorageWarning = ref(''),
   confirmationUnknown = ref(false)
 let pendingAssistant: any
 let pendingSession = ''
@@ -88,6 +96,24 @@ async function askCandidate(candidate: any) {
 async function confirm(decision: string) {
   if (!action.value || sending.value || confirmationUnknown.value) return
   const pending = action.value
+  const sourceSession = current.value
+  const owner = currentCancellationOwner()
+  const marker: PendingCancellation | undefined =
+    decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER' && owner
+      ? {
+          version: 1,
+          owner,
+          actionId: pending.actionId,
+          orderNo: pending.orderNo,
+          sessionId: sourceSession,
+        }
+      : undefined
+  if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+    recoveryStorageWarning.value =
+      marker && savePendingCancellation(marker)
+        ? ''
+        : '无法保存待核验标识。本页仍可核验，但刷新或离开后可能无法自动恢复；请保留操作标识并查看订单。'
+  }
   sending.value = true
   followOutput.value = true
   const assistant: any = { role: 'ASSISTANT', content: '' }
@@ -102,16 +128,26 @@ async function confirm(decision: string) {
       nextTick(scroll)
     })
     if (!completed) throw new Error('确认响应未完整接收')
+    if (currentCancellationOwner() !== owner) return
     action.value = null
     if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
       assistant.order = await api(`/orders/${encodeURIComponent(pending.orderNo)}`)
+      if (marker && !clearPendingCancellation(marker))
+        recoveryStorageWarning.value =
+          '操作已完成，但待核验记录清理失败；下次可能再次只读核验，不会重复取消。'
     }
   } catch (error) {
     if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
-      unverifiedAction.value = pending
+      if (currentCancellationOwner() !== owner) return
+      unverifiedAction.value = marker || {
+        actionId: pending.actionId,
+        orderNo: pending.orderNo,
+        owner,
+        sessionId: sourceSession,
+      }
       action.value = null
       pendingAssistant = assistant
-      pendingSession = current.value
+      pendingSession = sourceSession
       assistant.content = '确认响应不完整，操作结果待核验。'
       confirmationUnknown.value = true
       await readCancellationResult()
@@ -124,13 +160,32 @@ async function confirm(decision: string) {
 }
 async function readCancellationResult() {
   if (!unverifiedAction.value || !confirmationUnknown.value) return
+  const pending = unverifiedAction.value
+  if (!pending.owner || pending.owner !== currentCancellationOwner()) {
+    unverifiedAction.value = null
+    confirmationUnknown.value = false
+    recoveredCancellation.value = null
+    return
+  }
   sending.value = true
   try {
-    const result = await api<any>(
-      `/chat/actions/${encodeURIComponent(unverifiedAction.value.actionId)}/result`,
+    const result = await api<any>(`/chat/actions/${encodeURIComponent(pending.actionId)}/result`)
+    if (
+      currentCancellationOwner() !== pending.owner ||
+      unverifiedAction.value?.actionId !== pending.actionId
     )
+      return
+    if (result.operation.requestId !== pending.actionId || result.order.orderNo !== pending.orderNo)
+      throw new Error('恢复结果与待核验标识不匹配')
     recoveredCancellation.value = result
-    if (current.value === pendingSession && messages.value.includes(pendingAssistant)) {
+    recoveryStorageWarning.value = clearPendingCancellation(pending)
+      ? ''
+      : '结果已核验，但会话存储清理失败；刷新后可能再次只读核验，不会重复取消。'
+    if (
+      pendingAssistant &&
+      current.value === pendingSession &&
+      messages.value.includes(pendingAssistant)
+    ) {
       pendingAssistant.content = '本次核验已完成，请查看订单结果卡。'
     }
     unverifiedAction.value = null
@@ -144,6 +199,27 @@ async function readCancellationResult() {
     nextTick(scroll)
   }
 }
+async function restoreCancellation() {
+  unverifiedAction.value = null
+  confirmationUnknown.value = false
+  recoveredCancellation.value = null
+  action.value = null
+  pendingAssistant = undefined
+  pendingSession = ''
+  const saved = loadPendingCancellation(currentCancellationOwner())
+  recoveryStorageWarning.value = saved.warning || ''
+  if (saved.pending) {
+    unverifiedAction.value = saved.pending
+    confirmationUnknown.value = true
+    await readCancellationResult()
+  }
+}
+watch(
+  () => auth.identity,
+  () => {
+    void restoreCancellation()
+  },
+)
 function scroll(force = false) {
   if (box.value && (force || followOutput.value)) {
     box.value.scrollTop = box.value.scrollHeight
@@ -161,6 +237,7 @@ function renderMarkdown(content: string) {
 }
 onMounted(async () => {
   await auth.ensureGuest()
+  await restoreCancellation()
   await refresh()
   if (sessions.value.length) await select(sessions.value[0].publicId)
   else await create()
@@ -184,6 +261,13 @@ onMounted(async () => {
       </div>
     </aside>
     <section class="conversation">
+      <el-alert
+        v-if="recoveryStorageWarning"
+        :title="recoveryStorageWarning"
+        type="warning"
+        :closable="false"
+        data-testid="recovery-storage-warning"
+      />
       <div ref="box" class="messages" @scroll="updateScrollIntent">
         <div v-for="(m, index) in messages" :key="m.id ?? index" :class="['message', m.role]">
           <!-- markdown-it has raw HTML disabled, so this only receives escaped/generated markup. -->
@@ -246,7 +330,11 @@ onMounted(async () => {
           <strong>取消订单 {{ unverifiedAction.orderNo }} 的结果待核验</strong>
           <p>结果待核验。操作标识：{{ unverifiedAction.actionId }}</p>
           <p>
-            查询不到不代表未执行。可继续咨询或查看订单，不会自动重发取消。刷新或离开本页前请保存操作标识。
+            查询不到不代表未执行。可继续咨询或查看订单，不会自动重发取消。
+            <span v-if="!recoveryStorageWarning"
+              >同一标签刷新或返回本页时会只读核验；退出或切换账号会清除本页记录。</span
+            >
+            <span v-else>当前存储异常，不能保证刷新后自动恢复，请保存操作标识。</span>
           </p>
           <div style="margin-top: 10px">
             <el-button type="primary" :loading="sending" @click="readCancellationResult"

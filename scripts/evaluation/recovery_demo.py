@@ -44,7 +44,8 @@ def main():
     run_id = datetime.now().strftime('%Y%m%d%H%M%S') + f'{secrets.randbelow(10000):04}'
     output = ROOT / 'quality/evaluation/reports' / ('recovery-' + run_id)
     output.mkdir(parents=True, exist_ok=False)
-    ids = ['lost-response'] if args.baseline else ['lost-response', 'concurrent', 'expired', 'rejected', 'unconfirmed', 'not-sent']
+    ids = ['lost-response'] if args.baseline else ['lost-response', 'concurrent', 'expired', 'rejected', 'unconfirmed', 'not-sent',
+        'refresh-committed', 'refresh-unknown', 'refresh-account', 'refresh-storage']
     fixture_sql, receipt = prepare({'cases': [{'id': name, 'fixture': {
         'owner': 'customer', 'orderStatus': 'PROCESSING', 'paymentStatus': 'PAID'}} for name in ids]}, run_id)
     (output / 'fixtures.sql').write_text(fixture_sql, encoding='utf-8')
