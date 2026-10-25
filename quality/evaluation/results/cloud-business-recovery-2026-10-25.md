@@ -48,3 +48,5 @@ SSE中的intent是工作流规则修正后的结果；当前没有单独保留�
 按[固定计划与命令](cloud-business-plan-2026-10-25.md)在明确获准的数据/费用范围内生成新夹具执行；不要重用本次订单或为了重跑清零预算。脚本入口为 `scripts/evaluation/cloud_business_recovery.py --allow-cloud --allow-isolated-faults`，单并发，失败不会自动扩大样本。此次证据只覆盖所列14轮措辞和故障组合，不代表生产流量、任意自然语言取消或长期模型稳定性。
 
 本批次未重启Cloud server，避免内存预算重置；此前Demo中的server重启、刷新/身份隔离浏览器验收继续[单列保留](recovery-refresh-validation-2026-10-25.md)，不拼成这次云模型浏览器或跨设备验收。没有支付渠道签名、银行到账、对账、真实资金或独立人工语义标签。历史RAG首次留出12/14、已见回归1/2和三例诊断3/3不因这次业务检查改分。
+
+后续CI在原404恢复浏览器测试出现异步等待缺口（断言reads=3时仅完成2次），已[单独记录和修复](cloud-business-ci-repair-2026-10-25.md)，新Demo夹具下31项HTTP恢复及13项浏览器实际通过。原CI失败保留，不修改或重跑本次付费云结果。

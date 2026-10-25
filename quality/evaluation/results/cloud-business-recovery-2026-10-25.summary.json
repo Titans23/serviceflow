@@ -670,5 +670,23 @@
   "preflightAndAuthenticationLatencyMs": null,
   "faultProxyClientAttempts": 1,
   "httpAccountingNote": "44 individually timed business HTTP attempts including two concurrent confirmations; plus one actuator-info preflight and four successful token acquisitions, whose separate latency was not retained. One additional loopback proxy-client attempt injects response loss.",
-  "configurationSource": "project .env; runtime and Compose provider configuration compared in memory; shell OPENAI overrides removed"
+  "configurationSource": "project .env; runtime and Compose provider configuration compared in memory; shell OPENAI overrides removed",
+  "ciFollowUp": {
+    "failedRun": "https://github.com/Titans23/serviceflow/actions/runs/40173535275",
+    "failure": "404 browser test asserted 3 completed reads before all responses completed; received 2",
+    "beforeBrowser": {
+      "passed": 9,
+      "failed": 1,
+      "notRun": 3
+    },
+    "fix": "Wait for each real GET result response and assert 404; preserve reads=3 and zero-side-effect assertions",
+    "afterLocalDemo": {
+      "httpRecoveryPassed": 31,
+      "browserPassed": 13,
+      "browserWorkers": 4,
+      "fixtureRunId": "202610251548576640"
+    },
+    "additionalPaidCalls": 0,
+    "report": "cloud-business-ci-repair-2026-10-25.md"
+  }
 }
