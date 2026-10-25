@@ -3,6 +3,7 @@ package com.serviceflow.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.observation.ObservationRegistry;
 import java.time.Duration;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +20,20 @@ public class RestClientConfiguration {
     @Primary
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     RestClient.Builder serviceFlowRestClientBuilder(
-            ObjectMapper objectMapper, ObservationRegistry observationRegistry) {
+            ObjectMapper objectMapper,
+            ObservationRegistry observationRegistry,
+            ObjectProvider<EvaluationProviderBudget> budget) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofSeconds(3));
         requestFactory.setReadTimeout(Duration.ofSeconds(20));
-        return RestClient.builder()
+        RestClient.Builder builder = RestClient.builder()
                 .requestFactory(requestFactory)
                 .messageConverters(converters -> {
                     converters.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
                     converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
                 })
                 .observationRegistry(observationRegistry);
+        budget.ifAvailable(value -> value.customize(builder));
+        return builder;
     }
 }

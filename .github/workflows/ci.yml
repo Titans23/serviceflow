@@ -30,6 +30,7 @@ jobs:
           python-version: '3.12'
       - run: python -B scripts/evaluation/eval_v2.py validate
       - run: python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/refund-sandbox-v1.json
+      - run: python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/datasets/rag-diagnostics-v1.json --package data/retail-holdout-v2
       - run: python -B -m unittest discover -s scripts/evaluation/tests
       - name: Validate public-only cloud smoke inputs without API calls
         run: |

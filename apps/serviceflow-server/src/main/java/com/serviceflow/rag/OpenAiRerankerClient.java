@@ -2,6 +2,7 @@ package com.serviceflow.rag;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serviceflow.config.EvaluationProviderBudget;
 import com.serviceflow.config.ServiceFlowProperties;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,8 +31,11 @@ public class OpenAiRerankerClient implements RerankerClient {
 
     @Autowired
     public OpenAiRerankerClient(
-            RestClient.Builder builder, ServiceFlowProperties properties, ObjectMapper objectMapper) {
-        this(builder, properties, objectMapper, true);
+            RestClient.Builder builder,
+            ServiceFlowProperties properties,
+            ObjectMapper objectMapper,
+            ObjectProvider<EvaluationProviderBudget> budget) {
+        this(builder, properties, objectMapper, budget.getIfAvailable() == null);
     }
 
     OpenAiRerankerClient(

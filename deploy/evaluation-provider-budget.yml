@@ -1,0 +1,16 @@
+# Layer on evaluation-cloud-compose.yml only after explicit paid-run authorization.
+# One server process; do not restart or scale it during the authorized run.
+services:
+  server:
+    restart: "no"
+    environment:
+      SERVICEFLOW_EVALUATION_PROVIDER_BUDGET_ENABLED: "true"
+      SERVICEFLOW_EVALUATION_PROVIDER_REQUEST_LIMIT: "27"
+      JAVA_TOOL_OPTIONS: "-Djdk.httpclient.redirects.retrylimit=1"
+      SPRING_AI_RETRY_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_CHAT_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_EMBEDDING_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_RERANKER_MAX_ATTEMPTS: "1"
+      SPRING_RABBITMQ_LISTENER_SIMPLE_AUTO_STARTUP: "false"
+      SPRING_RABBITMQ_LISTENER_DIRECT_AUTO_STARTUP: "false"
+      SERVICEFLOW_AI_HTTP1_ENABLED: "false"

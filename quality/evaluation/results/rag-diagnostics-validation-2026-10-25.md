@@ -47,4 +47,4 @@ python -B -m unittest discover -s scripts/evaluation/tests
 
 [计划文件](rag-cloud-validation-plan-2026-10-25.json)包含1个已见问题及2个未见措辞，3轮、单并发，不重新入库。拟议provider出站上限27次：意图3、embedding6、重排6、Grader6、改写3、事实选择3；失败尝试也占预算，不额外调用复核模型。
 
-当前默认Spring AI与Resilience4j均可能重试；计划要求关闭相关重试并在第28次出站前拒绝。**本计划本身尚未实现计数/停止保障，现有max-chat-turns也不是该保障，因此现在不能直接执行。** 下一独立费用边界检查点须用本地HTTP stub证明上限，再经具体数据/费用授权才能运行。这个离线检查点不改变历史云分数，也不产生新的独立语义准确率。
+当前默认Spring AI与Resilience4j均可能重试；计划要求关闭相关重试并在第28次出站前拒绝。后续[出站预算离线检查点](provider-budget-validation-2026-10-25.md)已提供隔离启动配置和真实客户端HTTP stub证明；`max-chat-turns`本身仍不是provider请求上限。实际执行仍需具体数据/费用授权。这个离线检查点不改变历史云分数，也不产生新的独立语义准确率。

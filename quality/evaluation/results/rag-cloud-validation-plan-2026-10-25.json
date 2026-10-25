@@ -3,6 +3,8 @@
   "requiresNewPaidAuthorization": true,
   "purpose": "Inspect the existing screen-case failure with stage evidence, then test two unseen phrasings; not a new independent benchmark",
   "package": "data/retail-holdout-v2",
+  "suite": "quality/evaluation/datasets/rag-diagnostics-v1.json",
+  "budgetComposeOverride": "deploy/evaluation-provider-budget.yml",
   "sku": "APPLE-IP16-US-128",
   "newIngestion": false,
   "workers": 1,
@@ -14,7 +16,7 @@
     {"id":"unseen-brightness-control","question":"户外峰值写2000尼特，可以据此承诺室内一直维持2000吗？","expectedSection":"brightness","exposure":"New wording of an already-exposed capability"}
   ],
   "proposedExternalRequestCap": 27,
-  "perProviderOperationCaps": {"intent":3,"embedding":6,"rerank":6,"grader":6,"rewrite":3,"factSelection":3},
+  "estimatedOperationRequests": {"intent":3,"embedding":6,"rerank":6,"grader":6,"rewrite":3,"factSelection":3},
   "separateReviewerCalls": 0,
   "requiredSingleAttemptOverrides": {
     "SPRING_AI_RETRY_MAX_ATTEMPTS":"1",
@@ -22,11 +24,11 @@
     "RESILIENCE4J_RETRY_INSTANCES_EMBEDDING_MAX_ATTEMPTS":"1",
     "RESILIENCE4J_RETRY_INSTANCES_RERANKER_MAX_ATTEMPTS":"1"
   },
-  "capMeaning": "Proposed cap across all provider requests, including failed attempts. Current max-chat-turns alone does not enforce it. Do not execute until retry overrides and an outbound request counter/stop at 27 are verified; a budget guard is not implemented by this plan.",
+  "capMeaning": "One isolated server JVM admits at most 27 total provider HTTP attempts, including failures, across Chat/Embedding/Reranker. The operation breakdown is an estimate, not six separate enforced caps. The executable override disables SDK/AOP/JDK automatic retries and background ingestion; the 28th attempt is rejected locally. Restarting or scaling creates another budget and is prohibited during this run. This is not a money/token cap. Offline proof does not authorize paid execution.",
   "preconditions": [
     "Explicit approval for the public/synthetic data and this request/cost scope",
     "Existing active document versions and model names recorded; no reimport, embeddings refresh, or background evaluation",
-    "Verify each retry layer is single-attempt and stop before request 28; if that cannot be enforced, leave this plan unexecuted",
+    "Use the verified budget override and Java 21 startup retry limit; keep one server process, no restart, no scaling, no other chats, ingestion or model probes",
     "Freeze code, data and these questions before the first request; do not repair against results and relabel them unseen",
     "Evaluation diagnostics enabled with ignored local directory; record stage IDs/ranks/reasons/timing and capture all candidate bodies locally"
   ],

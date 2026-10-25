@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-25",
+  "scope": "offline loopback HTTP only; no new paid calls",
+  "limit": 27,
+  "wireRequests": 27,
+  "uniqueFixtureMarkers": 27,
+  "maxReceiptsPerFixture": 1,
+  "providerComposition": {"chatStreaming": 6, "chatSynchronousSdk": 3, "embedding": 9, "reranker": 9},
+  "responseComposition": {"success": 9, "http500": 6, "dropBeforeResponse": 6, "http307": 6},
+  "startupProviderRequests": 0,
+  "redirectTargetRequests": 0,
+  "postCapAttemptsBlockedBeforeSending": 3,
+  "firstBlockedAttempt": 28,
+  "automaticRetries": {"springAi": 1, "resilienceChat": 1, "resilienceEmbedding": 1, "resilienceReranker": 1, "jdkHttpClientExchangeLimit": 1},
+  "ordinaryMode": {"budgetBean": false, "resilienceMaxAttempts": 2, "systemPropertyChanged": false},
+  "backendVerification": {"tests": 117, "passed": 112, "skippedOptionalLocalGrader": 5, "failures": 0, "errors": 0, "formatPackageCoverageGate": "passed"},
+  "composeQuietValidation": "passed",
+  "diagnosticSuite": {"cases": 3, "turns": 3, "split": "development", "validation": "passed", "cloudExecution": "not_run"},
+  "priorPythonVerificationReused": {"passed": 32, "reason": "capture tool unchanged; includes required-step coverage failures"},
+  "limitations": ["single process only; restart resets budget and is prohibited within the proposed run", "request cap is not a currency or token cap", "Java 21 JDK transport contract must be revalidated after transport/runtime changes", "no new cloud semantic score or independent holdout result"]
+}

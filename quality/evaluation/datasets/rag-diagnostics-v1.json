@@ -1,0 +1,106 @@
+{
+  "version": "serviceflow-eval-v2",
+  "origin": "project-authored",
+  "independence": "Diagnostic development regression: one exposed question and two new phrasings from an exposed source family. Not an independent holdout.",
+  "cases": [
+    {
+      "id": "seen-screen",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "否。6.12英寸是标准矩形测量值，实际可视区域更小。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unseen-screen-wording",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "display"
+      },
+      "referenceAnswer": "指按标准矩形测量的对角线；实际可视区域较小。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "我想核对6.12这个数字：它说的是矩形边界，还是所有可见像素覆盖的对角线？",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "unseen-brightness-control",
+      "principal": "customer",
+      "split": "development",
+      "sourceGroups": [
+        "iphone16-us"
+      ],
+      "expectedEvidence": {
+        "sourceId": "iphone16-us",
+        "sectionId": "brightness"
+      },
+      "referenceAnswer": "不能。2000尼特是户外峰值；不能推出室内持续亮度承诺。",
+      "steps": [
+        {
+          "type": "chat",
+          "message": "户外峰值写2000尼特，可以据此承诺室内一直维持2000吗？",
+          "productId": "{{products.APPLE-IP16-US-128}}",
+          "expect": {
+            "events": [
+              "token",
+              "done"
+            ],
+            "intent": "PRODUCT_QUERY",
+            "products": [
+              "{{products.APPLE-IP16-US-128}}"
+            ],
+            "citations": [
+              "iphone16-us.md"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
