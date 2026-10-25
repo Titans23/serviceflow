@@ -11,8 +11,8 @@ ServiceFlow 是面向作品集的电商智能客服项目，覆盖售前商品�
 | [真实模型多轮业务恢复](quality/evaluation/results/cloud-business-recovery-2026-10-25.md) | `.env`模型接入6个合成业务场景、14轮，79项检查通过；参数绑定、权限、重复请求及丢响应恢复均有数据库读回。模型负责分类，退款为沙箱。 |
 | [取消→退款与丢响应恢复](quality/evaluation/results/recovery-validation-2026-10-25.md) | 31项检查；提交后丢响应、丢动作缓存、server重启后仍可查本人结果，操作和等额退款各1条。退款为管理员沙箱，无真实资金。 |
 | [刷新与身份隔离](quality/evaluation/results/recovery-refresh-validation-2026-10-25.md) | 13项浏览器验收，区分7个真实后端恢复场景与6个mock界面场景。未知结果只读核验，不自动重发确认；不保证跨设备恢复。 |
-| [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。最新三例定向诊断3/3，完整段落和实际引用一致；不覆盖历史成绩或宣称全量语义正确率。 |
-| [RAG诊断与请求预算](quality/evaluation/results/rag-cloud-diagnostics-2026-10-25.md) | 三例trace完整，15次provider请求，运行期间无重启/数据改变。27次硬上限另有本地HTTP证明。本次未触发改写，旧失败根因和长期稳定性仍未确证。 |
+| [真实云评测与语义复核](quality/evaluation/results/cloud-final-evaluation-2026-10-25.md) | 历史开发集175/175、首次华为留出23/25；新来源首次留出12/14、已见失败回归1/2。最新开发诊断4/4场景、7轮逐项来源核对通过；历史成绩保留，不宣称全量语义正确率。 |
+| [多轮RAG与请求预算](quality/evaluation/results/rag-context-followup-2026-10-25.md) | 商品切换/代词、未知SKU边界通过；5份trace和12个候选正文完整，自然第二轮执行1次并正确保留部分回答。31/63次provider请求，无补跑；旧失败唯一原因及长期稳定性仍未确证。 |
 
 公开资料入口：[原始23 SKU数据包](data/retail-v1/README.md)、[数据与评测口径](quality/evaluation/README.md)。后续取舍见[求职路线](docs/project-assessment-2026-10-23.md)；历史结果保留在各阶段报告，不覆盖首次留出成绩。
 
@@ -341,4 +341,4 @@ powershell -ExecutionPolicy Bypass -File .\scripts\evaluation\run-evaluation.ps1
 
 > 基于Java 21、Spring Boot和LangGraph4j实现电商客服业务Agent：将订单取消拆分为身份校验、客户确认、事务执行和结果核验，使用MySQL操作账本及唯一退款请求约束副作用；在提交后丢响应、缓存丢失、服务重启和浏览器刷新等受测故障中，通过只读恢复避免自动重发取消。接入公开商品资料与云模型，实施带证据编号校验的事实回答，并分别记录规则评测、语义复核和首次留出结果。
 
-面试时明确使用了哪些框架与模型、自己实现了哪些业务约束，以及证据覆盖范围。项目使用真实公开资料和云模型，但没有生产用户流量；退款是沙箱，未接真实支付渠道。
+可选三条表述、代码证据和五个追问见[简历与面试材料](docs/portfolio/resume-project.md)。按本人实际参与和理解的部分描述贡献，如实说明AI辅助工作；仓库已有实现与测试通过不等于已核实个人独立完成。项目使用真实公开资料和云模型，但没有生产用户流量；退款是沙箱，未接真实支付渠道。

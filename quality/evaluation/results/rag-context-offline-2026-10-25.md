@@ -41,4 +41,4 @@
 
 复现入口：后端 `ProductContextFlowTest,RagRewriteDiagnosticsTest`；前端 `e2e/visitor-product-flow.spec.ts`。修复前后输出及原始失败元数据只留在忽略的reports目录。后续小规模云方案独立冻结和审核，本检查点不授权执行。
 
-已另行准备并获总控限定审核的[7轮/最多63次provider尝试方案](rag-context-followup-plan-2026-10-25.md)，包含旧屏幕题两次初始采样、SKU切换/代词、未知SKU/代词和自然二轮探针。等待最终实施CI成功后执行；不保证自然触发改写，也不通过追加运行凑覆盖。
+已另行准备并获总控限定审核的[7轮/最多63次provider尝试方案](rag-context-followup-plan-2026-10-25.md)，包含旧屏幕题两次初始采样、SKU切换/代词、未知SKU/代词和自然二轮探针。该方案在最终实施CI成功后按原范围一次执行，[结果独立列出](rag-context-followup-2026-10-25.md)：4/4场景、7轮来源核对通过，31次provider尝试，自然二轮观察到1次，没有追加运行凑覆盖。本零模型检查点自身不因此改记为真实云实验。

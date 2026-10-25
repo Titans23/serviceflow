@@ -2,7 +2,7 @@
 
 **ServiceFlow｜客服业务Agent：确认执行与未知结果恢复（Java / Spring Boot）**
 
-以下3条是当前实现的简历候选描述，可按版面选2–3条；面试时结合下方代码解释自己的实现与取舍。
+以下3条是仓库已有验证证据支持的简历候选描述，可按版面选2–3条；仅使用自己确实参与且能沿代码解释的部分。仓库实现与测试通过本身不能证明个人独立完成；对AI辅助生成、修改和定位的部分如实说明，区分自己的设计判断、代码理解和实际验证工作。
 
 - 实现订单取消的“请求→待确认→授权执行→结果核验”链路，将身份、会话和目标订单绑定到服务端动作；以订单条件更新、唯一操作账本及同事务等额退款请求约束并发和重复执行。
 - 实现确认响应不完整时的只读恢复：同标签保存身份分区的动作标识，刷新/返回时查询本人已提交结果，404保持未知；恢复过程不自动重发取消，退出或换账号清理关联线索。
@@ -13,14 +13,17 @@
 | 描述 | 代码阅读入口 | 已有运行证据 |
 | --- | --- | --- |
 | 授权、确认与幂等执行 | [待确认动作绑定](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java#L462)→[确认时检查本人并执行](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L42)→[取消事务](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L46)与[SQL约束](../../apps/serviceflow-server/src/main/resources/mapper/OrderMapper.xml#L17) | [真实模型业务报告](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)：订单A/B切换、夹带参数、并发确认及重复退款回调；[逐项摘要](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.summary.json) |
-| 未知结果只读恢复 | [本人结果查询](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L34)→[持久账本关联订单](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L104)；前端[缺少done后的处理](../../apps/serviceflow-web/src/views/ChatView.vue#L100)和[只读核验](../../apps/serviceflow-web/src/views/ChatView.vue#L161)，[身份分区标识](../../apps/serviceflow-web/src/stores/pendingCancellation.ts#L60) | [同标签刷新/身份隔离](../../quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)、[Demo响应丢失与服务重启](../../quality/evaluation/results/recovery-validation-2026-10-25.md)；本次云批次的lost-response单列在业务报告 |
+| 未知结果只读恢复 | [本人结果查询](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatActionServiceImpl.java#L34)→[持久账本关联订单](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java#L104)；前端[缺少done后的处理](../../apps/serviceflow-web/src/views/ChatView.vue#L159)和[只读核验](../../apps/serviceflow-web/src/views/ChatView.vue#L169)，[身份分区标识](../../apps/serviceflow-web/src/stores/pendingCancellation.ts#L60) | [同标签刷新/身份隔离](../../quality/evaluation/results/recovery-refresh-validation-2026-10-25.md)、[Demo响应丢失与服务重启](../../quality/evaluation/results/recovery-validation-2026-10-25.md)；本次云批次的lost-response单列在业务报告 |
 | 可复现验收与实际缺陷修复 | [固定场景](../../quality/evaluation/datasets/cloud-business-recovery-v1.json)、[运行脚本](../../scripts/evaluation/cloud_business_recovery.py)、[SSE错误映射](../../apps/serviceflow-server/src/main/java/com/serviceflow/controller/ChatController.java#L137) | [错误映射修复前后](../../quality/evaluation/results/cloud-business-error-repair-2026-10-25.md)、[CI异步等待缺口修复](../../quality/evaluation/results/cloud-business-ci-repair-2026-10-25.md)、[最新验收提交的成功CI](https://github.com/Titans23/serviceflow/actions/runs/40174356460) |
+| 可选补充：多轮商品与证据范围 | [当前商品归一化](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java)、[完整段落摘录](../../apps/serviceflow-server/src/main/java/com/serviceflow/ai/GroundedAnswerComposer.java)、[固定云验证器](../../scripts/evaluation/run_rag_followup.py) | [离线缺陷修复](../../quality/evaluation/results/rag-context-offline-2026-10-25.md)、[最新4场景/7轮开发诊断](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)：31/63次尝试，切换/代词、未知SKU边界与实际来源一致；自然二轮1次仍保留不足，没有新独立留出成绩 |
 
 ## 面试追问与回答要点
 
 **模型和项目代码分别决定什么？**
 
 云模型通过[CloudAiGateway](../../apps/serviceflow-server/src/main/java/com/serviceflow/ai/CloudAiGateway.java#L49)分类，工作流还会进行[规则修正](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java#L209)。订单参数从当前消息或会话状态提取，确认接口使用服务端动作，退款金额取数据库订单总额。本次没有单独保存原始分类输出，SSE intent是修正后结果，不能发布模型原始分类准确率或称为模型自主生成工具参数。
+
+商品回答中，模型选择当前事实编号，后端只拼接验证过的完整事实段落；范围解析、参数绑定和数值出处由代码约束。[最新RAG报告](../../quality/evaluation/results/rag-context-followup-2026-10-25.md)逐项核对来源，但不把摘录约束包装为通用Agent能力。自然二轮的屏幕段落首轮已在第1；二次重检没有得到缺失面积数字，不能声称带来召回提升或解决未知事实。
 
 **重复聊天、重复确认和重复退款回调如何处理？**
 

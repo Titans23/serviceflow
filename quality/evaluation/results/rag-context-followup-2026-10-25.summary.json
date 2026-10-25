@@ -1,0 +1,1723 @@
+{
+  "runId": "rag-followup-20261025-193953-37699b67",
+  "date": "2026-10-25",
+  "codeCommit": "4291d106c9a1b2451b273127c7f1441896fa10e1",
+  "classification": "fixed exposed-source development diagnostics; not independent holdout",
+  "models": {
+    "OPENAI_MODEL": "qwen-plus",
+    "OPENAI_RERANKER_MODEL": "qwen3-rerank",
+    "OPENAI_EMBEDDING_MODEL": "text-embedding-v4"
+  },
+  "rules": {
+    "cases": 4,
+    "passed": 4,
+    "checks": {
+      "httpStatus": {
+        "passed": 7,
+        "total": 7
+      },
+      "events": {
+        "passed": 7,
+        "total": 7
+      },
+      "noUnexpectedError": {
+        "passed": 7,
+        "total": 7
+      },
+      "intent": {
+        "passed": 7,
+        "total": 7
+      },
+      "products": {
+        "passed": 7,
+        "total": 7
+      },
+      "documentCitations": {
+        "passed": 7,
+        "total": 7
+      },
+      "json:events.meta.citations": {
+        "passed": 7,
+        "total": 7
+      },
+      "absentEvents": {
+        "passed": 2,
+        "total": 2
+      },
+      "forbiddenPhrases": {
+        "passed": 2,
+        "total": 2
+      },
+      "phraseCoverage": {
+        "passed": 1,
+        "total": 1
+      }
+    }
+  },
+  "turns": 7,
+  "multiTurnCases": 2,
+  "semanticAccuracy": null,
+  "independentHumanLabels": false,
+  "agentAdjudication": {
+    "reviewedTurns": 7,
+    "supportedResponsiveOrCorrectClarification": 7,
+    "failures": []
+  },
+  "diagnosticCoverage": {
+    "status": "complete_for_required_steps",
+    "requiredSteps": [
+      "seen-display-repeat:0",
+      "explicit-switch-pronoun:0",
+      "explicit-switch-pronoun:1",
+      "explicit-switch-pronoun:2",
+      "natural-rewrite-partial:0"
+    ],
+    "recordedSteps": [
+      "seen-display-repeat:0",
+      "explicit-switch-pronoun:0",
+      "explicit-switch-pronoun:1",
+      "explicit-switch-pronoun:2",
+      "natural-rewrite-partial:0"
+    ],
+    "missingSteps": []
+  },
+  "capturedIntermediateChunks": 12,
+  "naturalSecondPass": {
+    "status": "observed_once",
+    "case": "natural-rewrite-partial:0",
+    "initialSufficient": false,
+    "rewrittenSufficient": false,
+    "graderUsesOriginalQuestionBothPasses": true,
+    "productIds": [
+      29
+    ],
+    "activeVersionIds": [
+      25
+    ],
+    "finalEvidencePreserved": true,
+    "finalPartialAnswerAndExplicitInsufficiency": true,
+    "generalSuccessRate": null
+  },
+  "provider": {
+    "attempts": 31,
+    "cap": 63,
+    "counterComplete": true,
+    "perTurn": [
+      5,
+      5,
+      5,
+      5,
+      1,
+      1,
+      9
+    ],
+    "inferredStageCounts": {
+      "intent": 7,
+      "embedding": 6,
+      "rerank": 6,
+      "grader": 6,
+      "rewrite": 1,
+      "factSelection": 5
+    },
+    "stageCountsAreInferredNotIndependentBilling": true,
+    "failures": 0,
+    "budgetRejections": 0,
+    "notAttemptedSlots": 0,
+    "additionalCloudReruns": 0,
+    "tokenUsage": null,
+    "currencyCost": null
+  },
+  "latency": {
+    "unit": "ms",
+    "measure": "complete client chat HTTP response; not TTFT or model-only latency",
+    "samples": [
+      4828,
+      3265,
+      3078,
+      3078,
+      531,
+      656,
+      6016
+    ],
+    "p50": 3078,
+    "max": 6016,
+    "total": 21452
+  },
+  "freeze": {
+    "containerId": "dd22f7225f452af9ffd19ce4b26fbd2e0d2488288440081dbb9b4afce2ccb5a3",
+    "imageId": "sha256:e86c1ba90ba81c3a41bcdc32012dfcf3819428b0c9d49d9a1531eb8f24925645",
+    "startedAt": "2026-10-25T11:39:19.945829933Z",
+    "restartCount": 0,
+    "frozenFileCount": 116,
+    "frozenMapSha256": "3b5fd6f1c051ae409d4f387ae904d6fcbbc80c441516f7bc3c0ddae9877271db",
+    "filesUnchangedAfterRun": true,
+    "activeVersionsUnchangedAfterRun": true,
+    "versionSnapshots": 5,
+    "targetVersions": {
+      "APPLE-IP16-US-128": 25,
+      "SAMSUNG-S24-US-128": 26
+    },
+    "cloudStoppedDemoRestored": true
+  },
+  "caseResults": [
+    {
+      "case": "seen-display-repeat",
+      "step": 0,
+      "originalQuestion": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 4828,
+      "providerAttempts": 5,
+      "actualProductIds": [
+        29
+      ],
+      "citations": [
+        "iphone16-us.md"
+      ],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": "APPLE-IP16-US-128",
+      "activeVersionIds": [
+        25
+      ],
+      "answerEqualsExpectedWholeSourceParagraph": true,
+      "supportedParagraphSha256": "6b0006167245b9f21d5c9c45031ab1a02e98957912f49062440995fbadfa995e",
+      "citationSupportsAnswer": true,
+      "correctsFalsePremise": true,
+      "explicitInsufficiencyForMissingArea": false,
+      "unsupportedAreaNumber": false,
+      "semanticDisposition": "supported and responsive",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 235.862637,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [],
+          "degraded": false,
+          "stage": "initial.retrieval",
+          "queryEqualsOriginal": true,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 177.232248,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.rerank",
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ]
+        },
+        {
+          "reason": "grader_sufficient",
+          "elapsedMs": 2024.401108,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.grader",
+          "sufficient": true,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "explicit-switch-pronoun",
+      "step": 0,
+      "originalQuestion": "6.12英寸都能显示内容，连圆角都算可视区，对吗？",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 3265,
+      "providerAttempts": 5,
+      "actualProductIds": [
+        29
+      ],
+      "citations": [
+        "iphone16-us.md"
+      ],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": "APPLE-IP16-US-128",
+      "activeVersionIds": [
+        25
+      ],
+      "answerEqualsExpectedWholeSourceParagraph": true,
+      "supportedParagraphSha256": "6b0006167245b9f21d5c9c45031ab1a02e98957912f49062440995fbadfa995e",
+      "citationSupportsAnswer": true,
+      "correctsFalsePremise": true,
+      "explicitInsufficiencyForMissingArea": false,
+      "unsupportedAreaNumber": false,
+      "semanticDisposition": "supported and responsive",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 412.566958,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [],
+          "degraded": false,
+          "stage": "initial.retrieval",
+          "queryEqualsOriginal": true,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 184.205833,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.rerank",
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ]
+        },
+        {
+          "reason": "grader_sufficient",
+          "elapsedMs": 1345.417543,
+          "querySha256": "92de4d6a62001b1c87e948d02248b00b20bf8b0a3ccadc1f9a118baa3546a532",
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.grader",
+          "sufficient": true,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "explicit-switch-pronoun",
+      "step": 1,
+      "originalQuestion": "改问 SAMSUNG-S24-US-128，标称6.2英寸是否表示圆角和开孔处也都能显示？",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 3078,
+      "providerAttempts": 5,
+      "actualProductIds": [
+        30
+      ],
+      "citations": [
+        "galaxy-s24-us.md"
+      ],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": "SAMSUNG-S24-US-128",
+      "activeVersionIds": [
+        26
+      ],
+      "answerEqualsExpectedWholeSourceParagraph": true,
+      "supportedParagraphSha256": "5d2ccaf614566825a8cfe43a72f613e208a92881244a2181413f2de10056dba3",
+      "citationSupportsAnswer": true,
+      "correctsFalsePremise": true,
+      "explicitInsufficiencyForMissingArea": false,
+      "unsupportedAreaNumber": false,
+      "semanticDisposition": "supported and responsive",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 169.598842,
+          "querySha256": "ac007df3b5521db85d38291b69557cbad88747141d8ab96d1c0d8e424158b38a",
+          "decisions": [],
+          "degraded": false,
+          "stage": "initial.retrieval",
+          "queryEqualsOriginal": true,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 3,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 4,
+              "section": "scope"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 5,
+              "section": "battery"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 6,
+              "section": "storage"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 186.63538,
+          "querySha256": "ac007df3b5521db85d38291b69557cbad88747141d8ab96d1c0d8e424158b38a",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 2,
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 3,
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 4,
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 6,
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.rerank",
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 3,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 4,
+              "section": "scope"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 5,
+              "section": "battery"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 6,
+              "section": "storage"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 3,
+              "section": "storage"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 4,
+              "section": "scope"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 5,
+              "section": "zoom"
+            }
+          ]
+        },
+        {
+          "reason": "grader_sufficient",
+          "elapsedMs": 1362.023956,
+          "querySha256": "ac007df3b5521db85d38291b69557cbad88747141d8ab96d1c0d8e424158b38a",
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.grader",
+          "sufficient": true,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 3,
+              "section": "storage"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 4,
+              "section": "scope"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 5,
+              "section": "zoom"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "explicit-switch-pronoun",
+      "step": 2,
+      "originalQuestion": "那它的圆角和摄像头开孔会减少实际可视区域吗？",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 3078,
+      "providerAttempts": 5,
+      "actualProductIds": [
+        30
+      ],
+      "citations": [
+        "galaxy-s24-us.md"
+      ],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": "SAMSUNG-S24-US-128",
+      "activeVersionIds": [
+        26
+      ],
+      "answerEqualsExpectedWholeSourceParagraph": true,
+      "supportedParagraphSha256": "5d2ccaf614566825a8cfe43a72f613e208a92881244a2181413f2de10056dba3",
+      "citationSupportsAnswer": true,
+      "correctsFalsePremise": true,
+      "explicitInsufficiencyForMissingArea": false,
+      "unsupportedAreaNumber": false,
+      "semanticDisposition": "supported and responsive",
+      "rewriteExecuted": false,
+      "stages": [
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 285.373302,
+          "querySha256": "73986f83e3b17bcef1b924eb6895f1cce980a4b47197a170c7aae7f8e1b513f9",
+          "decisions": [],
+          "degraded": false,
+          "stage": "initial.retrieval",
+          "queryEqualsOriginal": true,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 1,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 2,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 3,
+              "section": "notes"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 4,
+              "section": "battery"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 5,
+              "section": "scope"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 6,
+              "section": "storage"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 175.600498,
+          "querySha256": "73986f83e3b17bcef1b924eb6895f1cce980a4b47197a170c7aae7f8e1b513f9",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 1,
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 2,
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 3,
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 4,
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 6,
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.rerank",
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 1,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 2,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 3,
+              "section": "notes"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 4,
+              "section": "battery"
+            },
+            {
+              "chunkId": "9ad0d8ec-baca-3f89-bfc9-a2d2b86b840c",
+              "rank": 5,
+              "section": "scope"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 6,
+              "section": "storage"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 3,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 4,
+              "section": "battery"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 5,
+              "section": "storage"
+            }
+          ]
+        },
+        {
+          "reason": "grader_sufficient",
+          "elapsedMs": 1408.721178,
+          "querySha256": "73986f83e3b17bcef1b924eb6895f1cce980a4b47197a170c7aae7f8e1b513f9",
+          "decisions": [
+            {
+              "reason": "retained:grader_sufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb"
+            },
+            {
+              "reason": "not_selected:grader_sufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.grader",
+          "sufficient": true,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "0e33cb41-c1ec-361f-9574-ae6828dd923b",
+              "rank": 2,
+              "section": "notes"
+            },
+            {
+              "chunkId": "2bd8d687-3fe9-3e69-9001-05450b451b33",
+              "rank": 3,
+              "section": "zoom"
+            },
+            {
+              "chunkId": "aa817f73-8c41-3563-b112-25d7b78d36fb",
+              "rank": 4,
+              "section": "battery"
+            },
+            {
+              "chunkId": "2fbcc11f-62e4-3437-860f-c0a3588d63b1",
+              "rank": 5,
+              "section": "storage"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "b736a746-4d58-33ee-b958-b53390f987ff",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "unknown-sku-no-fallback",
+      "step": 0,
+      "originalQuestion": "改问 UNKNOWN-PHONE-999 的屏幕可视面积。",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 531,
+      "providerAttempts": 1,
+      "actualProductIds": [],
+      "citations": [],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": null,
+      "noRagTrace": true,
+      "answerEqualsServerOwnedProductClarification": true,
+      "oldProductFactsAbsent": true,
+      "semanticDisposition": "correctly requests product identity; no fallback facts",
+      "stages": []
+    },
+    {
+      "case": "unknown-sku-no-fallback",
+      "step": 1,
+      "originalQuestion": "那它的圆角呢？",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 656,
+      "providerAttempts": 1,
+      "actualProductIds": [],
+      "citations": [],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": null,
+      "noRagTrace": true,
+      "answerEqualsServerOwnedProductClarification": true,
+      "oldProductFactsAbsent": true,
+      "semanticDisposition": "correctly requests product identity; no fallback facts",
+      "stages": []
+    },
+    {
+      "case": "natural-rewrite-partial",
+      "step": 0,
+      "originalQuestion": "6.12英寸把圆角全部算成可视区吗？还请给出每个圆角具体少了多少平方毫米。",
+      "rulesPassed": true,
+      "httpStatus": 200,
+      "latencyMs": 6016,
+      "providerAttempts": 9,
+      "actualProductIds": [
+        29
+      ],
+      "citations": [
+        "iphone16-us.md"
+      ],
+      "reviewer": "coding agent; deterministic whole-paragraph comparison plus source-grounded adjudication; no independent human label",
+      "expectedSku": "APPLE-IP16-US-128",
+      "activeVersionIds": [
+        25
+      ],
+      "answerEqualsExpectedWholeSourceParagraph": true,
+      "supportedParagraphSha256": "6b0006167245b9f21d5c9c45031ab1a02e98957912f49062440995fbadfa995e",
+      "citationSupportsAnswer": true,
+      "correctsFalsePremise": true,
+      "explicitInsufficiencyForMissingArea": true,
+      "unsupportedAreaNumber": false,
+      "semanticDisposition": "supported partial answer with explicit remaining insufficiency",
+      "rewriteExecuted": true,
+      "stages": [
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 226.075605,
+          "querySha256": "835efea105bc1670f2d84391f364498da731e35837680fd0f10858349300a361",
+          "decisions": [],
+          "degraded": false,
+          "stage": "initial.retrieval",
+          "queryEqualsOriginal": true,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 197.583691,
+          "querySha256": "835efea105bc1670f2d84391f364498da731e35837680fd0f10858349300a361",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 5,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.rerank",
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 5,
+              "section": "usb"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 2,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 3,
+              "section": "usb"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 5,
+              "section": "brightness"
+            }
+          ]
+        },
+        {
+          "reason": "grader_insufficient",
+          "elapsedMs": 1647.083513,
+          "querySha256": "835efea105bc1670f2d84391f364498da731e35837680fd0f10858349300a361",
+          "decisions": [
+            {
+              "reason": "retained:grader_insufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            }
+          ],
+          "degraded": false,
+          "stage": "initial.grader",
+          "sufficient": false,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 2,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 3,
+              "section": "usb"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 4,
+              "section": "charging"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 5,
+              "section": "brightness"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        },
+        {
+          "reason": "query_changed",
+          "elapsedMs": 1086.30329,
+          "querySha256": "33554b5adff6f1d60b8cd8e4097db732bf8e4590784b3e54857cbaba81118ae4",
+          "decisions": [
+            {
+              "reason": "retained:query_changed",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            }
+          ],
+          "degraded": false,
+          "stage": "rewrite",
+          "queryEqualsOriginal": false,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        },
+        {
+          "reason": "hybrid_rrf",
+          "elapsedMs": 152.327148,
+          "querySha256": "33554b5adff6f1d60b8cd8e4097db732bf8e4590784b3e54857cbaba81118ae4",
+          "decisions": [],
+          "degraded": false,
+          "stage": "rewritten.retrieval",
+          "queryEqualsOriginal": false,
+          "input": [],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 4,
+              "section": "usb"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ]
+        },
+        {
+          "reason": "reranker_top5",
+          "elapsedMs": 173.644784,
+          "querySha256": "33554b5adff6f1d60b8cd8e4097db732bf8e4590784b3e54857cbaba81118ae4",
+          "decisions": [
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 2,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 3,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:reranker_top5",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 5,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            },
+            {
+              "reason": "retained:reranker_top5",
+              "outputRank": 4,
+              "inputRank": 6,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            }
+          ],
+          "degraded": false,
+          "stage": "rewritten.rerank",
+          "queryEqualsOriginal": false,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "c3bc54a5-2cd8-3918-9a82-22591e6192e2",
+              "rank": 4,
+              "section": "usb"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 6,
+              "section": "sim"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ]
+        },
+        {
+          "reason": "grader_insufficient",
+          "elapsedMs": 1380.448328,
+          "querySha256": "835efea105bc1670f2d84391f364498da731e35837680fd0f10858349300a361",
+          "decisions": [
+            {
+              "reason": "retained:grader_insufficient",
+              "outputRank": 1,
+              "inputRank": 1,
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 2,
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 3,
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 4,
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57"
+            },
+            {
+              "reason": "not_selected:grader_insufficient",
+              "outputRank": 0,
+              "inputRank": 5,
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2"
+            }
+          ],
+          "degraded": false,
+          "stage": "rewritten.grader",
+          "sufficient": false,
+          "queryEqualsOriginal": true,
+          "input": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            },
+            {
+              "chunkId": "01fb1685-e1ef-354e-be95-4c62a2099920",
+              "rank": 2,
+              "section": "brightness"
+            },
+            {
+              "chunkId": "8114808c-bd44-3d22-b68b-9500dc157c1f",
+              "rank": 3,
+              "section": "box"
+            },
+            {
+              "chunkId": "2855e214-0b1b-3873-8d9c-e0800d1b7f57",
+              "rank": 4,
+              "section": "sim"
+            },
+            {
+              "chunkId": "e943522a-c8a3-39fb-ab80-b45b0286bab2",
+              "rank": 5,
+              "section": "charging"
+            }
+          ],
+          "output": [
+            {
+              "chunkId": "dc2c6988-e6f6-3212-9574-78564dc59c81",
+              "rank": 1,
+              "section": "display"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rawLocalDirectory": "quality/evaluation/reports/rag-followup-20261025-193953-37699b67",
+  "historicalScoresUnchanged": {
+    "newSourceHoldout": "12/14",
+    "seenFailureRegression": "1/2",
+    "priorRagDiagnostics": "3/3",
+    "businessRecovery": "6/6"
+  },
+  "implementationCi": {
+    "runId": 40189258274,
+    "conclusion": "success"
+  }
+}

@@ -6,12 +6,13 @@
 | [系统架构](architecture/system-overview.md) | 组件关系、请求链路与部署拓扑 |
 | [架构决策记录](adr/) | MVC + Virtual Threads、事实/RAG 分离、Outbox 与幂等 |
 | [故障演练](runbooks/fault-drills.md) | RabbitMQ、Reranker、订单幂等和请求恢复证据 |
-| [演示脚本](guides/demo-script.md) | 5–8 分钟项目演示流程 |
+| [演示脚本](guides/demo-script.md) | 约5分钟业务执行与恢复；使用现有云证据，不现场付费重跑 |
 | [评测 v2 与退款运行手册](guides/evaluation-and-refund.md) | 独立数据库、数据导入、多轮评测与退款沙箱验证 |
 | [A6000 后训练交接](guides/a6000-post-training-handoff.md) | 模型任务边界、数据隔离、基线与 SFT 实施计划 |
 | [Grader SFT 最终模型](../training/README.md) | 最终模型、统一命令入口、评测与恢复 |
 | [Grader SFT 代码学习指南](guides/grader-sft-learning-guide.md) | 从来源与预处理到 LoRA、checkpoint、评测和 Java 验收；练习与接续学习 |
 | [简历项目描述](portfolio/resume-project.md) | 可追溯的简历和面试表述 |
+| [最新多轮RAG开发诊断](../quality/evaluation/results/rag-context-followup-2026-10-25.md) | 4场景/7轮、31次provider尝试，商品范围与自然二轮的实际来源裁决 |
 | [原始需求与强化计划](requirements/original-plan.md) | 项目范围和历史设计输入 |
 
 README 负责快速启动；本目录负责设计、运行和项目证据，不放置构建产物或环境密钥。
