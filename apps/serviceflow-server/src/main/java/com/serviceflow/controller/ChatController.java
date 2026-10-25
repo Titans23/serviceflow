@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.serviceflow.infrastructure.redis.GuestRateLimiter;
 import com.serviceflow.model.ChatModels;
+import com.serviceflow.model.OrderModels;
 import com.serviceflow.security.CurrentPrincipal;
 import com.serviceflow.service.ChatActionService;
 import com.serviceflow.service.ChatService;
@@ -88,6 +89,11 @@ public final class ChatController {
 
         // 返回 emitter 后 HTTP 响应不会立刻结束，后续事件仍可由虚拟线程写入。
         return emitter;
+    }
+
+    @GetMapping("/actions/{actionId}/result")
+    OrderModels.CancellationResult actionResult(@PathVariable String actionId, Authentication authentication) {
+        return actions.result(CurrentPrincipal.from(authentication), actionId);
     }
 
     @PostMapping(value = "/actions/{actionId}/confirm", produces = "text/event-stream")

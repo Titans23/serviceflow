@@ -17,7 +17,12 @@ const auth = useAuthStore(),
   sending = ref(false),
   box = ref<HTMLElement>(),
   followOutput = ref(true),
-  action = ref<any>()
+  action = ref<any>(),
+  unverifiedAction = ref<any>(),
+  recoveredCancellation = ref<any>(),
+  confirmationUnknown = ref(false)
+let pendingAssistant: any
+let pendingSession = ''
 const productId = route.query.productId ? Number(route.query.productId) : undefined
 async function refresh() {
   sessions.value = await api('/chat/sessions')
@@ -81,27 +86,62 @@ async function askCandidate(candidate: any) {
   await send()
 }
 async function confirm(decision: string) {
-  if (!action.value || sending.value) return
+  if (!action.value || sending.value || confirmationUnknown.value) return
   const pending = action.value
   sending.value = true
   followOutput.value = true
   const assistant: any = { role: 'ASSISTANT', content: '' }
   messages.value.push(assistant)
+  let completed = false
   try {
     await stream(`/chat/actions/${pending.actionId}/confirm`, { decision }, (name, data) => {
       if (name === 'token') assistant.content += data
       if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
       if (name === 'error') throw new Error(data.message)
+      if (name === 'done') completed = true
       nextTick(scroll)
     })
+    if (!completed) throw new Error('确认响应未完整接收')
     action.value = null
     if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
       assistant.order = await api(`/orders/${encodeURIComponent(pending.orderNo)}`)
     }
   } catch (error) {
-    ElMessage.error(error instanceof Error ? error.message : '确认操作失败')
+    if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+      unverifiedAction.value = pending
+      action.value = null
+      pendingAssistant = assistant
+      pendingSession = current.value
+      assistant.content = '确认响应不完整，操作结果待核验。'
+      confirmationUnknown.value = true
+      await readCancellationResult()
+    } else {
+      ElMessage.error(error instanceof Error ? error.message : '确认操作失败')
+    }
   } finally {
     sending.value = false
+  }
+}
+async function readCancellationResult() {
+  if (!unverifiedAction.value || !confirmationUnknown.value) return
+  sending.value = true
+  try {
+    const result = await api<any>(
+      `/chat/actions/${encodeURIComponent(unverifiedAction.value.actionId)}/result`,
+    )
+    recoveredCancellation.value = result
+    if (current.value === pendingSession && messages.value.includes(pendingAssistant)) {
+      pendingAssistant.content = '本次核验已完成，请查看订单结果卡。'
+    }
+    unverifiedAction.value = null
+    confirmationUnknown.value = false
+    pendingAssistant = undefined
+    pendingSession = ''
+  } catch {
+    ElMessage.warning('结果尚未核实，查询不到不代表未执行。请再次核验，不要重新提交取消。')
+  } finally {
+    sending.value = false
+    nextTick(scroll)
   }
 }
 function scroll(force = false) {
@@ -185,15 +225,53 @@ onMounted(async () => {
           <el-card v-if="m.order" shadow="never"
             ><strong>订单 {{ m.order.orderNo }}</strong>
             <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p>
-            <router-link :to="{ path: '/orders', query: { orderNo: m.order.orderNo } }">查看订单与退款进度</router-link></el-card
+            <router-link :to="{ path: '/orders', query: { orderNo: m.order.orderNo } }"
+              >查看订单与退款进度</router-link
+            ></el-card
           >
           <div v-if="m.citations?.length" class="muted">引用：{{ m.citations.join('、') }}</div>
         </div>
+        <div v-if="recoveredCancellation" class="action-card" data-testid="cancellation-result">
+          <strong>已核验操作结果：{{ recoveredCancellation.operation.resultMessage }}</strong>
+          <p>
+            订单 {{ recoveredCancellation.order.orderNo }} · 状态
+            {{ recoveredCancellation.order.status }}
+          </p>
+          <router-link
+            :to="{ path: '/orders', query: { orderNo: recoveredCancellation.order.orderNo } }"
+            >查看核验订单详情</router-link
+          >
+        </div>
+        <div v-if="unverifiedAction" class="action-card">
+          <strong>取消订单 {{ unverifiedAction.orderNo }} 的结果待核验</strong>
+          <p>结果待核验。操作标识：{{ unverifiedAction.actionId }}</p>
+          <p>
+            查询不到不代表未执行。可继续咨询或查看订单，不会自动重发取消。刷新或离开本页前请保存操作标识。
+          </p>
+          <div style="margin-top: 10px">
+            <el-button type="primary" :loading="sending" @click="readCancellationResult"
+              >再次核验结果</el-button
+            >
+            <router-link
+              :to="{ path: '/orders', query: { orderNo: unverifiedAction.orderNo } }"
+              target="_blank"
+              rel="noopener"
+              >查看订单状态</router-link
+            >
+          </div>
+        </div>
         <div v-if="action" class="action-card">
           <strong>{{ action.message }}</strong>
+          <p v-if="confirmationUnknown">请先核验上一次取消结果，再确认新的操作。</p>
           <div style="margin-top: 10px">
-            <el-button type="primary" :disabled="sending" @click="confirm('CONFIRM')">确认</el-button
-            ><el-button :disabled="sending" @click="confirm('REJECT')">取消</el-button>
+            <el-button
+              type="primary"
+              :disabled="sending || confirmationUnknown"
+              @click="confirm('CONFIRM')"
+              >确认</el-button
+            ><el-button :disabled="sending || confirmationUnknown" @click="confirm('REJECT')"
+              >取消</el-button
+            >
           </div>
         </div>
       </div>

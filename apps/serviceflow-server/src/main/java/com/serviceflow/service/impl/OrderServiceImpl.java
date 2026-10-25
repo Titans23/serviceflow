@@ -44,20 +44,25 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public OrderModels.Operation cancel(String orderNo, long customerId, String requestId) {
-        // 快速幂等判断：同一个 requestId 已经处理过时，直接返回第一次保存的结果，避免重复查单和写库。
+        // An idempotency key is not authorization: bind the caller and target before returning any result.
+        OrderModels.Order order = owned(orderNo, customerId);
         OrderModels.Operation existing = mapper.findOperation(requestId);
         if (existing != null) {
+            if (!orderNo.equals(mapper.findOwnedOperationOrderNo(requestId, customerId))) {
+                throw new ResponseStatusException(NOT_FOUND, "未找到可访问的已提交操作结果");
+            }
             return existing;
         }
-
-        // orderNo 和 customerId 必须同时匹配，既取得订单，也防止当前用户操作别人的订单。
-        OrderModels.Order order = owned(orderNo, customerId);
 
         // 真正的并发幂等控制：order_operation.request_id 有唯一约束。
         // 插入成功（1）表示当前请求取得执行权；返回 0 表示相同 requestId 已被另一个请求占用。
         if (mapper.reserveOperation(requestId, order.id()) == 0) {
             // 另一个事务已提交，但本事务的普通一致性读仍可能看不到它；使用当前读获取最终结果。
-            return mapper.findLatestOperation(requestId);
+            OrderModels.Operation result = mapper.findLatestOperation(requestId, order.id());
+            if (result == null) {
+                throw new ResponseStatusException(NOT_FOUND, "未找到可访问的已提交操作结果");
+            }
+            return result;
         }
 
         // 幂等键只能阻止“同一个 requestId”重复执行；不同 requestId 仍要依靠订单状态阻止重复取消。
@@ -92,6 +97,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean canCancel(String orderNo, long customerId) {
         return CANCELLABLE.contains(owned(orderNo, customerId).status());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderModels.CancellationResult cancellationResult(String requestId, long customerId) {
+        String orderNo = mapper.findOwnedOperationOrderNo(requestId, customerId);
+        if (orderNo == null) {
+            // The transaction may still be in flight; a missing result does not prove that no operation ran.
+            throw new ResponseStatusException(NOT_FOUND, "未找到可访问的已提交操作结果");
+        }
+        return new OrderModels.CancellationResult(mapper.findOperation(requestId), get(orderNo, customerId));
     }
 
     private OrderModels.Order owned(String orderNo, long customerId) {

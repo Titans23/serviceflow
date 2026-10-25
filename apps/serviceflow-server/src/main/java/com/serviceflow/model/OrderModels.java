@@ -34,4 +34,6 @@ public final class OrderModels {
             RefundModels.RefundView refund) {}
 
     public record Operation(String requestId, String resultCode, String resultMessage) {}
+
+    public record CancellationResult(Operation operation, OrderView order) {}
 }

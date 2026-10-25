@@ -228,6 +228,54 @@ class ServiceFlowIntegrationIT {
         assertThat(orders.get(orderNo, 1).refund().status()).isEqualTo("PROCESSING");
     }
 
+    @Test
+    void committedOperationIsBoundToItsCustomerAndTargetOrder() {
+        String first = newOrder("PAID");
+        String second = newOrder("PAID");
+        String third = newOrder("PAID");
+        String email = UUID.randomUUID() + "@example.invalid";
+        jdbc.update("INSERT INTO customer(name,email) VALUES ('Recovery isolation fixture',?)", email);
+        long otherCustomer = jdbc.queryForObject("SELECT id FROM customer WHERE email=?", Long.class, email);
+        jdbc.update("UPDATE customer_order SET customer_id=? WHERE order_no=?", otherCustomer, third);
+        String key = UUID.randomUUID().toString();
+        orders.cancel(first, 1, key);
+        assertThat(orders.cancellationResult(key, 1).order().orderNo()).isEqualTo(first);
+        assertThatThrownBy(() -> orders.cancellationResult(key, otherCustomer))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> orders.cancel(first, otherCustomer, key))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> orders.cancel(second, 1, key))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> orders.cancel(third, otherCustomer, key))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(orders.get(third, otherCustomer).status()).isEqualTo("PAID");
+        assertThat(orders.get(third, otherCustomer).refund()).isNull();
+        assertThat(orders.get(second, 1).status()).isEqualTo("PAID");
+        assertThat(orders.get(second, 1).refund()).isNull();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM order_operation WHERE request_id=?", Integer.class, key))
+                .isEqualTo(1);
+    }
+
+    @Test
+    void staleSnapshotCollisionCannotReplayAResultForAnotherOrder() {
+        String first = newOrder("PAID");
+        String second = newOrder("PAID");
+        String key = UUID.randomUUID().toString();
+        TransactionTemplate stale = new TransactionTemplate(transactions);
+        stale.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+        TransactionTemplate winner = new TransactionTemplate(transactions);
+        winner.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        assertThatThrownBy(() -> stale.execute(status -> {
+                    assertThat(orderMapper.findOperation(key)).isNull();
+                    winner.execute(ignored -> orders.cancel(first, 1, key));
+                    return orders.cancel(second, 1, key);
+                }))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(orders.get(second, 1).status()).isEqualTo("PAID");
+        assertThat(orders.get(second, 1).refund()).isNull();
+        assertThat(orders.cancellationResult(key, 1).order().orderNo()).isEqualTo(first);
+    }
+
     private String newOrder(String paymentStatus) {
         String orderNo = "SF"
                 + String.format(

@@ -1,0 +1,25 @@
+{
+  "realBackendBrowserCases": [
+    {
+      "realBackend": true,
+      "injectedFault": "terminal done removed after real commit; first read connection fails",
+      "confirmationRequests": 1,
+      "resultReads": 2,
+      "databaseState": "CANCELLED\t1\tPROCESSING\t1\t1",
+      "automaticSideEffectRetries": 0,
+      "passed": true,
+      "refreshPersistence": "not covered"
+    },
+    {
+      "realBackend": true,
+      "confirmationRequests": 1,
+      "resultHttpStatus": 404,
+      "automaticSideEffectRetries": 0,
+      "chatRemainsUsable": true,
+      "databaseState": "PROCESSING\t0\t0",
+      "passed": true
+    }
+  ],
+  "runId": "202610251317506867",
+  "cloudCalls": 0
+}

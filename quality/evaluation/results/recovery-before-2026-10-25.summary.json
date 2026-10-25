@@ -1,0 +1,69 @@
+{
+  "runId": "202610251312500810",
+  "baseline": true,
+  "mode": "demo",
+  "cloudCalls": 0,
+  "realServices": [
+    "HTTP",
+    "MySQL",
+    "Redis"
+  ],
+  "faults": [
+    "drop HTTP response after upstream commit",
+    "delete exact synthetic Redis action key",
+    "restart eval server"
+  ],
+  "checks": [
+    {
+      "name": "lost-response: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "HTTP client received no confirmation response",
+      "passed": true
+    },
+    {
+      "name": "upstream committed cancellation",
+      "passed": true
+    },
+    {
+      "name": "one cancellation and one equal-amount refund",
+      "passed": true
+    },
+    {
+      "name": "evict only synthetic action",
+      "passed": true
+    },
+    {
+      "name": "server process restarted",
+      "passed": true
+    },
+    {
+      "name": "baseline has no durable result route",
+      "passed": true
+    },
+    {
+      "name": "baseline duplicate confirmation cannot recover result",
+      "passed": true
+    },
+    {
+      "name": "committed business state survives",
+      "passed": true
+    }
+  ],
+  "states": {
+    "lost-response": {
+      "order": "CANCELLED",
+      "version": "1",
+      "payment": "PAID",
+      "refund": "PROCESSING",
+      "amount": "99.00",
+      "operations": "1",
+      "refundRequests": "1",
+      "refundAmount": "99.00",
+      "events": "0"
+    }
+  },
+  "resultHttpStatus": 500,
+  "paymentScope": "sandbox; no real funds"
+}

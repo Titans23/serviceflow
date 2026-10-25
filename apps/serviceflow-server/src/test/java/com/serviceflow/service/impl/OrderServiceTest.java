@@ -26,9 +26,11 @@ class OrderServiceTest {
     void returnsExistingOperationWithoutRepeatingSideEffects() {
         var existing = new OrderModels.Operation("request-1", "CANCELLED", "已取消");
         when(mapper.findOperation("request-1")).thenReturn(existing);
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("CANCELLED"));
+        when(mapper.findOwnedOperationOrderNo("request-1", 7L)).thenReturn("SF-1001");
 
         assertThat(service.cancel("SF-1001", 7L, "request-1")).isSameAs(existing);
-        verify(mapper, never()).findOwned(anyString(), anyLong());
+        verify(mapper).findOwned("SF-1001", 7L);
         verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
     }
 
@@ -103,11 +105,11 @@ class OrderServiceTest {
     void handlesOperationReservationRaceAndCancelEligibility() {
         var reservedByOther = new OrderModels.Operation("request-5", "CANCELLED", "已取消");
         when(mapper.findOperation("request-5")).thenReturn(null);
-        when(mapper.findLatestOperation("request-5")).thenReturn(reservedByOther);
+        when(mapper.findLatestOperation("request-5", 10L)).thenReturn(reservedByOther);
         when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("CREATED"));
         when(mapper.reserveOperation("request-5", 10L)).thenReturn(0);
         assertThat(service.cancel("SF-1001", 7L, "request-5")).isSameAs(reservedByOther);
-        verify(mapper).findLatestOperation("request-5");
+        verify(mapper).findLatestOperation("request-5", 10L);
         verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
         verify(mapper, never()).startRefund(anyLong());
 
@@ -162,6 +164,41 @@ class OrderServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("支付退款状态异常");
         verify(mapper, never()).completeOperation(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void existingKeyCannotBypassCustomerOrTargetBinding() {
+        var existing = new OrderModels.Operation("bound-key", "CANCELLED", "已取消");
+        when(mapper.findOperation("bound-key")).thenReturn(existing);
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("PAID"));
+        when(mapper.findOwnedOperationOrderNo("bound-key", 7L)).thenReturn("ANOTHER-ORDER");
+        assertThatThrownBy(() -> service.cancel("SF-1001", 7L, "bound-key"))
+                .isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.cancel("SF-1001", 8L, "bound-key"))
+                .isInstanceOf(ResponseStatusException.class);
+        verify(mapper, never()).reserveOperation(anyString(), anyLong());
+        verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
+    }
+
+    @Test
+    void reservationCollisionForAnotherOrderCannotReplayItsResult() {
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("PAID"));
+        when(mapper.reserveOperation("collision", 10L)).thenReturn(0);
+        when(mapper.findLatestOperation("collision", 10L)).thenReturn(null);
+        assertThatThrownBy(() -> service.cancel("SF-1001", 7L, "collision"))
+                .isInstanceOf(ResponseStatusException.class);
+        verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
+    }
+
+    @Test
+    void recoveryReadsCommittedResultWithoutWritingOrConfirming() {
+        when(mapper.findOwnedOperationOrderNo("completed", 7L)).thenReturn("SF-1001");
+        when(mapper.findOperation("completed")).thenReturn(new OrderModels.Operation("completed", "CANCELLED", "已取消"));
+        when(mapper.findOwned("SF-1001", 7L)).thenReturn(order("CANCELLED"));
+        assertThat(service.cancellationResult("completed", 7L).order().status()).isEqualTo("CANCELLED");
+        assertThatThrownBy(() -> service.cancellationResult("missing", 7L)).isInstanceOf(ResponseStatusException.class);
+        verify(mapper, never()).reserveOperation(anyString(), anyLong());
+        verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
     }
 
     private OrderModels.Order order(String status) {

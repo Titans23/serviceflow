@@ -7,5 +7,7 @@ public interface OrderService {
 
     OrderModels.Operation cancel(String orderNo, long customerId, String requestId);
 
+    OrderModels.CancellationResult cancellationResult(String requestId, long customerId);
+
     boolean canCancel(String orderNo, long customerId);
 }

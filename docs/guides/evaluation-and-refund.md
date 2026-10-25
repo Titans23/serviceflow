@@ -137,3 +137,32 @@ python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/reports/c
 ```
 
 本次云环境使用 Milvus 官方单机内置 etcd / 本地存储模式，免去外置 MinIO；没有迁移或替换主 Compose 的既有向量存储数据。各运行的输入和报告摘要保留 SHA-256，原始回答只存本机。
+
+## 8. 取消结果不确定与只读恢复（不调用云模型）
+
+`POST /api/chat/actions/{actionId}/confirm` 仍要求本人、未过期的待确认动作和显式确认。事务成功提交后，`order_operation`、订单/支付状态和唯一退款请求是执行事实；Redis缓存不是提交结果的唯一载体。
+
+新增 `GET /api/chat/actions/{actionId}/result` 只读查询，返回 `operation` 原结果及 `order` 当前状态（含退款进度）。仅登录客户可用；SQL通过操作→订单→客户关系检查所有者。游客/管理员403；其他客户、无已提交结果或未确认/拒绝/过期未执行的动作404。**404只表示当前没有可访问的已提交结果，不能据此判定未执行，更不能自动重发取消。** 查询接口不会确认动作、创建退款或重试退款。
+
+取消确认的浏览器路径必须收到终止 `done`；连接错误或提前EOF时保留动作标识，进入待核验状态并进行一次只读查询。查询失败或404时可明确再次查询、继续其他咨询或在新标签查看订单。未知结果期间暂缓新的确认，避免覆盖未核验动作；没有自动副作用重试。跨会话核验结果放在关联订单的独立结果卡，不插入其他会话消息。
+
+当前边界：待核验标识在当前页面组件内保留，尚未实现刷新、关闭标签或重新登录后的自动恢复。离开前应保存标识，可使用已授权的结果API查询；“当前页面恢复”不能表述成完整客户端灾难恢复。退款仍是沙箱，不涉及支付渠道超时查询、签名或对账。
+
+复现故障→恢复（会新增独立合成客户/订单，只删除这些动作的Redis键并重启评测server；不清空数据库或Redis）：
+
+```powershell
+$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+& $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
+python -u -B scripts/evaluation/recovery_demo.py --docker $docker --allow-isolated-faults
+# 将下面路径替换为上一步输出目录中的 fixtures.json；每次浏览器复测使用新生成的夹具。
+$env:RECOVERY_FIXTURES = 'D:\learn_project\ServiceFlow\quality\evaluation\reports\recovery-<runId>\fixtures.json'
+$env:DOCKER_BIN = $docker
+$env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:15173'
+Push-Location apps/serviceflow-web
+npx.cmd playwright test e2e/recovery-live.spec.ts --workers=1
+Pop-Location
+```
+
+`recovery_demo.py` 的代理先接收真实后端提交后的响应，再断开下游连接，证明客户端未获结果而数据库已提交；随后丢失该动作缓存并实际重启server。它验证所有者查询、游客/其他客户拒绝、未确认/拒绝/过期不执行、同动作并发确认、重复回调和最终状态金额。`--baseline` 只用于未修复版本复现原缺口，不能对新版本期望失败。
+
+两个浏览器验收分别覆盖：真实提交后移除done且首次查询断网，手动再查走真实API；确认请求未到服务端且真实查询404，保留未知状态并可继续咨询。均从MySQL读回操作/退款计数，不能用全部API mock替代。浏览器trace/截图关闭，避免将测试登录令牌放入产物。未设置 `RECOVERY_FIXTURES` 时这两个用例明确跳过；CI会先生成夹具再实际执行。

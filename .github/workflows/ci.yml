@@ -133,6 +133,12 @@ jobs:
           echo "REFUND_FIXTURES=${fixture%.sql}.json" >> "$GITHUB_ENV"
       - name: Verify cancellation and refund over real HTTP and database
         run: python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/datasets/refund-sandbox-v1.json --fixtures "$REFUND_FIXTURES" --mode demo
+      - name: Verify response loss, action-cache eviction and server restart
+        run: |
+          python -B scripts/evaluation/recovery_demo.py --allow-isolated-faults
+          fixture=$(find quality/evaluation/reports -path '*/recovery-*/fixtures.json' -print -quit)
+          test -n "$fixture"
+          echo "RECOVERY_FIXTURES=$(realpath "$fixture")" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

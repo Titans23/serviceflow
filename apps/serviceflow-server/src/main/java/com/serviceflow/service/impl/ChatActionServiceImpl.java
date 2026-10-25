@@ -31,6 +31,14 @@ public final class ChatActionServiceImpl implements ChatActionService {
     }
 
     @Override
+    public OrderModels.CancellationResult result(CurrentPrincipal principal, String actionId) {
+        if (!"CUSTOMER".equals(principal.role())) {
+            throw new ResponseStatusException(FORBIDDEN, "该操作需要登录客户账号");
+        }
+        return orders.cancellationResult(actionId, principal.requireCustomerId());
+    }
+
+    @Override
     public void confirm(CurrentPrincipal principal, String actionId, String decision, SseEmitter emitter) {
         if (principal.guest()) {
             throw new ResponseStatusException(FORBIDDEN, "访客不能执行该操作");

@@ -1,0 +1,212 @@
+{
+  "runId": "202610251317506867",
+  "baseline": false,
+  "mode": "demo",
+  "cloudCalls": 0,
+  "realServices": [
+    "HTTP",
+    "MySQL",
+    "Redis"
+  ],
+  "faults": [
+    "drop HTTP response after upstream commit",
+    "delete exact synthetic Redis action key",
+    "restart eval server"
+  ],
+  "checks": [
+    {
+      "name": "lost-response: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "HTTP client received no confirmation response",
+      "passed": true
+    },
+    {
+      "name": "upstream committed cancellation",
+      "passed": true
+    },
+    {
+      "name": "one cancellation and one equal-amount refund",
+      "passed": true
+    },
+    {
+      "name": "evict only synthetic action",
+      "passed": true
+    },
+    {
+      "name": "server process restarted",
+      "passed": true
+    },
+    {
+      "name": "owner recovers committed operation and current state",
+      "passed": true
+    },
+    {
+      "name": "other: cannot read recovered result",
+      "passed": true
+    },
+    {
+      "name": "guest: cannot read recovered result",
+      "passed": true
+    },
+    {
+      "name": "admin: cannot read recovered result",
+      "passed": true
+    },
+    {
+      "name": "read recovery repeats without side effects",
+      "passed": true
+    },
+    {
+      "name": "other: cannot execute missing action",
+      "passed": true
+    },
+    {
+      "name": "guest: cannot execute missing action",
+      "passed": true
+    },
+    {
+      "name": "admin: cannot execute missing action",
+      "passed": true
+    },
+    {
+      "name": "unauthorized attempts changed nothing",
+      "passed": true
+    },
+    {
+      "name": "unconfirmed: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "unconfirmed: read cannot initiate execution",
+      "passed": true
+    },
+    {
+      "name": "expired: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "evict only synthetic action",
+      "passed": true
+    },
+    {
+      "name": "expired: read cannot initiate execution",
+      "passed": true
+    },
+    {
+      "name": "expired: stale confirmation is not executable",
+      "passed": true
+    },
+    {
+      "name": "rejected: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "rejected: read cannot initiate execution",
+      "passed": true
+    },
+    {
+      "name": "rejected: stale confirmation is not executable",
+      "passed": true
+    },
+    {
+      "name": "concurrent: confirmation required, no side effect",
+      "passed": true
+    },
+    {
+      "name": "other customer cannot confirm pending action",
+      "passed": true
+    },
+    {
+      "name": "concurrent same-action confirmations return one result",
+      "passed": true
+    },
+    {
+      "name": "concurrent calls create only one operation/refund",
+      "passed": true
+    },
+    {
+      "name": "sandbox refund completes",
+      "passed": true
+    },
+    {
+      "name": "duplicate callback remains idempotent",
+      "passed": true
+    },
+    {
+      "name": "recovery reflects final refund without re-executing",
+      "passed": true
+    }
+  ],
+  "states": {
+    "lost-response": {
+      "order": "CANCELLED",
+      "version": "1",
+      "payment": "PAID",
+      "refund": "REFUNDED",
+      "amount": "99.00",
+      "operations": "1",
+      "refundRequests": "1",
+      "refundAmount": "99.00",
+      "events": "1"
+    },
+    "concurrent": {
+      "order": "CANCELLED",
+      "version": "1",
+      "payment": "PAID",
+      "refund": "PROCESSING",
+      "amount": "99.00",
+      "operations": "1",
+      "refundRequests": "1",
+      "refundAmount": "99.00",
+      "events": "0"
+    },
+    "expired": {
+      "order": "PROCESSING",
+      "version": "0",
+      "payment": "PAID",
+      "refund": "NONE",
+      "amount": "99.00",
+      "operations": "0",
+      "refundRequests": "0",
+      "refundAmount": "0.00",
+      "events": "0"
+    },
+    "rejected": {
+      "order": "PROCESSING",
+      "version": "0",
+      "payment": "PAID",
+      "refund": "NONE",
+      "amount": "99.00",
+      "operations": "0",
+      "refundRequests": "0",
+      "refundAmount": "0.00",
+      "events": "0"
+    },
+    "unconfirmed": {
+      "order": "PROCESSING",
+      "version": "0",
+      "payment": "PAID",
+      "refund": "NONE",
+      "amount": "99.00",
+      "operations": "0",
+      "refundRequests": "0",
+      "refundAmount": "0.00",
+      "events": "0"
+    },
+    "not-sent": {
+      "order": "PROCESSING",
+      "version": "0",
+      "payment": "PAID",
+      "refund": "NONE",
+      "amount": "99.00",
+      "operations": "0",
+      "refundRequests": "0",
+      "refundAmount": "0.00",
+      "events": "0"
+    }
+  },
+  "resultHttpStatus": 200,
+  "paymentScope": "sandbox; no real funds"
+}
