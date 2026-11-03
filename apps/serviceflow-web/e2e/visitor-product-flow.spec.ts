@@ -25,12 +25,19 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('visitor browses a product and opens consultation', async ({ page }) => {
+  await page.route('**/api/chat/sessions', (route) =>
+    route.fulfill({
+      json: route.request().method() === 'POST' ? { publicId: 'new', title: '商品咨询' } : [],
+    }),
+  )
+  await page.route('**/api/chat/sessions/new/messages', (route) => route.fulfill({ json: [] }))
   await page.goto('/products')
   await expect(page.getByText('华为 Pura 80')).toBeVisible()
   await page.getByRole('link', { name: '查看详情' }).click()
   await expect(page.getByText('PURA80')).toBeVisible()
   await page.getByRole('link', { name: '咨询此商品' }).click()
   await expect(page).toHaveURL(/\/chat\?productId=1/)
+  await expect(page.locator('.session.active')).toHaveText('商品咨询')
 })
 
 test('guest is redirected away from admin routes', async ({ page }) => {
@@ -90,20 +97,25 @@ for (const policyFirst of [false, true]) {
   })
 }
 
-test('unsent page hint is cleared when the customer selects another historical session', async ({
+test('product entry creates its own focused session and leaves history unchanged', async ({
   page,
 }) => {
   const payloads: any[] = []
+  const history = [{ publicId: 'other-session', title: '另一段历史会话' }]
+  let created = 0
   await page.route('**/api/chat/sessions', async (route) => {
-    await route.fulfill({
-      json: [
-        { publicId: 'initial-session', title: '入口自动选择' },
-        { publicId: 'other-session', title: '另一段历史会话' },
-      ],
-    })
+    if (route.request().method() === 'POST') {
+      const session = { publicId: `fresh-${++created}`, title: '商品咨询' }
+      history.unshift(session)
+      await route.fulfill({ json: session })
+    } else await route.fulfill({ json: history })
   })
   await page.route('**/api/chat/sessions/*/messages', async (route) => {
-    await route.fulfill({ json: [] })
+    await route.fulfill({
+      json: route.request().url().includes('/other-session/')
+        ? [{ role: 'USER', content: '以前的问题' }]
+        : [],
+    })
   })
   await page.route('**/api/chat/sessions/other-session/messages/stream', async (route) => {
     payloads.push(route.request().postDataJSON())
@@ -114,15 +126,34 @@ test('unsent page hint is cleared when the customer selects another historical s
         'event: token\ndata: 当前历史会话商品\n\nevent: done\ndata: {}\n\n',
     })
   })
-  await page.goto('/chat?productId=1')
-  await expect(page.locator('.session.active')).toHaveText('入口自动选择')
+  await page.goto('/products/1')
+  await page.getByRole('link', { name: '咨询此商品' }).click()
+  await expect(page.locator('.session.active')).toHaveText('商品咨询')
+  await expect(page.locator('.message')).toHaveCount(0)
+  const field = page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')
+  await expect(field).toBeFocused()
+  await page.reload()
+  await expect(field).toBeFocused()
+  expect(created).toBe(1)
   await page.getByText('另一段历史会话', { exact: true }).click()
   await expect(page.locator('.session.active')).toHaveText('另一段历史会话')
-  await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill('它的屏幕呢？')
-  await page.getByRole('button', { name: '发送', exact: true }).click()
+  await expect(page.getByText('以前的问题')).toBeVisible()
+  await expect(field).toBeFocused()
+  await field.fill('它的屏幕呢？')
+  await field.press('Shift+Enter')
+  await page.keyboard.insertText('字')
+  await field.dispatchEvent('keydown', { key: 'Enter', isComposing: true })
+  expect(payloads).toHaveLength(0)
+  await field.press('Enter')
   await expect(page.getByRole('button', { name: '发送', exact: true })).toBeEnabled()
   expect(payloads).toHaveLength(1)
   expect(payloads[0].pageContext).toBeNull()
+  expect(payloads[0].message).toBe('它的屏幕呢？\n字')
+  await page.goto('/products/1')
+  await page.getByRole('link', { name: '咨询此商品' }).click()
+  await expect(field).toBeFocused()
+  expect(created).toBe(2)
+  await expect(page.locator('.message')).toHaveCount(0)
 })
 
 test('chat renders safe markdown and keeps the composer visible after a long comparison', async ({

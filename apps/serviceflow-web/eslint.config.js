@@ -27,6 +27,7 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         HTMLElement: 'readonly',
+        KeyboardEvent: 'readonly',
         File: 'readonly',
         FormData: 'readonly',
         URLSearchParams: 'readonly',

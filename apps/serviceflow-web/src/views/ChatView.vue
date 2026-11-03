@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage, type InputInstance } from 'element-plus'
 import MarkdownIt from 'markdown-it'
 import { api, stream } from '../api/client'
 import { useAuthStore } from '../stores/auth'
@@ -17,11 +17,14 @@ const markdown = new MarkdownIt({ html: false, breaks: true, linkify: true })
 
 const auth = useAuthStore(),
   route = useRoute(),
+  router = useRouter(),
   sessions = ref<any[]>([]),
   current = ref(''),
   messages = ref<any[]>([]),
   input = ref(''),
   sending = ref(false),
+  sessionBusy = ref(false),
+  composer = ref<InputInstance>(),
   box = ref<HTMLElement>(),
   followOutput = ref(true),
   action = ref<any>(),
@@ -41,29 +44,52 @@ async function create() {
     method: 'POST',
     body: JSON.stringify({ title: productId ? '商品咨询' : '新会话' }),
   })
-  await refresh()
+  sessions.value = [session, ...sessions.value]
   await select(session.publicId, true)
 }
 async function select(id: string, useEntryHint = false) {
+  const history = await api<any[]>(`/chat/sessions/${encodeURIComponent(id)}/messages`)
   entryPageContext = useEntryHint && productId ? { sessionId: id, productId } : null
   current.value = id
-  messages.value = await api(`/chat/sessions/${id}/messages`)
+  messages.value = history
+  input.value = ''
+  action.value = null
+  await router.replace({
+    query: { ...route.query, sessionId: id, productId: entryPageContext?.productId },
+  })
   followOutput.value = true
   await nextTick()
   scroll(true)
+  composer.value?.focus()
+}
+async function changeSession(task: () => Promise<void>) {
+  if (sessionBusy.value || sending.value) return
+  sessionBusy.value = true
+  try {
+    await task()
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '会话操作失败')
+  } finally {
+    sessionBusy.value = false
+  }
+}
+function onEnter(event: KeyboardEvent) {
+  if (event.shiftKey || event.isComposing || event.keyCode === 229) return
+  event.preventDefault()
+  if (!event.repeat) void send()
 }
 async function send() {
-  if (!input.value.trim() || sending.value) return
-  if (!current.value) await create()
+  if (!input.value.trim() || sending.value || sessionBusy.value) return
   const text = input.value
-  const sourceSession = current.value
-  input.value = ''
-  followOutput.value = true
-  messages.value.push({ role: 'USER', content: text })
-  const assistant: any = { role: 'ASSISTANT', content: '', comparison: null }
-  messages.value.push(assistant)
   sending.value = true
   try {
+    if (!current.value) await create()
+    const sourceSession = current.value
+    input.value = ''
+    followOutput.value = true
+    messages.value.push({ role: 'USER', content: text })
+    const assistant: any = { role: 'ASSISTANT', content: '', comparison: null }
+    messages.value.push(assistant)
     await stream(
       `/chat/sessions/${current.value}/messages/stream`,
       {
@@ -77,8 +103,11 @@ async function send() {
       (name, data) => {
         if (name === 'token') assistant.content += data
         if (name === 'meta') {
-          if (data.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sourceSession)
+          if (data.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sourceSession) {
             entryPageContext = null
+            if (route.path === '/chat' && route.query.sessionId === sourceSession)
+              void router.replace({ query: { ...route.query, productId: undefined } })
+          }
           assistant.citations = data.citations
           assistant.degraded = data.degraded
         }
@@ -243,19 +272,28 @@ function updateScrollIntent() {
 function renderMarkdown(content: string) {
   return markdown.render(content)
 }
-onMounted(async () => {
-  await auth.ensureGuest()
-  await restoreCancellation()
-  await refresh()
-  if (sessions.value.length) await select(sessions.value[0].publicId, true)
-  else await create()
-  if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
-})
+onMounted(() =>
+  changeSession(async () => {
+    await auth.ensureGuest()
+    await restoreCancellation()
+    await refresh()
+    const saved = sessions.value.find((session) => session.publicId === route.query.sessionId)
+    if (saved) await select(saved.publicId, !!productId)
+    else if (productId && !route.query.sessionId) await create()
+    else if (sessions.value.length) await select(sessions.value[0].publicId)
+    else await create()
+    if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
+  }),
+)
 </script>
 <template>
   <div class="page chat-layout">
     <aside class="sessions">
-      <el-button type="primary" style="width: 100%; margin-bottom: 12px" @click="create"
+      <el-button
+        type="primary"
+        style="width: 100%; margin-bottom: 12px"
+        :disabled="sending || sessionBusy"
+        @click="changeSession(create)"
         >新建会话</el-button
       >
       <div
@@ -263,7 +301,7 @@ onMounted(async () => {
         :key="s.publicId"
         class="session"
         :class="{ active: current === s.publicId }"
-        @click="select(s.publicId)"
+        @click="changeSession(() => select(s.publicId))"
       >
         {{ s.title }}
       </div>
@@ -373,12 +411,15 @@ onMounted(async () => {
       </div>
       <div class="composer">
         <el-input
+          ref="composer"
           v-model="input"
           type="textarea"
           :rows="2"
           placeholder="咨询商品、订单、物流、退款或售后政策"
-          @keydown.ctrl.enter="send"
-        /><el-button type="primary" :loading="sending" @click="send">发送</el-button>
+          @keydown.enter="onEnter"
+        /><el-button type="primary" :loading="sending" :disabled="sessionBusy" @click="send"
+          >发送</el-button
+        >
       </div>
     </section>
   </div>
