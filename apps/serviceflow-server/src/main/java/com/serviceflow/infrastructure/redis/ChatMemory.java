@@ -40,6 +40,15 @@ public final class ChatMemory {
         return Boolean.TRUE.equals(redis.hasKey(sessionKey(subject, sessionId)));
     }
 
+    public void deleteGuestSession(String subject, String id) {
+        redis.delete(List.of(
+                sessionKey(subject, id),
+                memoryKey(subject, id),
+                activeOrderKey(subject, id),
+                activeProductKey(subject, id)));
+        redis.opsForZSet().remove(sessionIndexKey(subject), id);
+    }
+
     public List<ChatModels.Session> guestSessions(String subject) {
         Set<String> ids = redis.opsForZSet().reverseRange(sessionIndexKey(subject), 0, -1);
         if (ids == null) {

@@ -47,6 +47,19 @@ public final class ChatSessionServiceImpl implements ChatSessionService {
     }
 
     @Override
+    public void deleteSessions(CurrentPrincipal principal, String sessionId) {
+        if (!principal.guest()) {
+            chats.deleteSessions(principal.requireCustomerId(), sessionId);
+        } else if (sessionId != null) {
+            memory.deleteGuestSession(principal.subject(), sessionId);
+        } else {
+            for (ChatModels.Session session : memory.guestSessions(principal.subject())) {
+                memory.deleteGuestSession(principal.subject(), session.publicId());
+            }
+        }
+    }
+
+    @Override
     public List<ChatModels.Message> messages(CurrentPrincipal principal, String sessionId) {
         if (!principal.guest()) {
             return chats.messages(requireCustomerSession(principal, sessionId));

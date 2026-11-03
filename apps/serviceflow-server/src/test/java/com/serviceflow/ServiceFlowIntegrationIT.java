@@ -5,14 +5,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.model.RefundModels;
+import com.serviceflow.security.CurrentPrincipal;
+import com.serviceflow.service.ChatActionService;
+import com.serviceflow.service.ChatSessionService;
 import com.serviceflow.service.OrderService;
 import com.serviceflow.service.RefundService;
 import java.math.BigDecimal;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -118,6 +124,53 @@ class ServiceFlowIntegrationIT {
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).contains("HUAWEI Pura 80");
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void sessionDeletionIsScopedToTheOwner(
+            boolean guest,
+            @Autowired ChatSessionService sessions,
+            @Autowired ChatMemory memory,
+            @Autowired ChatActionService actions) {
+        CurrentPrincipal owner = chatPrincipal(guest);
+        CurrentPrincipal other = chatPrincipal(guest);
+        String first = sessions.create(owner, "first").publicId();
+        String second = sessions.create(owner, "second").publicId();
+        String foreign = sessions.create(other, "other").publicId();
+        if (guest) {
+            memory.append(owner.subject(), first, "USER", "history");
+        } else {
+            jdbc.update(
+                    "INSERT INTO chat_message(public_id,session_id,role,content,metadata) VALUES(?,?,'USER','history',JSON_OBJECT())",
+                    UUID.randomUUID().toString(),
+                    sessions.requireCustomerSession(owner, first));
+        }
+        assertThat(sessions.messages(owner, first)).hasSize(1);
+        sessions.deleteSessions(other, first);
+        assertThat(sessions.messages(owner, first)).hasSize(1);
+        sessions.deleteSessions(owner, first);
+        assertThat(sessions.list(owner)).extracting("publicId").containsExactly(second);
+        assertThatThrownBy(() -> sessions.messages(owner, first)).hasMessageContaining("404");
+        if (!guest) {
+            String actionId = memory.putAction(new ChatMemory.PendingAction(
+                    "CREATE_TICKET", owner.subject(), owner.customerId(), first, null, "help"));
+            assertThatThrownBy(() -> actions.confirm(owner, actionId, "CONFIRM", null))
+                    .hasMessageContaining("404");
+        }
+        sessions.deleteSessions(owner, null);
+        sessions.deleteSessions(owner, null);
+        assertThat(sessions.list(owner)).isEmpty();
+        assertThatThrownBy(() -> sessions.messages(owner, second)).hasMessageContaining("404");
+        assertThat(sessions.list(other)).extracting("publicId").containsExactly(foreign);
+    }
+
+    private CurrentPrincipal chatPrincipal(boolean guest) {
+        String subject = UUID.randomUUID().toString();
+        if (guest) return new CurrentPrincipal(subject, "GUEST", null);
+        jdbc.update("INSERT INTO customer(name) VALUES(?)", subject);
+        return new CurrentPrincipal(
+                subject, "CUSTOMER", jdbc.queryForObject("SELECT id FROM customer WHERE name=?", Long.class, subject));
     }
 
     @Test

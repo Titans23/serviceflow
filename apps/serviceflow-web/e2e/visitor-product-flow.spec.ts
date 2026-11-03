@@ -156,6 +156,66 @@ test('product entry creates its own focused session and leaves history unchanged
   await expect(page.locator('.message')).toHaveCount(0)
 })
 
+test('deleting history preserves the active draft and clearing all survives reload', async ({
+  page,
+}) => {
+  let history = ['A', 'B', 'C'].map((id) => ({ publicId: id, title: id }))
+  let created = 0
+  const deleted: string[] = []
+  const payloads: any[] = []
+  await page.route('**/api/chat/sessions', async (route) => {
+    if (route.request().method() === 'DELETE') {
+      deleted.push('all')
+      history = []
+      await route.fulfill({ status: 204 })
+    } else if (route.request().method() === 'POST') {
+      const session = { publicId: `new-${++created}`, title: '新会话' }
+      history.unshift(session)
+      await route.fulfill({ json: session })
+    } else await route.fulfill({ json: history })
+  })
+  await page.route('**/api/chat/sessions/*', async (route) => {
+    expect(route.request().method()).toBe('DELETE')
+    const id = route.request().url().split('/').pop()!
+    deleted.push(id)
+    history = history.filter((session) => session.publicId !== id)
+    await route.fulfill({ status: 204 })
+  })
+  await page.route('**/api/chat/sessions/*/messages', (route) => route.fulfill({ json: [] }))
+  await page.route('**/api/chat/sessions/*/messages/stream', (route) => {
+    payloads.push(route.request().postDataJSON())
+    return route.fulfill({ contentType: 'text/event-stream', body: 'event: done\ndata: {}\n\n' })
+  })
+  await page.goto('/chat')
+  const field = page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')
+  await expect(field).toBeFocused()
+  await field.fill('草稿')
+  await page.getByRole('button', { name: '删除会话：B' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '取消' }).click()
+  expect(deleted).toEqual([])
+  await page.getByRole('button', { name: '删除会话：B' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '删除', exact: true }).click()
+  await expect(page.locator('.session')).toHaveCount(2)
+  await expect(field).toHaveValue('草稿')
+  await page.getByRole('button', { name: '删除会话：A' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '删除', exact: true }).click()
+  await expect(page.locator('.session.active')).toHaveText('C')
+  await expect(field).toBeFocused()
+  await page.getByRole('button', { name: '清除所有会话' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '全部清除' }).click()
+  await expect(page.locator('.session')).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByText('暂无会话，发送消息即可开始。')).toBeVisible()
+  expect(created).toBe(0)
+  expect(deleted).toEqual(['B', 'A', 'all'])
+  await field.fill('重新开始')
+  await field.press('Enter')
+  await expect(page.locator('.session.active')).toHaveText('新会话')
+  await expect.poll(() => payloads.length).toBe(1)
+  expect(created).toBe(1)
+  expect(payloads[0].message).toBe('重新开始')
+})
+
 test('chat renders safe markdown and keeps the composer visible after a long comparison', async ({
   page,
 }) => {

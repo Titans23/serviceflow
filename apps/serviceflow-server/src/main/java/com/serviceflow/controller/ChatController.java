@@ -17,12 +17,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -59,6 +62,12 @@ public final class ChatController {
     @GetMapping("/sessions")
     List<ChatModels.Session> sessions(Authentication authentication) {
         return sessions.list(CurrentPrincipal.from(authentication));
+    }
+
+    @DeleteMapping({"/sessions", "/sessions/{sessionId}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteSessions(@PathVariable(required = false) String sessionId, Authentication authentication) {
+        sessions.deleteSessions(CurrentPrincipal.from(authentication), sessionId);
     }
 
     @GetMapping("/sessions/{sessionId}/messages")

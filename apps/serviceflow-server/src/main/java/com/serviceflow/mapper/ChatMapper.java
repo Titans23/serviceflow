@@ -15,6 +15,8 @@ public interface ChatMapper {
 
     List<ChatModels.Session> listSessions(@Param("customerId") long customerId);
 
+    int deleteSessions(@Param("customerId") long customerId, @Param("publicId") String publicId);
+
     Long sessionDatabaseId(@Param("publicId") String publicId, @Param("customerId") long customerId);
 
     List<ChatModels.Message> messages(@Param("sessionId") long sessionId);

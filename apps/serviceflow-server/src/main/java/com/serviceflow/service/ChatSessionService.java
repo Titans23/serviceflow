@@ -9,6 +9,8 @@ public interface ChatSessionService {
 
     List<ChatModels.Session> list(CurrentPrincipal principal);
 
+    void deleteSessions(CurrentPrincipal principal, String sessionId);
+
     List<ChatModels.Message> messages(CurrentPrincipal principal, String sessionId);
 
     Long requireCustomerSession(CurrentPrincipal principal, String sessionId);

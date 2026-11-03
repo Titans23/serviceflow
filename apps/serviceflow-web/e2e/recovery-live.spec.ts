@@ -51,11 +51,8 @@ test('committed cancellation with lost done is recovered through the real result
       await route.abort('failed') // Keep uncertainty visible until an explicit second read.
     else await route.continue() // This response is never fabricated.
   })
-  const loaded = page.waitForResponse((response) =>
-    /\/chat\/sessions\/[^/]+\/messages$/.test(response.url()),
-  )
   await page.goto('/chat')
-  await loaded
+  await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
   await page.getByRole('button', { name: '新建会话', exact: true }).click()
   await expect(page.locator('.message')).toHaveCount(0)
   await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill(`取消订单 ${orderNo}`)
@@ -142,11 +139,8 @@ test('unsubmitted confirmation and real 404 retain uncertainty without locking c
     confirmations++
     await route.abort('failed') // Nothing reaches the service; the UI cannot infer that from the transport error.
   })
-  const loaded = page.waitForResponse((response) =>
-    /\/chat\/sessions\/[^/]+\/messages$/.test(response.url()),
-  )
   await page.goto('/chat')
-  await loaded
+  await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
   await page.getByRole('button', { name: '新建会话', exact: true }).click()
   await expect(page.locator('.message')).toHaveCount(0)
   await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill(`取消订单 ${orderNo}`)

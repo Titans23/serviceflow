@@ -73,7 +73,19 @@ a {
   padding: 14px;
   overflow: auto;
 }
+.session-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
 .session {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: transparent;
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;

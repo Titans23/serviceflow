@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage, type InputInstance } from 'element-plus'
+import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
+import { Delete } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 import { api, stream } from '../api/client'
 import { useAuthStore } from '../stores/auth'
@@ -34,7 +35,7 @@ const auth = useAuthStore(),
   confirmationUnknown = ref(false)
 let pendingAssistant: any
 let pendingSession = ''
-const productId = route.query.productId ? Number(route.query.productId) : undefined
+let productId = route.query.productId ? Number(route.query.productId) : undefined
 let entryPageContext: { sessionId: string; productId: number } | null = null
 async function refresh() {
   sessions.value = await api('/chat/sessions')
@@ -48,14 +49,14 @@ async function create() {
   await select(session.publicId, true)
 }
 async function select(id: string, useEntryHint = false) {
-  const history = await api<any[]>(`/chat/sessions/${encodeURIComponent(id)}/messages`)
+  const history = id ? await api<any[]>(`/chat/sessions/${encodeURIComponent(id)}/messages`) : []
   entryPageContext = useEntryHint && productId ? { sessionId: id, productId } : null
   current.value = id
   messages.value = history
   input.value = ''
   action.value = null
   await router.replace({
-    query: { ...route.query, sessionId: id, productId: entryPageContext?.productId },
+    query: { ...route.query, sessionId: id || undefined, productId: entryPageContext?.productId },
   })
   followOutput.value = true
   await nextTick()
@@ -77,6 +78,27 @@ function onEnter(event: KeyboardEvent) {
   if (event.shiftKey || event.isComposing || event.keyCode === 229) return
   event.preventDefault()
   if (!event.repeat) void send()
+}
+async function removeSessions(id?: string) {
+  const title = id ? '删除此会话' : '清除所有会话'
+  try {
+    await ElMessageBox.confirm(
+      id ? '删除后将无法再打开这段会话。' : '清除后将无法再打开当前账号或访客身份的任何已有会话。',
+      title,
+      { type: 'warning', confirmButtonText: id ? '删除' : '全部清除', cancelButtonText: '取消' },
+    )
+  } catch (reason) {
+    if (reason === 'cancel' || reason === 'close') return
+    throw reason
+  }
+  await api(id ? `/chat/sessions/${encodeURIComponent(id)}` : '/chat/sessions', {
+    method: 'DELETE',
+  })
+  sessions.value = id ? sessions.value.filter((session) => session.publicId !== id) : []
+  if (!id || current.value === id) {
+    productId = undefined
+    await select(sessions.value[0]?.publicId ?? '')
+  }
 }
 async function send() {
   if (!input.value.trim() || sending.value || sessionBusy.value) return
@@ -281,7 +303,7 @@ onMounted(() =>
     if (saved) await select(saved.publicId, !!productId)
     else if (productId && !route.query.sessionId) await create()
     else if (sessions.value.length) await select(sessions.value[0].publicId)
-    else await create()
+    else await select('')
     if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
   }),
 )
@@ -296,15 +318,34 @@ onMounted(() =>
         @click="changeSession(create)"
         >新建会话</el-button
       >
-      <div
-        v-for="s in sessions"
-        :key="s.publicId"
-        class="session"
-        :class="{ active: current === s.publicId }"
-        @click="changeSession(() => select(s.publicId))"
+      <el-button
+        v-if="sessions.length"
+        link
+        type="danger"
+        :disabled="sending || sessionBusy"
+        @click="changeSession(() => removeSessions())"
+        >清除所有会话</el-button
       >
-        {{ s.title }}
+      <div v-for="s in sessions" :key="s.publicId" class="session-row">
+        <button
+          type="button"
+          class="session"
+          :class="{ active: current === s.publicId }"
+          :disabled="sending || sessionBusy"
+          @click="changeSession(() => select(s.publicId))"
+        >
+          {{ s.title }}
+        </button>
+        <el-button
+          text
+          :icon="Delete"
+          :aria-label="`删除会话：${s.title}`"
+          title="删除此会话"
+          :disabled="sending || sessionBusy"
+          @click="changeSession(() => removeSessions(s.publicId))"
+        />
       </div>
+      <p v-if="!sessions.length && !sessionBusy" class="muted">暂无会话，发送消息即可开始。</p>
     </aside>
     <section class="conversation">
       <el-alert

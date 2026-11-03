@@ -8,6 +8,7 @@ import com.serviceflow.model.OrderModels;
 import com.serviceflow.model.TicketModels;
 import com.serviceflow.security.CurrentPrincipal;
 import com.serviceflow.service.ChatActionService;
+import com.serviceflow.service.ChatSessionService;
 import com.serviceflow.service.OrderService;
 import com.serviceflow.service.TicketService;
 import com.serviceflow.web.sse.SseEventWriter;
@@ -19,12 +20,19 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 public final class ChatActionServiceImpl implements ChatActionService {
     private final ChatMemory memory;
+    private final ChatSessionService sessions;
     private final OrderService orders;
     private final TicketService tickets;
     private final SseEventWriter events;
 
-    public ChatActionServiceImpl(ChatMemory memory, OrderService orders, TicketService tickets, SseEventWriter events) {
+    public ChatActionServiceImpl(
+            ChatMemory memory,
+            ChatSessionService sessions,
+            OrderService orders,
+            TicketService tickets,
+            SseEventWriter events) {
         this.memory = memory;
+        this.sessions = sessions;
         this.orders = orders;
         this.tickets = tickets;
         this.events = events;
@@ -51,6 +59,7 @@ public final class ChatActionServiceImpl implements ChatActionService {
             throw new ResponseStatusException(FORBIDDEN, "无权确认该操作");
         }
 
+        sessions.requireCustomerSession(principal, action.sessionId());
         if (!"CONFIRM".equalsIgnoreCase(decision)) {
             memory.removeAction(actionId);
             events.send(emitter, "token", "已取消本次操作。");

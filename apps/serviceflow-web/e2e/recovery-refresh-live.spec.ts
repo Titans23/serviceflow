@@ -38,9 +38,8 @@ async function login(page: Page, username: string) {
   await page.goto('/login')
   await page.locator('.el-form input').nth(0).fill(username)
   await page.locator('.el-form input').nth(1).fill('Customer123!')
-  const loaded = page.waitForResponse((r) => /\/chat\/sessions\/[^/]+\/messages$/.test(r.url()))
   await page.getByRole('button', { name: '登录', exact: true }).click()
-  await loaded
+  await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
 }
 async function setup(page: Page, request: APIRequestContext) {
   test.skip(!process.env.RECOVERY_FIXTURES, 'Requires isolated real recovery fixtures')
