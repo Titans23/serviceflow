@@ -1,12 +1,19 @@
-# ServiceFlow 本轮优化报告
+# ServiceFlow 第 1～4 批完整优化报告
 
-日期：2026-11-04。范围：第一批“我的订单、订单咨询、多订单追问”之后的第 2、3、4 批。
+日期：2026-11-04。范围：第 1～4 批，作为同一次业务闭环优化统一记录，包括“我的订单与 Agent 订单咨询”“可靠确认与恢复”“后台退款与人工接手”“性能与资源优化”。
 
-这轮把“用户告诉客服想取消订单”后面的执行过程补完整了：用户确认或放弃的决定可以持久保存，取消与退款任务在同一事务中提交，后台自动处理退款，遇到结果不明会查询和转人工，并用真实数据库、消息队列、独立模拟渠道和故障注入验证。同时完成了两项有前后对照的性能与资源优化。
+这轮从用户找到订单开始，把咨询、追问、确认、执行和异常恢复连接起来：用户可以查看自己的订单，从具体订单进入新客服会话，也可以让 Agent 按商品和日期查询；匹配多笔时先明确选择，再生成确认卡。用户的确认或放弃决定持久保存，取消与退款任务在同一事务中提交，后台自动处理退款，结果不明时查询和转人工。验证覆盖真实数据库、消息队列、独立模拟渠道和故障注入，同时包含两项有前后对照的性能与资源优化。
+
+| 批次 | 解决的业务问题 | 交付内容 |
+| --- | --- | --- |
+| 第 1 批 | 用户怎样找到并明确要处理的订单 | 我的订单、订单咨询入口、受约束的 Agent 查询、多订单追问与上下文隔离 |
+| 第 2 批 | 怎样确认用户授权，并在重复请求或丢响应时保持一致 | 持久确认与拒绝、事务裁决、只读结果恢复 |
+| 第 3 批 | 用户确认后，退款怎样自动完成并处理异常 | 持久任务、独立渠道、查询核验、幂等重试与人工接手 |
+| 第 4 批 | 已有流程的瓶颈在哪里，改动是否有效 | 完整订单号精确查询、超时任务取消、可复现的前后测量 |
 
 本地访问：[ServiceFlow](http://127.0.0.1:15173)。AI 和 RAG 保持 Cloud 模式；付款渠道是独立的本地模拟服务，不涉及真实资金。本轮验证没有调用收费模型。
 
-## 1. 从用户视角看，具体变了什么
+## 整体业务流程：从用户视角看，具体变了什么
 
 以“取消一笔已付款、尚未发货的耳机订单”为例：
 
@@ -18,6 +25,75 @@
 6. 如果渠道一直无法给出明确结果，后台创建人工工单。管理员处理后可以点击“重新核验渠道”，先查原退款单，避免另起一笔退款。
 
 完整编号查询会使用精确查询；输入商品名称或不完整订单号，仍使用原有模糊搜索。
+
+## 1. 第 1 批：我的订单、订单咨询与 Agent 多订单追问
+
+### 原来缺的是什么
+
+订单数据、聊天入口和用户想处理的对象之间缺少清楚的连接。用户不能总靠手输订单号；“昨天买的耳机不要了”也可能对应多笔订单。如果沿用旧会话的订单上下文，后续确认和退款即使技术上执行正确，也可能处理了错误的对象。
+
+第一批先解决“找到哪笔订单、这笔订单属于谁、用户是否明确选中了它”，把确定的业务对象交给后续确认流程。
+
+### 1.1 我的订单：本人查询、筛选、分页与详情
+
+新增客户订单列表，支持商品名称、型号、SKU、类别、订单号、状态和日期筛选，展示订单商品和金额，并可进入详情查看付款、退款和物流。
+
+后端从已登录身份取得 customerId，查询始终带上所属客户条件。前端传来的订单号和分页游标也要重新校验归属，不能通过改 URL 或请求参数查看他人的订单。
+
+列表使用“创建时间 + 订单 ID”作为分页位置。同一时间有多笔订单时，仍能稳定区分前后顺序；商品明细按一页订单批量读取，避免展示 10 笔订单就额外执行 10 次商品查询。V9 增加对应的客户、创建时间与 ID 组合索引。日期按北京时间解释，结束日期包含当天全天。
+
+前端另外保存已经提交的筛选条件。用户改了输入框但还没有点筛选时，“加载更多”继续沿用原来的条件，避免把两个查询结果拼成一个列表。第一批实现的是这些查询基础；完整订单号的精确参数和性能对照属于第 4 批。
+
+### 1.2 从订单进入客服：新会话与明确上下文
+
+点击“咨询这笔订单”会创建新会话，并通过 pageContext.orderNo 传递当前订单。后端使用这个上下文前再次查询本人订单；页面参数只是用户指定对象的线索，不是访问授权。
+
+进入会话后，页面显示正在咨询的订单，输入框自动聚焦。后续问“它的物流呢”可以指向已经选定的订单；切换会话会清理页面中的订单和确认卡，重新查询其他订单也会清除旧的订单指代。刷新订单咨询页不会再额外新建一遍会话。
+
+这样，新订单咨询、旧聊天记录以及新一轮订单搜索各有明确边界，避免错误沿用之前处理的订单。
+
+### 1.3 Agent 查询：把一句话变成受约束的查询计划
+
+例如用户说“昨天买的耳机不要了”，Cloud 模式下，模型根据当前日期和对话上下文生成结构化查询计划，表达“按耳机和昨天的日期查询，用户目的是取消”。后端解析、校验，再调用既有订单服务。明确订单号和简单序号也有直接解析路径。
+
+| 允许的计划 | 含义 | 后端执行规则 |
+| --- | --- | --- |
+| SEARCH_ORDERS | 按商品、状态、日期查询 | 只能查当前客户；校验条件和日期 |
+| READ_CURRENT | 查看已经明确的当前订单 | 必须存在有效上下文，并再次校验所属客户 |
+| SELECT_CANDIDATE | 从当前候选中选择一笔 | 序号必须落在本次候选范围内 |
+| ASK_USER | 信息不足，继续追问 | 不自行猜一笔订单执行 |
+
+模型不提供 customerId、不生成 SQL，也不决定退款金额。订单状态、金额和物流由后端实际查询结果生成。这是一次受约束的规划加后端执行，并没有引入无限循环调用工具的 Agent 框架。
+
+### 1.4 多订单追问：选择对象与执行操作分开
+
+查询唯一命中时展示订单；多笔命中时发送 order_selection_required 候选卡，最多展示 10 笔。结果更多时提示缩小条件。用户可以点卡片，也可以回复“第二笔”。
+
+候选集合、queryId 和待处理的取消意图按用户主体及会话保存在 Redis，有效期为 30 分钟。点击卡片时，后端核对 queryId 和订单是否属于本次候选，再重新读取本人订单。旧查询的卡片、其他会话的候选和越界序号不能用来选择订单。新的搜索替换旧候选，即使新搜索没有结果，也不会回退到旧订单。
+
+如果用户最初要取消，选定订单后会继续到取消确认卡，但选择本身不会修改订单或创建退款。这样，“我选的是哪笔”和“我同意取消”是两个可分别验证的步骤，第二步交给第 2 批处理。
+
+候选卡和订单事实也随助手消息写入 MySQL，支持历史展示和相同 clientRequestId 的响应重放。历史里还能看到一张卡，不代表它永远可执行；历史展示不会延长 Redis 候选有效期。
+
+主要代码：
+
+- [OrdersView](../apps/serviceflow-web/src/views/OrdersView.vue)、[OrderController](../apps/serviceflow-server/src/main/java/com/serviceflow/controller/OrderController.java)：列表、筛选、详情及本人查询入口。
+- [OrderServiceImpl](../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/OrderServiceImpl.java)、[OrderMapper](../apps/serviceflow-server/src/main/resources/mapper/OrderMapper.xml)、[V9 迁移](../apps/serviceflow-server/src/main/resources/db/migration/V9__customer_order_listing.sql)：查询校验、组合游标、批量明细与索引。
+- [CloudAiGateway](../apps/serviceflow-server/src/main/java/com/serviceflow/ai/CloudAiGateway.java)、[OrderConversation](../apps/serviceflow-server/src/main/java/com/serviceflow/agent/OrderConversation.java)：查询计划解析、订单查询、候选选择与确认衔接。
+- [ChatMemory](../apps/serviceflow-server/src/main/java/com/serviceflow/infrastructure/redis/ChatMemory.java)、[ChatServiceImpl](../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java)、[ChatView](../apps/serviceflow-web/src/views/ChatView.vue)：会话状态、消息持久化、响应重放及前端上下文。
+
+### 用什么证明
+
+| 验证层 | 已覆盖的行为 |
+| --- | --- |
+| 订单查询单元与真实数据库测试 | 本人隔离、筛选、北京时间日期边界、分页和批量商品明细；外部客户的游标不可使用 |
+| 查询计划与会话单元测试 | 查询条件解析、非法计划拒绝、多订单选择、旧 queryId、越权上下文、无结果清理、无效日期及越界序号 |
+| 真实 HTTP、MySQL 与 Redis 集成测试 | 查询得到候选 → 选择生成确认卡 → 继续追问 → 请求重放 → 旧候选失效；读取数据库确认选择后订单仍为 PAID，操作账本和退款数仍为 0 |
+| 3 个订单浏览器用例 | 新会话与上下文、聚焦及回车发送、候选选择和会话切换；建会话期间保护输入；列表筛选、分页及详情 |
+
+测试入口：[OrderConversationTest](../apps/serviceflow-server/src/test/java/com/serviceflow/agent/OrderConversationTest.java)、[CloudAiGatewayTest](../apps/serviceflow-server/src/test/java/com/serviceflow/ai/CloudAiGatewayTest.java)、[ServiceFlowIntegrationIT](../apps/serviceflow-server/src/test/java/com/serviceflow/ServiceFlowIntegrationIT.java)、[orders.spec.ts](../apps/serviceflow-web/e2e/orders.spec.ts)。浏览器用例以 API mock 检查交互；真实业务状态由集成测试另行核验。上述用例已包含在第 5 节的全量结果中，不重复相加。
+
+第一批最终提交 d680e690 的 CI 已通过，后续完整实现的 CI 也继续运行这些回归。模型计划解析使用受控输出测试，集成环境使用受控 AI；这能证明执行约束和状态流转，不能据此宣称真实 Cloud 模型对任意自然语言的识别准确率。
 
 ## 2. 第 2 批：让确认、拒绝与恢复有可靠依据
 
@@ -181,6 +257,7 @@ P95 的意思是：本次测量里，95% 的请求在这个时间以内完成。
 
 | 验证项 | 本地结果 | 验证含义 |
 | --- | --- | --- |
+| 第 1 批订单与 Agent 回归 | 本人查询、多订单追问、候选持久化及重放测试通过；3 个订单浏览器用例通过，已包含在下列套件中 | 先明确本人订单，再进入确认流程；不重复累计测试数量 |
 | 后端完整 Maven verify | 145 项单元测试通过，5 项可选模型测试跳过；20 项集成测试通过；格式及覆盖率门槛通过 | 业务规则、并发、数据库事务和工程质量 |
 | 确认卡最终文案补充 | 相关 8 项测试通过 | 商品、订单号和金额取自已查询的订单事实 |
 | 前端 | lint、生产构建、13 项单元测试及受影响浏览器测试通过 | 界面、参数传递、确认卡和恢复行为 |
@@ -191,10 +268,12 @@ P95 的意思是：本次测量里，95% 的请求在这个时间以内完成。
 
 已完成的远程检查点：
 
+- 第 1 批我的订单与 Agent 订单咨询：[`16047b92`](https://github.com/Titans23/serviceflow/commit/16047b92)、[`773c4f4c`](https://github.com/Titans23/serviceflow/commit/773c4f4c)；分页筛选修正后最终提交为 [`d680e690`](https://github.com/Titans23/serviceflow/commit/d680e690)，[CI 成功](https://github.com/Titans23/serviceflow/actions/runs/41771586156)。
 - 持久确认与浏览器恢复修正：[`a774f0db`](https://github.com/Titans23/serviceflow/commit/a774f0db)，[CI 成功](https://github.com/Titans23/serviceflow/actions/runs/41777089062)。
 - 独立渠道、自动退款和故障验证：[`ef8ba849`](https://github.com/Titans23/serviceflow/commit/ef8ba849)，[CI 成功](https://github.com/Titans23/serviceflow/actions/runs/41778590286)。
+- 第 4 批性能优化及报告初版：[`57859526`](https://github.com/Titans23/serviceflow/commit/5785952661b866d497e868332b2ef8f3a6227395)，[CI 的 7 个任务全部成功](https://github.com/Titans23/serviceflow/actions/runs/41786472747)，包含前面各批的业务回归。
 
-本报告与性能改动在同一后续提交交付；其远程状态以[对应提交的 Actions](https://github.com/Titans23/serviceflow/actions/workflows/ci.yml)为准，发布完成消息另列具体 SHA 和运行链接。已通过的上一检查点不代表后续提交自动通过。
+本次报告补全只调整文档，依据已有代码、测试和 CI 记录整理第 1～4 批；应用代码与部署保持上述已验证版本。文档检查点的远程状态以[对应提交的 Actions](https://github.com/Titans23/serviceflow/actions/workflows/ci.yml)为准，不把历史实现的通过结果冒充新文档提交的 CI 状态。
 
 ### 本地 Cloud 部署核对
 
@@ -206,13 +285,14 @@ P95 的意思是：本次测量里，95% 的请求在这个时间以内完成。
 
 ## 6. 怎样读代码和讲清楚这个项目
 
-建议沿一笔订单看五个位置，而不是先背组件名称：
+建议沿一笔订单看六个位置，而不是先背组件名称：
 
-1. **OrderConversation**：为什么有多笔订单时要追问？卡片里采用哪笔订单的事实？模型没有决定客户身份和退款金额。
-2. **ActionDecisionService**：用户确认怎样变成数据库里唯一、可重放查询的决定？为什么检查订单版本？
-3. **OrderServiceImpl**：订单、操作账本、退款和投递记录怎样一起提交？
-4. **RefundDispatcher / RefundDeliveryService**：响应丢失为什么先查？重复消息、过期处理者和进程重启怎样处理？
-5. **ServiceFlowIntegrationIT 与故障脚本**：最终断言检查了什么？是只看 HTTP 成功，还是读回两侧数据确认没有重复退款？
+1. **OrdersView / OrderController / OrderMapper**：列表为什么只能查本人订单？筛选、分页、详情和订单咨询怎样连接？
+2. **CloudAiGateway / OrderConversation / ChatMemory**：一句话怎样变成查询计划？为什么多笔订单要追问？候选和当前订单如何绑定会话？模型没有决定客户身份和退款金额。
+3. **ActionDecisionService**：用户确认怎样变成数据库里唯一、可重放查询的决定？为什么检查订单版本？
+4. **OrderServiceImpl**：订单、操作账本、退款和投递记录怎样一起提交？
+5. **RefundDispatcher / RefundDeliveryService**：响应丢失为什么先查？重复消息、过期处理者和进程重启怎样处理？
+6. **ServiceFlowIntegrationIT 与故障脚本**：最终断言检查了什么？是只看 HTTP 成功，还是读回两侧数据确认没有重复退款？
 
 这轮后端深度体现在事务边界、状态机、行锁与版本核验、业务幂等、持久任务、租约、回调校验和故障恢复。Agent 部分体现为在有上下文的多轮对话中定位业务对象，要求明确确认，再把执行交给受权限和状态规则约束的后端。
 
@@ -222,4 +302,4 @@ P95 的意思是：本次测量里，95% 的请求在这个时间以内完成。
 
 独立模拟渠道能够验证跨进程故障与幂等，但还没有接入真实支付机构的签名、资金清结算、部分退款和跨币种。存量未完成退款没有自动补投；迁移前仅存在 Redis 中的旧待确认卡，需要重新发起咨询生成新卡。关闭标签或清空浏览器存储，也不保证自动找回尚未收到响应的决定，但服务端持久决定仍可按原动作编号查询。
 
-本轮已经完成第 2、3、4 批的本地实现、相关验证和 Cloud 部署；后续能力应在这条可验证的业务链上继续扩展。
+第 1～4 批共同完成了“找到本人订单 → 明确处理对象 → 用户授权 → 后台执行 → 结果核验 → 异常恢复”的业务链，本地实现、相关验证和 Cloud 部署均已完成。后续能力应在这条可验证的业务链上继续扩展。
