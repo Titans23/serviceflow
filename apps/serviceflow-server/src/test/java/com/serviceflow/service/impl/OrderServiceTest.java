@@ -8,6 +8,8 @@ import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.model.OrderModels;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
@@ -199,6 +201,66 @@ class OrderServiceTest {
         assertThatThrownBy(() -> service.cancellationResult("missing", 7L)).isInstanceOf(ResponseStatusException.class);
         verify(mapper, never()).reserveOperation(anyString(), anyLong());
         verify(mapper, never()).cancel(anyLong(), anyLong(), anyInt());
+    }
+
+    @Test
+    void listsOwnedOrdersWithOneBatchOfItemsAndAnExtraRowForTheCursor() {
+        var first = order("PAID");
+        var next = new OrderModels.Order(9L, "SF-1002", 7L, "PAID", BigDecimal.ONE, 0, Instant.now());
+        when(mapper.searchOwned(eq(7L), eq("耳机"), eq("headphone"), eq("PAID"), any(), any(), isNull(), eq(2)))
+                .thenReturn(List.of(first, next));
+        when(mapper.itemsForOrders(List.of(10L)))
+                .thenReturn(List.of(new OrderModels.ItemRow(10L, "SKU", "耳机", 1, BigDecimal.ONE)));
+        var date = LocalDate.of(2026, 11, 3);
+        var page = service.search(7L, new OrderModels.Search(" 耳机 ", "PAID", date, date), null, 1);
+        assertThat(page.items()).hasSize(1);
+        assertThat(page.items().getFirst().items()).hasSize(1);
+        assertThat(page.nextCursor()).isEqualTo(10L);
+        verify(mapper)
+                .searchOwned(
+                        7L,
+                        "耳机",
+                        "headphone",
+                        "PAID",
+                        Instant.parse("2026-11-02T16:00:00Z"),
+                        Instant.parse("2026-11-03T16:00:00Z"),
+                        null,
+                        2);
+        verify(mapper, never()).items(anyLong());
+    }
+
+    @Test
+    void supportsEmptyResultsAndOwnedCursor() {
+        var query = new OrderModels.Search(" ", "", null, null);
+        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), any(), eq(11)))
+                .thenReturn(List.of());
+        when(mapper.findOwnedById(10L, 7L)).thenReturn(order("PAID"));
+        assertThat(service.search(7L, query, 10L, 10).items()).isEmpty();
+        verify(mapper, never()).itemsForOrders(any());
+        assertThatThrownBy(() -> service.search(8L, query, 10L, 10)).isInstanceOf(ResponseStatusException.class);
+        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), isNull(), eq(11)))
+                .thenReturn(List.of(order("PAID")));
+        when(mapper.itemsForOrders(any())).thenReturn(List.of());
+        assertThat(service.search(7L, query, null, 10).nextCursor()).isNull();
+    }
+
+    @Test
+    void rejectsInvalidFiltersBeforeQuerying() {
+        var date = LocalDate.of(2026, 11, 3);
+        for (var query : List.of(
+                new OrderModels.Search("x".repeat(81), null, null, null),
+                new OrderModels.Search(null, "invalid", null, null),
+                new OrderModels.Search(null, null, date, date.minusDays(1)),
+                new OrderModels.Search(null, null, LocalDate.of(1999, 1, 1), null),
+                new OrderModels.Search(null, null, LocalDate.of(2101, 1, 1), null),
+                new OrderModels.Search(null, null, null, LocalDate.of(1999, 1, 1)),
+                new OrderModels.Search(null, null, null, LocalDate.of(2101, 1, 1)))) {
+            assertThatThrownBy(() -> service.search(7L, query, null, 10)).isInstanceOf(ResponseStatusException.class);
+        }
+        var empty = new OrderModels.Search(null, null, null, null);
+        assertThatThrownBy(() -> service.search(7L, empty, null, 0)).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.search(7L, empty, null, 51)).isInstanceOf(ResponseStatusException.class);
+        verifyNoInteractions(mapper);
     }
 
     private OrderModels.Order order(String status) {

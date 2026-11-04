@@ -1,6 +1,7 @@
 package com.serviceflow.mapper;
 
 import com.serviceflow.model.OrderModels;
+import java.time.Instant;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -8,6 +9,20 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface OrderMapper {
     OrderModels.Order findOwned(@Param("orderNo") String orderNo, @Param("customerId") long customerId);
+
+    OrderModels.Order findOwnedById(@Param("id") long id, @Param("customerId") long customerId);
+
+    List<OrderModels.Order> searchOwned(
+            @Param("customerId") long customerId,
+            @Param("keyword") String keyword,
+            @Param("category") String category,
+            @Param("status") String status,
+            @Param("from") Instant from,
+            @Param("until") Instant until,
+            @Param("cursor") OrderModels.Order cursor,
+            @Param("limit") int limit);
+
+    List<OrderModels.ItemRow> itemsForOrders(@Param("orderIds") List<Long> orderIds);
 
     List<OrderModels.Item> items(@Param("orderId") long orderId);
 

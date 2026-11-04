@@ -6,7 +6,11 @@ import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.mapper.RefundMapper;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.service.OrderService;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,12 +18,76 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class OrderServiceImpl implements OrderService {
     private static final Set<String> CANCELLABLE = Set.of("CREATED", "PAID", "PROCESSING");
+    public static final ZoneId ORDER_ZONE = ZoneId.of("Asia/Shanghai");
+    private static final Set<String> STATUSES =
+            Set.of("CREATED", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDING", "REFUNDED");
     private final OrderMapper mapper;
     private final RefundMapper refunds;
 
     public OrderServiceImpl(OrderMapper mapper, RefundMapper refunds) {
         this.mapper = mapper;
         this.refunds = refunds;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderModels.Page search(long customerId, OrderModels.Search query, Long cursor, int size) {
+        String keyword = query.keyword() == null || query.keyword().isBlank()
+                ? null
+                : query.keyword().trim();
+        String status = query.status() == null || query.status().isBlank() ? null : query.status();
+        if (size < 1
+                || size > 50
+                || (keyword != null && keyword.length() > 80)
+                || (status != null && !STATUSES.contains(status))
+                || (query.from() != null && query.to() != null && query.from().isAfter(query.to()))
+                || (query.from() != null
+                        && (query.from().getYear() < 2000 || query.from().getYear() > 2100))
+                || (query.to() != null
+                        && (query.to().getYear() < 2000 || query.to().getYear() > 2100))) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "订单筛选条件无效");
+        }
+        OrderModels.Order boundary = cursor == null ? null : mapper.findOwnedById(cursor, customerId);
+        if (cursor != null && boundary == null) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "订单分页位置无效，请刷新列表");
+        }
+        String category = keyword == null
+                ? null
+                : Map.of("手机", "phone", "笔记本", "laptop", "电脑", "laptop", "耳机", "headphone")
+                        .getOrDefault(keyword, keyword);
+        List<OrderModels.Order> rows = mapper.searchOwned(
+                customerId,
+                keyword,
+                category,
+                status,
+                query.from() == null
+                        ? null
+                        : query.from().atStartOfDay(ORDER_ZONE).toInstant(),
+                query.to() == null
+                        ? null
+                        : query.to().plusDays(1).atStartOfDay(ORDER_ZONE).toInstant(),
+                boundary,
+                size + 1);
+        List<OrderModels.Order> visible = rows.stream().limit(size).toList();
+        if (visible.isEmpty()) return new OrderModels.Page(List.of(), null);
+        Map<Long, List<OrderModels.Item>> items =
+                mapper
+                        .itemsForOrders(
+                                visible.stream().map(OrderModels.Order::id).toList())
+                        .stream()
+                        .collect(Collectors.groupingBy(
+                                OrderModels.ItemRow::orderId,
+                                Collectors.mapping(OrderModels.ItemRow::item, Collectors.toList())));
+        return new OrderModels.Page(
+                visible.stream()
+                        .map(order -> new OrderModels.Summary(
+                                order.orderNo(),
+                                order.status(),
+                                order.totalAmount(),
+                                order.createdAt(),
+                                items.getOrDefault(order.id(), List.of())))
+                        .toList(),
+                rows.size() > size ? visible.getLast().id() : null);
     }
 
     @Override

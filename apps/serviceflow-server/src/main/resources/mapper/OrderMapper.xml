@@ -8,6 +8,37 @@
   <select id="items" resultType="com.serviceflow.model.OrderModels$Item">
     SELECT p.sku, p.name AS product_name, i.quantity, i.unit_price FROM order_item i JOIN product p ON p.id=i.product_id WHERE i.order_id=#{orderId}
   </select>
+  <select id="findOwnedById" resultType="com.serviceflow.model.OrderModels$Order">
+    SELECT id,order_no,customer_id,status,total_amount,version,created_at FROM customer_order
+    WHERE id=#{id} AND customer_id=#{customerId}
+  </select>
+  <select id="searchOwned" resultType="com.serviceflow.model.OrderModels$Order">
+    SELECT o.id,o.order_no,o.customer_id,o.status,o.total_amount,o.version,o.created_at
+    FROM customer_order o WHERE o.customer_id=#{customerId}
+    <if test="status != null">AND o.status=#{status}</if>
+    <if test="from != null">AND o.created_at &gt;= #{from}</if>
+    <if test="until != null">AND o.created_at &lt; #{until}</if>
+    <if test="keyword != null">
+      AND (LOCATE(#{keyword},o.order_no)&gt;0 OR EXISTS (
+        SELECT 1 FROM order_item i JOIN product p ON p.id=i.product_id
+        WHERE i.order_id=o.id AND (
+          LOCATE(#{keyword},p.name)&gt;0 OR LOCATE(#{keyword},p.model)&gt;0
+          OR LOCATE(#{keyword},p.sku)&gt;0 OR p.category=#{category}
+        )
+      ))
+    </if>
+    <if test="cursor != null">
+      AND (o.created_at &lt; #{cursor.createdAt}
+        OR (o.created_at=#{cursor.createdAt} AND o.id &lt; #{cursor.id}))
+    </if>
+    ORDER BY o.created_at DESC,o.id DESC LIMIT #{limit}
+  </select>
+  <select id="itemsForOrders" resultType="com.serviceflow.model.OrderModels$ItemRow">
+    SELECT i.order_id,p.sku,p.name AS product_name,i.quantity,i.unit_price
+    FROM order_item i JOIN product p ON p.id=i.product_id WHERE i.order_id IN
+    <foreach collection="orderIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+    ORDER BY i.order_id,i.id
+  </select>
   <select id="payment" resultType="com.serviceflow.model.OrderModels$Payment">
     SELECT status, refund_status, paid_at, refund_requested_at FROM payment WHERE order_id=#{orderId}
   </select>

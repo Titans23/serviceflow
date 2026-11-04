@@ -174,6 +174,65 @@ class ServiceFlowIntegrationIT {
     }
 
     @Test
+    void orderSearchFiltersAndPagesWithoutLeakingAnotherCustomersOrders(
+            @Autowired com.serviceflow.security.JwtService jwt) {
+        var owner = chatPrincipal(false);
+        var other = chatPrincipal(false);
+        long first = searchOrder(owner.customerId(), "PAID", "2026-11-02 16:00:00");
+        long second = searchOrder(owner.customerId(), "PAID", "2026-11-02 16:00:00");
+        searchOrder(owner.customerId(), "SHIPPED", "2026-11-03 16:00:00");
+        long foreign = searchOrder(other.customerId(), "PAID", "2026-11-02 16:00:00");
+        var day = java.time.LocalDate.of(2026, 11, 3);
+        var query = new OrderModels.Search("手机", "PAID", day, day);
+        var page = orders.search(owner.customerId(), query, null, 1);
+        assertThat(page.nextCursor()).isEqualTo(second);
+        assertThat(page.items()).hasSize(1);
+        assertThat(page.items().getFirst().items()).hasSize(2);
+        var rest = orders.search(owner.customerId(), query, page.nextCursor(), 1);
+        assertThat(rest.items()).hasSize(1);
+        assertThat(rest.nextCursor()).isNull();
+        assertThat(rest.items().getFirst().orderNo())
+                .isNotEqualTo(page.items().getFirst().orderNo());
+        assertThat(orders.search(owner.customerId(), new OrderModels.Search("%", null, null, null), null, 10)
+                        .items())
+                .isEmpty();
+        assertThatThrownBy(() -> orders.search(owner.customerId(), query, foreign, 1))
+                .hasMessageContaining("400");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt.issueUser(new com.serviceflow.model.AuthModels.User(
+                        123, "search-test", "", "CUSTOMER", owner.customerId(), true))
+                .accessToken());
+        var httpPage = http.exchange(
+                "/orders?status=PAID&from=2026-11-03&to=2026-11-03&size=1",
+                GET,
+                new HttpEntity<>(headers),
+                OrderModels.Page.class);
+        assertThat(httpPage.getStatusCode()).isEqualTo(OK);
+        assertThat(httpPage.getBody().nextCursor()).isEqualTo(second);
+        var guest = http.postForObject("/auth/guest", null, TokenResponse.class);
+        headers.setBearerAuth(guest.accessToken());
+        assertThat(http.exchange("/orders", GET, new HttpEntity<>(headers), String.class)
+                        .getStatusCode()
+                        .value())
+                .isEqualTo(403);
+        assertThat(first).isLessThan(second);
+    }
+
+    private long searchOrder(long customerId, String status, String createdAt) {
+        String no = "SFSEARCH" + UUID.randomUUID();
+        jdbc.update(
+                "INSERT INTO customer_order(order_no,customer_id,status,total_amount,created_at) VALUES(?,?,?,99,?)",
+                no,
+                customerId,
+                status,
+                createdAt);
+        long id = jdbc.queryForObject("SELECT id FROM customer_order WHERE order_no=?", Long.class, no);
+        jdbc.update(
+                "INSERT INTO order_item(order_id,product_id,quantity,unit_price) VALUES(?,1,1,49),(?,2,1,50)", id, id);
+        return id;
+    }
+
+    @Test
     void duplicateCancellationReadsCommittedResultDespiteAnOlderSnapshot() {
         String orderNo = "SF-RACE-" + UUID.randomUUID();
         String requestId = UUID.randomUUID().toString();

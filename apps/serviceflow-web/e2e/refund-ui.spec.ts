@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test('customer can refresh a failed refund into its completed state', async ({ page }) => {
+  await page.route('**/api/orders?*', (route) => route.fulfill({ json: { items: [], nextCursor: null } }))
   await page.addInitScript(() => {
     sessionStorage.setItem('serviceflow_token', 'ui-fixture')
     sessionStorage.setItem('serviceflow_role', 'CUSTOMER')
