@@ -6,9 +6,11 @@ import static org.mockito.Mockito.*;
 
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.infrastructure.redis.ChatMemory;
+import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ChatModels;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.security.CurrentPrincipal;
+import com.serviceflow.service.ActionDecisionService;
 import com.serviceflow.service.OrderService;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -25,7 +27,8 @@ class OrderConversationTest {
     private final AiGateway ai = mock(AiGateway.class);
     private final OrderService orders = mock(OrderService.class);
     private final ChatMemory memory = mock(ChatMemory.class);
-    private final OrderConversation conversation = new OrderConversation(ai, orders, memory);
+    private final ActionDecisionService actions = mock(ActionDecisionService.class);
+    private final OrderConversation conversation = new OrderConversation(ai, orders, memory, actions);
     private final AtomicReference<ChatMemory.OrderCandidates> pending = new AtomicReference<>();
     private final AtomicReference<String> active = new AtomicReference<>();
     private final List<Map.Entry<String, Object>> events = new ArrayList<>();
@@ -61,7 +64,7 @@ class OrderConversationTest {
                 .clearActiveOrder("owner", "session");
         when(orders.get(anyString(), eq(7L))).thenAnswer(call -> view(call.getArgument(0)));
         when(orders.canCancel(anyString(), eq(7L))).thenReturn(true);
-        when(memory.putAction(any())).thenReturn("pending-action");
+        when(actions.prepare(any(), any())).thenReturn("pending-action");
     }
 
     @Test
@@ -84,11 +87,11 @@ class OrderConversationTest {
                                 "耳机", null, java.time.LocalDate.of(2026, 11, 3), java.time.LocalDate.of(2026, 11, 3)),
                         null,
                         10);
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
         assertThat(pending.get().cancellation()).isTrue();
         assertThat(run(state("第二笔")).answer()).contains("二次确认");
-        var capture = org.mockito.ArgumentCaptor.forClass(ChatMemory.PendingAction.class);
-        verify(memory).putAction(capture.capture());
+        var capture = org.mockito.ArgumentCaptor.forClass(ChatActionModels.Pending.class);
+        verify(actions).prepare(capture.capture(), any());
         assertThat(capture.getValue().orderNo()).isEqualTo(SECOND);
         assertThat(active.get()).isEqualTo(SECOND);
         assertThat(pending.get()).isNull();
@@ -130,9 +133,9 @@ class OrderConversationTest {
         pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST)), false, true));
         assertThat(run(state("查询 " + SECOND)).answer()).contains(SECOND);
         assertThat(active.get()).isEqualTo(SECOND);
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
         assertThat(run(state("不要取消 " + FIRST)).answer()).contains(FIRST);
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
     }
 
     @Test
@@ -147,7 +150,7 @@ class OrderConversationTest {
         plan(new AiGateway.OrderPlan(
                 AiGateway.OrderTool.READ_CURRENT, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
         assertThat(run(state("取消它")).answer()).contains("告诉我");
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
     }
 
     @Test
@@ -164,7 +167,7 @@ class OrderConversationTest {
         pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST)), false, true));
         assertThat(run(state("第二笔")).answer()).contains("不能确定");
         verify(orders, never()).search(anyLong(), any(), any(), anyInt());
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
     }
 
     @Test
@@ -173,7 +176,7 @@ class OrderConversationTest {
         plan(new AiGateway.OrderPlan(
                 AiGateway.OrderTool.SELECT_CANDIDATE, AiGateway.OrderPurpose.QUERY, null, null, null, null, 2));
         assertThat(run(state("先别取消，查便宜的那笔")).answer()).contains(SECOND);
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
     }
 
     @Test
@@ -182,7 +185,7 @@ class OrderConversationTest {
         assertThat(run(state("取消 " + FIRST)).answer()).contains("不能直接取消");
         var guest = new ServiceFlowState("guest", new CurrentPrincipal("guest", "GUEST", null), "查订单", null);
         assertThat(run(guest).answer()).contains("登录");
-        verify(memory, never()).putAction(any());
+        verify(actions, never()).prepare(any(), any());
     }
 
     private void plan(AiGateway.OrderPlan plan) {

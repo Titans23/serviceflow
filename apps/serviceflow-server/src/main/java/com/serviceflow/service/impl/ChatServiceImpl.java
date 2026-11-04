@@ -135,6 +135,7 @@ public final class ChatServiceImpl implements ChatService {
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
                 if ("order".equals(name)) businessMetadata.put("order", data);
                 if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
+                if ("action_required".equals(name)) businessMetadata.put("action", data);
                 events.send(emitter, name, data);
             });
             if (state.productIds().size() == 1) {
@@ -288,6 +289,7 @@ public final class ChatServiceImpl implements ChatService {
             if (metadata.hasNonNull("order")) events.send(emitter, "order", metadata.get("order"));
             if (metadata.hasNonNull("orderCandidates"))
                 events.send(emitter, "order_selection_required", metadata.get("orderCandidates"));
+            if (metadata.hasNonNull("action")) events.send(emitter, "action_required", metadata.get("action"));
         } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
             // Historical messages may not contain valid business metadata; their saved text remains replayable.
         }

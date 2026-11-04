@@ -10,7 +10,6 @@ import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.model.RefundModels;
 import com.serviceflow.security.CurrentPrincipal;
-import com.serviceflow.service.ChatActionService;
 import com.serviceflow.service.ChatSessionService;
 import com.serviceflow.service.OrderService;
 import com.serviceflow.service.RefundService;
@@ -132,12 +131,18 @@ class ServiceFlowIntegrationIT {
             boolean guest,
             @Autowired ChatSessionService sessions,
             @Autowired ChatMemory memory,
-            @Autowired ChatActionService actions) {
+            @Autowired com.serviceflow.service.ActionDecisionService decisions) {
         CurrentPrincipal owner = chatPrincipal(guest);
         CurrentPrincipal other = chatPrincipal(guest);
         String first = sessions.create(owner, "first").publicId();
         String second = sessions.create(owner, "second").publicId();
         String foreign = sessions.create(other, "other").publicId();
+        String pendingAction = guest
+                ? null
+                : decisions.prepare(
+                        new com.serviceflow.model.ChatActionModels.Pending(
+                                "CREATE_TICKET", owner.subject(), owner.customerId(), first, null, "help"),
+                        UUID.randomUUID().toString());
         if (guest) {
             memory.append(owner.subject(), first, "USER", "history");
         } else {
@@ -153,10 +158,8 @@ class ServiceFlowIntegrationIT {
         assertThat(sessions.list(owner)).extracting("publicId").containsExactly(second);
         assertThatThrownBy(() -> sessions.messages(owner, first)).hasMessageContaining("404");
         if (!guest) {
-            String actionId = memory.putAction(new ChatMemory.PendingAction(
-                    "CREATE_TICKET", owner.subject(), owner.customerId(), first, null, "help"));
-            assertThatThrownBy(() -> actions.confirm(owner, actionId, "CONFIRM", null))
-                    .hasMessageContaining("404");
+            assertThat(decisions.decide(owner, pendingAction, "CONFIRM").actionStatus())
+                    .isEqualTo("INVALIDATED");
         }
         sessions.deleteSessions(owner, null);
         sessions.deleteSessions(owner, null);
@@ -464,6 +467,118 @@ class ServiceFlowIntegrationIT {
         Long id = jdbc.queryForObject("SELECT id FROM customer_order WHERE order_no=?", Long.class, orderNo);
         jdbc.update("INSERT INTO payment(order_id,status,refund_status) VALUES (?,?,'NONE')", id, paymentStatus);
         return orderNo;
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"DUPLICATE", "CONFIRM_REJECT", "DIFFERENT_ACTIONS"})
+    void durableActionRacesHaveOneDecisionAndOneRefund(
+            String scenario,
+            @Autowired com.serviceflow.service.ActionDecisionService decisions,
+            @Autowired ChatSessionService sessions)
+            throws Exception {
+        var owner = new CurrentPrincipal("action-owner", "CUSTOMER", 1L);
+        String session = sessions.create(owner, scenario).publicId();
+        int rejected = 0;
+        for (int round = 0; round < 100; round++) {
+            String no = newOrder("PAID");
+            var pending = new com.serviceflow.model.ChatActionModels.Pending(
+                    "CANCEL_ORDER", owner.subject(), 1, session, no, "取消订单");
+            String source = UUID.randomUUID().toString();
+            String first = decisions.prepare(pending, source);
+            assertThat(decisions.prepare(pending, source)).isEqualTo(first);
+            String second = "DIFFERENT_ACTIONS".equals(scenario)
+                    ? decisions.prepare(pending, UUID.randomUUID().toString())
+                    : first;
+            var start = new java.util.concurrent.CountDownLatch(1);
+            int count = "DUPLICATE".equals(scenario) ? 20 : 2;
+            var results = new java.util.ArrayList<com.serviceflow.model.ChatActionModels.Result>();
+            try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+                var futures = new java.util.ArrayList<
+                        java.util.concurrent.Future<com.serviceflow.model.ChatActionModels.Result>>();
+                for (int i = 0; i < count; i++) {
+                    String id = i == 0 ? first : second;
+                    String decision = "CONFIRM_REJECT".equals(scenario) && i == 1 ? "REJECT" : "CONFIRM";
+                    futures.add(executor.submit(() -> {
+                        start.await();
+                        return decisions.decide(owner, id, decision);
+                    }));
+                }
+                start.countDown();
+                for (var future : futures) results.add(future.get(30, java.util.concurrent.TimeUnit.SECONDS));
+            }
+            if (!"DIFFERENT_ACTIONS".equals(scenario))
+                assertThat(results)
+                        .extracting(com.serviceflow.model.ChatActionModels.Result::actionStatus)
+                        .containsOnly(results.getFirst().actionStatus());
+            var result = decisions.result(owner, first);
+            assertThat(decisions.decide(owner, first, "REJECT").actionStatus()).isEqualTo(result.actionStatus());
+            boolean cancelled = !"REJECTED".equals(result.actionStatus());
+            if (!cancelled) rejected++;
+            assertThat(orders.get(no, 1).status()).isEqualTo(cancelled ? "CANCELLED" : "PAID");
+            assertThat(jdbc.queryForObject(
+                            "SELECT COUNT(*) FROM refund_request WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                            Integer.class,
+                            no))
+                    .isEqualTo(cancelled ? 1 : 0);
+            assertThat(jdbc.queryForObject(
+                            "SELECT COUNT(*) FROM order_operation WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                            Integer.class,
+                            no))
+                    .isEqualTo(cancelled ? 1 : 0);
+        }
+        System.out.println("ACTION_RACE_PASS scenario=" + scenario + " rounds=100 rejected=" + rejected);
+    }
+
+    @Test
+    void durableActionsRejectExpiredForeignAndChangedOrdersAndRollbackTogether(
+            @Autowired com.serviceflow.service.ActionDecisionService decisions,
+            @Autowired ChatSessionService sessions) {
+        var owner = new CurrentPrincipal("action-boundary", "CUSTOMER", 1L);
+        String session = sessions.create(owner, "action-boundaries").publicId();
+        for (String boundary : java.util.List.of("EXPIRED", "SHIPPED", "VERSION", "REJECT", "ROLLBACK", "FOREIGN")) {
+            String no = newOrder("PAID");
+            String id = decisions.prepare(
+                    new com.serviceflow.model.ChatActionModels.Pending(
+                            "CANCEL_ORDER", owner.subject(), 1, session, no, boundary),
+                    UUID.randomUUID().toString());
+            switch (boundary) {
+                case "EXPIRED" -> jdbc.update(
+                        "UPDATE chat_action SET expires_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE public_id=?", id);
+                case "SHIPPED" -> jdbc.update("UPDATE customer_order SET status='SHIPPED' WHERE order_no=?", no);
+                case "VERSION" -> jdbc.update("UPDATE customer_order SET version=version+1 WHERE order_no=?", no);
+                case "REJECT" -> decisions.decide(owner, id, "REJECT");
+                case "ROLLBACK" -> jdbc.update(
+                        "UPDATE payment SET refund_status='FAILED' WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                        no);
+                case "FOREIGN" -> {
+                    assertThatThrownBy(() -> decisions.decide(chatPrincipal(false), id, "CONFIRM"))
+                            .hasMessageContaining("404");
+                    assertThat(decisions.result(owner, id).actionStatus()).isEqualTo("PENDING");
+                    continue;
+                }
+                default -> throw new AssertionError();
+            }
+            if ("ROLLBACK".equals(boundary)) {
+                assertThatThrownBy(() -> decisions.decide(owner, id, "CONFIRM")).hasMessageContaining("409");
+                assertThat(decisions.result(owner, id).actionStatus()).isEqualTo("PENDING");
+                assertThat(orders.get(no, 1).status()).isEqualTo("PAID");
+                assertThat(jdbc.queryForObject(
+                                "SELECT COUNT(*) FROM order_operation WHERE request_id=?", Integer.class, id))
+                        .isZero();
+            } else {
+                String expected =
+                        switch (boundary) {
+                            case "EXPIRED" -> "EXPIRED";
+                            case "SHIPPED" -> "NOT_CANCELLABLE";
+                            case "VERSION" -> "CONFLICT";
+                            default -> "REJECTED";
+                        };
+                assertThat(decisions.decide(owner, id, "CONFIRM").operation().resultCode())
+                        .isEqualTo(expected);
+                assertThat(decisions.result(owner, id).operation().resultCode()).isEqualTo(expected);
+            }
+            assertThat(orders.get(no, 1).refund()).isNull();
+        }
     }
 
     private RefundModels.SandboxEvent refundEvent(int attempt, String outcome, String reason) {

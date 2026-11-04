@@ -123,7 +123,7 @@ test('committed cancellation survives reload with one confirmation and clears it
   })
 })
 
-test('404 stays unknown across reload and navigation without blocking consultation', async ({
+test('durable PENDING stays unconfirmed across reload and navigation without blocking consultation', async ({
   page,
   request,
 }) => {
@@ -133,7 +133,7 @@ test('404 stays unknown across reload and navigation without blocking consultati
     reads = 0
   page.on('response', (r) => {
     if (r.url().endsWith('/result')) {
-      expect(r.status()).toBe(404)
+      expect(r.status()).toBe(200)
       reads++
     }
   })
@@ -143,17 +143,17 @@ test('404 stays unknown across reload and navigation without blocking consultati
   })
   const firstRead = page.waitForResponse((r) => r.url().endsWith('/result'))
   await askToCancel(page, order)
-  expect((await firstRead).status()).toBe(404)
+  expect((await (await firstRead).json()).actionStatus).toBe('PENDING')
   await expect(page.getByRole('button', { name: '再次核验结果' })).toBeVisible()
   const saved = await page.evaluate((k) => sessionStorage.getItem(k), key)
   const reloadRead = page.waitForResponse((r) => r.url().endsWith('/result'))
   await page.reload()
-  expect((await reloadRead).status()).toBe(404)
+  expect((await (await reloadRead).json()).actionStatus).toBe('PENDING')
   await expect(page.getByRole('button', { name: '再次核验结果' })).toBeVisible()
   await page.goto('/products')
   const returnRead = page.waitForResponse((r) => r.url().endsWith('/result'))
   await page.goto('/chat')
-  expect((await returnRead).status()).toBe(404)
+  expect((await (await returnRead).json()).actionStatus).toBe('PENDING')
   await expect(page.getByRole('button', { name: '再次核验结果' })).toBeVisible()
   expect(await page.evaluate((k) => sessionStorage.getItem(k), key)).toBe(saved)
   await page.getByRole('button', { name: '新建会话', exact: true }).click()

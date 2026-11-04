@@ -10,8 +10,8 @@ Spring Boot 3.5 (MVC + Virtual Threads)
   ├─ CustomerWorkflow (LangGraph4j 确定性路由)
   ├─ Spring AI StreamingChatModel + EmbeddingModel接口
   ├─ Milvus Hybrid RAG + 百炼 Reranker 适配器
-  ├─ MySQL 8.4 (事实、订单、正式会话、幂等、Outbox)
-  ├─ Redis 7 (限流、近期记忆、当前商品/订单、待确认动作、Checkpoint)
+  ├─ MySQL 8.4 (事实、订单、正式会话、确认决定、幂等、Outbox)
+  ├─ Redis 7 (限流、近期记忆、当前商品/订单、候选订单、Checkpoint)
   └─ RabbitMQ 4 (知识入库事件 + DLQ)
 
 Prometheus ── Grafana（observability profile）
@@ -43,9 +43,11 @@ Jaeger <── OTLP Trace（observability profile）
 
 ## 确认执行与未知结果
 
-`CustomerWorkflow.order`只生成绑定客户、会话和订单的PendingAction；`ChatActionServiceImpl.confirm`只从服务端动作取参数并复核身份。`OrderServiceImpl.cancel`先查归属，再查历史操作；唯一键冲突后使用`FOR SHARE`当前读，避免MySQL REPEATABLE READ旧快照漏掉已提交结果。条件更新订单、设置支付退款状态、创建等额唯一退款请求及完成账本在同一事务中提交。
+`OrderConversation`生成绑定客户、会话、订单版本和来源请求的 `chat_action`，有效期 10 分钟。同一请求重复准备返回同一动作。`ActionDecisionService.decide`通过 `SELECT ... FOR UPDATE` 串行裁决同一动作的确认与放弃，取得会话共享锁以与逻辑删除排序，再复核订单版本和可取消状态。动作最终结果、订单条件更新、支付退款状态、唯一退款请求和操作账本在同一事务提交。SSE 返回在事务提交后开始，传输失败不回滚已经生效的业务，也不自动重做。
 
-确认响应缺失时，浏览器通过`GET /chat/actions/{id}/result`查本人持久账本与订单，缓存过期也可核验已提交结果；404保持未知，不自动重发确认。退款沙箱按eventId/attemptNo/金额及终态约束回调与重试。sessionStorage只是身份分区的关联线索，Checkpoint不是退款执行凭证。
+结果接口可以读取 PENDING、CONFIRMED、REJECTED、EXPIRED、INVALIDATED、CONFLICT；PENDING 仍表示尚未取得最终结果，不能据此自动重发。确认胜出后再放弃、放弃胜出后再确认，都返回第一次裁决。历史的迁移前取消账本仍可查询；迁移前仅存在 Redis 中的未确认卡片需要重新发起申请。
+
+确认或放弃响应缺失时，浏览器通过`GET /chat/actions/{id}/result`查本人持久决定与订单；404、PENDING 或网络异常保留待核验标识，不自动重发决定。历史确认卡恢复时先查询动作状态，只有有效 PENDING 卡能继续显示。退款沙箱按eventId/attemptNo/金额及终态约束回调与重试。sessionStorage只是身份分区的关联线索，Checkpoint不是退款执行凭证。
 
 ## 知识入库时序
 

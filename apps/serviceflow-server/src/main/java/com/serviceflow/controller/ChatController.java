@@ -5,8 +5,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import com.serviceflow.exception.ErrorCode;
 import com.serviceflow.exception.ServiceFlowException;
 import com.serviceflow.infrastructure.redis.GuestRateLimiter;
+import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ChatModels;
-import com.serviceflow.model.OrderModels;
 import com.serviceflow.security.CurrentPrincipal;
 import com.serviceflow.service.ChatActionService;
 import com.serviceflow.service.ChatService;
@@ -103,7 +103,7 @@ public final class ChatController {
     }
 
     @GetMapping("/actions/{actionId}/result")
-    OrderModels.CancellationResult actionResult(@PathVariable String actionId, Authentication authentication) {
+    ChatActionModels.Result actionResult(@PathVariable String actionId, Authentication authentication) {
         return actions.result(CurrentPrincipal.from(authentication), actionId);
     }
 

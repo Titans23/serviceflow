@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.mapper.ChatActionMapper">
+  <sql id="columns">public_id,customer_id,subject,session_public_id,source_request_id,action_type,order_no,order_version,query,status,result_code,result_message,expires_at</sql>
+  <insert id="insert">
+    INSERT IGNORE INTO chat_action(public_id,customer_id,subject,session_public_id,source_request_id,action_type,order_no,order_version,query,expires_at)
+    VALUES(#{publicId},#{customerId},#{subject},#{sessionPublicId},#{sourceRequestId},#{actionType},#{orderNo},#{orderVersion},#{query},#{expiresAt})
+  </insert>
+  <select id="find" resultType="com.serviceflow.model.ChatActionModels$Action">
+    SELECT <include refid="columns"/> FROM chat_action WHERE public_id=#{id} AND customer_id=#{customerId}
+  </select>
+  <select id="lock" resultType="com.serviceflow.model.ChatActionModels$Action" useCache="false" flushCache="true">
+    SELECT <include refid="columns"/> FROM chat_action WHERE public_id=#{id} AND customer_id=#{customerId} FOR UPDATE
+  </select>
+  <select id="byRequest" resultType="com.serviceflow.model.ChatActionModels$Action" useCache="false" flushCache="true">
+    SELECT <include refid="columns"/> FROM chat_action
+    WHERE customer_id=#{customerId} AND session_public_id=#{sessionId} AND source_request_id=#{requestId} AND action_type=#{type} FOR SHARE
+  </select>
+  <select id="lockSession" resultType="long">
+    SELECT id FROM chat_session WHERE public_id=#{sessionId} AND customer_id=#{customerId} AND deleted_at IS NULL FOR SHARE
+  </select>
+  <update id="finish">
+    UPDATE chat_action SET status=#{status},result_code=#{code},result_message=#{message},decided_at=CURRENT_TIMESTAMP(6)
+    WHERE public_id=#{id} AND status='PENDING'
+  </update>
+</mapper>

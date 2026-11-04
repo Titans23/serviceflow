@@ -185,7 +185,9 @@ class BusinessRun:
         self.check('model routed to ORDER_QUERY', response['events'].get('meta', {}).get('intent') == 'ORDER_QUERY')
         self.check('pending confirmation received', action.get('actionType') == 'CANCEL_ORDER' and 'done' in response['events'])
         identifier = action['actionId']; uuid.UUID(identifier)
-        stored = json.loads(self.command('exec', 'serviceflow-cloud-eval-redis-1', 'redis-cli', 'GET', 'chat:action:' + identifier))
+        stored = json.loads(self.sql("SELECT JSON_OBJECT('actionType',action_type,'subject',subject,"
+            "'customerId',customer_id,'sessionId',session_public_id,'orderNo',order_no) FROM chat_action WHERE public_id="
+            + sql_string(identifier) + ";"))
         token_payload = self.client.token('customer').split('.')[1]
         claims = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
         expected = {'actionType': 'CANCEL_ORDER', 'subject': claims['sub'], 'customerId': claims['customerId'],
@@ -210,7 +212,7 @@ class BusinessRun:
 
     def evict(self, action):
         uuid.UUID(action)
-        self.check('evict only this synthetic action key', self.command('exec', 'serviceflow-cloud-eval-redis-1', 'redis-cli', 'DEL', 'chat:action:' + action) == '1')
+        self.check('durable decision independent of Redis action cache', self.command('exec', 'serviceflow-cloud-eval-redis-1', 'redis-cli', 'DEL', 'chat:action:' + action) in ('0', '1'))
 
     def happy_replay(self):
         session = self.session()
@@ -278,13 +280,16 @@ class BusinessRun:
         session = self.session(); pending, _ = self.chat(session, 0)
         action = self.action(pending, session)
         self.check('explicit rejection completes', 'done' in self.confirm(action, decision='REJECT')['events'])
-        self.check('rejected action cannot execute or recover a result', denied(self.confirm(action)) and self.result(action)['status'] == 404)
+        self.check('rejection is durable and cannot be reversed', self.confirm(action)['events'].get('done', {}).get('resultCode') == 'REJECTED'
+                   and self.result(action)['body'].get('actionStatus') == 'REJECTED')
         self.check('rejection has zero side effects', self.untouched(), True)
 
     def expired(self):
         session = self.session(); pending, _ = self.chat(session, 0)
-        action = self.action(pending, session); self.evict(action)
-        self.check('missing action remains unknown and non-executable', self.result(action)['status'] == 404 and denied(self.confirm(action)))
+        action = self.action(pending, session)
+        self.sql("UPDATE chat_action SET expires_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE public_id=" + sql_string(action) + ";")
+        self.check('expired decision is queryable and non-executable', self.result(action)['body'].get('actionStatus') == 'EXPIRED'
+                   and self.confirm(action)['events'].get('done', {}).get('resultCode') == 'EXPIRED')
         self.check('expired action has zero side effects', self.untouched(), True)
 
     def lost_response(self):

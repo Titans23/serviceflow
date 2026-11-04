@@ -1,0 +1,20 @@
+CREATE TABLE chat_action (
+  public_id CHAR(36) PRIMARY KEY,
+  customer_id BIGINT NOT NULL,
+  subject VARCHAR(160) NOT NULL,
+  session_public_id CHAR(36) NOT NULL,
+  source_request_id CHAR(36) NOT NULL,
+  action_type VARCHAR(32) NOT NULL,
+  order_no VARCHAR(64),
+  order_version INT,
+  query TEXT NOT NULL,
+  status VARCHAR(24) NOT NULL DEFAULT 'PENDING',
+  result_code VARCHAR(40),
+  result_message VARCHAR(500),
+  expires_at TIMESTAMP(6) NOT NULL,
+  created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  decided_at TIMESTAMP(6),
+  CONSTRAINT fk_action_customer FOREIGN KEY(customer_id) REFERENCES customer(id),
+  UNIQUE KEY uk_action_request(customer_id,session_public_id,source_request_id,action_type),
+  INDEX idx_action_session(customer_id,session_public_id,created_at)
+);

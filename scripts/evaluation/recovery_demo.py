@@ -84,7 +84,8 @@ def main():
     def result(action, role='customer'):
         return client.request('GET', f'/chat/actions/{action}/result', principal=role)
     def evict(action):
-        check('evict only synthetic action', docker('exec','serviceflow-eval-redis-1','redis-cli','DEL','chat:action:'+action) == '1')
+        removed = docker('exec','serviceflow-eval-redis-1','redis-cli','DEL','chat:action:'+action)
+        check('action result independent of Redis action cache', removed in ('0','1'))
     action = pending('lost-response')
     write_json(output / 'actions.raw.json', {'lost-response': action})
     # This proxy consumes the upstream confirmation, then closes without returning any response to its client.
@@ -146,11 +147,15 @@ def main():
         check('unauthorized attempts changed nothing', state('lost-response')==committed)
         for name in ('unconfirmed','expired','rejected'):
             key=pending(name)
-            if name=='expired': evict(key)
+            if name=='expired':
+                uuid.UUID(key)
+                sql("UPDATE chat_action SET expires_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE public_id='" + key + "';")
             if name=='rejected': confirm(key,decision='REJECT')
-            check(name+': read cannot initiate execution', result(key)['status']==404 and state(name)['operations']=='0')
+            expected = {'unconfirmed':'PENDING','expired':'EXPIRED','rejected':'REJECTED'}[name]
+            observed = result(key)
+            check(name+': read cannot initiate execution', observed['status']==200 and observed['body']['actionStatus']==expected and state(name)['operations']=='0')
             if name!='unconfirmed':
-                check(name+': stale confirmation is not executable', 'error' in confirm(key)['events'] and state(name)['operations']=='0')
+                check(name+': stale confirmation is not executable', confirm(key)['events'].get('done',{}).get('resultCode')==expected and state(name)['operations']=='0')
         concurrent=pending('concurrent')
         check('other customer cannot confirm pending action', 'error' in confirm(concurrent,'other')['events'] and state('concurrent')['operations']=='0')
         with ThreadPoolExecutor(max_workers=2) as pool:

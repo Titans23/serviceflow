@@ -63,6 +63,7 @@ async function select(id: string, useEntryHint = false) {
       const metadata = JSON.parse(message.metadataJson || '{}')
       message.orderCandidates = metadata.orderCandidates
       message.order = metadata.order
+      message.action = metadata.action
     } catch {
       /* Older messages may have no structured business metadata. */
     }
@@ -77,6 +78,21 @@ async function select(id: string, useEntryHint = false) {
   messages.value = history
   input.value = ''
   action.value = null
+  const savedAction = [...history].reverse().find((message) => message.action)?.action
+  if (
+    savedAction &&
+    !confirmationUnknown.value &&
+    savedAction.actionId !== recoveredCancellation.value?.operation.requestId
+  ) {
+    try {
+      const result = await api<any>(
+        `/chat/actions/${encodeURIComponent(savedAction.actionId)}/result`,
+      )
+      if (result.actionStatus === 'PENDING') action.value = savedAction
+    } catch {
+      // An old or inaccessible card is never treated as permission to execute.
+    }
+  }
   await router.replace({
     query: {
       ...route.query,
@@ -180,7 +196,10 @@ async function send(orderSelection?: { queryId: string; orderNo: string }) {
           if (route.path === '/chat' && route.query.sessionId === sourceSession)
             void router.replace({ query: { ...route.query, orderNo: undefined } })
         }
-        if (name === 'action_required') action.value = data
+        if (name === 'action_required') {
+          action.value = data
+          assistant.action = data
+        }
         if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
         if (name === 'error') throw new Error(data.message)
         nextTick(scroll)
@@ -206,7 +225,7 @@ async function confirm(decision: string) {
   const sourceSession = current.value
   const owner = currentCancellationOwner()
   const marker: PendingCancellation | undefined =
-    decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER' && owner
+    pending.actionType === 'CANCEL_ORDER' && owner
       ? {
           version: 1,
           owner,
@@ -215,7 +234,7 @@ async function confirm(decision: string) {
           sessionId: sourceSession,
         }
       : undefined
-  if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+  if (pending.actionType === 'CANCEL_ORDER') {
     recoveryStorageWarning.value =
       marker && savePendingCancellation(marker)
         ? ''
@@ -237,14 +256,14 @@ async function confirm(decision: string) {
     if (!completed) throw new Error('确认响应未完整接收')
     if (currentCancellationOwner() !== owner) return
     action.value = null
-    if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+    if (pending.actionType === 'CANCEL_ORDER') {
       assistant.order = await api(`/orders/${encodeURIComponent(pending.orderNo)}`)
       if (marker && !clearPendingCancellation(marker))
         recoveryStorageWarning.value =
           '操作已完成，但待核验记录清理失败；下次可能再次只读核验，不会重复取消。'
     }
   } catch (error) {
-    if (decision === 'CONFIRM' && pending.actionType === 'CANCEL_ORDER') {
+    if (pending.actionType === 'CANCEL_ORDER') {
       if (currentCancellationOwner() !== owner) return
       unverifiedAction.value = marker || {
         actionId: pending.actionId,
@@ -255,7 +274,7 @@ async function confirm(decision: string) {
       action.value = null
       pendingAssistant = assistant
       pendingSession = sourceSession
-      assistant.content = '确认响应不完整，操作结果待核验。'
+      assistant.content = '决定响应不完整，操作结果待核验。'
       confirmationUnknown.value = true
       await readCancellationResult()
     } else {
@@ -284,6 +303,7 @@ async function readCancellationResult() {
       return
     if (result.operation.requestId !== pending.actionId || result.order.orderNo !== pending.orderNo)
       throw new Error('恢复结果与待核验标识不匹配')
+    if (result.actionStatus === 'PENDING') throw new Error('尚未查到最终决定')
     recoveredCancellation.value = result
     recoveryStorageWarning.value = clearPendingCancellation(pending)
       ? ''
@@ -526,7 +546,7 @@ onMounted(() =>
               @click="confirm('CONFIRM')"
               >确认</el-button
             ><el-button :disabled="sending || confirmationUnknown" @click="confirm('REJECT')"
-              >取消</el-button
+              >放弃本次操作</el-button
             >
           </div>
         </div>

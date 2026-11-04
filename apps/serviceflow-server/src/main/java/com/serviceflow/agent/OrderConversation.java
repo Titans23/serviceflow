@@ -2,7 +2,9 @@ package com.serviceflow.agent;
 
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.infrastructure.redis.ChatMemory;
+import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.OrderModels;
+import com.serviceflow.service.ActionDecisionService;
 import com.serviceflow.service.OrderService;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -19,11 +21,13 @@ final class OrderConversation {
     private final AiGateway ai;
     private final OrderService orders;
     private final ChatMemory memory;
+    private final ActionDecisionService actions;
 
-    OrderConversation(AiGateway ai, OrderService orders, ChatMemory memory) {
+    OrderConversation(AiGateway ai, OrderService orders, ChatMemory memory, ActionDecisionService actions) {
         this.ai = ai;
         this.orders = orders;
         this.memory = memory;
+        this.actions = actions;
     }
 
     static boolean isSelection(String query) {
@@ -140,13 +144,15 @@ final class OrderConversation {
         events.accept("order", order);
         if (cancel) {
             if (!orders.canCancel(orderNo, customerId)) return answer("该订单已发货或结束，不能直接取消；可以咨询退货政策。");
-            String actionId = memory.putAction(new ChatMemory.PendingAction(
-                    "CANCEL_ORDER",
-                    state.principal().subject(),
-                    customerId,
-                    state.sessionId(),
-                    orderNo,
-                    state.query()));
+            String actionId = actions.prepare(
+                    new ChatActionModels.Pending(
+                            "CANCEL_ORDER",
+                            state.principal().subject(),
+                            customerId,
+                            state.sessionId(),
+                            orderNo,
+                            state.query()),
+                    state.clientRequestId());
             events.accept(
                     "action_required",
                     Map.of(

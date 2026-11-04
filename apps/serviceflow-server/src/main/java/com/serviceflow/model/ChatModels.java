@@ -38,7 +38,7 @@ public final class ChatModels {
 
     public record CreateSessionRequest(String title) {}
 
-    public record ConfirmRequest(@NotBlank String decision) {}
+    public record ConfirmRequest(@NotBlank @Pattern(regexp = "CONFIRM|REJECT") String decision) {}
 
     public record SseMeta(String intent, boolean degraded, List<String> citations) {}
 }

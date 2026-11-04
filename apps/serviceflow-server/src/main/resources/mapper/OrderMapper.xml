@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.OrderMapper">
+  <select id="lockOwned" resultType="com.serviceflow.model.OrderModels$Order" useCache="false" flushCache="true">
+    SELECT id,order_no,customer_id,status,total_amount,version,created_at FROM customer_order
+    WHERE order_no=#{orderNo} AND customer_id=#{customerId} FOR UPDATE
+  </select>
   <!-- 所有订单查询都在数据库层限定 customer_id，防止越权读取。 -->
   <select id="findOwned" resultType="com.serviceflow.model.OrderModels$Order">
     SELECT id, order_no, customer_id, status, total_amount, version, created_at FROM customer_order WHERE order_no=#{orderNo} AND customer_id=#{customerId}

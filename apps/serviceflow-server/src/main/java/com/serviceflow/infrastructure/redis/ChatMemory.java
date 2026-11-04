@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public final class ChatMemory {
 
     private static final Duration SESSION_TTL = Duration.ofMinutes(30);
-    private static final Duration ACTION_TTL = Duration.ofMinutes(10);
     private static final int MAX_HISTORY_SIZE = 20;
 
     private final StringRedisTemplate redis;
@@ -172,32 +171,6 @@ public final class ChatMemory {
         redis.delete(activeProductKey(subject, sessionId));
     }
 
-    public String putAction(PendingAction action) {
-        try {
-            String id = UUID.randomUUID().toString();
-            redis.opsForValue().set(actionKey(id), objectMapper.writeValueAsString(action), ACTION_TTL);
-            return id;
-        } catch (Exception exception) {
-            throw new IllegalStateException("Cannot store pending action", exception);
-        }
-    }
-
-    public PendingAction action(String id) {
-        String value = redis.opsForValue().get(actionKey(id));
-        if (value == null) {
-            return null;
-        }
-        try {
-            return objectMapper.readValue(value, PendingAction.class);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Cannot read pending action", exception);
-        }
-    }
-
-    public void removeAction(String id) {
-        redis.delete(actionKey(id));
-    }
-
     private Map<String, String> deserializeMessage(String value) {
         try {
             return objectMapper.readValue(value, new TypeReference<>() {});
@@ -229,13 +202,6 @@ public final class ChatMemory {
     private String activeProductKey(String subject, String sessionId) {
         return "chat:product:" + subject + ':' + sessionId;
     }
-
-    private String actionKey(String id) {
-        return "chat:action:" + id;
-    }
-
-    public record PendingAction(
-            String actionType, String subject, long customerId, String sessionId, String orderNo, String query) {}
 
     public record CompletedResponse(
             String messageId, String answer, String intent, List<String> citations, boolean degraded) {}

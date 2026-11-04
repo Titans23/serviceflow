@@ -53,6 +53,7 @@ test('committed cancellation with lost done is recovered through the real result
   })
   await page.goto('/chat')
   await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
+  reads = 0 // Initial history restoration may inspect an earlier action; fault accounting starts with this action.
   await page.getByRole('button', { name: '新建会话', exact: true }).click()
   await expect(page.locator('.message')).toHaveCount(0)
   await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill(`取消订单 ${orderNo}`)
@@ -113,7 +114,7 @@ test('committed cancellation with lost done is recovered through the real result
   )
 })
 
-test('unsubmitted confirmation and real 404 retain uncertainty without locking chat or retrying effects', async ({
+test('unsubmitted confirmation and durable PENDING retain uncertainty without locking chat or retrying effects', async ({
   page,
   request,
 }) => {
@@ -147,7 +148,9 @@ test('unsubmitted confirmation and real 404 retain uncertainty without locking c
   await page.getByRole('button', { name: '发送', exact: true }).click()
   const read = page.waitForResponse((response) => response.url().endsWith('/result'))
   await page.getByRole('button', { name: '确认', exact: true }).click()
-  expect((await read).status()).toBe(404) // Real authorization-scoped result lookup, not a mocked response.
+  const pendingResult = await read
+  expect(pendingResult.status()).toBe(200)
+  expect((await pendingResult.json()).actionStatus).toBe('PENDING')
   await expect(page.getByRole('button', { name: '再次核验结果' })).toBeVisible()
   await expect(page.getByRole('link', { name: '查看订单状态', exact: true })).toHaveAttribute(
     'href',
@@ -183,7 +186,8 @@ test('unsubmitted confirmation and real 404 retain uncertainty without locking c
       {
         realBackend: true,
         confirmationRequests: confirmations,
-        resultHttpStatus: 404,
+        resultHttpStatus: 200,
+        actionStatus: 'PENDING',
         automaticSideEffectRetries: 0,
         chatRemainsUsable: true,
         databaseState: state,

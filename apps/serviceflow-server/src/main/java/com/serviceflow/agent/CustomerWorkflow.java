@@ -8,10 +8,12 @@ import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.infrastructure.redis.ChatMemory;
+import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ProductModels;
 import com.serviceflow.model.TicketModels;
 import com.serviceflow.rag.RagService;
 import com.serviceflow.security.CurrentPrincipal;
+import com.serviceflow.service.ActionDecisionService;
 import com.serviceflow.service.OrderService;
 import com.serviceflow.service.ProductService;
 import com.serviceflow.service.TicketService;
@@ -58,6 +60,7 @@ public final class CustomerWorkflow {
     private final AiGateway ai;
     private final ProductService products;
     private final OrderConversation orderConversation;
+    private final ActionDecisionService actions;
     private final TicketService tickets;
     private final RagService rag;
     private final ChatMemory memory;
@@ -69,6 +72,7 @@ public final class CustomerWorkflow {
             AiGateway ai,
             ProductService products,
             OrderService orders,
+            ActionDecisionService actions,
             TicketService tickets,
             RagService rag,
             ChatMemory memory,
@@ -77,7 +81,8 @@ public final class CustomerWorkflow {
             StringRedisTemplate redis) {
         this.ai = ai;
         this.products = products;
-        this.orderConversation = new OrderConversation(ai, orders, memory);
+        this.orderConversation = new OrderConversation(ai, orders, memory, actions);
+        this.actions = actions;
         this.tickets = tickets;
         this.rag = rag;
         this.memory = memory;
@@ -449,13 +454,15 @@ public final class CustomerWorkflow {
             if (state.principal().guest()) {
                 return new Result("暂未找到可靠政策依据；如需人工协助，请先登录客户账号。", List.of());
             }
-            String actionId = memory.putAction(new ChatMemory.PendingAction(
-                    "CREATE_TICKET",
-                    state.principal().subject(),
-                    state.principal().requireCustomerId(),
-                    state.sessionId(),
-                    null,
-                    state.query()));
+            String actionId = actions.prepare(
+                    new ChatActionModels.Pending(
+                            "CREATE_TICKET",
+                            state.principal().subject(),
+                            state.principal().requireCustomerId(),
+                            state.sessionId(),
+                            null,
+                            state.query()),
+                    state.clientRequestId());
             events.accept(
                     "action_required",
                     Map.of(
