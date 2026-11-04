@@ -233,6 +233,70 @@ class ServiceFlowIntegrationIT {
     }
 
     @Test
+    void orderConversationPersistsCandidatesAndSelectsWithoutExecutingCancellation(
+            @Autowired com.serviceflow.security.JwtService jwt,
+            @Autowired com.fasterxml.jackson.databind.ObjectMapper json)
+            throws Exception {
+        var owner = chatPrincipal(false);
+        long first = searchOrder(owner.customerId(), "PAID", "2026-11-02 16:00:00");
+        long second = searchOrder(owner.customerId(), "PAID", "2026-11-02 16:00:00");
+        String firstNo = jdbc.queryForObject("SELECT order_no FROM customer_order WHERE id=?", String.class, first);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt.issueUser(new com.serviceflow.model.AuthModels.User(
+                        124, "conversation-test", "", "CUSTOMER", owner.customerId(), true))
+                .accessToken());
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+        var session = http.postForObject(
+                "/chat/sessions",
+                new HttpEntity<>(java.util.Map.of("title", "订单测试"), headers),
+                com.serviceflow.model.ChatModels.Session.class);
+        String path = "/chat/sessions/" + session.publicId() + "/messages";
+        String requestId = UUID.randomUUID().toString();
+        var query = new com.serviceflow.model.ChatModels.MessageRequest("我的手机订单帮我取消", requestId, null);
+        String response = http.postForObject(path + "/stream", new HttpEntity<>(query, headers), String.class);
+        assertThat(response).contains("order_selection_required").doesNotContain("action_required");
+        var history = http.exchange(
+                        path, GET, new HttpEntity<>(headers), com.serviceflow.model.ChatModels.Message[].class)
+                .getBody();
+        var candidates = json.readTree(history[1].metadataJson()).path("orderCandidates");
+        assertThat(candidates.path("items").size()).isEqualTo(2);
+        String queryId = candidates.path("queryId").asText();
+        var select = new com.serviceflow.model.ChatModels.MessageRequest(
+                "选择订单",
+                UUID.randomUUID().toString(),
+                null,
+                new com.serviceflow.model.ChatModels.OrderSelection(queryId, firstNo));
+        String selected = http.postForObject(path + "/stream", new HttpEntity<>(select, headers), String.class);
+        assertThat(selected).contains(firstNo).contains("action_required").contains("二次确认");
+        assertThat(jdbc.queryForObject("SELECT status FROM customer_order WHERE id=?", String.class, first))
+                .isEqualTo("PAID");
+        assertThat(jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM order_operation WHERE order_id IN (?,?)", Long.class, first, second))
+                .isZero();
+        assertThat(jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM refund_request WHERE order_id IN (?,?)", Long.class, first, second))
+                .isZero();
+        var followup = new com.serviceflow.model.ChatModels.MessageRequest(
+                "它的物流呢", UUID.randomUUID().toString(), null);
+        assertThat(http.postForObject(path + "/stream", new HttpEntity<>(followup, headers), String.class))
+                .contains(firstNo)
+                .doesNotContain("action_required");
+        // Replaying a completed request must retain its saved candidate cards without re-querying the model.
+        assertThat(http.postForObject(path + "/stream", new HttpEntity<>(query, headers), String.class))
+                .contains("order_selection_required")
+                .contains(queryId)
+                .contains("\"replayed\":true");
+        var stale = new com.serviceflow.model.ChatModels.MessageRequest(
+                "选择订单",
+                UUID.randomUUID().toString(),
+                null,
+                new com.serviceflow.model.ChatModels.OrderSelection(queryId, firstNo));
+        assertThat(http.postForObject(path + "/stream", new HttpEntity<>(stale, headers), String.class))
+                .contains("过期")
+                .doesNotContain("action_required");
+    }
+
+    @Test
     void duplicateCancellationReadsCommittedResultDespiteAnOlderSnapshot() {
         String orderNo = "SF-RACE-" + UUID.randomUUID();
         String requestId = UUID.randomUUID().toString();

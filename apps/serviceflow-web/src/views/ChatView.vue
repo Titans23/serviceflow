@@ -36,6 +36,8 @@ const auth = useAuthStore(),
 let pendingAssistant: any
 let pendingSession = ''
 let productId = route.query.productId ? Number(route.query.productId) : undefined
+let entryOrderNo = typeof route.query.orderNo === 'string' ? route.query.orderNo : undefined
+const orderContext = ref<any>()
 let entryPageContext: { sessionId: string; productId: number } | null = null
 async function refresh() {
   sessions.value = await api('/chat/sessions')
@@ -43,20 +45,45 @@ async function refresh() {
 async function create() {
   const session = await api<any>('/chat/sessions', {
     method: 'POST',
-    body: JSON.stringify({ title: productId ? '商品咨询' : '新会话' }),
+    body: JSON.stringify({
+      title: entryOrderNo
+        ? `订单咨询 · ${entryOrderNo.slice(-6)}`
+        : productId
+          ? '商品咨询'
+          : '新会话',
+    }),
   })
   sessions.value = [session, ...sessions.value]
   await select(session.publicId, true)
 }
 async function select(id: string, useEntryHint = false) {
   const history = id ? await api<any[]>(`/chat/sessions/${encodeURIComponent(id)}/messages`) : []
+  for (const message of history) {
+    try {
+      const metadata = JSON.parse(message.metadataJson || '{}')
+      message.orderCandidates = metadata.orderCandidates
+      message.order = metadata.order
+    } catch {
+      /* Older messages may have no structured business metadata. */
+    }
+  }
+  const selectedOrder =
+    useEntryHint && entryOrderNo
+      ? await api(`/orders/${encodeURIComponent(entryOrderNo)}`)
+      : undefined
+  orderContext.value = selectedOrder
   entryPageContext = useEntryHint && productId ? { sessionId: id, productId } : null
   current.value = id
   messages.value = history
   input.value = ''
   action.value = null
   await router.replace({
-    query: { ...route.query, sessionId: id || undefined, productId: entryPageContext?.productId },
+    query: {
+      ...route.query,
+      sessionId: id || undefined,
+      productId: entryPageContext?.productId,
+      orderNo: orderContext.value?.orderNo,
+    },
   })
   followOutput.value = true
   await nextTick()
@@ -72,6 +99,8 @@ async function changeSession(task: () => Promise<void>) {
     ElMessage.error(error instanceof Error ? error.message : '会话操作失败')
   } finally {
     sessionBusy.value = false
+    await nextTick()
+    composer.value?.focus()
   }
 }
 function onEnter(event: KeyboardEvent) {
@@ -97,10 +126,11 @@ async function removeSessions(id?: string) {
   sessions.value = id ? sessions.value.filter((session) => session.publicId !== id) : []
   if (!id || current.value === id) {
     productId = undefined
+    entryOrderNo = undefined
     await select(sessions.value[0]?.publicId ?? '')
   }
 }
-async function send() {
+async function send(orderSelection?: { queryId: string; orderNo: string }) {
   if (!input.value.trim() || sending.value || sessionBusy.value) return
   const text = input.value
   sending.value = true
@@ -108,6 +138,7 @@ async function send() {
     if (!current.value) await create()
     const sourceSession = current.value
     input.value = ''
+    action.value = null
     followOutput.value = true
     messages.value.push({ role: 'USER', content: text })
     const assistant: any = { role: 'ASSISTANT', content: '', comparison: null }
@@ -117,10 +148,12 @@ async function send() {
       {
         message: text,
         clientRequestId: crypto.randomUUID(),
-        pageContext:
-          entryPageContext?.sessionId === sourceSession
+        pageContext: orderContext.value
+          ? { orderNo: orderContext.value.orderNo }
+          : entryPageContext?.sessionId === sourceSession
             ? { productId: entryPageContext.productId }
             : null,
+        orderSelection,
       },
       (name, data) => {
         if (name === 'token') assistant.content += data
@@ -135,7 +168,18 @@ async function send() {
         }
         if (name === 'product_selection_required') assistant.candidates = data
         if (name === 'product_comparison') assistant.comparison = data
-        if (name === 'order') assistant.order = data
+        if (name === 'order') {
+          assistant.order = data
+          orderContext.value = data
+          if (route.path === '/chat' && route.query.sessionId === sourceSession)
+            void router.replace({ query: { ...route.query, orderNo: data.orderNo } })
+        }
+        if (name === 'order_selection_required') {
+          assistant.orderCandidates = data
+          orderContext.value = undefined
+          if (route.path === '/chat' && route.query.sessionId === sourceSession)
+            void router.replace({ query: { ...route.query, orderNo: undefined } })
+        }
         if (name === 'action_required') action.value = data
         if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
         if (name === 'error') throw new Error(data.message)
@@ -151,6 +195,10 @@ async function send() {
 async function askCandidate(candidate: any) {
   input.value = `请介绍 ${candidate.model}`
   await send()
+}
+async function chooseOrder(queryId: string, orderNo: string) {
+  input.value = `选择订单 ${orderNo}`
+  await send({ queryId, orderNo })
 }
 async function confirm(decision: string) {
   if (!action.value || sending.value || confirmationUnknown.value) return
@@ -300,11 +348,10 @@ onMounted(() =>
     await restoreCancellation()
     await refresh()
     const saved = sessions.value.find((session) => session.publicId === route.query.sessionId)
-    if (saved) await select(saved.publicId, !!productId)
-    else if (productId && !route.query.sessionId) await create()
+    if (saved) await select(saved.publicId, !!productId || !!entryOrderNo)
+    else if ((productId || entryOrderNo) && !route.query.sessionId) await create()
     else if (sessions.value.length) await select(sessions.value[0].publicId)
     else await select('')
-    if (typeof route.query.orderNo === 'string') input.value = `查询订单 ${route.query.orderNo}`
   }),
 )
 </script>
@@ -348,6 +395,13 @@ onMounted(() =>
       <p v-if="!sessions.length && !sessionBusy" class="muted">暂无会话，发送消息即可开始。</p>
     </aside>
     <section class="conversation">
+      <el-alert
+        v-if="orderContext"
+        type="info"
+        :closable="false"
+        class="order-context"
+        :title="`正在咨询订单 ${orderContext.orderNo} · ¥${orderContext.totalAmount}`"
+      />
       <el-alert
         v-if="recoveryStorageWarning"
         :title="recoveryStorageWarning"
@@ -400,6 +454,33 @@ onMounted(() =>
               >查看订单与退款进度</router-link
             ></el-card
           >
+          <div v-if="m.orderCandidates" class="order-candidates">
+            <p v-if="m.orderCandidates.hasMore">
+              这里只列出最近的候选订单，请补充商品名称或日期缩小范围。
+            </p>
+            <el-card
+              v-for="(candidate, candidateIndex) in m.orderCandidates.items"
+              :key="candidate.orderNo"
+              shadow="never"
+              style="margin-top: 8px"
+            >
+              <strong>第 {{ Number(candidateIndex) + 1 }} 笔 · {{ candidate.orderNo }}</strong>
+              <p>{{ candidate.items.map((item: any) => item.productName).join('、') }}</p>
+              <p>
+                ¥{{ candidate.totalAmount }} · {{ candidate.status }} ·
+                {{
+                  new Date(candidate.createdAt).toLocaleDateString('zh-CN', {
+                    timeZone: 'Asia/Shanghai',
+                  })
+                }}
+              </p>
+              <el-button
+                :disabled="sending || sessionBusy"
+                @click="chooseOrder(m.orderCandidates.queryId, candidate.orderNo)"
+                >选择这笔订单</el-button
+              >
+            </el-card>
+          </div>
           <div v-if="m.citations?.length" class="muted">引用：{{ m.citations.join('、') }}</div>
         </div>
         <div v-if="recoveredCancellation" class="action-card" data-testid="cancellation-result">
@@ -454,11 +535,12 @@ onMounted(() =>
         <el-input
           ref="composer"
           v-model="input"
+          :disabled="sessionBusy"
           type="textarea"
           :rows="2"
           placeholder="咨询商品、订单、物流、退款或售后政策"
           @keydown.enter="onEnter"
-        /><el-button type="primary" :loading="sending" :disabled="sessionBusy" @click="send"
+        /><el-button type="primary" :loading="sending" :disabled="sessionBusy" @click="send()"
           >发送</el-button
         >
       </div>

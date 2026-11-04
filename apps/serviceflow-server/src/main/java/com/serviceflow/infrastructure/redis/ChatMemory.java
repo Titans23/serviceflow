@@ -3,6 +3,7 @@ package com.serviceflow.infrastructure.redis;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.model.ChatModels;
+import com.serviceflow.model.OrderModels;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -112,6 +113,43 @@ public final class ChatMemory {
     public String activeOrder(String subject, String sessionId) {
         return redis.opsForValue().get(activeOrderKey(subject, sessionId));
     }
+
+    public void clearActiveOrder(String subject, String sessionId) {
+        redis.delete(activeOrderKey(subject, sessionId));
+    }
+
+    public void putOrderCandidates(String subject, String sessionId, OrderCandidates candidates) {
+        try {
+            redis.opsForValue()
+                    .set(
+                            orderCandidatesKey(subject, sessionId),
+                            objectMapper.writeValueAsString(candidates),
+                            SESSION_TTL);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Cannot save order candidates", exception);
+        }
+    }
+
+    public OrderCandidates orderCandidates(String subject, String sessionId) {
+        String value = redis.opsForValue().get(orderCandidatesKey(subject, sessionId));
+        if (value == null) return null;
+        try {
+            return objectMapper.readValue(value, OrderCandidates.class);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Cannot read order candidates", exception);
+        }
+    }
+
+    public void clearOrderCandidates(String subject, String sessionId) {
+        redis.delete(orderCandidatesKey(subject, sessionId));
+    }
+
+    private String orderCandidatesKey(String subject, String sessionId) {
+        return "chat:order-candidates:" + subject + ':' + sessionId;
+    }
+
+    public record OrderCandidates(
+            String queryId, List<OrderModels.Summary> items, boolean hasMore, boolean cancellation) {}
 
     public void setActiveProduct(String subject, String sessionId, long productId) {
         redis.opsForValue().set(activeProductKey(subject, sessionId), Long.toString(productId), SESSION_TTL);

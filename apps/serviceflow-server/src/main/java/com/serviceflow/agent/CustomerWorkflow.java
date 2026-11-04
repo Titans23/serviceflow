@@ -8,7 +8,6 @@ import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.infrastructure.redis.ChatMemory;
-import com.serviceflow.model.OrderModels;
 import com.serviceflow.model.ProductModels;
 import com.serviceflow.model.TicketModels;
 import com.serviceflow.rag.RagService;
@@ -58,7 +57,7 @@ public final class CustomerWorkflow {
             "(?<![A-Za-z0-9])[A-Za-z0-9]+(?:-[A-Za-z0-9]+){2,}(?![A-Za-z0-9])", Pattern.CASE_INSENSITIVE);
     private final AiGateway ai;
     private final ProductService products;
-    private final OrderService orders;
+    private final OrderConversation orderConversation;
     private final TicketService tickets;
     private final RagService rag;
     private final ChatMemory memory;
@@ -78,7 +77,7 @@ public final class CustomerWorkflow {
             StringRedisTemplate redis) {
         this.ai = ai;
         this.products = products;
-        this.orders = orders;
+        this.orderConversation = new OrderConversation(ai, orders, memory);
         this.tickets = tickets;
         this.rag = rag;
         this.memory = memory;
@@ -90,8 +89,10 @@ public final class CustomerWorkflow {
                     .port(redisProperties.getPort())
                     .database(redisProperties.getDatabase())
                     .ttl(30, TimeUnit.MINUTES)
+                    // LangGraph registers raw List/Map deserializers; isolate them from business DTOs.
                     .stateSerializer(
-                            new JacksonStateSerializer<WorkflowGraphState>(WorkflowGraphState::new, objectMapper) {})
+                            new JacksonStateSerializer<WorkflowGraphState>(
+                                    WorkflowGraphState::new, objectMapper.copy()) {})
                     .build();
             this.graph = new StateGraph<>(WorkflowGraphState.SCHEMA, WorkflowGraphState::new)
                     // 所有请求先经过 router：识别意图并把结果写入图状态的 intent 字段。
@@ -144,6 +145,13 @@ public final class CustomerWorkflow {
             input.put("query", state.query());
             input.put("pageProductId", state.pageProductId() == null ? 0L : state.pageProductId());
             input.put("clientRequestId", state.clientRequestId() == null ? "" : state.clientRequestId());
+            input.put("activeOrderNo", state.activeOrderNo() == null ? "" : state.activeOrderNo());
+            input.put(
+                    "orderSelectionQuery",
+                    state.orderSelection() == null ? "" : state.orderSelection().queryId());
+            input.put(
+                    "orderSelectionNo",
+                    state.orderSelection() == null ? "" : state.orderSelection().orderNo());
             WorkflowGraphState finalState;
             try {
                 finalState = graph.invoke(
@@ -207,10 +215,19 @@ public final class CustomerWorkflow {
      * 先由 AI 判断用户问题的基础意图，再结合当前商品页面和型号信息进行项目规则修正。
      */
     private Intent routeIntent(WorkflowGraphState state) {
+        ServiceFlowState runtime = state.runtime();
+        if (runtime.orderSelection() != null || OrderConversation.isSelection(state.query())) return Intent.ORDER_QUERY;
+        boolean pendingOrders = !runtime.principal().guest()
+                && memory.orderCandidates(runtime.principal().subject(), runtime.sessionId()) != null;
+        boolean currentOrder = runtime.activeOrderNo() != null
+                || (!runtime.principal().guest()
+                        && memory.activeOrder(runtime.principal().subject(), runtime.sessionId()) != null);
         // 云模式调用大模型分类；演示模式使用关键词规则分类。
         String classificationQuery = state.pageProductId() > 0
                 ? "当前商品：" + products.get(state.pageProductId()).name() + "。\n用户问题：" + state.query()
                 : state.query();
+        if (pendingOrders) classificationQuery = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationQuery;
+        else if (currentOrder) classificationQuery = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationQuery;
         Intent classified = ai.classify(classificationQuery);
         if (classified != Intent.COMPLAINT && ORDER_NO.matcher(state.query()).find()) {
             return Intent.ORDER_QUERY;
@@ -460,49 +477,7 @@ public final class CustomerWorkflow {
     }
 
     private Result order(ServiceFlowState state, BiConsumer<String, Object> events) {
-        if (state.principal().guest()) {
-            return new Result("订单服务需要登录客户账号后使用。", List.of());
-        }
-        Matcher matcher = ORDER_NO.matcher(state.query());
-        String orderNo = matcher.find()
-                ? matcher.group().toUpperCase(Locale.ROOT)
-                : memory.activeOrder(state.principal().subject(), state.sessionId());
-        if (orderNo == null) {
-            return new Result("请提供订单号，例如 SF202608280001。", List.of());
-        }
-        memory.setActiveOrder(state.principal().subject(), state.sessionId(), orderNo);
-        if (state.query().contains("取消")) {
-            if (!orders.canCancel(orderNo, state.principal().requireCustomerId())) {
-                return new Result("该订单已发货或结束，不能直接取消；可以咨询退货政策。", List.of());
-            }
-            String actionId = memory.putAction(new ChatMemory.PendingAction(
-                    "CANCEL_ORDER",
-                    state.principal().subject(),
-                    state.principal().requireCustomerId(),
-                    state.sessionId(),
-                    orderNo,
-                    state.query()));
-            events.accept(
-                    "action_required",
-                    Map.of(
-                            "actionId",
-                            actionId,
-                            "actionType",
-                            "CANCEL_ORDER",
-                            "orderNo",
-                            orderNo,
-                            "message",
-                            "确认取消该订单吗？"));
-            return new Result("订单当前可以取消，请在确认卡片中二次确认。", List.of());
-        }
-        OrderModels.OrderView order = orders.get(orderNo, state.principal().requireCustomerId());
-        events.accept("order", order);
-        String refund = order.payment() == null ? "暂无" : order.payment().refundStatus();
-        String shipment =
-                order.shipment().isEmpty() ? "暂无" : order.shipment().getFirst().description();
-        return new Result(
-                "订单 " + order.orderNo() + " 当前状态为 " + order.status() + "，退款状态为 " + refund + "，最新物流：" + shipment + "。",
-                List.of());
+        return orderConversation.respond(state, events);
     }
 
     private Result complaint(ServiceFlowState state, BiConsumer<String, Object> events) {
@@ -559,6 +534,9 @@ public final class CustomerWorkflow {
                 Map.entry("query", Channels.base(() -> "")),
                 Map.entry("pageProductId", Channels.base(() -> 0L)),
                 Map.entry("clientRequestId", Channels.base(() -> "")),
+                Map.entry("activeOrderNo", Channels.base(() -> "")),
+                Map.entry("orderSelectionQuery", Channels.base(() -> "")),
+                Map.entry("orderSelectionNo", Channels.base(() -> "")),
                 Map.entry("intent", Channels.base(() -> Intent.CHAT.name())),
                 Map.entry("answer", Channels.base(() -> "")),
                 Map.entry("citations", Channels.base(ArrayList::new)),
@@ -632,12 +610,19 @@ public final class CustomerWorkflow {
                     value("subject", ""),
                     value("role", "GUEST"),
                     customerId.longValue() <= 0 ? null : customerId.longValue());
-            return new ServiceFlowState(
+            ServiceFlowState runtime = new ServiceFlowState(
                     value("sessionId", ""),
                     principal,
                     query(),
                     productId.longValue() <= 0 ? null : productId.longValue(),
                     requestId.isBlank() ? null : requestId);
+            String orderNo = value("activeOrderNo", "");
+            runtime.activeOrderNo(orderNo.isBlank() ? null : orderNo);
+            String selection = value("orderSelectionQuery", "");
+            if (!selection.isBlank())
+                runtime.orderSelection(
+                        new com.serviceflow.model.ChatModels.OrderSelection(selection, value("orderSelectionNo", "")));
+            return runtime;
         }
     }
 }

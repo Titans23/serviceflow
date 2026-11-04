@@ -9,7 +9,13 @@ import java.util.List;
 public final class ChatModels {
     private ChatModels() {}
 
-    public record PageContext(Long productId) {}
+    public record PageContext(Long productId, String orderNo) {
+        public PageContext(Long productId) {
+            this(productId, null);
+        }
+    }
+
+    public record OrderSelection(@NotBlank String queryId, @NotBlank String orderNo) {}
 
     public record MessageRequest(
             @NotBlank String message,
@@ -18,7 +24,12 @@ public final class ChatModels {
                             regexp =
                                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
                     String clientRequestId,
-            PageContext pageContext) {}
+            PageContext pageContext,
+            @jakarta.validation.Valid OrderSelection orderSelection) {
+        public MessageRequest(String message, String clientRequestId, PageContext pageContext) {
+            this(message, clientRequestId, pageContext, null);
+        }
+    }
 
     public record Session(String publicId, String title, Instant createdAt, Instant updatedAt) {}
 

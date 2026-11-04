@@ -1,5 +1,6 @@
 package com.serviceflow.agent;
 
+import com.serviceflow.model.ChatModels;
 import com.serviceflow.security.CurrentPrincipal;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public final class ServiceFlowState {
     private Intent intent;
     private final List<Long> productIds = new ArrayList<>();
     private String activeOrderNo;
+    private ChatModels.OrderSelection orderSelection;
     private int retryCount;
 
     public ServiceFlowState(String sessionId, CurrentPrincipal principal, String query, Long pageProductId) {
@@ -66,6 +68,14 @@ public final class ServiceFlowState {
 
     public void activeOrderNo(String value) {
         activeOrderNo = value;
+    }
+
+    public ChatModels.OrderSelection orderSelection() {
+        return orderSelection;
+    }
+
+    public void orderSelection(ChatModels.OrderSelection value) {
+        orderSelection = value;
     }
 
     public int retryCount() {

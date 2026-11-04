@@ -127,8 +127,16 @@ public final class ChatServiceImpl implements ChatService {
             }
             state = new ServiceFlowState(
                     sessionId, principal, request.message(), resolvedContext, request.clientRequestId());
+            state.activeOrderNo(
+                    request.pageContext() == null ? null : request.pageContext().orderNo());
+            state.orderSelection(request.orderSelection());
             // 暂时把工作流视为黑盒：输入本次请求状态，输出业务结果，并把过程中产生的事件转发给前端。
-            CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> events.send(emitter, name, data));
+            Map<String, Object> businessMetadata = new java.util.LinkedHashMap<>();
+            CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
+                if ("order".equals(name)) businessMetadata.put("order", data);
+                if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
+                events.send(emitter, name, data);
+            });
             if (state.productIds().size() == 1) {
                 memory.setActiveProduct(
                         principal.subject(), sessionId, state.productIds().getFirst());
@@ -136,8 +144,9 @@ public final class ChatServiceImpl implements ChatService {
             // 生成最终回答；生成期间每个文本片段已经通过 token 事件实时发送给前端。
             String answer = generateAnswer(state, result, request.message(), emitter);
             String messageId = UUID.randomUUID().toString();
-            String metadata = writeJson(Map.of(
-                    "citations", result.citations(), "intent", state.intent().name()));
+            businessMetadata.put("citations", result.citations());
+            businessMetadata.put("intent", state.intent().name());
+            String metadata = writeJson(businessMetadata);
             if (databaseId == null) {
                 // 访客没有数据库会话，将完整结果保存在 Redis，供相同 clientRequestId 重放。
                 memory.storeCompleted(
@@ -274,6 +283,14 @@ public final class ChatServiceImpl implements ChatService {
         List<String> citations = citations(completed.metadataJson());
         events.send(emitter, "meta", Map.of("intent", completed.intent(), "degraded", false, "citations", citations));
         events.send(emitter, "token", completed.content());
+        try {
+            var metadata = objectMapper.readTree(completed.metadataJson() == null ? "{}" : completed.metadataJson());
+            if (metadata.hasNonNull("order")) events.send(emitter, "order", metadata.get("order"));
+            if (metadata.hasNonNull("orderCandidates"))
+                events.send(emitter, "order_selection_required", metadata.get("orderCandidates"));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
+            // Historical messages may not contain valid business metadata; their saved text remains replayable.
+        }
         events.send(
                 emitter,
                 "done",

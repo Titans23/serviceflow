@@ -1,6 +1,9 @@
 package com.serviceflow.ai;
 
 import com.serviceflow.agent.Intent;
+import com.serviceflow.model.OrderModels;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,7 +23,13 @@ public final class DemoAiGateway implements AiGateway {
         // Do not strip missing deliveries/refunds such as “没有收到订单”.
         query = query.replaceAll("(?:不用|不需要|无需)(?:查询|查|咨询|了解).*?(?=[，。！？；,!?;\\n]|但是|但|不过|而是|$)", "")
                 .replaceAll("(?:暂时没有|目前没有|暂无)[^，。！？；,!?;\\n]*?(?:问题|需求)", "");
-        if (query.contains("订单") || query.contains("物流") || query.contains("退款") || query.contains("取消")) {
+        if (query.contains("订单")
+                || query.contains("物流")
+                || query.contains("退款")
+                || query.contains("取消")
+                || query.contains("买的")
+                || query.contains("买过")
+                || query.contains("下单")) {
             return Intent.ORDER_QUERY;
         }
         if (query.contains("商品")
@@ -34,6 +43,38 @@ public final class DemoAiGateway implements AiGateway {
             return Intent.KNOWLEDGE_QUERY;
         }
         return Intent.CHAT;
+    }
+
+    @Override
+    public OrderPlan planOrder(
+            String message,
+            String today,
+            boolean hasCurrentOrder,
+            List<OrderModels.Summary> candidates,
+            boolean pendingCancellation) {
+        boolean cancel = message.matches(".*(?:取消|不要了|不想要).*") && !message.matches(".*(?:不取消|不要取消|别取消|不想取消).*");
+        String keyword = List.of("耳机", "手机", "笔记本", "电脑").stream()
+                .filter(message::contains)
+                .findFirst()
+                .orElse(null);
+        LocalDate day = LocalDate.parse(today);
+        String from = null, to = null;
+        if (message.contains("昨天")) from = to = day.minusDays(1).toString();
+        else if (message.contains("前天")) from = to = day.minusDays(2).toString();
+        else if (message.contains("今天")) from = to = today;
+        else if (message.contains("最近一周")) {
+            from = day.minusDays(6).toString();
+            to = today;
+        }
+        boolean search = keyword != null || from != null || message.matches(".*(?:所有|其他|最近|我的订单|买过).*");
+        return new OrderPlan(
+                search || !hasCurrentOrder ? OrderTool.SEARCH_ORDERS : OrderTool.READ_CURRENT,
+                cancel ? OrderPurpose.CANCEL : OrderPurpose.QUERY,
+                keyword,
+                null,
+                from,
+                to,
+                null);
     }
 
     @Override

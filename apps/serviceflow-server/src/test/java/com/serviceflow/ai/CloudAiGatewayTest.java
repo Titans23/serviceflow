@@ -27,7 +27,9 @@ class CloudAiGatewayTest {
     void setUp() {
         streamingChatModel = mock(StreamingChatModel.class);
         gateway = new CloudAiGateway(
-                streamingChatModel, new AiCallExecutor(new SimpleMeterRegistry()), new ObjectMapper());
+                streamingChatModel,
+                new AiCallExecutor(new SimpleMeterRegistry()),
+                new ObjectMapper().findAndRegisterModules());
     }
 
     @Test
@@ -85,6 +87,50 @@ class CloudAiGatewayTest {
 
     private ChatResponse response(String content) {
         return new ChatResponse(List.of(new Generation(new AssistantMessage(content))));
+    }
+
+    @Test
+    void plansOrderSearchWithStructuredArguments() {
+        streamReturns(
+                """
+                {"tool":"SEARCH_ORDERS","purpose":"CANCEL","keyword":"耳机","status":null,
+                 "fromDate":"2026-11-03","toDate":"2026-11-03","candidateIndex":null}
+                """);
+        var result = gateway.planOrder("昨天买的耳机不要了", "2026-11-04", false, List.of(), false);
+        assertThat(result.tool()).isEqualTo(AiGateway.OrderTool.SEARCH_ORDERS);
+        assertThat(result.keyword()).isEqualTo("耳机");
+        assertThat(result.purpose()).isEqualTo(AiGateway.OrderPurpose.CANCEL);
+        assertThat(result.fromDate()).isEqualTo("2026-11-03");
+        var prompt = org.mockito.ArgumentCaptor.forClass(org.springframework.ai.chat.prompt.Prompt.class);
+        org.mockito.Mockito.verify(streamingChatModel).stream(prompt.capture());
+        assertThat(prompt.getValue().getContents()).contains("2026-11-04").contains("昨天买的耳机不要了");
+    }
+
+    @Test
+    void serializesOwnedCandidatesAndRejectsIgnoredFilters() {
+        streamReturns("{\"tool\":\"SELECT_CANDIDATE\",\"purpose\":\"QUERY\",\"candidateIndex\":2}");
+        var candidates = List.of(new com.serviceflow.model.OrderModels.Summary(
+                "SF202611030001",
+                "PAID",
+                new java.math.BigDecimal("299.00"),
+                java.time.Instant.parse("2026-11-03T01:00:00Z"),
+                List.of()));
+        assertThat(gateway.planOrder("查一下第二笔", "2026-11-04", false, candidates, true)
+                        .candidateIndex())
+                .isEqualTo(2);
+        var prompt = org.mockito.ArgumentCaptor.forClass(org.springframework.ai.chat.prompt.Prompt.class);
+        org.mockito.Mockito.verify(streamingChatModel).stream(prompt.capture());
+        assertThat(prompt.getValue().getContents()).contains("SF202611030001").contains("\"pendingCancellation\":true");
+        streamReturns("{\"tool\":\"READ_CURRENT\",\"purpose\":\"CANCEL\",\"keyword\":\"耳机\"}");
+        assertThatThrownBy(() -> gateway.planOrder("耳机不要了", "2026-11-04", true, List.of(), false))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void rejectsUnrecognizedOrderTools() {
+        streamReturns("{\"tool\":\"EXECUTE_SQL\",\"purpose\":\"CANCEL\"}");
+        assertThatThrownBy(() -> gateway.planOrder("查询", "2026-11-04", false, List.of(), false))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     private void streamReturns(String content) {
