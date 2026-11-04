@@ -12,6 +12,7 @@ test('pending card survives reload and a lost rejection response is recovered wi
   }
   let status = 'PENDING'
   let submissions = 0
+  let reads = 0
   await page.addInitScript(() => {
     const payload = btoa(JSON.stringify({ sub: 'user-1', role: 'CUSTOMER', customerId: 1 }))
     sessionStorage.setItem('serviceflow_token', 'header.' + payload + '.signature')
@@ -32,8 +33,9 @@ test('pending card survives reload and a lost rejection response is recovered wi
       ],
     }),
   )
-  await page.route('**/api/chat/actions/durable-action/result', (route) =>
-    route.fulfill({
+  await page.route('**/api/chat/actions/durable-action/result', (route) => {
+    reads++
+    return route.fulfill({
       json: {
         actionStatus: status,
         operation: {
@@ -43,8 +45,8 @@ test('pending card survives reload and a lost rejection response is recovered wi
         },
         order,
       },
-    }),
-  )
+    })
+  })
   await page.route('**/api/chat/actions/durable-action/confirm', (route) => {
     expect(route.request().postDataJSON().decision).toBe('REJECT')
     submissions++
@@ -65,5 +67,12 @@ test('pending card survives reload and a lost rejection response is recovered wi
   await page.reload()
   await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
   await expect(page.getByRole('button', { name: '确认', exact: true })).toHaveCount(0)
+  expect(submissions).toBe(1)
+  const beforeCorruption = reads
+  await page.evaluate(() => sessionStorage.setItem('serviceflow_pending_cancellation_v1', 'broken'))
+  await page.reload()
+  await expect(page.getByTestId('recovery-storage-warning')).toBeVisible()
+  await expect(page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策')).toBeFocused()
+  expect(reads).toBe(beforeCorruption)
   expect(submissions).toBe(1)
 })

@@ -81,6 +81,7 @@ async function select(id: string, useEntryHint = false) {
   const savedAction = [...history].reverse().find((message) => message.action)?.action
   if (
     savedAction &&
+    !recoveryStorageWarning.value &&
     !confirmationUnknown.value &&
     savedAction.actionId !== recoveredCancellation.value?.operation.requestId
   ) {
