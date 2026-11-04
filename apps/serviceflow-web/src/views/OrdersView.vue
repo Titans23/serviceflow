@@ -33,6 +33,7 @@ const dates = ref<string[] | null>(null)
 const loading = ref(false)
 const listLoading = ref(false)
 const listError = ref('')
+let appliedQuery = new URLSearchParams({ size: '10' })
 const sandbox = ref(false)
 const orderLabels: Record<string, string> = {
   CREATED: '待付款',
@@ -56,16 +57,19 @@ async function loadList(more = false) {
   if (listLoading.value) return
   listLoading.value = true
   listError.value = ''
-  const query = new URLSearchParams({ size: '10' })
-  if (keyword.value.trim()) query.set('keyword', keyword.value.trim())
-  if (status.value) query.set('status', status.value)
-  if (dates.value?.length === 2) {
-    query.set('from', dates.value[0])
-    query.set('to', dates.value[1])
+  const query = more ? new URLSearchParams(appliedQuery) : new URLSearchParams({ size: '10' })
+  if (!more) {
+    if (keyword.value.trim()) query.set('keyword', keyword.value.trim())
+    if (status.value) query.set('status', status.value)
+    if (dates.value?.length === 2) {
+      query.set('from', dates.value[0])
+      query.set('to', dates.value[1])
+    }
   }
   if (more && nextCursor.value) query.set('cursor', String(nextCursor.value))
   try {
     const result = await api<OrderPage>(`/orders?${query}`)
+    if (!more) appliedQuery = new URLSearchParams(query)
     orders.value = more ? [...orders.value, ...result.items] : result.items
     nextCursor.value = result.nextCursor
   } catch (error) {

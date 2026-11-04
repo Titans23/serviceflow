@@ -157,9 +157,11 @@ test('my orders loads, paginates, filters and opens the owned detail', async ({ 
   await page.goto('/orders')
   await expect(page.getByRole('heading', { name: '我的订单', exact: true })).toBeVisible()
   await expect(page.locator('.order-summary')).toHaveCount(1)
+  await page.getByPlaceholder('商品名称、型号或订单号').fill('还未提交的筛选')
   await page.getByRole('button', { name: '加载更多订单' }).click()
   await expect(page.locator('.order-summary')).toHaveCount(2)
   expect(queries[1].get('cursor')).toBe('100')
+  expect(queries[1].has('keyword')).toBe(false)
   await page.getByRole('button', { name: '查看详情', exact: true }).first().click()
   await expect(page.getByTestId('order-detail')).toContainText('SF202611030001')
   await expect(page.getByRole('link', { name: '向客服咨询此订单' })).toHaveAttribute(
