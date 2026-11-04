@@ -19,6 +19,7 @@
   <select id="searchOwned" resultType="com.serviceflow.model.OrderModels$Order">
     SELECT o.id,o.order_no,o.customer_id,o.status,o.total_amount,o.version,o.created_at
     FROM customer_order o WHERE o.customer_id=#{customerId}
+    <if test="orderNo != null">AND o.order_no=#{orderNo}</if>
     <if test="status != null">AND o.status=#{status}</if>
     <if test="from != null">AND o.created_at &gt;= #{from}</if>
     <if test="until != null">AND o.created_at &lt; #{until}</if>

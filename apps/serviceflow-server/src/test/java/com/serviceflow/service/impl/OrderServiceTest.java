@@ -209,7 +209,7 @@ class OrderServiceTest {
     void listsOwnedOrdersWithOneBatchOfItemsAndAnExtraRowForTheCursor() {
         var first = order("PAID");
         var next = new OrderModels.Order(9L, "SF-1002", 7L, "PAID", BigDecimal.ONE, 0, Instant.now());
-        when(mapper.searchOwned(eq(7L), eq("耳机"), eq("headphone"), eq("PAID"), any(), any(), isNull(), eq(2)))
+        when(mapper.searchOwned(eq(7L), eq("耳机"), eq("headphone"), eq("PAID"), any(), any(), isNull(), eq(2), isNull()))
                 .thenReturn(List.of(first, next));
         when(mapper.itemsForOrders(List.of(10L)))
                 .thenReturn(List.of(new OrderModels.ItemRow(10L, "SKU", "耳机", 1, BigDecimal.ONE)));
@@ -227,20 +227,21 @@ class OrderServiceTest {
                         Instant.parse("2026-11-02T16:00:00Z"),
                         Instant.parse("2026-11-03T16:00:00Z"),
                         null,
-                        2);
+                        2,
+                        null);
         verify(mapper, never()).items(anyLong());
     }
 
     @Test
     void supportsEmptyResultsAndOwnedCursor() {
         var query = new OrderModels.Search(" ", "", null, null);
-        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), any(), eq(11)))
+        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), any(), eq(11), isNull()))
                 .thenReturn(List.of());
         when(mapper.findOwnedById(10L, 7L)).thenReturn(order("PAID"));
         assertThat(service.search(7L, query, 10L, 10).items()).isEmpty();
         verify(mapper, never()).itemsForOrders(any());
         assertThatThrownBy(() -> service.search(8L, query, 10L, 10)).isInstanceOf(ResponseStatusException.class);
-        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), isNull(), eq(11)))
+        when(mapper.searchOwned(eq(7L), isNull(), isNull(), isNull(), isNull(), isNull(), isNull(), eq(11), isNull()))
                 .thenReturn(List.of(order("PAID")));
         when(mapper.itemsForOrders(any())).thenReturn(List.of());
         assertThat(service.search(7L, query, null, 10).nextCursor()).isNull();
@@ -251,6 +252,7 @@ class OrderServiceTest {
         var date = LocalDate.of(2026, 11, 3);
         for (var query : List.of(
                 new OrderModels.Search("x".repeat(81), null, null, null),
+                new OrderModels.Search(null, null, null, null, "x".repeat(65)),
                 new OrderModels.Search(null, "invalid", null, null),
                 new OrderModels.Search(null, null, date, date.minusDays(1)),
                 new OrderModels.Search(null, null, LocalDate.of(1999, 1, 1), null),

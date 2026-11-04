@@ -60,7 +60,10 @@ async function loadList(more = false) {
   listError.value = ''
   const query = more ? new URLSearchParams(appliedQuery) : new URLSearchParams({ size: '10' })
   if (!more) {
-    if (keyword.value.trim()) query.set('keyword', keyword.value.trim())
+    if (keyword.value.trim()) {
+      const value = keyword.value.trim()
+      query.set(/^SF\d{12,}$/i.test(value) ? 'orderNo' : 'keyword', value)
+    }
     if (status.value) query.set('status', status.value)
     if (dates.value?.length === 2) {
       query.set('from', dates.value[0])

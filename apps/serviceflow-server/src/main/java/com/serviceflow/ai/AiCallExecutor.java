@@ -40,14 +40,17 @@ public final class AiCallExecutor {
     public <T> T execute(String operation, Duration timeout, Supplier<T> call) {
         long started = System.nanoTime();
         String status = "success";
+        var pending = executor.submit(call::get);
         try {
-            return executor.submit(call::get).get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            return pending.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException exception) {
+            pending.cancel(true);
             if (evaluationBudget != null) evaluationBudget.stopAfterFailure("model_timeout");
             status = "timeout";
             metrics.counter("serviceflow.ai.timeouts", "operation", operation).increment();
             throw new ServiceFlowException(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.MODEL_TIMEOUT, "模型服务响应超时", true);
         } catch (InterruptedException exception) {
+            pending.cancel(true);
             if (evaluationBudget != null) evaluationBudget.stopAfterFailure("model_interrupted");
             status = "interrupted";
             Thread.currentThread().interrupt();

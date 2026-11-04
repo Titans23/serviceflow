@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-04",
+  "baselineRevision": "ef8ba849",
+  "scenario": "two waves of 20 interruptible local calls, 150ms timeout, 1s drain allowance",
+  "before": {
+    "calls": 40,
+    "timeouts": 40,
+    "activeAfterTimeout": 40,
+    "peakActive": 40,
+    "p50Ms": 152,
+    "p95Ms": 302,
+    "p99Ms": 302
+  },
+  "after": {
+    "calls": 40,
+    "timeouts": 40,
+    "activeAfterTimeout": 0,
+    "peakActive": 20,
+    "p50Ms": 153,
+    "p95Ms": 302,
+    "p99Ms": 302
+  },
+  "cloudCalls": 0,
+  "realProviderCancellationVerified": false,
+  "scope": "Cancellation of local interruptible work; no claim about remote provider execution or billing stopping",
+  "reproduction": "mvn -Dtest=AiCallExecutorTimeoutTest test"
+}

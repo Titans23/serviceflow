@@ -1,0 +1,171 @@
+{
+  "date": "2026-11-04",
+  "synthetic": true,
+  "scenario": "Find the same owned order by its complete number: old page keyword path versus new page orderNo path; legacy keyword semantics remain unchanged",
+  "baseline": {
+    "phase": "baseline",
+    "label": "sustained",
+    "dataset": {
+      "synthetic": true,
+      "runId": "202611041325240689",
+      "project": "serviceflow-refund-verification",
+      "database": "serviceflow_eval_refund_verification",
+      "rowsAdded": 1000000,
+      "heavyCustomerRows": 200000,
+      "customerId": 6,
+      "regularCustomerId": 7,
+      "principals": {
+        "customer": "eval_customer_202611041325240689",
+        "other": "eval_other_202611041325240689"
+      },
+      "orderNo": "SF202611041325240689000000",
+      "seedSeconds": 29
+    },
+    "host": "Windows-10-10.0.19045-SP0",
+    "timer": "perf_counter",
+    "timerResolutionSeconds": 1e-7,
+    "docker": {
+      "cpus": 16,
+      "memoryBytes": 8258482176
+    },
+    "serverMemoryLimitBytes": 805306368,
+    "mysqlMemoryLimitBytes": 536870912,
+    "serverImage": "sha256:3c66289880be125f46e2d9e0f536bcb93911f1d7feaebe7354e0eba90c0ba2ae",
+    "sourceRevision": "ef8ba849ea5c530271010606f7e46b470ed73a93",
+    "sourceIsWorkingTree": false,
+    "mapperSha256": "a977779121c52d15df8272428fb808f694b9900dc7df79fea1cc94b869a7aec7",
+    "measurements": [
+      {
+        "concurrency": 1,
+        "requests": 36,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 30.305,
+        "throughputRps": 1.19,
+        "p50Ms": 824.52,
+        "p95Ms": 973.17,
+        "p99Ms": 1024.48
+      },
+      {
+        "concurrency": 8,
+        "requests": 160,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 30.654,
+        "throughputRps": 5.22,
+        "p50Ms": 1506.25,
+        "p95Ms": 1672.87,
+        "p99Ms": 1774.04
+      },
+      {
+        "concurrency": 16,
+        "requests": 186,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 32.041,
+        "throughputRps": 5.81,
+        "p50Ms": 3040.75,
+        "p95Ms": 3440.21,
+        "p99Ms": 3547.93
+      }
+    ],
+    "ordinaryCustomerListControl": {
+      "concurrency": 8,
+      "requests": 48,
+      "errors": 0,
+      "loadSeconds": 0,
+      "elapsedSeconds": 0.085,
+      "throughputRps": 566.31,
+      "p50Ms": 13.79,
+      "p95Ms": 14.99,
+      "p99Ms": 15.15
+    },
+    "explainAnalyze": "-> Limit: 11 row(s)  (cost=48319 rows=11) (actual time=1136..1136 rows=1 loops=1)\n    -> Filter: ((locate('SF202611041325240689000000',o.order_no) > 0) or exists(select #2))  (cost=48319 rows=361432) (actual time=1136..1136 rows=1 loops=1)\n        -> Index lookup on o using idx_order_customer_created_id (customer_id=6)  (cost=48319 rows=361432) (actual time=0.39..221 rows=200000 loops=1)\n        -> Select #2 (subquery in condition; dependent)\n            -> Limit: 1 row(s)  (cost=0.982 rows=1) (actual time=0.00411..0.00411 rows=0 loops=199999)\n                -> Nested loop inner join  (cost=0.982 rows=1) (actual time=0.00399..0.00399 rows=0 loops=199999)\n                    -> Index lookup on i using fk_item_order (order_id=o.id)  (cost=0.632 rows=1) (actual time=0.00218..0.00247 rows=1 loops=199999)\n                    -> Filter: ((locate('SF202611041325240689000000',p.`name`) > 0) or (locate('SF202611041325240689000000',p.model) > 0) or (locate('SF202611041325240689000000',p.sku) > 0) or (p.category = 'SF202611041325240689000000'))  (cost=0.35 rows=1) (actual time=0.00131..0.00131 rows=0 loops=199999)\n                        -> Single-row index lookup on p using PRIMARY (id=i.product_id)  (cost=0.35 rows=1) (actual time=948e-6..976e-6 rows=1 loops=199999)\n",
+    "cloudCalls": 0,
+    "scope": "Warm local HTTP lookup; five warmups; fixed-concurrency closed-loop load, outstanding requests drained; not a capacity limit or cloud-model benchmark",
+    "queryParameter": "keyword"
+  },
+  "optimized": {
+    "phase": "optimized",
+    "label": "sustained",
+    "dataset": {
+      "synthetic": true,
+      "runId": "202611041325240689",
+      "project": "serviceflow-refund-verification",
+      "database": "serviceflow_eval_refund_verification",
+      "rowsAdded": 1000000,
+      "heavyCustomerRows": 200000,
+      "customerId": 6,
+      "regularCustomerId": 7,
+      "principals": {
+        "customer": "eval_customer_202611041325240689",
+        "other": "eval_other_202611041325240689"
+      },
+      "orderNo": "SF202611041325240689000000",
+      "seedSeconds": 29
+    },
+    "host": "Windows-10-10.0.19045-SP0",
+    "timer": "perf_counter",
+    "timerResolutionSeconds": 1e-7,
+    "docker": {
+      "cpus": 16,
+      "memoryBytes": 8258482176
+    },
+    "serverMemoryLimitBytes": 805306368,
+    "mysqlMemoryLimitBytes": 536870912,
+    "serverImage": "sha256:90b491bbd3304846b91d1570f9e68d7234b7f5c114bab0d2ec450ad835999574",
+    "sourceRevision": "ef8ba849ea5c530271010606f7e46b470ed73a93",
+    "sourceIsWorkingTree": true,
+    "mapperSha256": "0eaff3050474869c1007b0b3a0ad3f56b2780cb497be180001da5d6f0162c833",
+    "queryParameter": "orderNo",
+    "measurements": [
+      {
+        "concurrency": 1,
+        "requests": 2714,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 30.02,
+        "throughputRps": 90.41,
+        "p50Ms": 6.21,
+        "p95Ms": 29.89,
+        "p99Ms": 31.43
+      },
+      {
+        "concurrency": 8,
+        "requests": 32689,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 30.008,
+        "throughputRps": 1089.34,
+        "p50Ms": 6.76,
+        "p95Ms": 10.4,
+        "p99Ms": 21.85
+      },
+      {
+        "concurrency": 16,
+        "requests": 47307,
+        "errors": 0,
+        "loadSeconds": 30,
+        "elapsedSeconds": 30.011,
+        "throughputRps": 1576.32,
+        "p50Ms": 9.62,
+        "p95Ms": 14.67,
+        "p99Ms": 21.83
+      }
+    ],
+    "ordinaryCustomerListControl": {
+      "concurrency": 8,
+      "requests": 48,
+      "errors": 0,
+      "loadSeconds": 0,
+      "elapsedSeconds": 0.075,
+      "throughputRps": 638.9,
+      "p50Ms": 10.53,
+      "p95Ms": 25.29,
+      "p99Ms": 31.55
+    },
+    "explainAnalyze": "-> Limit: 11 row(s)  (cost=0..0 rows=1) (actual time=0.0012..0.0013 rows=1 loops=1)\n    -> Rows fetched before execution  (cost=0..0 rows=1) (actual time=400e-6..500e-6 rows=1 loops=1)\n",
+    "cloudCalls": 0,
+    "scope": "Warm local HTTP lookup; five warmups; fixed-concurrency closed-loop load, outstanding requests drained; not a capacity limit or cloud-model benchmark"
+  }
+}

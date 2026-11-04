@@ -236,6 +236,70 @@ class ServiceFlowIntegrationIT {
     }
 
     @Test
+    void fullOrderNumberUsesExactIdentityWhileFiltersAndOwnershipStillApply(
+            @Autowired com.serviceflow.security.JwtService jwt) {
+        var owner = chatPrincipal(false);
+        String number = "SF202611041234567890";
+        for (String no : java.util.List.of(number, number + "9"))
+            jdbc.update(
+                    "INSERT INTO customer_order(order_no,customer_id,status,total_amount,created_at) VALUES(?,?,'PAID',99,'2026-11-03 16:00:00')",
+                    no,
+                    owner.customerId());
+        var exact = new OrderModels.Search(null, null, null, null, number);
+        assertThat(orders.search(owner.customerId(), exact, null, 10).items())
+                .extracting(OrderModels.Summary::orderNo)
+                .containsExactly(number);
+        assertThat(orders.search(owner.customerId(), new OrderModels.Search(number, null, null, null), null, 10)
+                        .items())
+                .extracting(OrderModels.Summary::orderNo)
+                .containsExactlyInAnyOrder(number, number + "9");
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(jwt.issueUser(new com.serviceflow.model.AuthModels.User(
+                        124, "lookup-owner", "", "CUSTOMER", owner.customerId(), true))
+                .accessToken());
+        var response = http.exchange("/orders?orderNo=" + number, GET, new HttpEntity<>(headers), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody()).contains(number).doesNotContain(number + "9");
+        assertThat(orders.search(
+                                owner.customerId(),
+                                new OrderModels.Search(number.substring(0, 10), null, null, null),
+                                null,
+                                10)
+                        .items())
+                .extracting(OrderModels.Summary::orderNo)
+                .containsExactlyInAnyOrder(number, number + "9");
+        assertThat(orders.search(chatPrincipal(false).customerId(), exact, null, 10)
+                        .items())
+                .isEmpty();
+        assertThat(orders.search(
+                                owner.customerId(),
+                                new OrderModels.Search(null, "SHIPPED", null, null, number),
+                                null,
+                                10)
+                        .items())
+                .isEmpty();
+        assertThat(orders.search(
+                                owner.customerId(),
+                                new OrderModels.Search(null, null, java.time.LocalDate.of(2026, 11, 5), null, number),
+                                null,
+                                10)
+                        .items())
+                .isEmpty();
+        assertThat(orders.search(
+                                owner.customerId(),
+                                new OrderModels.Search(
+                                        null,
+                                        "PAID",
+                                        java.time.LocalDate.of(2026, 11, 4),
+                                        java.time.LocalDate.of(2026, 11, 4),
+                                        number),
+                                null,
+                                10)
+                        .items())
+                .hasSize(1);
+    }
+
+    @Test
     void orderConversationPersistsCandidatesAndSelectsWithoutExecutingCancellation(
             @Autowired com.serviceflow.security.JwtService jwt,
             @Autowired com.fasterxml.jackson.databind.ObjectMapper json)

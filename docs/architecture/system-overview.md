@@ -34,7 +34,7 @@ Jaeger <── OTLP Trace（observability profile）
 
 ## 我的订单与多订单追问
 
-`GET /orders` 从登录身份取得 customerId，按商品名称/型号/SKU/类别、订单号、状态和下单日期查询本人订单。日期按北京时间解释，结束日包含全天；分页用创建时间与 ID 的组合游标，游标先校验归属。同页商品明细一次批量读取，避免每笔订单再发一条 SQL。
+`GET /orders` 从登录身份取得 customerId，按商品名称/型号/SKU/类别、订单号、状态和下单日期查询本人订单。新增 `orderNo` 精确筛选参数，使用现有唯一索引；原 `keyword` 继续保持文字匹配语义。网页识别到 `SF + 至少12位数字` 的完整编号时使用 `orderNo`，其他输入使用 `keyword`。日期按北京时间解释，结束日包含全天；分页用创建时间与 ID 的组合游标，游标先校验归属。同页商品明细一次批量读取，避免每笔订单再发一条 SQL。
 
 从订单卡进入客服会创建独立会话，页面传入 `pageContext.orderNo`，后端使用前再次查归属。Cloud 模式在 ORDER_QUERY 分支调用模型输出一个受约束的 JSON 查询计划：`SEARCH_ORDERS`、`READ_CURRENT`、`SELECT_CANDIDATE` 或 `ASK_USER`。后端校验工具名、参数形状、日期范围及候选序号，再调用既有 OrderService；这是一轮规划加确定性执行，没有自动循环调用工具。
 
@@ -59,6 +59,8 @@ Jaeger <── OTLP Trace（observability profile）
 渠道回调需独立凭证，仍复用原有金额、eventId、attemptNo、终态校验；过期租约结果和旧批次回调不能覆盖新状态。已成功退款、重复消息、重复回调不会重复改款。当前渠道是独立持久化的本地模拟服务，支持响应丢失、回调丢失、明确失败、长时间处理中和进程重启；这些结果不能宣称已经对接真实支付机构。
 
 复现入口为 `scripts/evaluation/refund_delivery.py --allow-isolated-faults`，使用专用 Compose 项目、数据库及端口。CI 同时运行真实消息队列和浏览器人工接手测试，报告只发布合成数据的检查摘要。
+
+模型调用等待超时或上游线程被中断时，`AiCallExecutor` 显式取消 Future 并保留调用线程的中断标记。受测可响应中断任务不会在返回超时后继续堆积；这不代表外部服务已经停止执行或停止计费，退款等已提交业务仍依靠稳定编号和结果核验恢复。
 
 ## 知识入库时序
 

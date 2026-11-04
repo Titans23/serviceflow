@@ -19,7 +19,11 @@ public final class OrderModels {
 
     public record Item(String sku, String productName, int quantity, BigDecimal unitPrice) {}
 
-    public record Search(String keyword, String status, LocalDate from, LocalDate to) {}
+    public record Search(String keyword, String status, LocalDate from, LocalDate to, String orderNo) {
+        public Search(String keyword, String status, LocalDate from, LocalDate to) {
+            this(keyword, status, from, to, null);
+        }
+    }
 
     public record Summary(String orderNo, String status, BigDecimal totalAmount, Instant createdAt, List<Item> items) {}
 

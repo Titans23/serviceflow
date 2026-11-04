@@ -30,6 +30,7 @@ public final class OrderController {
     OrderModels.Page list(
             Authentication authentication,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String orderNo,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -37,7 +38,7 @@ public final class OrderController {
             @RequestParam(defaultValue = "10") int size) {
         return service.search(
                 CurrentPrincipal.from(authentication).requireCustomerId(),
-                new OrderModels.Search(keyword, status, from, to),
+                new OrderModels.Search(keyword, status, from, to, orderNo),
                 cursor,
                 size);
     }

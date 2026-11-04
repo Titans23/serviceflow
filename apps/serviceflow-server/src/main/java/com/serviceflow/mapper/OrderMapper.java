@@ -22,7 +22,8 @@ public interface OrderMapper {
             @Param("from") Instant from,
             @Param("until") Instant until,
             @Param("cursor") OrderModels.Order cursor,
-            @Param("limit") int limit);
+            @Param("limit") int limit,
+            @Param("orderNo") String orderNo);
 
     List<OrderModels.ItemRow> itemsForOrders(@Param("orderIds") List<Long> orderIds);
 

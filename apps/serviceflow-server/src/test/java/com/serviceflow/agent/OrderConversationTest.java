@@ -93,6 +93,11 @@ class OrderConversationTest {
         var capture = org.mockito.ArgumentCaptor.forClass(ChatActionModels.Pending.class);
         verify(actions).prepare(capture.capture(), any());
         assertThat(capture.getValue().orderNo()).isEqualTo(SECOND);
+        var card = events.stream()
+                .filter(event -> event.getKey().equals("action_required"))
+                .findFirst()
+                .orElseThrow();
+        assertThat(String.valueOf(((Map<?, ?>) card.getValue()).get("message"))).contains("无线耳机", SECOND, "299");
         assertThat(active.get()).isEqualTo(SECOND);
         assertThat(pending.get()).isNull();
         verify(orders, never()).cancel(anyString(), anyLong(), anyString());
@@ -217,7 +222,7 @@ class OrderConversationTest {
                 BigDecimal.valueOf(299),
                 0,
                 Instant.now(),
-                List.of(),
+                List.of(new OrderModels.Item("SKU", "无线耳机", 1, BigDecimal.valueOf(299))),
                 new OrderModels.Payment("PAID", "NONE", null, null),
                 List.of(),
                 null);

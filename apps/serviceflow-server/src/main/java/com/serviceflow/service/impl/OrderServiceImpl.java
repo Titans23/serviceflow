@@ -36,9 +36,13 @@ public class OrderServiceImpl implements OrderService {
                 ? null
                 : query.keyword().trim();
         String status = query.status() == null || query.status().isBlank() ? null : query.status();
+        String orderNo = query.orderNo() == null || query.orderNo().isBlank()
+                ? null
+                : query.orderNo().trim();
         if (size < 1
                 || size > 50
                 || (keyword != null && keyword.length() > 80)
+                || (orderNo != null && orderNo.length() > 64)
                 || (status != null && !STATUSES.contains(status))
                 || (query.from() != null && query.to() != null && query.from().isAfter(query.to()))
                 || (query.from() != null
@@ -67,7 +71,8 @@ public class OrderServiceImpl implements OrderService {
                         ? null
                         : query.to().plusDays(1).atStartOfDay(ORDER_ZONE).toInstant(),
                 boundary,
-                size + 1);
+                size + 1,
+                orderNo);
         List<OrderModels.Order> visible = rows.stream().limit(size).toList();
         if (visible.isEmpty()) return new OrderModels.Page(List.of(), null);
         Map<Long, List<OrderModels.Item>> items =

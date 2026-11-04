@@ -153,6 +153,10 @@ final class OrderConversation {
                             orderNo,
                             state.query()),
                     state.clientRequestId());
+            String purchase = order.items().isEmpty()
+                    ? "该订单"
+                    : order.items().getFirst().productName()
+                            + (order.items().size() > 1 ? "等" + order.items().size() + "种商品" : "");
             events.accept(
                     "action_required",
                     Map.of(
@@ -163,7 +167,7 @@ final class OrderConversation {
                             "orderNo",
                             orderNo,
                             "message",
-                            "确认取消订单 " + orderNo + "（¥" + order.totalAmount() + "）吗？"));
+                            "确认取消" + purchase + "（订单 " + orderNo + "，¥" + order.totalAmount() + "）吗？"));
             return answer("订单当前可以取消，请在确认卡片中二次确认。");
         }
         String refund = order.payment() == null ? "暂无" : order.payment().refundStatus();
