@@ -7,6 +7,12 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface RefundMapper {
+    int enqueueDelivery(@Param("publicId") String publicId);
+
+    RefundModels.Refund findById(@Param("id") long id);
+
+    int notePending(@Param("id") long id, @Param("reason") String reason);
+
     RefundModels.Refund lock(@Param("publicId") String publicId);
 
     RefundModels.Refund find(@Param("publicId") String publicId);

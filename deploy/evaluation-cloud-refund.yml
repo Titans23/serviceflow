@@ -3,3 +3,5 @@ services:
   server:
     environment:
       SERVICEFLOW_REFUND_SANDBOX_ENABLED: "true"
+      SERVICEFLOW_REFUND_DISPATCH_ENABLED: "false"
+      SERVICEFLOW_REFUND_CHANNEL: disabled

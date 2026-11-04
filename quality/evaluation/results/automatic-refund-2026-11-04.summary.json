@@ -1,0 +1,422 @@
+{
+  "runId": "202611041312284299",
+  "mode": "isolated-local-simulator",
+  "cloudCalls": 0,
+  "consumers": 2,
+  "duplicateMessages": 20,
+  "checks": [
+    {
+      "name": "two real RabbitMQ consumers are active",
+      "passed": true
+    },
+    {
+      "name": "normal: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "duplicate task routed",
+      "passed": true
+    },
+    {
+      "name": "normal: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "lost-response: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "lost-response: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "lost-response: channel accepted once",
+      "passed": true
+    },
+    {
+      "name": "lost-callback: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "lost-callback: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "lost-callback: channel accepted once",
+      "passed": true
+    },
+    {
+      "name": "lost callback reconciled within two query periods plus poll allowance",
+      "passed": true
+    },
+    {
+      "name": "duplicate-callback: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "duplicate-callback: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "duplicate-callback: channel accepted once",
+      "passed": true
+    },
+    {
+      "name": "failed-retry: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "explicit channel failure has no effective refund",
+      "passed": true
+    },
+    {
+      "name": "admin retry reuses refund identity",
+      "passed": true
+    },
+    {
+      "name": "failed-retry: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "manual: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "manual: unknown result creates one ticket and never submits blindly",
+      "passed": true
+    },
+    {
+      "name": "manual: handoff is unique",
+      "passed": true
+    },
+    {
+      "name": "Agent reads the actual manual-review ticket",
+      "passed": true
+    },
+    {
+      "name": "customer cannot resume channel work",
+      "passed": true
+    },
+    {
+      "name": "admin resumes read-first reconciliation",
+      "passed": true
+    },
+    {
+      "name": "manual: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "outbox-restart: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "task persists while broker is unavailable",
+      "passed": true
+    },
+    {
+      "name": "outbox-restart: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "worker-restart: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "crashed worker leaves a durable lease",
+      "passed": true
+    },
+    {
+      "name": "worker-restart: one effective refund in both systems",
+      "passed": true
+    },
+    {
+      "name": "channel record survives independent process restart",
+      "passed": true
+    },
+    {
+      "name": "browser-manual: no effects before confirmation",
+      "passed": true
+    },
+    {
+      "name": "confirmed action returns durable receipt",
+      "passed": true
+    },
+    {
+      "name": "browser-manual: unknown result creates one ticket and never submits blindly",
+      "passed": true
+    },
+    {
+      "name": "browser-manual: handoff is unique",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "normal": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "8bc216f9-5614-48eb-8179-6a82aea232eb",
+        "ticketId": null,
+        "refundKey": 1,
+        "operations": 1,
+        "queryCount": 1,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1
+    },
+    "lost-response": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "7b059ebe-8703-4923-b6d9-9df1721b3a90",
+        "ticketId": null,
+        "refundKey": 2,
+        "operations": 1,
+        "queryCount": 2,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1,
+      "recoveryAfterObservedChannelSuccessMs": 6188.0
+    },
+    "lost-callback": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "65f58acc-964d-4ea2-8504-70ca5ab07bf8",
+        "ticketId": null,
+        "refundKey": 3,
+        "operations": 1,
+        "queryCount": 2,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1,
+      "recoveryAfterObservedChannelSuccessMs": 5453.0
+    },
+    "duplicate-callback": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "c893bc9a-671f-4dfd-b677-a416d4951559",
+        "ticketId": null,
+        "refundKey": 4,
+        "operations": 1,
+        "queryCount": 1,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1,
+      "recoveryAfterObservedChannelSuccessMs": 265.0
+    },
+    "failed-retry": {
+      "state": {
+        "attempt": 2,
+        "refunds": 1,
+        "refundId": "6b997ba2-bc67-4070-a59b-36589383c808",
+        "ticketId": null,
+        "refundKey": 5,
+        "operations": 1,
+        "queryCount": 2,
+        "orderStatus": "CANCELLED",
+        "submitCount": 2,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 2,
+      "channelEffectiveRefunds": 1
+    },
+    "manual": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "c50880d1-ddbb-4ca7-be6e-67b04ada73de",
+        "ticketId": "abfb50cc-2ace-4d9d-89ab-a796d40e7f08",
+        "refundKey": 6,
+        "operations": 1,
+        "queryCount": 2,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1
+    },
+    "outbox-restart": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "e8dcf3ff-76ba-447a-ab60-c17b7e15f0d5",
+        "ticketId": null,
+        "refundKey": 7,
+        "operations": 1,
+        "queryCount": 1,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1
+    },
+    "worker-restart": {
+      "state": {
+        "attempt": 1,
+        "refunds": 1,
+        "refundId": "425839e6-fa06-41f9-beee-360f54184030",
+        "ticketId": null,
+        "refundKey": 8,
+        "operations": 1,
+        "queryCount": 2,
+        "orderStatus": "CANCELLED",
+        "submitCount": 1,
+        "refundStatus": "SUCCEEDED",
+        "deliveryState": "DONE",
+        "paymentRefundStatus": "REFUNDED"
+      },
+      "channelAcceptedAttempts": 1,
+      "channelEffectiveRefunds": 1
+    }
+  },
+  "paymentScope": "Independent persistent simulator; no real funds",
+  "browser": {
+    "passed": true,
+    "realBackend": true,
+    "realQueue": true,
+    "independentPersistentChannel": true,
+    "effectiveRefunds": 1,
+    "databaseState": "CANCELLED\tSUCCEEDED\tDONE\t1\t1",
+    "cloudCalls": 0
+  },
+  "synthetic": true,
+  "reproduction": "python -B scripts/evaluation/refund_delivery.py --allow-isolated-faults"
+}

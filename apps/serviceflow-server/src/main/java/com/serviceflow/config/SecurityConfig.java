@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 "/auth/**",
+                                "/internal/refunds/*/events",
                                 "/actuator/health/**",
                                 "/actuator/info",
                                 "/actuator/prometheus",

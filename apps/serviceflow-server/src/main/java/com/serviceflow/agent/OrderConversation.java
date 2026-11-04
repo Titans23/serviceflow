@@ -169,7 +169,11 @@ final class OrderConversation {
         String refund = order.payment() == null ? "暂无" : order.payment().refundStatus();
         String shipment =
                 order.shipment().isEmpty() ? "暂无" : order.shipment().getFirst().description();
-        return answer("订单 " + orderNo + " 当前状态为 " + order.status() + "，退款状态为 " + refund + "，最新物流：" + shipment + "。");
+        String progress = order.refund() != null && order.refund().failureReason() != null
+                ? "退款处理说明：" + order.refund().failureReason() + "。"
+                : "";
+        return answer("订单 " + orderNo + " 当前状态为 " + order.status() + "，退款状态为 " + refund + "，最新物流：" + shipment + "。"
+                + progress);
     }
 
     static boolean wantsCancellation(String query) {

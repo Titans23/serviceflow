@@ -14,6 +14,12 @@ public class RabbitConfig {
     public static final String DOCUMENT_QUEUE = "serviceflow.document.ingest";
     public static final String DOCUMENT_DLQ = "serviceflow.document.ingest.dlq";
     public static final String ROUTING_KEY = "document.ingest";
+    public static final String REFUND_QUEUE = "serviceflow.refund.deliver";
+
+    @Bean
+    Queue refundQueue() {
+        return QueueBuilder.durable(REFUND_QUEUE).build();
+    }
 
     @Bean
     DirectExchange documentExchange() {

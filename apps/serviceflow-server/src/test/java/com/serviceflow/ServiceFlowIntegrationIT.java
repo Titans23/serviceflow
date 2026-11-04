@@ -469,6 +469,57 @@ class ServiceFlowIntegrationIT {
         return orderNo;
     }
 
+    @Test
+    void refundLeaseFencesCrashedWorkerAndManualReviewIsIdempotent(
+            @Autowired com.serviceflow.service.RefundDeliveryService delivery,
+            @Autowired com.serviceflow.mapper.RefundDeliveryMapper tasks)
+            throws Exception {
+        String no = newOrder("PAID"), id = UUID.randomUUID().toString();
+        orders.cancel(no, 1, id);
+        long refundId = jdbc.queryForObject("SELECT id FROM refund_request WHERE public_id=?", Long.class, id);
+        var old = delivery.claim(refundId);
+        assertThat(old).isNotNull();
+        assertThat(delivery.claim(refundId)).isNull();
+        jdbc.update(
+                "UPDATE refund_delivery SET lease_until=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE refund_id=?", refundId);
+        var current = delivery.claim(refundId);
+        assertThat(current.task().leaseToken()).isNotEqualTo(old.task().leaseToken());
+        var succeeded =
+                new com.serviceflow.model.RefundDeliveryModels.ChannelResult(id, 1, "SUCCEEDED", BigDecimal.TEN, "");
+        delivery.accept(old, succeeded);
+        assertThat(orders.get(no, 1).refund().status()).isEqualTo("PROCESSING");
+        delivery.accept(current, succeeded);
+        assertThat(orders.get(no, 1).payment().refundStatus()).isEqualTo("REFUNDED");
+        assertThat(delivery.claim(refundId)).isNull();
+        assertThat(eventCount(id)).isEqualTo(1);
+        String manualNo = newOrder("PAID"), manualId = UUID.randomUUID().toString();
+        orders.cancel(manualNo, 1, manualId);
+        long manualKey = jdbc.queryForObject("SELECT id FROM refund_request WHERE public_id=?", Long.class, manualId);
+        jdbc.update(
+                "UPDATE refund_delivery SET deadline_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE refund_id=?",
+                manualKey);
+        var claim = delivery.claim(manualKey);
+        delivery.waitOrEscalate(claim, "渠道不可用");
+        delivery.waitOrEscalate(claim, "重复回包");
+        String ticket =
+                jdbc.queryForObject("SELECT ticket_id FROM refund_delivery WHERE refund_id=?", String.class, manualKey);
+        assertThat(orders.get(manualNo, 1).refund().failureReason()).contains(ticket);
+        assertThat(jdbc.queryForObject("SELECT description FROM ticket WHERE public_id=?", String.class, ticket))
+                .contains(manualNo, manualId, "查询次数");
+        assertThat(delivery.claim(manualKey)).isNull();
+        delivery.reconcile(manualId);
+        var resumed = delivery.claim(manualKey);
+        assertThat(resumed).isNotNull();
+        delivery.accept(
+                resumed,
+                new com.serviceflow.model.RefundDeliveryModels.ChannelResult(
+                        manualId, 1, "SUCCEEDED", BigDecimal.TEN, ""));
+        assertThat(orders.get(manualNo, 1).refund().status()).isEqualTo("SUCCEEDED");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ticket WHERE public_id=?", Integer.class, ticket))
+                .isEqualTo(1);
+        System.out.println("REFUND_LEASE_PASS staleWrites=0 duplicateRefunds=0 manualTickets=1 recovered=1");
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"DUPLICATE", "CONFIRM_REJECT", "DIFFERENT_ACTIONS"})
     void durableActionRacesHaveOneDecisionAndOneRefund(

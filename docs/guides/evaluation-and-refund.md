@@ -1,6 +1,6 @@
 # 评测 v2 与取消—退款运行手册
 
-本轮把公开商品资料、可复现的多轮回归和退款状态流转连接起来。付款渠道仍是显式启用的管理员沙箱，没有真实资金转移。当前验证记录见 [2026-10-24 Docker 验收](../../quality/evaluation/results/v2-docker-verification-2026-10-24.md)，此前离线检查也保留在结果目录。
+本手册保留管理员沙箱的可复现回归，并于 2026-11-04 新增独立持久化渠道与后台退款流程，见第 10 节。两种模式都不涉及真实资金。早期记录见 [2026-10-24 Docker 验收](../../quality/evaluation/results/v2-docker-verification-2026-10-24.md)，历史证据保持原样。
 
 2026-10-25 已完成[真实 RAG 小规模云验证](../../quality/evaluation/results/cloud-rag-smoke-2026-10-25.md)，范围与复现方式见第 7 节。
 
@@ -90,7 +90,7 @@ Demo 可检查业务/SSE/权限连通性，知识题失败应如实保留。真�
 
 客户页 `/orders` 展示订单、退款金额、失败原因和处理次数，查询受订单所有者权限控制。客服聊天出现取消确认卡片后，由用户明确确认；拒绝确认、换订单、重复确认和发货后取消都有回归场景。
 
-管理员 `/admin/refunds` 默认只读。设置 `SERVICEFLOW_REFUND_SANDBOX_ENABLED=true` 才会创建回调/重试接口并显示按钮；必须同时具有 ADMIN 权限。流程：
+管理员 `/admin/refunds` 在没有启用处理渠道时只读。设置 `SERVICEFLOW_REFUND_SANDBOX_ENABLED=true` 显示手工模拟回调；启用 `SERVICEFLOW_REFUND_DISPATCH_ENABLED=true` 时显示自动渠道的失败重试与人工重新核验；均需 ADMIN 权限。沙箱流程：
 
 ```text
 已付款且可取消订单 → 用户确认 → CANCELLED + refund PROCESSING（同一事务）
@@ -144,13 +144,13 @@ python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/reports/c
 
 `POST /api/chat/actions/{actionId}/confirm` 仍要求本人、未过期的待确认动作和显式确认。事务成功提交后，`order_operation`、订单/支付状态和唯一退款请求是执行事实；Redis缓存不是提交结果的唯一载体。
 
-新增 `GET /api/chat/actions/{actionId}/result` 只读查询，返回 `operation` 原结果及 `order` 当前状态（含退款进度）。仅登录客户可用；SQL通过操作→订单→客户关系检查所有者。游客/管理员403；其他客户、无已提交结果或未确认/拒绝/过期未执行的动作404。**404只表示当前没有可访问的已提交结果，不能据此判定未执行，更不能自动重发取消。** 查询接口不会确认动作、创建退款或重试退款。
+`GET /api/chat/actions/{actionId}/result` 只读查询，返回持久动作状态、`operation` 和 `order`（含退款进度）。2026-11-04 起未确认、放弃、过期分别返回 200 + PENDING/REJECTED/EXPIRED；会话删除后的新执行被裁决为 INVALIDATED。游客/管理员403，其他客户或不存在的动作404。PENDING、404和网络失败均不能授权自动重发。查询接口不会确认动作、创建退款或重试退款；迁移前的已提交取消仍可从操作账本读取。
 
 取消确认的浏览器路径必须收到终止 `done`；连接错误或提前EOF时保留动作标识，进入待核验状态并进行一次只读查询。查询失败或404时可明确再次查询、继续其他咨询或在新标签查看订单。未知结果期间暂缓新的确认，避免覆盖未核验动作；没有自动副作用重试。跨会话核验结果放在关联订单的独立结果卡，不插入其他会话消息。
 
 待核验标识在确认请求发出前写入当前标签的 `sessionStorage`，仅包含版本、登录身份分区、actionId、订单号和确认时会话ID，不保存令牌、完整问题或回答。同一标签刷新或离开后返回客服页时，只读核验一次；404/网络错误保留未知，查询成功清除标识。退出或换账号时清除，旧账号回包不能清除新账号记录或展示旧卡。缓存只是关联线索，不是执行授权。
 
-当前边界：关闭标签、清理浏览器存储、退出或换账号后不保证继续自动恢复，不是跨设备/跨浏览器持久任务系统。损坏或无法读取待核验记录时显示明确提示，不使用其内容执行动作；保存失败时说明不能保证刷新后恢复；已核验但清理失败时说明可能再次只读查询。测试中的存储故障针对待核验键，不代表整个浏览器认证存储被禁用时仍能登录。退款仍是沙箱，不涉及支付渠道超时查询、签名或对账。
+当前边界：关闭标签、清理浏览器存储、退出或换账号后不保证自动找回未收到的决定响应。历史确认卡从服务端消息恢复后须重新读取动作状态。损坏或无法读取待核验记录时显示提示并暂停历史确认卡自动恢复；保存失败时说明不能保证刷新后恢复；清理失败时说明可能再次只读查询。测试中的存储故障针对待核验键，不代表整个认证存储被禁用时仍能登录。独立模拟渠道的超时查询见第 10 节，真实支付签名与清结算仍不在范围内。
 
 复现故障→恢复（会新增独立合成客户/订单，只删除这些动作的Redis键并重启评测server；不清空数据库或Redis）：
 
@@ -169,12 +169,35 @@ Pop-Location
 
 `recovery_demo.py` 的代理先接收真实后端提交后的响应，再断开下游连接，证明客户端未获结果而数据库已提交；随后丢失该动作缓存并实际重启server。它验证所有者查询、游客/其他客户拒绝、未确认/拒绝/过期不执行、同动作并发确认、重复回调和最终状态金额。`--baseline` 只用于未修复版本复现原缺口，不能对新版本期望失败。
 
-两个浏览器验收分别覆盖：真实提交后移除done且首次查询断网，手动再查走真实API；确认请求未到服务端且真实查询404，保留未知状态并可继续咨询。均从MySQL读回操作/退款计数，不能用全部API mock替代。浏览器trace/截图关闭，避免将测试登录令牌放入产物。未设置 `RECOVERY_FIXTURES` 时这两个用例明确跳过；CI会先生成夹具再实际执行。
+两个浏览器验收分别覆盖：真实提交后移除done且首次查询断网，手动再查走真实API；确认请求未到服务端且查询为 PENDING，保留待核验状态并可继续咨询。均从MySQL读回操作/退款计数，不能用全部API mock替代。浏览器trace/截图关闭，避免将测试登录令牌放入产物。未设置 `RECOVERY_FIXTURES` 时明确跳过；CI会先生成夹具再实际执行。
 
-刷新专项另覆盖5例：提交后刷新成功核验并清理、404跨刷新/导航保留、实际登录换账号/退出与陈旧记录隔离、损坏/读取不可用提示、写入失败时仅保留当前页核验。CI会通过同一 `RECOVERY_FIXTURES` 执行全部7个真实恢复用例；不设置夹具时明确跳过，不能计为通过。
+刷新专项另覆盖5例：提交后刷新成功核验并清理、PENDING跨刷新/导航保留、实际登录换账号/退出与陈旧记录隔离、损坏/读取不可用提示、写入失败时仅保留当前页核验。CI会通过同一 `RECOVERY_FIXTURES` 执行全部7个真实恢复用例；不设置夹具时明确跳过，不能计为通过。
 
 ## 9. 真实模型多轮业务验收
 
 [已完成的一次固定批次](../../quality/evaluation/results/cloud-business-recovery-2026-10-25.md)使用项目 `.env`：6个合成场景、14轮，79项检查通过，14/27次provider请求；记录参数绑定、权限、聊天/确认/回调重放及提交后丢响应恢复。模型只负责分类，确认和退款使用后端参数；没有真实资金。原始响应留在本机，预期拒绝、未知token/费用与耗时如实保留。
 
 复现入口与边界见[批次计划](../../quality/evaluation/results/cloud-business-plan-2026-10-25.md)。显式叠加 `evaluation-cloud-compose.yml`、`evaluation-provider-budget.yml`、`evaluation-cloud-refund.yml`；最后一层仅为独立Cloud评测开启管理员退款沙箱。脚本 `cloud_business_recovery.py --allow-cloud --allow-isolated-faults` 需要未使用的预算进程，自动生成全新合成夹具，禁止后台入库、重启补额度或自动付费重跑。不要修改默认Cloud配置的沙箱关闭值来代替显式profile。
+
+## 10. 独立渠道与自动退款（2026-11-04）
+
+Cloud Compose 现在启用自动退款，AI/RAG 仍为 cloud。部署前在本地 `.env` 设置长随机值 `SERVICEFLOW_REFUND_CHANNEL_TOKEN`；该值仅在后端和模拟渠道之间使用，不能提交。渠道的 SQLite 独立存储在 `eval-refund-channel` 卷，未暴露宿主端口。历史退款不自动补投；新取消事务同时写入退款及投递记录。付款仅为本地模拟，不会转移真实资金。
+
+无付费调用的完整验证使用另一组专用端口和新合成数据：
+
+```powershell
+docker compose -p serviceflow-refund-verification -f deploy/refund-verification-compose.yml up -d --build --wait --wait-timeout 300
+python -B scripts/evaluation/refund_delivery.py --allow-isolated-faults
+# 用上一步目录中的 fixtures.json 替换下方路径
+$env:REFUND_DELIVERY_FIXTURES = 'D:\learn_project\ServiceFlow\quality\evaluation\reports\refund-delivery-<runId>\fixtures.json'
+$env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:28173'
+Push-Location apps/serviceflow-web
+npx.cmd playwright test e2e/refund-delivery-live.spec.ts
+Pop-Location
+```
+
+脚本校验专用项目名、数据库前缀、demo 模型与自动处理开关后才追加合成数据。它使用真实 MySQL、RabbitMQ 的两个消费者、独立 HTTP/SQLite 渠道；注入 20 条重复消息、响应丢失、回调丢失、重复回调、明确失败、渠道不可用、停消息队列、强制退出后端和渠道重启。只对本项目新建的验证容器做故障注入，不触碰 Cloud 实例。摘要见[自动退款验证](../../quality/evaluation/results/automatic-refund-2026-11-04.summary.json)。
+
+处理参数：发布扫描 2 秒、查询间隔 5 秒、领取租约 30 秒、渠道 HTTP 超时 4 秒、未知结果处理时限 10 分钟。租约过期允许其他消费者接管，旧令牌不能提交结果。超时工单附订单、退款、金额、批次、查询/提交次数和最近错误。管理员“重新核验渠道”只恢复原任务的查询流程；明确 FAILED 的退款才允许增加批次重试。
+
+CI 自动运行该流程与真实浏览器接手测试。需要人工沙箱回调的旧云评测 overlay 显式关闭自动投递，避免两种测试推进方式相互干扰。真实模型效果、真实支付机构签名、部分退款、跨币种和资金清结算仍需独立实现及验收。

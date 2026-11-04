@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.mapper.RefundDeliveryMapper">
+  <select id="due" resultType="long">
+    SELECT refund_id FROM refund_delivery WHERE state IN ('READY','WAITING')
+      AND next_publish_at &lt;= CURRENT_TIMESTAMP(6) AND next_run_at &lt;= CURRENT_TIMESTAMP(6)
+      AND (lease_until IS NULL OR lease_until &lt;= CURRENT_TIMESTAMP(6))
+    ORDER BY next_publish_at,refund_id LIMIT 25 FOR UPDATE SKIP LOCKED
+  </select>
+  <update id="published">
+    UPDATE refund_delivery SET next_publish_at=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 5 SECOND) WHERE refund_id=#{id}
+  </update>
+  <select id="lock" resultType="com.serviceflow.model.RefundDeliveryModels$Task" useCache="false" flushCache="true">
+    SELECT refund_id,attempt_no,state,lease_token,lease_until,next_run_at,deadline_at,query_count,submit_count,last_error,ticket_id
+    FROM refund_delivery WHERE refund_id=#{id} FOR UPDATE
+  </select>
+  <update id="claim">
+    UPDATE refund_delivery SET lease_token=#{token},lease_until=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 30 SECOND)
+    WHERE refund_id=#{id} AND state IN ('READY','WAITING')
+      AND next_run_at &lt;= CURRENT_TIMESTAMP(6)
+      AND (lease_until IS NULL OR lease_until &lt;= CURRENT_TIMESTAMP(6))
+  </update>
+  <update id="release">
+    UPDATE refund_delivery SET state=#{state},lease_token=NULL,lease_until=NULL,
+      next_run_at=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 5 SECOND),last_error=#{error},ticket_id=#{ticketId}
+    WHERE refund_id=#{id} AND lease_token=#{token}
+  </update>
+  <update id="queried">
+    UPDATE refund_delivery SET query_count=query_count+1 WHERE refund_id=#{id} AND lease_token=#{token}
+  </update>
+  <update id="submitted">
+    UPDATE refund_delivery SET submit_count=submit_count+1 WHERE refund_id=#{id} AND lease_token=#{token}
+      AND lease_until &gt; CURRENT_TIMESTAMP(6) AND state IN ('READY','WAITING')
+  </update>
+  <update id="terminal">
+    UPDATE refund_delivery SET state='DONE',lease_token=NULL,lease_until=NULL,last_error=NULL
+    WHERE refund_id=#{id} AND attempt_no=#{attempt}
+  </update>
+  <update id="reopen">
+    UPDATE refund_delivery SET state='WAITING',lease_token=NULL,lease_until=NULL,
+      next_run_at=CURRENT_TIMESTAMP(6),next_publish_at=CURRENT_TIMESTAMP(6),
+      deadline_at=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 10 MINUTE),last_error=NULL
+    WHERE refund_id=#{id} AND state='MANUAL'
+  </update>
+  <select id="owner" resultType="com.serviceflow.model.RefundDeliveryModels$Owner">
+    SELECT o.customer_id,a.session_public_id AS session_id FROM refund_request r JOIN customer_order o ON o.id=r.order_id
+    LEFT JOIN chat_action a ON a.public_id=r.public_id WHERE r.id=#{id}
+  </select>
+</mapper>

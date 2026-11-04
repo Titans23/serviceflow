@@ -25,9 +25,4 @@ public final class RefundSandboxController {
     RefundModels.EventResult event(@PathVariable String publicId, @Valid @RequestBody RefundModels.SandboxEvent input) {
         return service.applySandboxEvent(publicId, input);
     }
-
-    @PostMapping("/{publicId}/retry")
-    RefundModels.RefundView retry(@PathVariable String publicId, @Valid @RequestBody RefundModels.RetryRequest input) {
-        return service.retry(publicId, input.expectedAttemptNo());
-    }
 }

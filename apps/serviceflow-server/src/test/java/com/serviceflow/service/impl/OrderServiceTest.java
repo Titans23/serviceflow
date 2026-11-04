@@ -21,7 +21,9 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         mapper = mock(OrderMapper.class);
-        service = new OrderServiceImpl(mapper, mock(com.serviceflow.mapper.RefundMapper.class));
+        var refunds = mock(com.serviceflow.mapper.RefundMapper.class);
+        when(refunds.enqueueDelivery(anyString())).thenReturn(1);
+        service = new OrderServiceImpl(mapper, refunds);
     }
 
     @Test

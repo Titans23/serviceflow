@@ -12,7 +12,8 @@ Spring Boot 3.5 (MVC + Virtual Threads)
   ├─ Milvus Hybrid RAG + 百炼 Reranker 适配器
   ├─ MySQL 8.4 (事实、订单、正式会话、确认决定、幂等、Outbox)
   ├─ Redis 7 (限流、近期记忆、当前商品/订单、候选订单、Checkpoint)
-  └─ RabbitMQ 4 (知识入库事件 + DLQ)
+  ├─ RabbitMQ 4 (知识入库事件 + DLQ、退款任务通知)
+  └─ 独立本地退款渠道 (Python HTTP + SQLite，仅模拟资金结果)
 
 Prometheus ── Grafana（observability profile）
 Jaeger <── OTLP Trace（observability profile）
@@ -48,6 +49,16 @@ Jaeger <── OTLP Trace（observability profile）
 结果接口可以读取 PENDING、CONFIRMED、REJECTED、EXPIRED、INVALIDATED、CONFLICT；PENDING 仍表示尚未取得最终结果，不能据此自动重发。确认胜出后再放弃、放弃胜出后再确认，都返回第一次裁决。历史的迁移前取消账本仍可查询；迁移前仅存在 Redis 中的未确认卡片需要重新发起申请。
 
 确认或放弃响应缺失时，浏览器通过`GET /chat/actions/{id}/result`查本人持久决定与订单；404、PENDING 或网络异常保留待核验标识，不自动重发决定。历史确认卡恢复时先查询动作状态，只有有效 PENDING 卡能继续显示。退款沙箱按eventId/attemptNo/金额及终态约束回调与重试。sessionStorage只是身份分区的关联线索，Checkpoint不是退款执行凭证。
+
+## 后台退款与人工接手
+
+取消事务在 `refund_request` 之外同时插入 `refund_delivery`，后者也是持久投递记录；历史退款不自动补投。发布器沿用 Publisher Confirm 与 `SKIP LOCKED` 的方式通知 RabbitMQ，任务完成前可再次投递，同一消息不代表一次新的退款。两个消费者以数据库条件更新取得 30 秒租约，新的 leaseToken 阻止恢复后的旧工作线程覆盖新任务。领取和结果提交使用短事务，HTTP 在事务外执行。
+
+消费者每次先查询稳定的退款 publicId。只有渠道明确返回未受理，或管理员已将明确失败的旧批次推进为下一批次时，才允许提交。同一业务退款编号、金额和批次由独立渠道检查；超时与异常保持 WAITING，每 5 秒再核验，发布器每 2 秒扫描。10 分钟仍无法得到结果时，事务内创建幂等人工工单并标记 MANUAL，支付仍为 PROCESSING。管理员可以恢复核验；这个动作沿用原编号并先查询，不能把“未知”直接改为“失败重退”。
+
+渠道回调需独立凭证，仍复用原有金额、eventId、attemptNo、终态校验；过期租约结果和旧批次回调不能覆盖新状态。已成功退款、重复消息、重复回调不会重复改款。当前渠道是独立持久化的本地模拟服务，支持响应丢失、回调丢失、明确失败、长时间处理中和进程重启；这些结果不能宣称已经对接真实支付机构。
+
+复现入口为 `scripts/evaluation/refund_delivery.py --allow-isolated-faults`，使用专用 Compose 项目、数据库及端口。CI 同时运行真实消息队列和浏览器人工接手测试，报告只发布合成数据的检查摘要。
 
 ## 知识入库时序
 

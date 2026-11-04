@@ -5,6 +5,7 @@ services:
     restart: "no"
     environment:
       SERVICEFLOW_EVALUATION_PROVIDER_BUDGET_ENABLED: "true"
+      SERVICEFLOW_REFUND_DISPATCH_ENABLED: "false"
       SERVICEFLOW_EVALUATION_PROVIDER_REQUEST_LIMIT: "27"
       JAVA_TOOL_OPTIONS: "-Djdk.httpclient.redirects.retrylimit=1"
       SPRING_AI_RETRY_MAX_ATTEMPTS: "1"

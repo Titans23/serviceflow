@@ -110,6 +110,7 @@ public class RefundServiceImpl implements RefundService {
                 || mapper.updatePayment(refund.orderId(), "FAILED", "PROCESSING") != 1) {
             throw new ResponseStatusException(CONFLICT, "退款状态已变化，事务已回滚");
         }
+        mapper.enqueueDelivery(publicId);
         return mapper.find(publicId).view();
     }
 

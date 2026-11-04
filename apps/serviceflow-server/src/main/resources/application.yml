@@ -62,12 +62,17 @@ info:
     ragMode: ${SERVICEFLOW_RAG_MODE:${SERVICEFLOW_AI_MODE:demo}}
     evaluationEnabled: ${SERVICEFLOW_EVALUATION_ENABLED:false}
     refundSandboxEnabled: ${SERVICEFLOW_REFUND_SANDBOX_ENABLED:false}
+    refundDispatchEnabled: ${SERVICEFLOW_REFUND_DISPATCH_ENABLED:false}
+    refundChannel: ${SERVICEFLOW_REFUND_CHANNEL:disabled}
 serviceflow:
   evaluation:
     enabled: ${SERVICEFLOW_EVALUATION_ENABLED:false}
     rag-diagnostics-dir: ${SERVICEFLOW_RAG_DIAGNOSTICS_DIR:}
   refund:
     sandbox-enabled: ${SERVICEFLOW_REFUND_SANDBOX_ENABLED:false}
+    dispatch-enabled: ${SERVICEFLOW_REFUND_DISPATCH_ENABLED:false}
+    channel-url: ${SERVICEFLOW_REFUND_CHANNEL_URL:http://refund-channel:8090}
+    channel-token: ${SERVICEFLOW_REFUND_CHANNEL_TOKEN:}
   jwt:
     secret: ${JWT_SECRET:development-secret-must-be-replaced-32}
     customer-ttl: 2h

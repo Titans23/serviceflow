@@ -11,6 +11,9 @@ services:
       SERVICEFLOW_RAG_MODE: cloud
       SERVICEFLOW_RAG_DIAGNOSTICS_DIR: /data/evaluation/rag-traces
       SERVICEFLOW_REFUND_SANDBOX_ENABLED: "false"
+      SERVICEFLOW_REFUND_DISPATCH_ENABLED: "true"
+      SERVICEFLOW_REFUND_CHANNEL: local-simulator
+      SERVICEFLOW_REFUND_CHANNEL_TOKEN: ${SERVICEFLOW_REFUND_CHANNEL_TOKEN:?Local refund simulator credential required}
       SPRING_AI_MODEL_CHAT: openai
       SPRING_AI_MODEL_EMBEDDING: none
       SPRING_AI_OPENAI_CHAT_OPTIONS_MAX_TOKENS: "1024"
@@ -28,6 +31,7 @@ services:
       - ../quality/evaluation/reports/rag-traces:/data/evaluation/rag-traces
     depends_on:
       milvus: {condition: service_healthy}
+      refund-channel: {condition: service_healthy}
   web:
     extends: {file: evaluation-compose.yml, service: web}
     image: serviceflow-eval-web:latest
@@ -61,7 +65,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+  refund-channel:
+    build: ../apps/refund-channel
+    image: serviceflow-refund-channel:latest
+    mem_limit: 128m
+    environment:
+      CHANNEL_TOKEN: ${SERVICEFLOW_REFUND_CHANNEL_TOKEN:?Local refund simulator credential required}
+      CALLBACK_URL: http://server:8080/api/internal/refunds
+    volumes: [eval-refund-channel:/data]
 volumes:
   eval-mysql:
   eval-uploads:
   eval-milvus:
+  eval-refund-channel:

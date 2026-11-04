@@ -35,6 +35,7 @@ const listLoading = ref(false)
 const listError = ref('')
 let appliedQuery = new URLSearchParams({ size: '10' })
 const sandbox = ref(false)
+const channel = ref('')
 const orderLabels: Record<string, string> = {
   CREATED: '待付款',
   PAID: '已付款',
@@ -107,10 +108,11 @@ watch(
 onMounted(async () => {
   await loadList()
   try {
-    const info = await api<{ serviceflow?: { refundSandboxEnabled?: boolean | string } }>(
-      '/actuator/info',
-    )
+    const info = await api<{
+      serviceflow?: { refundSandboxEnabled?: boolean | string; refundChannel?: string }
+    }>('/actuator/info')
     sandbox.value = String(info.serviceflow?.refundSandboxEnabled) === 'true'
+    channel.value = info.serviceflow?.refundChannel || ''
   } catch {
     ElMessage.warning('暂时无法获取环境信息，请确认当前运行环境')
   }
@@ -121,6 +123,12 @@ onMounted(async () => {
 <template>
   <div class="page">
     <h1>我的订单</h1>
+    <el-alert
+      v-if="channel === 'local-simulator'"
+      title="退款由独立的本地模拟渠道处理，不涉及真实资金。后台会自动提交并核验结果。"
+      type="info"
+      :closable="false"
+    />
     <el-alert
       v-if="sandbox"
       title="当前为退款演示环境，不会发生真实资金转移。"

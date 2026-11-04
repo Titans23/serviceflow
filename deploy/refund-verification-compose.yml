@@ -1,0 +1,47 @@
+# Disposable synthetic-data validation; AI is controlled locally and no cloud credentials are used.
+# docker compose -p serviceflow-refund-verification -f deploy/refund-verification-compose.yml ...
+services:
+  server:
+    extends: {file: evaluation-compose.yml, service: server}
+    image: serviceflow-eval-server:latest
+    mem_limit: 768m
+    ports: !override ["127.0.0.1:28180:8080"]
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_refund_verification
+      SERVICEFLOW_REFUND_SANDBOX_ENABLED: "false"
+      SERVICEFLOW_REFUND_DISPATCH_ENABLED: "true"
+      SERVICEFLOW_REFUND_CHANNEL: local-simulator
+      SERVICEFLOW_REFUND_CHANNEL_TOKEN: isolated-refund-channel-token
+      SERVICEFLOW_CORS_ALLOWED_ORIGINS: http://127.0.0.1:28173
+    depends_on:
+      refund-channel: {condition: service_healthy}
+  web:
+    extends: {file: evaluation-compose.yml, service: web}
+    image: serviceflow-eval-web:latest
+    mem_limit: 96m
+    ports: !override ["127.0.0.1:28173:80"]
+  mysql:
+    extends: {file: evaluation-compose.yml, service: mysql}
+    mem_limit: 512m
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_refund_verification
+  redis:
+    extends: {file: evaluation-compose.yml, service: redis}
+    mem_limit: 96m
+  rabbitmq:
+    extends: {file: evaluation-compose.yml, service: rabbitmq}
+    mem_limit: 512m
+    ports: ["127.0.0.1:28672:15672"]
+  refund-channel:
+    build: ../apps/refund-channel
+    image: serviceflow-refund-channel:latest
+    mem_limit: 128m
+    environment:
+      CHANNEL_TOKEN: isolated-refund-channel-token
+      CALLBACK_URL: http://server:8080/api/internal/refunds
+    ports: ["127.0.0.1:28090:8090"]
+    volumes: [channel-data:/data]
+volumes:
+  eval-mysql:
+  eval-uploads:
+  channel-data:

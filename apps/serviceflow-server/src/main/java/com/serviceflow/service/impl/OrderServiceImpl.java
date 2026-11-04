@@ -152,6 +152,8 @@ public class OrderServiceImpl implements OrderService {
             if (mapper.createRefund(order.id(), requestId) != 1) {
                 throw new IllegalStateException("Refund request could not be created; cancellation must roll back");
             }
+            if (refunds.enqueueDelivery(requestId) != 1)
+                throw new IllegalStateException("Refund delivery could not be created; cancellation must roll back");
         } else {
             var payment = mapper.payment(order.id());
             if (payment != null && "PAID".equals(payment.status())) {

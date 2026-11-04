@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.RefundMapper">
+  <insert id="enqueueDelivery">
+    INSERT INTO refund_delivery(refund_id,attempt_no,deadline_at)
+    SELECT id,attempt_no,DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 10 MINUTE) FROM refund_request WHERE public_id=#{publicId}
+    ON DUPLICATE KEY UPDATE attempt_no=VALUES(attempt_no),state='READY',lease_token=NULL,lease_until=NULL,
+      next_run_at=CURRENT_TIMESTAMP(6),next_publish_at=CURRENT_TIMESTAMP(6),deadline_at=VALUES(deadline_at),last_error=NULL,ticket_id=NULL
+  </insert>
+  <select id="findById" resultType="com.serviceflow.model.RefundModels$Refund">
+    SELECT <include refid="columns"/> FROM refund_request r JOIN customer_order o ON o.id=r.order_id WHERE r.id=#{id}
+  </select>
+  <update id="notePending">
+    UPDATE refund_request SET failure_reason=#{reason} WHERE id=#{id} AND status='PROCESSING'
+  </update>
   <sql id="columns">r.id,r.public_id,r.order_id,o.order_no,r.amount,r.status,r.attempt_no,r.failure_reason,r.created_at,r.updated_at</sql>
   <select id="lock" resultType="com.serviceflow.model.RefundModels$Refund" useCache="false" flushCache="true">
     SELECT <include refid="columns"/> FROM refund_request r JOIN customer_order o ON o.id=r.order_id
