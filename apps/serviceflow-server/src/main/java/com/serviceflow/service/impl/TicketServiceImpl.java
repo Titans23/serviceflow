@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -27,11 +28,62 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional
     public void publishCustomerMessage(String publicId, String message) {
-        if (message == null || message.isBlank() || message.length() > 500)
-            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "顾客回复须为1到500字");
-        if (mapper.publishCustomerMessage(publicId, message.trim()) != 1)
+        reply(publicId, null, UUID.randomUUID().toString(), message);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TicketModels.Detail detail(String id, Long customerId) {
+        TicketModels.TicketView ticket;
+        if (customerId == null) {
+            var admin = mapper.findAdminById(id);
+            if (admin == null) throw new ResponseStatusException(NOT_FOUND, "工单不存在");
+            ticket = new TicketModels.TicketView(
+                    id, admin.subject(), admin.description(), admin.status(), admin.createdAt());
+        } else {
+            ticket = mapper.findOwned(id, customerId);
+            if (ticket == null) throw new ResponseStatusException(NOT_FOUND, "工单不存在");
+        }
+        return new TicketModels.Detail(ticket, mapper.messages(id).reversed());
+    }
+
+    @Override
+    @Transactional
+    public TicketModels.Message reply(String id, Long customerId, String messageId, String content) {
+        if (content == null || content.isBlank() || content.length() > 500 || messageId == null)
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "请填写1到500字的消息");
+        try {
+            UUID.fromString(messageId);
+        } catch (IllegalArgumentException invalid) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "无效消息编号");
+        }
+        var ticket = mapper.lock(id);
+        if (ticket == null || (customerId != null && ticket.customerId() != customerId))
             throw new ResponseStatusException(NOT_FOUND, "工单不存在");
+        String role = customerId == null ? "SUPPORT" : "CUSTOMER";
+        var previous = mapper.message(id, messageId);
+        if (previous != null) {
+            if (!previous.authorRole().equals(role) || !previous.content().equals(content.trim()))
+                throw new ResponseStatusException(CONFLICT, "该消息编号已被其他内容使用");
+            return previous;
+        }
+        if ("CLOSED".equals(ticket.status())) throw new ResponseStatusException(CONFLICT, "工单已关闭");
+        mapper.insertMessage(id, messageId, role, content.trim());
+        if (customerId == null) mapper.publishCustomerMessage(id, content.trim());
+        else mapper.reopen(id);
+        return mapper.message(id, messageId);
+    }
+
+    @Override
+    @Transactional
+    public void closeByCustomer(String id, long customerId) {
+        var ticket = mapper.lock(id);
+        if (ticket == null || ticket.customerId() != customerId) throw new ResponseStatusException(NOT_FOUND, "工单不存在");
+        if ("CLOSED".equals(ticket.status())) return;
+        if (!"RESOLVED".equals(ticket.status())) throw new ResponseStatusException(CONFLICT, "客服标记解决后才能确认关闭");
+        mapper.updateStatus(id, "RESOLVED", "CLOSED", "customer", null);
     }
 
     @Override

@@ -10,6 +10,8 @@ import OperationsView from './views/OperationsView.vue'
 import OrdersView from './views/OrdersView.vue'
 import RefundsView from './views/RefundsView.vue'
 import ReturnsView from './views/ReturnsView.vue'
+import TicketsView from './views/TicketsView.vue'
+import TicketDetailView from './views/TicketDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +23,9 @@ const router = createRouter({
     { path: '/chat', component: ChatView },
     { path: '/login', component: LoginView },
     { path: '/orders', component: OrdersView, meta: { requiresCustomer: true } },
+    { path: '/tickets', component: TicketsView, meta: { requiresCustomer: true } },
+    { path: '/tickets/:id', component: TicketDetailView, meta: { requiresCustomer: true } },
+    { path: '/admin/tickets/:id', component: TicketDetailView, meta: { requiresAdmin: true } },
     { path: '/admin/refunds', component: RefundsView, meta: { requiresAdmin: true } },
     { path: '/admin/returns', component: ReturnsView, meta: { requiresAdmin: true } },
     { path: '/admin/knowledge', component: KnowledgeView, meta: { requiresAdmin: true } },

@@ -838,6 +838,35 @@ class ServiceFlowIntegrationIT {
     }
 
     @Test
+    void ticketConversationIsOwnedIdempotentAndCanReopenBeforeCustomerCloses(
+            @Autowired com.serviceflow.service.TicketService tickets) {
+        var ticket = tickets.create(1, null, "需要协助", "初始问题");
+        String id = ticket.publicId(), key = UUID.randomUUID().toString();
+        tickets.reply(id, 1L, key, "补充材料");
+        tickets.reply(id, 1L, key, "补充材料");
+        assertThat(tickets.detail(id, 1L).messages()).hasSize(1);
+        assertThatThrownBy(() -> tickets.reply(id, 1L, key, "改写内容")).hasMessageContaining("409");
+        assertThatThrownBy(() -> tickets.detail(id, 999999L)).hasMessageContaining("404");
+        assertThatThrownBy(() -> tickets.reply(id, 999999L, UUID.randomUUID().toString(), "越权"))
+                .hasMessageContaining("404");
+        tickets.updateStatus(id, "ASSIGNED", null, "admin");
+        tickets.publishCustomerMessage(id, "已核实，请检查结果");
+        tickets.updateStatus(id, "RESOLVED", "internal-only", "admin");
+        tickets.reply(id, 1L, UUID.randomUUID().toString(), "问题仍然存在");
+        assertThat(tickets.detail(id, 1L).ticket().status()).isEqualTo("ASSIGNED");
+        assertThat(tickets.detail(id, 1L).toString()).doesNotContain("internal-only");
+        assertThatThrownBy(() -> tickets.closeByCustomer(id, 1)).hasMessageContaining("409");
+        tickets.updateStatus(id, "RESOLVED", "内部复核", "admin");
+        tickets.closeByCustomer(id, 1);
+        tickets.closeByCustomer(id, 1);
+        assertThat(tickets.detail(id, 1L).ticket().status()).isEqualTo("CLOSED");
+        assertThat(tickets.detail(id, 1L).messages()).hasSize(3);
+        assertThatThrownBy(() -> tickets.reply(id, 1L, UUID.randomUUID().toString(), "已关闭后回复"))
+                .hasMessageContaining("409");
+        assertThatThrownBy(() -> tickets.publishCustomerMessage(id, "已关闭后回复")).hasMessageContaining("409");
+    }
+
+    @Test
     void refundReviewSurvivesSessionsAndReconciliationWithoutExposingInternalNotes(
             @Autowired com.serviceflow.service.RefundDeliveryService delivery,
             @Autowired com.serviceflow.service.TicketService tickets,

@@ -152,6 +152,7 @@ onMounted(load)
                 <b>顾客回复：</b>{{ scope.row.customerMessage || '尚未发布' }}
               </div>
               <div class="detail"><b>工单编号：</b>{{ scope.row.publicId }}</div>
+              <router-link :to="'/admin/tickets/' + scope.row.publicId">查看完整沟通</router-link>
             </template>
           </el-table-column>
           <el-table-column prop="subject" label="主题" min-width="160" />
@@ -161,7 +162,12 @@ onMounted(load)
           <el-table-column prop="updatedAt" label="更新时间" min-width="180" />
           <el-table-column label="操作" width="230">
             <template #default="scope">
-              <el-button link @click="replyToCustomer(scope.row)">回复顾客</el-button>
+              <el-button
+                link
+                :disabled="scope.row.status === 'CLOSED'"
+                @click="replyToCustomer(scope.row)"
+                >回复顾客</el-button
+              >
               <el-button
                 v-if="nextStatus[scope.row.status as TicketStatus]"
                 type="primary"

@@ -115,7 +115,52 @@ class TicketServiceTest {
     }
 
     @Test
+    void repliesEnforceOwnershipAndReplayOnlyMatchingMessages() {
+        String key = java.util.UUID.randomUUID().toString();
+        when(mapper.lock("ticket-1")).thenReturn(ticket("ASSIGNED"));
+        var original = new TicketModels.Message(key, "CUSTOMER", "问题", Instant.now());
+        when(mapper.message("ticket-1", key)).thenReturn(original);
+        assertThat(service.reply("ticket-1", 1L, key, "问题")).isSameAs(original);
+        assertThatThrownBy(() -> service.reply("ticket-1", 2L, key, "问题")).hasMessageContaining("不存在");
+        assertThatThrownBy(() -> service.reply("ticket-1", 1L, key, "其他问题")).hasMessageContaining("其他内容");
+        assertThatThrownBy(() -> service.reply("ticket-1", null, key, "问题")).hasMessageContaining("其他内容");
+        assertThatThrownBy(() -> service.reply("ticket-1", 1L, "bad", "问题")).hasMessageContaining("无效");
+        when(mapper.lock("ticket-1")).thenReturn(ticket("CLOSED"));
+        assertThatThrownBy(() -> service.reply(
+                        "ticket-1", 1L, java.util.UUID.randomUUID().toString(), "新问题"))
+                .hasMessageContaining("已关闭");
+    }
+
+    @Test
+    void customerReplyReopensAndClosingRequiresResolvedOwnedTicket() {
+        String key = java.util.UUID.randomUUID().toString();
+        when(mapper.lock("ticket-1")).thenReturn(ticket("RESOLVED"));
+        service.reply("ticket-1", 1L, key, "仍需处理");
+        verify(mapper).reopen("ticket-1");
+        service.closeByCustomer("ticket-1", 1);
+        verify(mapper).updateStatus("ticket-1", "RESOLVED", "CLOSED", "customer", null);
+        assertThatThrownBy(() -> service.closeByCustomer("ticket-1", 2)).hasMessageContaining("不存在");
+        when(mapper.lock("ticket-1")).thenReturn(ticket("OPEN"));
+        assertThatThrownBy(() -> service.closeByCustomer("ticket-1", 1)).hasMessageContaining("解决后");
+        when(mapper.lock("ticket-1")).thenReturn(ticket("CLOSED"));
+        service.closeByCustomer("ticket-1", 1);
+    }
+
+    @Test
+    void detailExposesPublicConversationWithoutInternalResolution() {
+        var view = new TicketModels.TicketView("ticket-1", "主题", "描述", "OPEN", Instant.now());
+        when(mapper.findOwned("ticket-1", 1)).thenReturn(view);
+        when(mapper.messages("ticket-1")).thenReturn(java.util.List.of());
+        assertThat(service.detail("ticket-1", 1L).ticket()).isEqualTo(view);
+        assertThatThrownBy(() -> service.detail("ticket-1", 2L)).hasMessageContaining("不存在");
+        when(mapper.findAdminById("ticket-1")).thenReturn(ticket("OPEN"));
+        assertThat(service.detail("ticket-1", null).ticket().publicId()).isEqualTo("ticket-1");
+        assertThatThrownBy(() -> service.detail("missing", null)).hasMessageContaining("不存在");
+    }
+
+    @Test
     void publishesOnlyExplicitCustomerMessages() {
+        when(mapper.lock("ticket-1")).thenReturn(ticket("ASSIGNED"));
         when(mapper.publishCustomerMessage("ticket-1", "已核验")).thenReturn(1);
         service.publishCustomerMessage("ticket-1", " 已核验 ");
         verify(mapper).publishCustomerMessage("ticket-1", "已核验");

@@ -51,4 +51,14 @@ public final class TicketAdminController {
     }
 
     public record CustomerMessageRequest(@NotBlank @Size(max = 500) String message) {}
+
+    @GetMapping("/{id}")
+    TicketModels.Detail detail(@PathVariable String id) {
+        return service.detail(id, null);
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/{id}/messages")
+    TicketModels.Message reply(@PathVariable String id, @Valid @RequestBody TicketController.MessageRequest request) {
+        return service.reply(id, null, request.clientRequestId(), request.content());
+    }
 }

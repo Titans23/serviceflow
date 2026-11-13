@@ -7,6 +7,22 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TicketMapper {
+    TicketModels.AdminTicketView lock(@Param("publicId") String publicId);
+
+    TicketModels.TicketView findOwned(@Param("publicId") String publicId, @Param("customerId") long customerId);
+
+    List<TicketModels.Message> messages(@Param("publicId") String publicId);
+
+    TicketModels.Message message(@Param("ticketId") String ticketId, @Param("messageId") String messageId);
+
+    int insertMessage(
+            @Param("ticketId") String ticketId,
+            @Param("messageId") String messageId,
+            @Param("role") String role,
+            @Param("content") String content);
+
+    int reopen(@Param("publicId") String publicId);
+
     int publishCustomerMessage(@Param("publicId") String publicId, @Param("message") String message);
 
     int insert(

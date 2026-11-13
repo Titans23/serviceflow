@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.TicketMapper">
+  <select id="lock" resultType="com.serviceflow.model.TicketModels$AdminTicketView" useCache="false" flushCache="true">
+    SELECT <include refid="adminColumns"/> FROM ticket t JOIN customer c ON c.id=t.customer_id
+    WHERE t.public_id=#{publicId} FOR UPDATE
+  </select>
+  <select id="findOwned" resultType="com.serviceflow.model.TicketModels$TicketView">
+    SELECT public_id,subject,description,status,created_at FROM ticket WHERE public_id=#{publicId} AND customer_id=#{customerId}
+  </select>
+  <select id="messages" resultType="com.serviceflow.model.TicketModels$Message">
+    SELECT public_id,author_role,content,created_at FROM ticket_message WHERE ticket_public_id=#{publicId} ORDER BY id DESC LIMIT 200
+  </select>
+  <select id="message" resultType="com.serviceflow.model.TicketModels$Message" useCache="false" flushCache="true">
+    SELECT public_id,author_role,content,created_at FROM ticket_message WHERE ticket_public_id=#{ticketId} AND public_id=#{messageId}
+  </select>
+  <insert id="insertMessage">
+    INSERT INTO ticket_message(public_id,ticket_public_id,author_role,content) VALUES(#{messageId},#{ticketId},#{role},#{content})
+  </insert>
+  <update id="reopen">
+    UPDATE ticket SET status=CASE WHEN status='RESOLVED' THEN 'ASSIGNED' ELSE status END,
+      updated_at=CURRENT_TIMESTAMP(6) WHERE public_id=#{publicId} AND status&lt;&gt;'CLOSED'
+  </update>
   <update id="publishCustomerMessage">
     UPDATE ticket SET customer_message=#{message},updated_at=CURRENT_TIMESTAMP(6) WHERE public_id=#{publicId}
   </update>
   <insert id="insert">INSERT IGNORE INTO ticket(public_id, customer_id, session_public_id, source_action_id, subject, description) VALUES(#{publicId},#{customerId},#{sessionId},#{actionId},#{subject},#{description})</insert>
   <select id="findByCustomer" resultType="com.serviceflow.model.TicketModels$TicketView">
-    SELECT public_id, subject, description, status, created_at FROM ticket WHERE customer_id=#{customerId} ORDER BY created_at DESC
+    SELECT public_id, subject, description, status, created_at FROM ticket WHERE customer_id=#{customerId} ORDER BY updated_at DESC,id DESC LIMIT 200
   </select>
   <select id="findByAction" resultType="com.serviceflow.model.TicketModels$TicketView">
     SELECT public_id, subject, description, status, created_at FROM ticket WHERE source_action_id=#{actionId} AND customer_id=#{customerId}
@@ -19,7 +39,7 @@
     SELECT <include refid="adminColumns"/>
     FROM ticket t JOIN customer c ON c.id=t.customer_id
     <if test="status != null and status != ''">WHERE t.status=#{status}</if>
-    ORDER BY t.updated_at DESC
+    ORDER BY t.updated_at DESC,t.id DESC LIMIT 200
   </select>
   <select id="findAdminById" resultType="com.serviceflow.model.TicketModels$AdminTicketView">
     SELECT <include refid="adminColumns"/>
