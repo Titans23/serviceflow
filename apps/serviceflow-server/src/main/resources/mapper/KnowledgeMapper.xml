@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.KnowledgeMapper">
+  <select id="lockDocument" resultType="com.serviceflow.model.KnowledgeModels$Document" useCache="false" flushCache="true">
+    SELECT id,public_id,title,document_type,product_id,active_version_id FROM knowledge_document WHERE public_id=#{publicId} FOR UPDATE
+  </select>
+  <select id="lockDocumentById" resultType="com.serviceflow.model.KnowledgeModels$Document" useCache="false" flushCache="true">
+    SELECT id,public_id,title,document_type,product_id,active_version_id FROM knowledge_document WHERE id=#{id} FOR UPDATE
+  </select>
+  <select id="expiredVersions" resultType="long">
+    SELECT v.id FROM knowledge_document_version v
+    WHERE (v.status='PROCESSING' AND (v.lease_until IS NULL OR v.lease_until&lt;=NOW(6)))
+      OR (v.status='PENDING' AND EXISTS(SELECT 1 FROM knowledge_ingest_outbox o WHERE o.document_version_id=v.id
+          AND o.status='PUBLISHED' AND o.published_at&lt;DATE_SUB(NOW(6),INTERVAL 3 MINUTE)))
+    ORDER BY v.id LIMIT 20
+  </select>
+  <update id="requeueStalled">
+    UPDATE knowledge_ingest_outbox o JOIN knowledge_document_version v ON v.id=o.document_version_id
+    SET o.status='PENDING',o.attempts=0,o.next_attempt_at=NOW(6),o.published_at=NULL,o.last_error=NULL
+    WHERE v.id=#{id} AND v.status='PENDING' AND o.status='PUBLISHED' AND o.published_at&lt;DATE_SUB(NOW(6),INTERVAL 3 MINUTE)
+  </update>
+  <update id="renew">
+    UPDATE knowledge_document_version SET lease_until=DATE_ADD(NOW(6),INTERVAL 3 MINUTE)
+    WHERE id=#{id} AND status='PROCESSING' AND lease_until&gt;NOW(6)
+  </update>
+  <update id="failExpired">
+    UPDATE knowledge_document_version SET status='FAILED',error_message='处理超时，请查看最新版本的恢复结果',lease_until=NULL
+    WHERE id=#{id} AND status='PROCESSING' AND (lease_until IS NULL OR lease_until&lt;=NOW(6))
+  </update>
+  <select id="retryChild" resultType="long">SELECT id FROM knowledge_document_version WHERE retry_of_version_id=#{id}</select>
+  <select id="attempt" resultType="int">SELECT attempt_no FROM knowledge_document_version WHERE id=#{id}</select>
+  <insert id="insertRetry">
+    INSERT INTO knowledge_document_version(document_id,version_no,source_name,storage_path,status,attempt_no,retry_of_version_id)
+    SELECT document_id,#{versionNo},source_name,storage_path,'PENDING',#{attempt},id FROM knowledge_document_version WHERE id=#{id} AND status='FAILED'
+  </insert>
+  <update id="markUnpublishedFailed">
+    UPDATE knowledge_document_version v JOIN knowledge_ingest_outbox o ON o.document_version_id=v.id
+    SET v.status='FAILED',v.error_message='消息投递连续失败，请在依赖恢复后重试'
+    WHERE o.id=#{id} AND o.status='PENDING' AND o.attempts&gt;=5 AND v.status='PENDING'
+  </update>
   <insert id="insertDocument">INSERT INTO knowledge_document(public_id,title,document_type,product_id) VALUES(#{publicId},#{title},#{documentType},#{productId})</insert>
   <select id="findDocument" resultType="com.serviceflow.model.KnowledgeModels$Document">
     SELECT id,public_id,title,document_type,product_id,active_version_id FROM knowledge_document WHERE public_id=#{publicId}
@@ -22,11 +59,15 @@
       (SELECT v.error_message FROM knowledge_document_version v WHERE v.document_id=d.id ORDER BY v.version_no DESC LIMIT 1) error_message,
       d.created_at FROM knowledge_document d ORDER BY d.created_at DESC
   </select>
-  <update id="markProcessing">UPDATE knowledge_document_version SET status='PROCESSING',error_message=NULL WHERE id=#{id} AND status='PENDING'</update>
-  <update id="markFailed">UPDATE knowledge_document_version SET status='FAILED',error_message=#{message} WHERE id=#{id}</update>
-  <update id="markPending">UPDATE knowledge_document_version SET status='PENDING',error_message=NULL WHERE id=#{id} AND status='FAILED'</update>
-  <update id="markReady">UPDATE knowledge_document_version SET status='READY',error_message=NULL WHERE id=#{id}</update>
-  <update id="activate">UPDATE knowledge_document SET active_version_id=#{versionId} WHERE id=#{documentId}</update>
+  <update id="markProcessing">UPDATE knowledge_document_version SET status='PROCESSING',error_message=NULL,lease_until=DATE_ADD(NOW(6),INTERVAL 3 MINUTE) WHERE id=#{id} AND status='PENDING'</update>
+  <update id="markFailed">UPDATE knowledge_document_version SET status='FAILED',error_message=#{message},lease_until=NULL WHERE id=#{id} AND status='PROCESSING'</update>
+  <update id="markReady">UPDATE knowledge_document_version SET status='READY',error_message=NULL,lease_until=NULL WHERE id=#{id} AND status='PROCESSING' AND lease_until&gt;NOW(6)</update>
+  <update id="activate">
+    UPDATE knowledge_document d JOIN knowledge_document_version candidate ON candidate.id=#{versionId} AND candidate.document_id=d.id
+    LEFT JOIN knowledge_document_version active ON active.id=d.active_version_id
+    SET d.active_version_id=candidate.id WHERE d.id=#{documentId} AND candidate.status='READY'
+      AND (active.id IS NULL OR active.version_no&lt;candidate.version_no)
+  </update>
   <select id="activeVersionIds" resultType="long">
     SELECT active_version_id FROM knowledge_document WHERE document_type=#{documentType} AND active_version_id IS NOT NULL
     <if test="productIds != null and productIds.size() > 0">AND product_id IN <foreach collection="productIds" item="id" open="(" separator="," close=")">#{id}</foreach></if>
@@ -34,12 +75,6 @@
   <insert id="enqueueOutbox">
     INSERT INTO knowledge_ingest_outbox(document_version_id,event_type,payload_json)
     VALUES(#{versionId},'KNOWLEDGE_VERSION_CREATED',CAST(#{payloadJson} AS JSON))
-  </insert>
-  <insert id="requeueOutbox">
-    INSERT INTO knowledge_ingest_outbox(document_version_id,event_type,payload_json,status,attempts,next_attempt_at,last_error,published_at)
-    VALUES(#{versionId},'KNOWLEDGE_VERSION_CREATED',CAST(#{payloadJson} AS JSON),'PENDING',0,CURRENT_TIMESTAMP(6),NULL,NULL)
-    ON DUPLICATE KEY UPDATE payload_json=VALUES(payload_json),status='PENDING',attempts=0,
-      next_attempt_at=CURRENT_TIMESTAMP(6),last_error=NULL,published_at=NULL
   </insert>
   <select id="dueOutbox" resultType="com.serviceflow.model.KnowledgeModels$OutboxEvent">
     SELECT id,document_version_id,payload_json,attempts,created_at

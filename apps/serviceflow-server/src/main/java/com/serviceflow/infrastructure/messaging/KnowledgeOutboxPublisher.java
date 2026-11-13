@@ -54,6 +54,7 @@ public class KnowledgeOutboxPublisher {
                 long delaySeconds = Math.min(300, 1L << Math.min(event.attempts() + 1, 8));
                 String message = safeMessage(exception);
                 mapper.markOutboxFailed(event.id(), message, Instant.now().plus(delaySeconds, ChronoUnit.SECONDS));
+                mapper.markUnpublishedFailed(event.id());
                 metrics.counter("serviceflow.outbox.failed").increment();
                 log.warn("Knowledge outbox publish failed for version {}", event.documentVersionId(), exception);
             }

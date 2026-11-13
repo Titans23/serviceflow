@@ -14,4 +14,6 @@ public interface KnowledgeService {
     void retry(long versionId);
 
     void activate(KnowledgeModels.Version version);
+
+    void recover(long versionId);
 }

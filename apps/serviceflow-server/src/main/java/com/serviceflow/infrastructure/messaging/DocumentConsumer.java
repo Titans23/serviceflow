@@ -55,12 +55,17 @@ public final class DocumentConsumer {
             if (text.length() > MAX_PARSED_CHARS) {
                 throw new IllegalArgumentException("文档解析文本超过 2,000,000 字符");
             }
-            // 重试时先删除该版本可能残留的旧 Chunk，避免重复向量。
+            // Each retry gets a new version ID; cleanup cannot delete a newer attempt's chunks.
+            if (mapper.renew(versionId) != 1) {
+                service.recover(versionId);
+                return;
+            }
             rag.deleteVersion(versionId);
             ingestChunks(version, text);
             // 所有 Chunk 入库成功后才将版本标记为 READY 并设为当前生效版本。
             service.activate(version);
         } catch (Exception exception) {
+            service.recover(versionId);
             mapper.markFailed(versionId, truncate(exception.getMessage()));
             throw new IllegalStateException("Document ingestion failed: " + versionId, exception);
         }
@@ -72,6 +77,10 @@ public final class DocumentConsumer {
     private void ingestChunks(KnowledgeModels.Version version, String text) {
         int index = 0;
         for (String content : KnowledgeChunker.split(text)) {
+            if (mapper.renew(version.id()) != 1) {
+                service.recover(version.id());
+                return;
+            }
             rag.ingest(new RagService.Chunk(
                     UUID.nameUUIDFromBytes(
                                     (version.id() + ":" + index++ + ":" + content).getBytes(StandardCharsets.UTF_8))

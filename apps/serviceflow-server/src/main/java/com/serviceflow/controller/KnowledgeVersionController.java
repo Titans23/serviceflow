@@ -16,6 +16,7 @@ public final class KnowledgeVersionController {
     }
 
     @PostMapping("/{versionId}/retry")
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
     void retry(@PathVariable long versionId) {
         service.retry(versionId);
     }

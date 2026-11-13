@@ -40,7 +40,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = "spring.rabbitmq.listener.simple.auto-startup=false")
+        properties = {
+            "spring.rabbitmq.listener.simple.auto-startup=false",
+            "serviceflow.knowledge.recovery-interval=1h",
+            "serviceflow.outbox.poll-interval=1h"
+        })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ServiceFlowIntegrationIT {
     @Container
@@ -96,6 +100,9 @@ class ServiceFlowIntegrationIT {
         registry.add("spring.ai.model.chat", () -> "none");
         registry.add("spring.ai.model.embedding", () -> "none");
         registry.add("JWT_SECRET", () -> "integration-test-secret-with-at-least-32-bytes");
+        registry.add("UPLOAD_DIR", () -> java.nio.file.Path.of("target", "integration-uploads")
+                .toAbsolutePath()
+                .toString());
     }
 
     @Test
@@ -835,6 +842,104 @@ class ServiceFlowIntegrationIT {
 
     private RefundModels.SandboxEvent refundEvent(int attempt, String outcome, String reason) {
         return new RefundModels.SandboxEvent(UUID.randomUUID().toString(), attempt, outcome, BigDecimal.TEN, reason);
+    }
+
+    @Test
+    void knowledgeConcurrentUploadsAndLateCompletionNeverOverwriteNewerContent(
+            @Autowired com.serviceflow.service.KnowledgeService knowledge,
+            @Autowired com.serviceflow.mapper.KnowledgeMapper mapper)
+            throws Exception {
+        var first = knowledge.create("版本验证", "POLICY", null, knowledgeFile("original"));
+        String document = jdbc.queryForObject(
+                "SELECT public_id FROM knowledge_document WHERE id=?", String.class, first.documentId());
+        com.serviceflow.model.KnowledgeModels.Version second, third;
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var a = executor.submit(() -> knowledge.addVersion(document, knowledgeFile("second")));
+            var b = executor.submit(() -> knowledge.addVersion(document, knowledgeFile("third")));
+            var versions = java.util.stream.Stream.of(a.get(), b.get())
+                    .sorted(java.util.Comparator.comparingInt(com.serviceflow.model.KnowledgeModels.Version::versionNo))
+                    .toList();
+            second = versions.getFirst();
+            third = versions.getLast();
+        }
+        assertThat(second.versionNo()).isEqualTo(2);
+        assertThat(third.versionNo()).isEqualTo(3);
+        assertThat(second.storagePath()).isNotEqualTo(third.storagePath());
+        assertThat(java.nio.file.Files.readString(java.nio.file.Path.of(first.storagePath())))
+                .contains("original");
+        mapper.markProcessing(second.id());
+        mapper.markProcessing(third.id());
+        knowledge.activate(third);
+        knowledge.activate(second);
+        assertThat(mapper.findDocument(document).activeVersionId()).isEqualTo(third.id());
+        var fourth = knowledge.addVersion(document, knowledgeFile("recoverable"));
+        mapper.markProcessing(fourth.id());
+        jdbc.update(
+                "UPDATE knowledge_document_version SET lease_until=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE id=?",
+                fourth.id());
+        knowledge.recover(fourth.id());
+        var child = mapper.findVersionById(mapper.retryChild(fourth.id()));
+        assertThat(child.id()).isNotEqualTo(fourth.id());
+        assertThat(child.storagePath()).isEqualTo(fourth.storagePath());
+        assertThat(mapper.findVersionById(fourth.id()).status()).isEqualTo("FAILED");
+        knowledge.activate(fourth);
+        assertThat(mapper.findDocument(document).activeVersionId()).isEqualTo(third.id());
+        mapper.markProcessing(child.id());
+        knowledge.activate(child);
+        assertThat(mapper.findDocument(document).activeVersionId()).isEqualTo(child.id());
+        knowledge.retry(fourth.id());
+        assertThat(mapper.retryChild(fourth.id())).isEqualTo(child.id());
+        assertThatThrownBy(() -> knowledge.retry(second.id())).hasMessageContaining("失败版本");
+    }
+
+    @Test
+    void knowledgeRecoveryIsBoundedAndManualRetryGetsAFreshVersion(
+            @Autowired com.serviceflow.service.KnowledgeService knowledge,
+            @Autowired com.serviceflow.mapper.KnowledgeMapper mapper) {
+        var current = knowledge.create("恢复上限", "POLICY", null, knowledgeFile("bounded"));
+        jdbc.update(
+                "UPDATE knowledge_ingest_outbox SET status='PUBLISHED',published_at=DATE_SUB(NOW(),INTERVAL 4 MINUTE) WHERE document_version_id=?",
+                current.id());
+        assertThat(mapper.expiredVersions()).contains(current.id());
+        knowledge.recover(current.id());
+        assertThat(jdbc.queryForObject(
+                        "SELECT status FROM knowledge_ingest_outbox WHERE document_version_id=?",
+                        String.class,
+                        current.id()))
+                .isEqualTo("PENDING");
+        assertThat(mapper.retryChild(current.id())).isNull();
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            assertThat(mapper.attempt(current.id())).isEqualTo(attempt);
+            mapper.markProcessing(current.id());
+            jdbc.update(
+                    "UPDATE knowledge_document_version SET lease_until=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE id=?",
+                    current.id());
+            knowledge.recover(current.id());
+            Long child = mapper.retryChild(current.id());
+            if (attempt < 3) {
+                assertThat(child).isNotNull();
+                current = mapper.findVersionById(child);
+            } else assertThat(child).isNull();
+        }
+        assertThat(mapper.findVersionById(current.id()).status()).isEqualTo("FAILED");
+        knowledge.retry(current.id());
+        knowledge.retry(current.id());
+        long child = mapper.retryChild(current.id());
+        assertThat(mapper.attempt(child)).isEqualTo(1);
+        long outbox = jdbc.queryForObject(
+                "SELECT id FROM knowledge_ingest_outbox WHERE document_version_id=?", Long.class, child);
+        jdbc.update("UPDATE knowledge_ingest_outbox SET status='PENDING',attempts=5 WHERE id=?", outbox);
+        mapper.markUnpublishedFailed(outbox);
+        assertThat(mapper.findVersionById(child).status()).isEqualTo("FAILED");
+        assertThat(mapper.findVersionById(child).errorMessage()).contains("投递");
+    }
+
+    private org.springframework.mock.web.MockMultipartFile knowledgeFile(String content) {
+        return new org.springframework.mock.web.MockMultipartFile(
+                "file",
+                "policy.md",
+                "text/markdown",
+                ("# Test\n\n" + content).getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     @Test

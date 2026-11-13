@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,7 +54,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     /**
      * 新建知识文档及其首个版本。数据库中的文档、版本和 Outbox 事件处于同一事务中。
      */
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public KnowledgeModels.Version create(String title, String type, Long productId, MultipartFile file) {
         validateMetadata(title, type, productId);
@@ -62,10 +63,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return addVersion(publicId, file);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public KnowledgeModels.Version addVersion(String publicId, MultipartFile file) {
-        KnowledgeModels.Document document = mapper.findDocument(publicId);
+        KnowledgeModels.Document document = mapper.lockDocument(publicId);
         if (document == null) {
             throw new ResponseStatusException(NOT_FOUND, "知识文档不存在");
         }
@@ -74,7 +75,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         int version = mapper.nextVersion(document.id());
         Path target = uploadRoot
                 .resolve(publicId)
-                .resolve("v" + version + '.' + validFile.extension())
+                .resolve("v" + version + "-" + UUID.randomUUID() + '.' + validFile.extension())
                 .normalize();
         if (!target.startsWith(uploadRoot)) {
             throw new ResponseStatusException(BAD_REQUEST, "非法文件路径");
@@ -86,6 +87,19 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         } catch (Exception exception) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "文件保存失败", exception);
         }
+
+        org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                new org.springframework.transaction.support.TransactionSynchronization() {
+                    @Override
+                    public void afterCompletion(int status) {
+                        if (status == STATUS_COMMITTED) return;
+                        try {
+                            Files.deleteIfExists(target);
+                        } catch (java.io.IOException ignored) {
+                            // An orphaned upload is never referenced by an active knowledge version.
+                        }
+                    }
+                });
 
         try {
             mapper.insertVersion(document.id(), version, validFile.originalName(), target.toString());
@@ -108,27 +122,52 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return mapper.list();
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public void retry(long versionId) {
         KnowledgeModels.Version row = mapper.findVersionById(versionId);
         if (row == null) {
             throw new ResponseStatusException(NOT_FOUND, "文档版本不存在");
         }
-        if (mapper.markPending(versionId) != 1) {
+        mapper.lockDocumentById(row.documentId());
+        row = mapper.findVersionById(versionId);
+        if (mapper.retryChild(versionId) != null) return;
+        if (!"FAILED".equals(row.status())) {
             throw new ResponseStatusException(CONFLICT, "只有失败版本可以重试");
         }
-        mapper.requeueOutbox(versionId, outboxPayload(versionId));
+        restart(row, 1);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public void activate(KnowledgeModels.Version version) {
         // 先把刚完成向量化的版本标记为 READY，表示它已经具备被检索的条件。
-        mapper.markReady(version.id());
+        mapper.lockDocumentById(version.documentId());
+        if (mapper.markReady(version.id()) != 1) return;
         // 再更新逻辑文档的 active_version_id；两个 SQL 在同一事务中，要么一起成功，要么一起回滚。
         // 因此旧版本会一直生效到新版本完整入库，避免用户检索到只写入一部分的新版本。
         mapper.activate(version.documentId(), version.id());
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void recover(long versionId) {
+        var version = mapper.findVersionById(versionId);
+        if (version == null) return;
+        mapper.lockDocumentById(version.documentId());
+        if (mapper.requeueStalled(versionId) == 1) return;
+        if (mapper.failExpired(versionId) != 1) return;
+        int attempt = mapper.attempt(versionId);
+        if (attempt < 3 && mapper.nextVersion(version.documentId()) == version.versionNo() + 1)
+            restart(version, attempt + 1);
+    }
+
+    private void restart(KnowledgeModels.Version version, int attempt) {
+        int next = mapper.nextVersion(version.documentId());
+        if (next != version.versionNo() + 1) throw new ResponseStatusException(CONFLICT, "已有更新版本，请操作最新版本");
+        mapper.insertRetry(version.id(), next, attempt);
+        var child = mapper.findVersion(version.documentId(), next);
+        mapper.enqueueOutbox(child.id(), outboxPayload(child.id()));
     }
 
     private void validateMetadata(String title, String type, Long productId) {
@@ -160,8 +199,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             throw new ResponseStatusException(UNSUPPORTED_MEDIA_TYPE, "仅支持 MD、TXT、PDF");
         }
 
-        try {
-            String mime = tika.detect(file.getInputStream(), originalName);
+        try (var input = file.getInputStream()) {
+            String mime = tika.detect(input, originalName);
             if (!(mime.startsWith("text/") || "application/pdf".equals(mime))) {
                 throw new ResponseStatusException(UNSUPPORTED_MEDIA_TYPE, "文件内容类型不受支持");
             }

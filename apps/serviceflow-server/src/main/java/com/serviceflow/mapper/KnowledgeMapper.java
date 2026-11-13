@@ -8,6 +8,26 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface KnowledgeMapper {
+    KnowledgeModels.Document lockDocument(@Param("publicId") String publicId);
+
+    KnowledgeModels.Document lockDocumentById(@Param("id") long id);
+
+    int renew(@Param("id") long id);
+
+    int failExpired(@Param("id") long id);
+
+    int requeueStalled(@Param("id") long id);
+
+    List<Long> expiredVersions();
+
+    Long retryChild(@Param("id") long id);
+
+    int attempt(@Param("id") long id);
+
+    int insertRetry(@Param("id") long id, @Param("versionNo") int versionNo, @Param("attempt") int attempt);
+
+    int markUnpublishedFailed(@Param("id") long outboxId);
+
     int insertDocument(
             @Param("publicId") String publicId,
             @Param("title") String title,
@@ -34,8 +54,6 @@ public interface KnowledgeMapper {
 
     int markFailed(@Param("id") long id, @Param("message") String message);
 
-    int markPending(@Param("id") long id);
-
     int markReady(@Param("id") long id);
 
     int activate(@Param("documentId") long documentId, @Param("versionId") long versionId);
@@ -43,8 +61,6 @@ public interface KnowledgeMapper {
     List<Long> activeVersionIds(@Param("documentType") String documentType, @Param("productIds") List<Long> productIds);
 
     int enqueueOutbox(@Param("versionId") long versionId, @Param("payloadJson") String payloadJson);
-
-    int requeueOutbox(@Param("versionId") long versionId, @Param("payloadJson") String payloadJson);
 
     List<KnowledgeModels.OutboxEvent> dueOutbox(@Param("limit") int limit);
 
