@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RefundReview from '../components/RefundReview.vue'
+import ReturnProgress from '../components/ReturnProgress.vue'
 import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
@@ -473,6 +474,7 @@ onMounted(() =>
             ><strong>订单 {{ m.order.orderNo }}</strong>
             <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p>
             <RefundReview v-if="m.order.refundReview" :review="m.order.refundReview" />
+            <ReturnProgress v-if="m.order.returnRequest" :request="m.order.returnRequest" />
             <router-link :to="{ path: '/orders', query: { orderNo: m.order.orderNo } }"
               >查看订单与退款进度</router-link
             ></el-card

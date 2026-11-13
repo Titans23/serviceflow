@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface OrderMapper {
+    com.serviceflow.model.ReturnModels.View returnRequest(@Param("orderId") long orderId);
+
     OrderModels.Order lockOwned(@Param("orderNo") String orderNo, @Param("customerId") long customerId);
 
     OrderModels.Order findOwned(@Param("orderNo") String orderNo, @Param("customerId") long customerId);

@@ -13,6 +13,7 @@ const auth = useAuthStore()
         <el-menu-item index="/chat">智能客服</el-menu-item>
         <el-menu-item v-if="auth.role === 'CUSTOMER'" index="/orders">我的订单</el-menu-item>
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/refunds">退款处理</el-menu-item>
+        <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/returns">退货处理</el-menu-item>
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/knowledge">知识库</el-menu-item>
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/products">商品目录</el-menu-item>
         <el-menu-item v-if="auth.role === 'ADMIN'" index="/admin/operations">运营中心</el-menu-item>

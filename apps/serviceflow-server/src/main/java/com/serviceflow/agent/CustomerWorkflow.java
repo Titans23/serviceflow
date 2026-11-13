@@ -234,6 +234,10 @@ public final class CustomerWorkflow {
         if (pendingOrders) classificationQuery = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationQuery;
         else if (currentOrder) classificationQuery = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationQuery;
         Intent classified = ai.classify(classificationQuery);
+        if (state.query().contains("退货")
+                && currentOrder
+                && !state.query().contains("政策")
+                && !state.query().contains("投诉")) return Intent.ORDER_QUERY;
         if (state.query().contains("工单")
                 && (currentOrder || state.query().contains("退款"))
                 && !state.query().contains("投诉")) return Intent.ORDER_QUERY;

@@ -4,12 +4,15 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { api } from '../api/client'
 import RefundReview from '../components/RefundReview.vue'
+import ReturnProgress from '../components/ReturnProgress.vue'
+import type { ReturnRequest } from '../api/returns'
 
 type Order = {
   orderNo: string
   status: string
   totalAmount: number
   createdAt: string
+  returnRequest?: ReturnRequest | null
   refundReview?: {
     publicId: string
     status: string
@@ -39,6 +42,8 @@ const keyword = ref('')
 const status = ref('')
 const dates = ref<string[] | null>(null)
 const loading = ref(false)
+const returnReason = ref('')
+const applyingReturn = ref(false)
 const listLoading = ref(false)
 const listError = ref('')
 let appliedQuery = new URLSearchParams({ size: '10' })
@@ -94,12 +99,30 @@ async function load() {
   if (!orderNo.value.trim()) return
   loading.value = true
   order.value = undefined
+  returnReason.value = ''
   try {
     order.value = await api<Order>(`/orders/${encodeURIComponent(orderNo.value.trim())}`)
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : '订单查询失败')
   } finally {
     loading.value = false
+  }
+}
+async function applyReturn() {
+  if (!order.value || applyingReturn.value || !returnReason.value.trim()) return
+  const number = order.value.orderNo
+  applyingReturn.value = true
+  try {
+    await api(`/orders/${encodeURIComponent(number)}/return`, {
+      method: 'POST',
+      body: JSON.stringify({ reason: returnReason.value.trim() }),
+    })
+    ElMessage.success('退货申请已提交，可在订单中持续查看进度')
+    await load()
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '提交结果待确认，请刷新订单查看')
+  } finally {
+    applyingReturn.value = false
   }
 }
 async function openOrder(value: string) {
@@ -241,6 +264,40 @@ onMounted(async () => {
         <p>更新时间：{{ order.refund.updatedAt }}</p>
       </template>
       <RefundReview v-if="order.refundReview" :review="order.refundReview" />
+      <ReturnProgress v-if="order.returnRequest" :request="order.returnRequest" />
+      <el-form
+        v-else-if="
+          order.status === 'DELIVERED' &&
+          order.items.length === 1 &&
+          order.items[0]?.quantity === 1 &&
+          order.payment?.status === 'PAID' &&
+          order.payment?.refundStatus === 'NONE' &&
+          !order.refund
+        "
+        @submit.prevent="applyReturn"
+      >
+        <h3>申请收货后退货</h3>
+        <p>
+          本单支持单件商品全额退货，退款金额 ¥{{
+            order.totalAmount
+          }}。客服审核通过后，请按退回指引交回商品，商家验收后开始退款。
+        </p>
+        <el-input
+          v-model="returnReason"
+          type="textarea"
+          maxlength="500"
+          show-word-limit
+          placeholder="请填写退货原因"
+          :disabled="applyingReturn"
+        />
+        <el-button
+          native-type="submit"
+          type="primary"
+          :loading="applyingReturn"
+          :disabled="!returnReason.trim()"
+          >提交退货申请</el-button
+        >
+      </el-form>
       <router-link :to="{ path: '/chat', query: { orderNo: order.orderNo } }">
         <el-button type="primary">向客服咨询此订单</el-button>
       </router-link>

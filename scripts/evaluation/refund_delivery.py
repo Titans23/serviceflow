@@ -43,10 +43,10 @@ def main():
 
     assert sql("SELECT DATABASE();") == DATABASE
     names = ["normal", "lost-response", "lost-callback", "duplicate-callback", "failed-retry",
-             "manual", "outbox-restart", "worker-restart", "browser-manual"]
+             "manual", "outbox-restart", "worker-restart", "browser-manual", "browser-return"]
     run_id = datetime.now().strftime("%Y%m%d%H%M%S") + f"{secrets.randbelow(10000):04}"
     fixture_sql, fixture = prepare({"cases": [{"id": name, "fixture": {
-        "owner": "customer", "orderStatus": "PROCESSING", "paymentStatus": "PAID"}} for name in names]}, run_id)
+        "owner": "customer", "orderStatus": "DELIVERED" if name == "browser-return" else "PROCESSING", "paymentStatus": "PAID"}} for name in names]}, run_id)
     output = ROOT / "quality/evaluation/reports" / ("refund-delivery-" + run_id)
     output.mkdir(parents=True, exist_ok=False)
     sql(fixture_sql)

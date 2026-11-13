@@ -9,6 +9,7 @@ import ProductAdminView from './views/ProductAdminView.vue'
 import OperationsView from './views/OperationsView.vue'
 import OrdersView from './views/OrdersView.vue'
 import RefundsView from './views/RefundsView.vue'
+import ReturnsView from './views/ReturnsView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +22,7 @@ const router = createRouter({
     { path: '/login', component: LoginView },
     { path: '/orders', component: OrdersView, meta: { requiresCustomer: true } },
     { path: '/admin/refunds', component: RefundsView, meta: { requiresAdmin: true } },
+    { path: '/admin/returns', component: ReturnsView, meta: { requiresAdmin: true } },
     { path: '/admin/knowledge', component: KnowledgeView, meta: { requiresAdmin: true } },
     { path: '/admin/products', component: ProductAdminView, meta: { requiresAdmin: true } },
     { path: '/admin/operations', component: OperationsView, meta: { requiresAdmin: true } },

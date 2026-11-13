@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.serviceflow.mapper.ReturnMapper">
+  <sql id="viewColumns">
+    a.public_id,o.order_no,a.product_name,a.amount,a.status,a.reason,a.review_note,a.receipt_note,
+    a.created_at,a.reviewed_at,a.received_at,a.updated_at,r.status AS refund_status
+  </sql>
+  <select id="find" resultType="com.serviceflow.model.ReturnModels$Reference">
+    SELECT a.public_id,o.order_no,a.order_id,o.customer_id,a.status
+    FROM return_request a JOIN customer_order o ON o.id=a.order_id WHERE a.public_id=#{publicId}
+  </select>
+  <select id="lockByOrder" resultType="com.serviceflow.model.ReturnModels$Reference" useCache="false" flushCache="true">
+    SELECT a.public_id,o.order_no,a.order_id,o.customer_id,a.status
+    FROM return_request a JOIN customer_order o ON o.id=a.order_id WHERE a.order_id=#{orderId} FOR UPDATE
+  </select>
+  <insert id="insert">
+    INSERT INTO return_request(public_id,order_id,product_name,amount,reason)
+    VALUES(#{publicId},#{orderId},#{productName},#{amount},#{reason})
+  </insert>
+  <update id="review">
+    UPDATE return_request SET status=#{status},review_note=#{note},reviewed_by=#{operator},reviewed_at=CURRENT_TIMESTAMP(6)
+    WHERE public_id=#{publicId} AND status='REQUESTED'
+  </update>
+  <update id="receive">
+    UPDATE return_request SET status='RECEIVED',receipt_note=#{note},received_by=#{operator},received_at=CURRENT_TIMESTAMP(6)
+    WHERE public_id=#{publicId} AND status='APPROVED'
+  </update>
+  <insert id="createRefund">
+    INSERT INTO refund_request(public_id,order_id,amount)
+    SELECT a.public_id,a.order_id,a.amount FROM return_request a
+    JOIN customer_order o ON o.id=a.order_id JOIN payment p ON p.order_id=o.id
+    WHERE a.public_id=#{publicId} AND a.status='RECEIVED' AND o.status='DELIVERED'
+      AND a.amount=o.total_amount AND p.status='PAID' AND p.refund_status='PROCESSING'
+  </insert>
+  <select id="list" resultType="com.serviceflow.model.ReturnModels$View">
+    SELECT <include refid="viewColumns"/>
+    FROM return_request a JOIN customer_order o ON o.id=a.order_id LEFT JOIN refund_request r ON r.order_id=o.id
+    <if test="status != null">WHERE a.status=#{status}</if>
+    ORDER BY a.created_at DESC,a.id DESC LIMIT 200
+  </select>
+</mapper>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.OrderMapper">
+  <select id="returnRequest" resultType="com.serviceflow.model.ReturnModels$View">
+    SELECT <include refid="com.serviceflow.mapper.ReturnMapper.viewColumns"/>
+    FROM return_request a JOIN customer_order o ON o.id=a.order_id LEFT JOIN refund_request r ON r.order_id=o.id
+    WHERE a.order_id=#{orderId}
+  </select>
   <select id="lockOwned" resultType="com.serviceflow.model.OrderModels$Order" useCache="false" flushCache="true">
     SELECT id,order_no,customer_id,status,total_amount,version,created_at FROM customer_order
     WHERE order_no=#{orderNo} AND customer_id=#{customerId} FOR UPDATE

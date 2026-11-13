@@ -1,0 +1,21 @@
+CREATE TABLE return_request (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  public_id CHAR(36) NOT NULL UNIQUE,
+  order_id BIGINT NOT NULL UNIQUE,
+  product_name VARCHAR(200) NOT NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  reason VARCHAR(500) NOT NULL,
+  status VARCHAR(24) NOT NULL DEFAULT 'REQUESTED',
+  review_note VARCHAR(500),
+  reviewed_by VARCHAR(64),
+  reviewed_at TIMESTAMP(6) NULL,
+  receipt_note VARCHAR(500),
+  received_by VARCHAR(64),
+  received_at TIMESTAMP(6) NULL,
+  created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  updated_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  FOREIGN KEY(order_id) REFERENCES customer_order(id),
+  CHECK (amount > 0),
+  CHECK (status IN ('REQUESTED','APPROVED','REJECTED','RECEIVED')),
+  INDEX idx_return_status_created(status,created_at,id)
+);

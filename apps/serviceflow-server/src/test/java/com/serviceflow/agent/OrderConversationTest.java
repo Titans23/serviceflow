@@ -271,6 +271,7 @@ class OrderConversationTest {
                 new OrderModels.Payment("PAID", "NONE", null, null),
                 List.of(),
                 null,
+                null,
                 null);
     }
 }

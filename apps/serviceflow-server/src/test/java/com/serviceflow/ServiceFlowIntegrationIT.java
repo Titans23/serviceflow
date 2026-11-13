@@ -533,6 +533,143 @@ class ServiceFlowIntegrationIT {
         return orderNo;
     }
 
+    private String deliveredOrder() {
+        String no = newOrder("PAID");
+        jdbc.update("UPDATE customer_order SET status='DELIVERED' WHERE order_no=?", no);
+        jdbc.update(
+                "INSERT INTO order_item(order_id,product_id,quantity,unit_price) SELECT id,1,1,10 FROM customer_order WHERE order_no=?",
+                no);
+        return no;
+    }
+
+    @Test
+    void singleItemReturnIsAuthorizedReviewedAndRefundedOnlyAfterReceipt(
+            @Autowired com.serviceflow.service.ReturnService returns,
+            @Autowired com.serviceflow.service.RefundDeliveryService delivery,
+            @Autowired com.serviceflow.security.JwtService jwt) {
+        String no = deliveredOrder();
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(
+                jwt.issueUser(new com.serviceflow.model.AuthModels.User(1, "customer", "", "CUSTOMER", 1L, true))
+                        .accessToken());
+        var applied = http.postForEntity(
+                "/orders/" + no + "/return",
+                new HttpEntity<>(java.util.Map.of("reason", "与需求不符"), headers),
+                com.serviceflow.model.ReturnModels.View.class);
+        assertThat(applied.getStatusCode()).isEqualTo(OK);
+        var request = applied.getBody();
+        assertThat(request.status()).isEqualTo("REQUESTED");
+        assertThat(request.amount()).isEqualByComparingTo(BigDecimal.TEN);
+        assertThat(orders.get(no, 1).refund()).isNull();
+        assertThatThrownBy(() -> returns.apply(no, 999999, "other")).hasMessageContaining("404");
+        for (String step : java.util.List.of("review", "receive")) {
+            assertThat(http.postForEntity(
+                                    "/admin/returns/" + request.publicId() + "/" + step,
+                                    new HttpEntity<>(
+                                            java.util.Map.of("decision", "APPROVE", "note", "unauthorized"), headers),
+                                    String.class)
+                            .getStatusCode()
+                            .value())
+                    .isEqualTo(403);
+        }
+        assertThatThrownBy(() -> returns.receive(request.publicId(), "premature", "admin"))
+                .hasMessageContaining("409");
+        returns.review(request.publicId(), "APPROVE", "请交回门店服务台", "admin");
+        assertThat(orders.get(no, 1).refund()).isNull();
+        assertThat(orders.get(no, 1).returnRequest().reviewNote()).isEqualTo("请交回门店服务台");
+        returns.receive(request.publicId(), "商品已收回，验收通过", "admin");
+        assertThat(orders.get(no, 1).returnRequest().refundStatus()).isEqualTo("PROCESSING");
+        long refundKey =
+                jdbc.queryForObject("SELECT id FROM refund_request WHERE public_id=?", Long.class, request.publicId());
+        jdbc.update(
+                "UPDATE refund_delivery SET deadline_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE refund_id=?",
+                refundKey);
+        delivery.waitOrEscalate(delivery.claim(refundKey), "渠道待核验");
+        assertThat(orders.get(no, 1).refundReview()).isNotNull();
+        refunds.applySandboxEvent(request.publicId(), refundEvent(1, "FAILED", "渠道失败"));
+        assertThat(orders.get(no, 1).returnRequest().refundStatus()).isEqualTo("FAILED");
+        refunds.retry(request.publicId(), 1);
+        var event = refundEvent(2, "SUCCEEDED", "");
+        refunds.applySandboxEvent(request.publicId(), event);
+        refunds.applySandboxEvent(request.publicId(), event);
+        assertThat(orders.get(no, 1).returnRequest().refundStatus()).isEqualTo("SUCCEEDED");
+        assertThat(orders.get(no, 1).payment().refundStatus()).isEqualTo("REFUNDED");
+        assertThat(returns.receive(request.publicId(), "重复收货", "admin").publicId())
+                .isEqualTo(request.publicId());
+        assertThat(returns.apply(no, 1, "重复申请").publicId()).isEqualTo(request.publicId());
+        assertThat(orders.get(no, 1).refund().amount()).isEqualByComparingTo(BigDecimal.TEN);
+    }
+
+    @Test
+    void returnEligibilityRejectionAndReceiptRollbackPreserveMoney(
+            @Autowired com.serviceflow.service.ReturnService returns) {
+        for (String invalid : java.util.List.of("SHIPPED", "UNPAID", "QUANTITY", "MULTIPLE", "EMPTY", "ZERO")) {
+            String no = deliveredOrder();
+            switch (invalid) {
+                case "SHIPPED" -> jdbc.update("UPDATE customer_order SET status='SHIPPED' WHERE order_no=?", no);
+                case "UNPAID" -> jdbc.update(
+                        "UPDATE payment SET status='PENDING' WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                        no);
+                case "QUANTITY" -> jdbc.update(
+                        "UPDATE order_item SET quantity=2 WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)",
+                        no);
+                case "MULTIPLE" -> jdbc.update(
+                        "INSERT INTO order_item(order_id,product_id,quantity,unit_price) SELECT id,1,1,10 FROM customer_order WHERE order_no=?",
+                        no);
+                case "EMPTY" -> jdbc.update(
+                        "DELETE FROM order_item WHERE order_id=(SELECT id FROM customer_order WHERE order_no=?)", no);
+                case "ZERO" -> jdbc.update("UPDATE customer_order SET total_amount=0 WHERE order_no=?", no);
+                default -> throw new AssertionError();
+            }
+            assertThatThrownBy(() -> returns.apply(no, 1, "test")).hasMessageContaining("409");
+            assertThat(orders.get(no, 1).returnRequest()).isNull();
+            assertThat(orders.get(no, 1).refund()).isNull();
+        }
+        String rejected = deliveredOrder();
+        var request = returns.apply(rejected, 1, "test");
+        returns.review(request.publicId(), "REJECT", "请联系门店核实商品情况", "admin");
+        assertThatThrownBy(() -> returns.review(request.publicId(), "APPROVE", "地址", "admin"))
+                .hasMessageContaining("409");
+        assertThatThrownBy(() -> returns.receive(request.publicId(), "收到", "admin"))
+                .hasMessageContaining("409");
+        assertThat(orders.get(rejected, 1).refund()).isNull();
+        String no = deliveredOrder();
+        var approved = returns.apply(no, 1, "test");
+        returns.review(approved.publicId(), "APPROVE", "门店交回", "admin");
+        jdbc.update("UPDATE customer_order SET total_amount=11 WHERE order_no=?", no);
+        assertThatThrownBy(() -> returns.receive(approved.publicId(), "收到", "admin"))
+                .hasMessageContaining("回滚");
+        assertThat(orders.get(no, 1).returnRequest().status()).isEqualTo("APPROVED");
+        assertThat(orders.get(no, 1).returnRequest().receivedAt()).isNull();
+        assertThat(orders.get(no, 1).payment().refundStatus()).isEqualTo("NONE");
+        assertThat(orders.get(no, 1).refund()).isNull();
+    }
+
+    @Test
+    void concurrentReturnApplicationsAndReceiptsCreateOnlyOneRefund(
+            @Autowired com.serviceflow.service.ReturnService returns) throws Exception {
+        String no = deliveredOrder();
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var apply = new java.util.ArrayList<java.util.concurrent.Future<com.serviceflow.model.ReturnModels.View>>();
+            for (int i = 0; i < 8; i++) apply.add(executor.submit(() -> returns.apply(no, 1, "duplicate")));
+            String id = apply.getFirst().get().publicId();
+            for (var result : apply) assertThat(result.get().publicId()).isEqualTo(id);
+            returns.review(id, "APPROVE", "请交回门店", "admin");
+            var receipts =
+                    new java.util.ArrayList<java.util.concurrent.Future<com.serviceflow.model.ReturnModels.View>>();
+            for (int i = 0; i < 8; i++) receipts.add(executor.submit(() -> returns.receive(id, "验收通过", "admin")));
+            for (var result : receipts) assertThat(result.get().status()).isEqualTo("RECEIVED");
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM refund_request WHERE public_id=?", Integer.class, id))
+                    .isEqualTo(1);
+            assertThat(jdbc.queryForObject(
+                            "SELECT COUNT(*) FROM refund_delivery d JOIN refund_request r ON r.id=d.refund_id WHERE r.public_id=?",
+                            Integer.class,
+                            id))
+                    .isEqualTo(1);
+            assertThat(orders.get(no, 1).refund().amount()).isEqualByComparingTo(BigDecimal.TEN);
+        }
+    }
+
     @Test
     void refundLeaseFencesCrashedWorkerAndManualReviewIsIdempotent(
             @Autowired com.serviceflow.service.RefundDeliveryService delivery,

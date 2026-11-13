@@ -114,7 +114,8 @@ public class OrderServiceImpl implements OrderService {
                 refund == null
                         ? null
                         : refunds.review(
-                                refund.id(), RefundDeliveryModels.reviewActionId(refund.publicId()), customerId));
+                                refund.id(), RefundDeliveryModels.reviewActionId(refund.publicId()), customerId),
+                mapper.returnRequest(order.id()));
     }
 
     // 取消订单、发起退款、记录操作结果必须作为一个整体提交；方法抛出运行时异常时一起回滚。

@@ -189,6 +189,27 @@ final class OrderConversation {
             progress += "人工核验工单 " + review.publicId() + "，" + review.progress() + "。";
             if (review.customerMessage() != null) progress += "客服回复：" + review.customerMessage() + "。";
         }
+        if (order.returnRequest() != null) {
+            var application = order.returnRequest();
+            String stage =
+                    switch (application.status()) {
+                        case "REQUESTED" -> "等待客服审核";
+                        case "APPROVED" -> "审核通过，请按指引退回商品";
+                        case "REJECTED" -> "审核未通过";
+                        case "RECEIVED" -> switch (application.refundStatus() == null
+                                ? ""
+                                : application.refundStatus()) {
+                            case "SUCCEEDED" -> "退货退款已完成";
+                            case "FAILED" -> "商家已收到退货，退款失败，等待客服处理";
+                            default -> "商家已收到退货，退款处理中";
+                        };
+                        default -> application.status();
+                    };
+            progress += "退货单 " + application.publicId() + "，" + stage + "。";
+            if (application.reviewNote() != null) progress += "审核说明：" + application.reviewNote() + "。";
+        } else if ("DELIVERED".equals(order.status()) && state.query().contains("退货")) {
+            progress += "请在订单详情填写退货原因并提交申请，客服审核后会提供退回指引。";
+        }
         return answer("订单 " + orderNo + " 当前状态为 " + order.status() + "，退款状态为 " + refund + "，最新物流：" + shipment + "。"
                 + progress);
     }
