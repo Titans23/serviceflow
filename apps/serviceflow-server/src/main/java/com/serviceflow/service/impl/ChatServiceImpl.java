@@ -132,6 +132,7 @@ public final class ChatServiceImpl implements ChatService {
             state.orderSelection(request.orderSelection());
             // 暂时把工作流视为黑盒：输入本次请求状态，输出业务结果，并把过程中产生的事件转发给前端。
             Map<String, Object> businessMetadata = new java.util.LinkedHashMap<>();
+            events.send(emitter, "progress", Map.of("message", "正在核对资料与业务状态"));
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
                 if ("order".equals(name)) businessMetadata.put("order", data);
                 if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
@@ -143,7 +144,7 @@ public final class ChatServiceImpl implements ChatService {
                         principal.subject(), sessionId, state.productIds().getFirst());
             }
             // 生成最终回答；生成期间每个文本片段已经通过 token 事件实时发送给前端。
-            String answer = generateAnswer(state, result, request.message(), emitter);
+            String answer = generateAnswer(state, result, request.message(), emitter, startedNanos);
             String messageId = UUID.randomUUID().toString();
             businessMetadata.put("citations", result.citations());
             businessMetadata.put("intent", state.intent().name());
@@ -211,11 +212,17 @@ public final class ChatServiceImpl implements ChatService {
      * <p>普通聊天和有可信上下文的回答来自 AI 流；已有的非流式结果则由后端主动切片。
      */
     private String generateAnswer(
-            ServiceFlowState state, CustomerWorkflow.Result result, String userMessage, SseEmitter emitter) {
+            ServiceFlowState state,
+            CustomerWorkflow.Result result,
+            String userMessage,
+            SseEmitter emitter,
+            long startedNanos) {
         StringBuilder answer = new StringBuilder();
         if (state.intent() == Intent.CHAT) {
             ai.streamAnswer(
-                    "你是 ServiceFlow 客服，只回答售前商品和售后服务范围的问题。", userMessage, token -> appendToken(answer, emitter, token));
+                    "你是 ServiceFlow 客服，只回答售前商品和售后服务范围的问题。",
+                    userMessage,
+                    token -> appendToken(answer, emitter, token, startedNanos));
         } else if (result.groundingContext() != null
                 && !result.groundingContext().isBlank()
                 && ai.supportsGroundedGeneration()) {
@@ -227,16 +234,18 @@ public final class ChatServiceImpl implements ChatService {
                     selection::append);
             String grounded = com.serviceflow.ai.GroundedAnswerComposer.compose(
                     result.groundingContext(), selection.toString(), objectMapper);
-            chunks(grounded, ANSWER_CHUNK_SIZE).forEach(token -> appendToken(answer, emitter, token));
+            chunks(grounded, ANSWER_CHUNK_SIZE).forEach(token -> appendToken(answer, emitter, token, startedNanos));
         } else {
             // 即使上游只有完整答案，也按固定长度切片，让前端保持相同的 SSE 消费方式。
-            chunks(result.answer(), ANSWER_CHUNK_SIZE).forEach(token -> appendToken(answer, emitter, token));
+            chunks(result.answer(), ANSWER_CHUNK_SIZE)
+                    .forEach(token -> appendToken(answer, emitter, token, startedNanos));
         }
         return answer.toString();
     }
 
     /** 同时累积最终完整答案，并把当前文本片段作为 token 事件推送给浏览器。 */
-    private void appendToken(StringBuilder answer, SseEmitter emitter, String token) {
+    private void appendToken(StringBuilder answer, SseEmitter emitter, String token, long startedNanos) {
+        if (answer.isEmpty() && !token.isEmpty()) audit.firstToken(startedNanos);
         answer.append(token);
         events.send(emitter, "token", token);
     }

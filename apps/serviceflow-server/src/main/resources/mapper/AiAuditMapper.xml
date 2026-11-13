@@ -14,7 +14,8 @@
     SELECT a.public_id,s.public_id session_public_id,c.name customer_name,a.client_request_id,
       a.prompt_version,a.model_name,a.intent,CAST(a.product_ids AS CHAR) product_ids_json,
       CAST(a.citations AS CHAR) citations_json,a.degraded,a.latency_ms,a.result_status,
-      a.error_code,a.question,a.answer,a.created_at
+      a.error_code,CASE WHEN #{includeContent} THEN a.question ELSE '[正文默认隐藏]' END AS question,
+      CASE WHEN #{includeContent} THEN a.answer ELSE NULL END AS answer,a.created_at
     FROM ai_answer_audit a
     JOIN chat_session s ON s.id=a.session_id
     JOIN customer c ON c.id=s.customer_id

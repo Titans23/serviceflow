@@ -24,5 +24,5 @@ public interface AiAuditMapper {
             @Param("question") String question,
             @Param("answer") String answer);
 
-    List<AuditModels.AuditView> findRecent(@Param("limit") int limit);
+    List<AuditModels.AuditView> findRecent(@Param("limit") int limit, @Param("includeContent") boolean includeContent);
 }

@@ -243,6 +243,27 @@ class OrderConversationTest {
                 .thenReturn(plan);
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(
+            strings = {
+                "查询订单状态", "订单状态", "查物流", "查询物流", "它的物流呢", "退款进度", "查询退款进度", "退货进度", "查询退货进度", "工单进度", "查询退款工单", "退款工单结果"
+            })
+    void boundedCurrentOrderLookupsNeedNoModelAndNeverPrepareActions(String query) {
+        active.set(FIRST);
+        assertThat(run(state(query)).answer()).contains(FIRST);
+        verifyNoInteractions(ai, actions);
+        verify(orders).get(FIRST, 7L);
+    }
+
+    @Test
+    void shortcutNeverMatchesComplaintOrMutationOrAmbiguousOrders() {
+        assertThat(OrderConversation.isExactLookup("查询订单 " + FIRST)).isTrue();
+        for (String query : List.of("投诉 " + FIRST, "取消 " + FIRST, FIRST + " " + SECOND, "这个订单能退货吗")) {
+            assertThat(OrderConversation.isExactLookup(query)).isFalse();
+            assertThat(OrderConversation.isCurrentLookup(query)).isFalse();
+        }
+    }
+
     private ServiceFlowState state(String query) {
         return new ServiceFlowState("session", new CurrentPrincipal("owner", "CUSTOMER", 7L), query, null);
     }

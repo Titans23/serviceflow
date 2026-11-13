@@ -200,7 +200,7 @@ jobs:
         working-directory: apps/serviceflow-web
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:28173
-        run: npx playwright test e2e/refund-delivery-live.spec.ts e2e/returns-live.spec.ts
+        run: npx playwright test e2e/refund-delivery-live.spec.ts e2e/returns-live.spec.ts e2e/tickets-live.spec.ts
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -209,6 +209,7 @@ jobs:
             quality/evaluation/reports/refund-delivery-*/summary.json
             quality/evaluation/reports/refund-delivery-*/browser-summary.json
             quality/evaluation/reports/refund-delivery-*/return-browser-summary.json
+            quality/evaluation/reports/refund-delivery-*/ticket-browser-summary.json
             quality/evaluation/reports/refund-delivery-*/checks.json
       - name: Show isolated diagnostics
         if: failure()

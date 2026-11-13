@@ -175,6 +175,7 @@ async function send(orderSelection?: { queryId: string; orderNo: string }) {
         orderSelection,
       },
       (name, data) => {
+        if (name === 'progress') assistant.progress = data.message
         if (name === 'token') assistant.content += data
         if (name === 'meta') {
           if (data.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sourceSession) {
@@ -434,6 +435,12 @@ onMounted(() =>
       />
       <div ref="box" class="messages" @scroll="updateScrollIntent">
         <div v-for="(m, index) in messages" :key="m.id ?? index" :class="['message', m.role]">
+          <p
+            v-if="sending && index === messages.length - 1 && m.progress && !m.content"
+            role="status"
+          >
+            {{ m.progress }}…
+          </p>
           <!-- markdown-it has raw HTML disabled, so this only receives escaped/generated markup. -->
           <!-- eslint-disable vue/no-v-html -->
           <div

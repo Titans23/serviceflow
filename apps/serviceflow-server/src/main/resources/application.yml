@@ -65,6 +65,8 @@ info:
     refundDispatchEnabled: ${SERVICEFLOW_REFUND_DISPATCH_ENABLED:false}
     refundChannel: ${SERVICEFLOW_REFUND_CHANNEL:disabled}
 serviceflow:
+  audit:
+    record-content: ${SERVICEFLOW_AUDIT_RECORD_CONTENT:false}
   evaluation:
     enabled: ${SERVICEFLOW_EVALUATION_ENABLED:false}
     rag-diagnostics-dir: ${SERVICEFLOW_RAG_DIAGNOSTICS_DIR:}

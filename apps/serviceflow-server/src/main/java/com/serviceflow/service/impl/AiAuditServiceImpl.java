@@ -20,13 +20,20 @@ public final class AiAuditServiceImpl implements AiAuditService {
     private final ObjectMapper objectMapper;
     private final MeterRegistry metrics;
     private final String modelName;
+    private final boolean recordContent;
 
     public AiAuditServiceImpl(
-            AiAuditMapper mapper, ObjectMapper objectMapper, MeterRegistry metrics, ServiceFlowProperties properties) {
+            AiAuditMapper mapper,
+            ObjectMapper objectMapper,
+            MeterRegistry metrics,
+            ServiceFlowProperties properties,
+            @org.springframework.beans.factory.annotation.Value("${serviceflow.audit.record-content:false}")
+                    boolean recordContent) {
         this.mapper = mapper;
         this.objectMapper = objectMapper;
         this.metrics = metrics;
         this.modelName = properties.ai().chat().model();
+        this.recordContent = recordContent;
     }
 
     @Override
@@ -54,8 +61,8 @@ public final class AiAuditServiceImpl implements AiAuditService {
                     latencyMs,
                     "SUCCESS",
                     null,
-                    question,
-                    answer);
+                    recordContent ? question : "[未记录正文]",
+                    recordContent ? answer : null);
         }
         recordMetrics(intent, "SUCCESS", degraded, latencyMs);
     }
@@ -86,7 +93,7 @@ public final class AiAuditServiceImpl implements AiAuditService {
                     latencyMs,
                     "FAILED",
                     exception.getClass().getSimpleName(),
-                    question,
+                    recordContent ? question : "[未记录正文]",
                     null);
         }
         recordMetrics(intent, "FAILED", false, latencyMs);
@@ -94,7 +101,12 @@ public final class AiAuditServiceImpl implements AiAuditService {
 
     @Override
     public List<AuditModels.AuditView> recent(int limit) {
-        return mapper.findRecent(Math.max(1, Math.min(limit, 200)));
+        return mapper.findRecent(Math.max(1, Math.min(limit, 200)), recordContent);
+    }
+
+    @Override
+    public void firstToken(long startedNanos) {
+        metrics.timer("serviceflow.chat.first_token_server").record(Duration.ofNanos(System.nanoTime() - startedNanos));
     }
 
     private void recordMetrics(String intent, String status, boolean degraded, long latencyMs) {

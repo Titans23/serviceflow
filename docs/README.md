@@ -2,6 +2,8 @@
 
 | 文档 | 用途 |
 | --- | --- |
+| [最终版本交付报告](final-delivery-2026-11-13.md) | 当前完整业务范围、实现原理、验证结果及部署边界 |
+| [第 1～4 批优化报告](optimization-report-2026-11-04.md) | 订单查询、确认恢复、后台退款及性能对照 |
 | [技术报告](technical-report.md) | 技术选型、全部核心实现、测试与边界 |
 | [系统架构](architecture/system-overview.md) | 组件关系、请求链路与部署拓扑 |
 | [架构决策记录](adr/) | MVC + Virtual Threads、事实/RAG 分离、Outbox 与幂等 |

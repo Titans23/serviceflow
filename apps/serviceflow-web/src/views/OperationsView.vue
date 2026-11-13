@@ -123,6 +123,7 @@ onMounted(load)
   <div class="page" v-loading="loading">
     <h1>运营中心</h1>
     <p>模拟企业客服的工单闭环与 AI 回答审计，访客聊天内容不会写入审计库。</p>
+    <p>审计默认记录意图、来源、耗时和处理结果，正文由服务端记录策略控制。客服沟通请进入工单。</p>
 
     <el-tabs>
       <el-tab-pane label="人工工单">

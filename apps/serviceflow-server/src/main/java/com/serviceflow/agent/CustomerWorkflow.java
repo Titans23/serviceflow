@@ -227,6 +227,9 @@ public final class CustomerWorkflow {
         boolean currentOrder = runtime.activeOrderNo() != null
                 || (!runtime.principal().guest()
                         && memory.activeOrder(runtime.principal().subject(), runtime.sessionId()) != null);
+        if (OrderConversation.isExactLookup(state.query())
+                || (!pendingOrders && currentOrder && OrderConversation.isCurrentLookup(state.query())))
+            return Intent.ORDER_QUERY;
         // 云模式调用大模型分类；演示模式使用关键词规则分类。
         String classificationQuery = state.pageProductId() > 0
                 ? "当前商品：" + products.get(state.pageProductId()).name() + "。\n用户问题：" + state.query()

@@ -18,6 +18,11 @@ import java.util.regex.Pattern;
 /** Executes a bounded, read-only order plan; cancellation still requires a separate confirmation. */
 final class OrderConversation {
     private static final Pattern ORDER_NO = Pattern.compile("SF\\d{12,}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern EXACT_LOOKUP =
+            Pattern.compile("^(?:查询|查看|查)?(?:订单)?[:：\\s]*SF\\d{12,}[\\s。]*$", Pattern.CASE_INSENSITIVE);
+    private static final java.util.Set<String> CURRENT_LOOKUPS = java.util.Set.of(
+            "查询订单状态", "订单状态", "查物流", "查询物流", "它的物流呢", "退款进度", "查询退款进度", "它的退款进度呢", "退货进度", "查询退货进度", "工单进度", "查询退款工单",
+            "退款工单结果");
     private static final Pattern ORDINAL = Pattern.compile("^(?:选|选择)?第?([1-9一二三四五六七八九十两])(?:笔|个|单)(?:订单)?[。！!\\s]*$");
     private final AiGateway ai;
     private final OrderService orders;
@@ -33,6 +38,14 @@ final class OrderConversation {
 
     static boolean isSelection(String query) {
         return ORDINAL.matcher(query.strip()).matches();
+    }
+
+    static boolean isExactLookup(String query) {
+        return EXACT_LOOKUP.matcher(query.strip()).matches();
+    }
+
+    static boolean isCurrentLookup(String query) {
+        return CURRENT_LOOKUPS.contains(query.replaceAll("[\\s。！？?!]", ""));
     }
 
     CustomerWorkflow.Result respond(ServiceFlowState state, BiConsumer<String, Object> events) {
@@ -67,6 +80,7 @@ final class OrderConversation {
         }
         String current = pending == null ? state.activeOrderNo() : null;
         if (current == null && pending == null) current = memory.activeOrder(subject, session);
+        if (current != null && isCurrentLookup(state.query())) return show(state, current, false, events);
         // Page context is untrusted input. Check ownership before treating it as usable context.
         if (current != null) orders.get(current, state.principal().requireCustomerId());
         AiGateway.OrderPlan plan = ai.planOrder(

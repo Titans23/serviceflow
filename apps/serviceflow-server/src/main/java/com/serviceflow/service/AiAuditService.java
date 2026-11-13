@@ -5,6 +5,8 @@ import com.serviceflow.model.AuditModels;
 import java.util.List;
 
 public interface AiAuditService {
+    void firstToken(long startedNanos);
+
     void success(
             Long sessionId,
             ServiceFlowState state,

@@ -943,6 +943,64 @@ class ServiceFlowIntegrationIT {
     }
 
     @Test
+    void workflowShortcutsKeepAuthorizationAndSkipModelCalls(
+            @Autowired com.serviceflow.service.ProductService products,
+            @Autowired ChatMemory memory,
+            @Autowired com.fasterxml.jackson.databind.ObjectMapper json,
+            @Autowired org.springframework.boot.autoconfigure.data.redis.RedisProperties redisProperties,
+            @Autowired org.springframework.data.redis.core.StringRedisTemplate redis) {
+        var ai = org.mockito.Mockito.mock(com.serviceflow.ai.AiGateway.class);
+        var workflow = new com.serviceflow.agent.CustomerWorkflow(
+                ai,
+                products,
+                orders,
+                org.mockito.Mockito.mock(com.serviceflow.service.ActionDecisionService.class),
+                org.mockito.Mockito.mock(com.serviceflow.service.TicketService.class),
+                org.mockito.Mockito.mock(com.serviceflow.rag.RagService.class),
+                memory,
+                json,
+                redisProperties,
+                redis);
+        String no = newOrder("PAID");
+        for (String query : java.util.List.of("查询订单 " + no, "退款进度", "查物流", "查询退货进度")) {
+            var state = new com.serviceflow.agent.ServiceFlowState(
+                    UUID.randomUUID().toString(), new CurrentPrincipal("owner", "CUSTOMER", 1L), query, null);
+            state.activeOrderNo(no);
+            assertThat(workflow.execute(state, (name, value) -> {}).answer()).contains(no);
+        }
+        var foreign = new com.serviceflow.agent.ServiceFlowState(
+                UUID.randomUUID().toString(), new CurrentPrincipal("foreign", "CUSTOMER", 999999L), "退款进度", null);
+        foreign.activeOrderNo(no);
+        assertThatThrownBy(() -> workflow.execute(foreign, (name, value) -> {}))
+                .hasRootCauseInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        org.mockito.Mockito.verifyNoInteractions(ai);
+    }
+
+    @Test
+    void auditDefaultsDoNotCopyConversationBodiesOrExposeHistoricalBodies(
+            @Autowired com.serviceflow.service.AiAuditService audit, @Autowired ChatSessionService sessions) {
+        var principal = new CurrentPrincipal("audit-owner", "CUSTOMER", 1L);
+        String session = sessions.create(principal, "privacy").publicId();
+        long id = sessions.requireCustomerSession(principal, session);
+        var state = new com.serviceflow.agent.ServiceFlowState(
+                session, principal, "private-question", null, UUID.randomUUID().toString());
+        state.intent(com.serviceflow.agent.Intent.ORDER_QUERY);
+        audit.success(id, state, "private-question", "private-answer", java.util.List.of(), false, System.nanoTime());
+        assertThat(jdbc.queryForObject("SELECT question FROM ai_answer_audit WHERE session_id=?", String.class, id))
+                .isEqualTo("[未记录正文]");
+        jdbc.update(
+                "UPDATE ai_answer_audit SET question='historical-private',answer='historical-answer' WHERE session_id=?",
+                id);
+        assertThat(audit.recent(200).stream()
+                        .filter(row -> row.sessionPublicId().equals(session))
+                        .toList()
+                        .toString())
+                .doesNotContain("historical-private", "historical-answer");
+        assertThat(jdbc.queryForObject("SELECT question FROM ai_answer_audit WHERE session_id=?", String.class, id))
+                .isEqualTo("historical-private");
+    }
+
+    @Test
     void ticketConversationIsOwnedIdempotentAndCanReopenBeforeCustomerCloses(
             @Autowired com.serviceflow.service.TicketService tickets) {
         var ticket = tickets.create(1, null, "需要协助", "初始问题");
