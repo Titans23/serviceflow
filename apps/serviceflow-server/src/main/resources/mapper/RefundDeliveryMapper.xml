@@ -22,7 +22,7 @@
   </update>
   <update id="release">
     UPDATE refund_delivery SET state=#{state},lease_token=NULL,lease_until=NULL,
-      next_run_at=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 5 SECOND),last_error=#{error},ticket_id=#{ticketId}
+      next_run_at=DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 5 SECOND),last_error=#{error},ticket_id=COALESCE(#{ticketId},ticket_id)
     WHERE refund_id=#{id} AND lease_token=#{token}
   </update>
   <update id="queried">

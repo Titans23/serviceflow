@@ -1,12 +1,16 @@
 package com.serviceflow.mapper;
 
 import com.serviceflow.model.RefundModels;
+import com.serviceflow.model.TicketModels;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface RefundMapper {
+    TicketModels.RefundReview review(
+            @Param("refundId") long refundId, @Param("actionId") String actionId, @Param("customerId") long customerId);
+
     int enqueueDelivery(@Param("publicId") String publicId);
 
     RefundModels.Refund findById(@Param("id") long id);

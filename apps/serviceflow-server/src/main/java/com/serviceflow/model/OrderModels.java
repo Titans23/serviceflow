@@ -48,7 +48,8 @@ public final class OrderModels {
             List<Item> items,
             Payment payment,
             List<Shipment> shipment,
-            RefundModels.RefundView refund) {}
+            RefundModels.RefundView refund,
+            TicketModels.RefundReview refundReview) {}
 
     public record Operation(String requestId, String resultCode, String resultMessage) {}
 

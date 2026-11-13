@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.TicketMapper">
+  <update id="publishCustomerMessage">
+    UPDATE ticket SET customer_message=#{message},updated_at=CURRENT_TIMESTAMP(6) WHERE public_id=#{publicId}
+  </update>
   <insert id="insert">INSERT IGNORE INTO ticket(public_id, customer_id, session_public_id, source_action_id, subject, description) VALUES(#{publicId},#{customerId},#{sessionId},#{actionId},#{subject},#{description})</insert>
   <select id="findByCustomer" resultType="com.serviceflow.model.TicketModels$TicketView">
     SELECT public_id, subject, description, status, created_at FROM ticket WHERE customer_id=#{customerId} ORDER BY created_at DESC
@@ -10,7 +13,7 @@
   </select>
   <sql id="adminColumns">
     t.public_id,t.customer_id,c.name customer_name,t.session_public_id,t.subject,t.description,
-    t.status,t.assigned_to,t.resolution_note,t.created_at,t.updated_at
+    t.status,t.assigned_to,t.resolution_note,t.created_at,t.updated_at,t.customer_message
   </sql>
   <select id="findForAdmin" resultType="com.serviceflow.model.TicketModels$AdminTicketView">
     SELECT <include refid="adminColumns"/>

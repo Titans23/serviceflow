@@ -52,7 +52,7 @@ public final class DemoAiGateway implements AiGateway {
             boolean hasCurrentOrder,
             List<OrderModels.Summary> candidates,
             boolean pendingCancellation) {
-        boolean cancel = message.matches(".*(?:取消|不要了|不想要).*") && !message.matches(".*(?:不取消|不要取消|别取消|不想取消).*");
+        boolean cancel = OrderCancellationIntent.requested(message);
         String keyword = List.of("耳机", "手机", "笔记本", "电脑").stream()
                 .filter(message::contains)
                 .findFirst()

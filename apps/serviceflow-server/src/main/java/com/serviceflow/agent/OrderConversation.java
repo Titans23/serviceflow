@@ -1,6 +1,7 @@
 package com.serviceflow.agent;
 
 import com.serviceflow.ai.AiGateway;
+import com.serviceflow.ai.OrderCancellationIntent;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.OrderModels;
@@ -39,6 +40,10 @@ final class OrderConversation {
         String subject = state.principal().subject();
         String session = state.sessionId();
         ChatMemory.OrderCandidates pending = memory.orderCandidates(subject, session);
+        if (pending != null && pending.cancellation() && OrderCancellationIntent.readOnly(state.query())) {
+            pending = new ChatMemory.OrderCandidates(pending.queryId(), pending.items(), pending.hasMore(), false);
+            memory.putOrderCandidates(subject, session, pending);
+        }
         if (state.orderSelection() != null) {
             var selection = state.orderSelection();
             if (pending == null
@@ -73,9 +78,13 @@ final class OrderConversation {
         if (plan == null || plan.tool() == null || plan.purpose() == null) {
             return answer("请提供订单号，或告诉我商品名称和大致下单日期。");
         }
-        boolean cancel = plan.purpose() == AiGateway.OrderPurpose.CANCEL;
+        boolean cancel = plan.purpose() == AiGateway.OrderPurpose.CANCEL
+                && (wantsCancellation(state.query())
+                        || (plan.tool() == AiGateway.OrderTool.SELECT_CANDIDATE
+                                && pending != null
+                                && pending.cancellation()));
         return switch (plan.tool()) {
-            case SEARCH_ORDERS -> search(state, plan, events);
+            case SEARCH_ORDERS -> search(state, plan, cancel, events);
             case READ_CURRENT -> current == null ? ask(pending, events) : show(state, current, cancel, events);
             case SELECT_CANDIDATE -> choose(state, pending, plan.candidateIndex(), cancel, events);
             case ASK_USER -> ask(pending, events);
@@ -83,7 +92,7 @@ final class OrderConversation {
     }
 
     private CustomerWorkflow.Result search(
-            ServiceFlowState state, AiGateway.OrderPlan plan, BiConsumer<String, Object> events) {
+            ServiceFlowState state, AiGateway.OrderPlan plan, boolean cancellation, BiConsumer<String, Object> events) {
         LocalDate from, to;
         try {
             from = plan.fromDate() == null ? null : LocalDate.parse(plan.fromDate());
@@ -98,7 +107,6 @@ final class OrderConversation {
                 10);
         memory.clearActiveOrder(state.principal().subject(), state.sessionId());
         memory.clearOrderCandidates(state.principal().subject(), state.sessionId());
-        boolean cancellation = plan.purpose() == AiGateway.OrderPurpose.CANCEL;
         if (found.items().size() == 1 && found.nextCursor() == null) {
             return show(state, found.items().getFirst().orderNo(), cancellation, events);
         }
@@ -176,12 +184,17 @@ final class OrderConversation {
         String progress = order.refund() != null && order.refund().failureReason() != null
                 ? "退款处理说明：" + order.refund().failureReason() + "。"
                 : "";
+        if (order.refundReview() != null) {
+            var review = order.refundReview();
+            progress += "人工核验工单 " + review.publicId() + "，" + review.progress() + "。";
+            if (review.customerMessage() != null) progress += "客服回复：" + review.customerMessage() + "。";
+        }
         return answer("订单 " + orderNo + " 当前状态为 " + order.status() + "，退款状态为 " + refund + "，最新物流：" + shipment + "。"
                 + progress);
     }
 
     static boolean wantsCancellation(String query) {
-        return query.contains("取消") && !query.matches(".*(?:不取消|不要取消|别取消|不想取消).*");
+        return OrderCancellationIntent.requested(query);
     }
 
     private CustomerWorkflow.Result answer(String text) {

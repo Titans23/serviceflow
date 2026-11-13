@@ -700,6 +700,36 @@ class ServiceFlowIntegrationIT {
         return new RefundModels.SandboxEvent(UUID.randomUUID().toString(), attempt, outcome, BigDecimal.TEN, reason);
     }
 
+    @Test
+    void refundReviewSurvivesSessionsAndReconciliationWithoutExposingInternalNotes(
+            @Autowired com.serviceflow.service.RefundDeliveryService delivery,
+            @Autowired com.serviceflow.service.TicketService tickets,
+            @Autowired com.serviceflow.mapper.RefundDeliveryMapper tasks) {
+        String no = newOrder("PAID"), refundId = UUID.randomUUID().toString();
+        orders.cancel(no, 1, refundId);
+        long id = jdbc.queryForObject("SELECT id FROM refund_request WHERE public_id=?", Long.class, refundId);
+        jdbc.update("UPDATE refund_delivery SET deadline_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE refund_id=?", id);
+        delivery.waitOrEscalate(delivery.claim(id), "unknown");
+        var original = orders.get(no, 1).refundReview();
+        assertThat(original.progress()).isEqualTo("等待人工核验");
+        assertThatThrownBy(() -> orders.get(no, 999999)).hasMessageContaining("404");
+        tickets.updateStatus(original.publicId(), "ASSIGNED", "INTERNAL ONLY", "admin");
+        tickets.publishCustomerMessage(original.publicId(), "已联系渠道核验，请关注本单进度");
+        assertThat(orders.get(no, 1).refundReview().customerMessage()).isEqualTo("已联系渠道核验，请关注本单进度");
+        assertThat(orders.get(no, 1).refundReview().toString()).doesNotContain("INTERNAL ONLY");
+        delivery.reconcile(refundId);
+        assertThat(orders.get(no, 1).refundReview().progress()).isEqualTo("正在重新核验渠道");
+        delivery.waitOrEscalate(delivery.claim(id), "still unknown");
+        assertThat(tasks.lock(id).ticketId()).isEqualTo(original.publicId());
+        // Legacy tasks could lose ticket_id during a retry. The stable source action still identifies the same ticket.
+        jdbc.update("UPDATE refund_delivery SET ticket_id=NULL WHERE refund_id=?", id);
+        assertThat(orders.get(no, 1).refundReview().publicId()).isEqualTo(original.publicId());
+        delivery.callback(refundId, refundEvent(1, "SUCCEEDED", ""));
+        assertThat(orders.get(no, 1).refundReview().progress()).isEqualTo("退款已完成");
+        assertThat(orders.get(no, 1).refundReview().publicId()).isEqualTo(original.publicId());
+        assertThat(eventCount(refundId)).isEqualTo(1);
+    }
+
     private int eventCount(String publicId) {
         return jdbc.queryForObject(
                 "SELECT COUNT(*) FROM refund_event e JOIN refund_request r ON r.id=e.refund_id WHERE r.public_id=?",

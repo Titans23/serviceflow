@@ -43,6 +43,8 @@ public class CloudAiGateway implements AiGateway {
             tool 只能是 SEARCH_ORDERS,READ_CURRENT,SELECT_CANDIDATE,ASK_USER。
             purpose 只能是 QUERY 或 CANCEL。只有用户要取消订单/不要商品时才选 CANCEL；
             待选操作是取消且用户仅选择候选时延续 CANCEL，用户明确改为查询时选 QUERY。
+            “不用取消”“取消了吗”“能不能取消”以及查询退款工单进度均为 QUERY，不是执行请求。
+            退款人工核验工单属于订单服务，先定位本人订单，再读取其工单进度。
             用户提供新的商品、日期、状态或要求查看所有/其他订单时选 SEARCH_ORDERS。
             keyword 仅提取商品名称、型号、SKU、类别或订单号，去掉“买的”“订单”“帮我”等修饰，
             例如“昨天买的耳机不要了”提取“耳机”，purpose=CANCEL。只查订单列表时 keyword=null。

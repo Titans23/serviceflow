@@ -100,6 +100,30 @@ class TicketServiceTest {
 
     private TicketModels.AdminTicketView ticket(String status) {
         return new TicketModels.AdminTicketView(
-                "ticket-1", 1L, "演示客户", "session-1", "客户投诉", "描述", status, null, null, Instant.now(), Instant.now());
+                "ticket-1",
+                1L,
+                "演示客户",
+                "session-1",
+                "客户投诉",
+                "描述",
+                status,
+                null,
+                null,
+                Instant.now(),
+                Instant.now(),
+                null);
+    }
+
+    @Test
+    void publishesOnlyExplicitCustomerMessages() {
+        when(mapper.publishCustomerMessage("ticket-1", "已核验")).thenReturn(1);
+        service.publishCustomerMessage("ticket-1", " 已核验 ");
+        verify(mapper).publishCustomerMessage("ticket-1", "已核验");
+        assertThatThrownBy(() -> service.publishCustomerMessage("missing", "进度"))
+                .hasMessageContaining("不存在");
+        for (String invalid : new String[] {null, " ", "x".repeat(501)}) {
+            assertThatThrownBy(() -> service.publishCustomerMessage("ticket-1", invalid))
+                    .hasMessageContaining("500");
+        }
     }
 }

@@ -12,6 +12,7 @@ type Ticket = {
   status: TicketStatus
   assignedTo?: string
   resolutionNote?: string
+  customerMessage?: string
   createdAt: string
   updatedAt: string
 }
@@ -86,6 +87,27 @@ async function advance(ticket: Ticket) {
   await load()
 }
 
+async function replyToCustomer(ticket: Ticket) {
+  const result = await ElMessageBox.prompt(
+    '此回复会展示给顾客，请填写可公开的核验进度或结果。',
+    '回复顾客',
+    {
+      inputValue: ticket.customerMessage || '',
+      confirmButtonText: '发布',
+      cancelButtonText: '取消',
+      inputType: 'textarea',
+      inputValidator: (value) =>
+        (Boolean(value?.trim()) && value.length <= 500) || '请填写1到500字',
+    },
+  )
+  await api(`/admin/tickets/${ticket.publicId}/customer-message`, {
+    method: 'PUT',
+    body: JSON.stringify({ message: result.value.trim() }),
+  })
+  ElMessage.success('已发布顾客回复')
+  await load()
+}
+
 function formatJson(value: string) {
   try {
     return JSON.stringify(JSON.parse(value), null, 2)
@@ -126,6 +148,9 @@ onMounted(load)
             <template #default="scope">
               <div class="detail"><b>问题描述：</b>{{ scope.row.description }}</div>
               <div class="detail"><b>处理备注：</b>{{ scope.row.resolutionNote || '暂无' }}</div>
+              <div class="detail">
+                <b>顾客回复：</b>{{ scope.row.customerMessage || '尚未发布' }}
+              </div>
               <div class="detail"><b>工单编号：</b>{{ scope.row.publicId }}</div>
             </template>
           </el-table-column>
@@ -134,8 +159,9 @@ onMounted(load)
           <el-table-column prop="status" label="状态" width="110" />
           <el-table-column prop="assignedTo" label="处理人" width="120" />
           <el-table-column prop="updatedAt" label="更新时间" min-width="180" />
-          <el-table-column label="操作" width="140">
+          <el-table-column label="操作" width="230">
             <template #default="scope">
+              <el-button link @click="replyToCustomer(scope.row)">回复顾客</el-button>
               <el-button
                 v-if="nextStatus[scope.row.status as TicketStatus]"
                 type="primary"

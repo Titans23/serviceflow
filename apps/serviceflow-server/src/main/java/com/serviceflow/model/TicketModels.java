@@ -7,6 +7,9 @@ public final class TicketModels {
 
     public record TicketView(String publicId, String subject, String description, String status, Instant createdAt) {}
 
+    public record RefundReview(
+            String publicId, String status, String progress, String customerMessage, Instant updatedAt) {}
+
     public record AdminTicketView(
             String publicId,
             long customerId,
@@ -18,5 +21,6 @@ public final class TicketModels {
             String assignedTo,
             String resolutionNote,
             Instant createdAt,
-            Instant updatedAt) {}
+            Instant updatedAt,
+            String customerMessage) {}
 }

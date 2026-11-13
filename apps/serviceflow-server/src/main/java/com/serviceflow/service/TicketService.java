@@ -4,6 +4,8 @@ import com.serviceflow.model.TicketModels;
 import java.util.List;
 
 public interface TicketService {
+    void publishCustomerMessage(String publicId, String message);
+
     TicketModels.TicketView create(long customerId, String sessionId, String subject, String description);
 
     TicketModels.TicketView createFromAction(

@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.serviceflow.mapper.RefundMapper">
+  <select id="review" resultType="com.serviceflow.model.TicketModels$RefundReview">
+    SELECT t.public_id,t.status,
+      CASE WHEN r.status='SUCCEEDED' THEN '退款已完成'
+           WHEN r.status='FAILED' THEN '渠道确认退款失败，等待处理'
+           WHEN d.state IN ('READY','WAITING') THEN '正在重新核验渠道'
+           WHEN t.status='OPEN' THEN '等待人工核验'
+           ELSE '人工处理中，退款结果仍待核实' END AS progress,
+      t.customer_message,GREATEST(t.updated_at,r.updated_at,d.updated_at) AS updated_at
+    FROM refund_request r JOIN customer_order o ON o.id=r.order_id
+    JOIN refund_delivery d ON d.refund_id=r.id
+    JOIN ticket t ON t.source_action_id=#{actionId} AND t.customer_id=o.customer_id
+    WHERE r.id=#{refundId} AND o.customer_id=#{customerId}
+  </select>
   <insert id="enqueueDelivery">
     INSERT INTO refund_delivery(refund_id,attempt_no,deadline_at)
     SELECT id,attempt_no,DATE_ADD(CURRENT_TIMESTAMP(6),INTERVAL 10 MINUTE) FROM refund_request WHERE public_id=#{publicId}
     ON DUPLICATE KEY UPDATE attempt_no=VALUES(attempt_no),state='READY',lease_token=NULL,lease_until=NULL,
-      next_run_at=CURRENT_TIMESTAMP(6),next_publish_at=CURRENT_TIMESTAMP(6),deadline_at=VALUES(deadline_at),last_error=NULL,ticket_id=NULL
+      next_run_at=CURRENT_TIMESTAMP(6),next_publish_at=CURRENT_TIMESTAMP(6),deadline_at=VALUES(deadline_at),last_error=NULL
   </insert>
   <select id="findById" resultType="com.serviceflow.model.RefundModels$Refund">
     SELECT <include refid="columns"/> FROM refund_request r JOIN customer_order o ON o.id=r.order_id WHERE r.id=#{id}

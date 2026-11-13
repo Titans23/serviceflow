@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import RefundReview from '../components/RefundReview.vue'
 import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
@@ -78,7 +79,7 @@ async function select(id: string, useEntryHint = false) {
   messages.value = history
   input.value = ''
   action.value = null
-  const savedAction = [...history].reverse().find((message) => message.action)?.action
+  const savedAction = history.at(-1)?.action
   if (
     savedAction &&
     !recoveryStorageWarning.value &&
@@ -471,6 +472,7 @@ onMounted(() =>
           <el-card v-if="m.order" shadow="never"
             ><strong>订单 {{ m.order.orderNo }}</strong>
             <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p>
+            <RefundReview v-if="m.order.refundReview" :review="m.order.refundReview" />
             <router-link :to="{ path: '/orders', query: { orderNo: m.order.orderNo } }"
               >查看订单与退款进度</router-link
             ></el-card

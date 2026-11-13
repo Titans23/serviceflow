@@ -27,6 +27,14 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public void publishCustomerMessage(String publicId, String message) {
+        if (message == null || message.isBlank() || message.length() > 500)
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "顾客回复须为1到500字");
+        if (mapper.publishCustomerMessage(publicId, message.trim()) != 1)
+            throw new ResponseStatusException(NOT_FOUND, "工单不存在");
+    }
+
+    @Override
     public TicketModels.TicketView create(long customerId, String sessionId, String subject, String description) {
         String id = UUID.randomUUID().toString();
         mapper.insert(id, customerId, sessionId, null, subject, description);

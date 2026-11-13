@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TicketMapper {
+    int publishCustomerMessage(@Param("publicId") String publicId, @Param("message") String message);
+
     int insert(
             @Param("publicId") String publicId,
             @Param("customerId") long customerId,

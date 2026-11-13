@@ -87,8 +87,7 @@ public class RefundDeliveryService {
             return;
         }
         var owner = tasks.owner(refund.id());
-        String key = UUID.nameUUIDFromBytes(("refund-review:" + refund.publicId()).getBytes(StandardCharsets.UTF_8))
-                .toString();
+        String key = RefundDeliveryModels.reviewActionId(refund.publicId());
         var ticket = tickets.createFromAction(
                 key,
                 owner.customerId(),

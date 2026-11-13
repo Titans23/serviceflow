@@ -193,6 +193,51 @@ class OrderConversationTest {
         verify(actions, never()).prepare(any(), any());
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(
+            strings = {
+                "不用取消，帮我查物流",
+                "取消了吗",
+                "取消了没",
+                "是否已经取消",
+                "不用帮我取消",
+                "不想取消",
+                "先不取消",
+                "查看取消进度",
+                "能不能取消",
+                "怎么取消",
+                "如果取消会怎么样",
+                "只查退款状态",
+                "取消成功了吗"
+            })
+    void readOnlyRequestsNeverCreateActionsEvenWhenPlannerSaysCancel(String query) {
+        assertThat(run(state(FIRST + " " + query)).answer()).contains(FIRST);
+        active.set(FIRST);
+        plan(new AiGateway.OrderPlan(
+                AiGateway.OrderTool.READ_CURRENT, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
+        assertThat(run(state(query)).answer()).contains(FIRST);
+        verify(actions, never()).prepare(any(), any());
+    }
+
+    @Test
+    void withdrawingCancellationClearsCandidateIntentBeforeLaterSelection() {
+        pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST), summary(SECOND)), false, true));
+        plan(new AiGateway.OrderPlan(
+                AiGateway.OrderTool.ASK_USER, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
+        run(state("不用取消，先查状态"));
+        assertThat(pending.get().cancellation()).isFalse();
+        run(state("第二笔"));
+        verify(actions, never()).prepare(any(), any());
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"请取消", "帮我取消这笔订单", "这个商品不要了"})
+    void explicitRequestsStillRequireConfirmation(String query) {
+        assertThat(run(state(query + " " + FIRST)).answer()).contains("二次确认");
+        verify(actions).prepare(any(), any());
+        verify(orders, never()).cancel(anyString(), anyLong(), anyString());
+    }
+
     private void plan(AiGateway.OrderPlan plan) {
         when(ai.planOrder(anyString(), anyString(), anyBoolean(), anyList(), anyBoolean()))
                 .thenReturn(plan);
@@ -225,6 +270,7 @@ class OrderConversationTest {
                 List.of(new OrderModels.Item("SKU", "无线耳机", 1, BigDecimal.valueOf(299))),
                 new OrderModels.Payment("PAID", "NONE", null, null),
                 List.of(),
+                null,
                 null);
     }
 }

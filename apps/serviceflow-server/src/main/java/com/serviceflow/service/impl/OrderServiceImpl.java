@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import com.serviceflow.mapper.OrderMapper;
 import com.serviceflow.mapper.RefundMapper;
 import com.serviceflow.model.OrderModels;
+import com.serviceflow.model.RefundDeliveryModels;
 import com.serviceflow.service.OrderService;
 import java.time.ZoneId;
 import java.util.List;
@@ -109,7 +110,11 @@ public class OrderServiceImpl implements OrderService {
                 mapper.items(order.id()),
                 mapper.payment(order.id()),
                 mapper.shipment(order.id()),
-                refund == null ? null : refund.view());
+                refund == null ? null : refund.view(),
+                refund == null
+                        ? null
+                        : refunds.review(
+                                refund.id(), RefundDeliveryModels.reviewActionId(refund.publicId()), customerId));
     }
 
     // 取消订单、发起退款、记录操作结果必须作为一个整体提交；方法抛出运行时异常时一起回滚。

@@ -119,6 +119,13 @@ def main():
 
     until(lambda: rabbit("/queues/%2F/serviceflow.refund.deliver").get("consumers") == 2)
     check("two real RabbitMQ consumers are active", True)
+    inquiry_session = client.request("POST", "/chat/sessions", {"title": "Read-only intent"}, "customer")["body"]["publicId"]
+    for query in ("不用取消，帮我查物流", "取消了吗", "只查退款状态", "能不能取消"):
+        reply = client.request("POST", "/chat/sessions/" + inquiry_session + "/messages/stream",
+            {"message": fixture["cases"]["normal"]["orderNo"] + " " + query, "clientRequestId": str(uuid.uuid4())}, "customer")
+        check("read-only intent has no confirmation card: " + query, "action_required" not in reply["events"])
+    check("read-only inquiry persists no action or refund", sql("SELECT COUNT(*) FROM chat_action WHERE session_public_id="
+          + sql_string(inquiry_session) + ";") == "0" and state("normal")["refunds"] == 0)
     action = pending("normal", "SUCCESS")
     confirm(action)
     task = state("normal")["refundKey"]
@@ -165,10 +172,25 @@ def main():
     progress = client.request("POST", "/chat/sessions/" + fixture["cases"]["manual"]["sessionId"] + "/messages/stream",
         {"message": "它的退款进度呢", "clientRequestId": str(uuid.uuid4())}, "customer")
     check("Agent reads the actual manual-review ticket", state("manual")["ticketId"] in progress["answer"])
+    ticket_id = state("manual")["ticketId"]
+    check("customer cannot publish ticket messages", client.request("PUT", "/admin/tickets/" + ticket_id + "/customer-message",
+        {"message": "forbidden"}, "customer")["status"] == 403)
+    check("admin publishes customer-visible progress", client.request("PUT", "/admin/tickets/" + ticket_id + "/customer-message",
+        {"message": "正在核验原退款，请关注本工单"}, "admin")["status"] == 204)
+    fresh = client.request("POST", "/chat/sessions", {"title": "New refund inquiry"}, "customer")["body"]["publicId"]
+    number = fixture["cases"]["manual"]["orderNo"]
+    inquiry = client.request("POST", "/chat/sessions/" + fresh + "/messages/stream",
+        {"message": "查询退款工单进度 " + number, "clientRequestId": str(uuid.uuid4())}, "customer")
+    check("new session reads the same ticket and public progress", inquiry["events"]["order"]["refundReview"]["publicId"] == ticket_id
+          and "正在核验原退款" in inquiry["answer"] and "action_required" not in inquiry["events"])
     check("customer cannot resume channel work", client.request("POST", "/admin/refunds/" + action + "/reconcile", {}, "customer")["status"] == 403)
     channel("/control/" + action, {"mode": "SUCCESS"})
     check("admin resumes read-first reconciliation", client.request("POST", "/admin/refunds/" + action + "/reconcile", {}, "admin")["status"] == 204)
     success("manual", action)
+    completed = client.request("POST", "/chat/sessions/" + fresh + "/messages/stream",
+        {"message": "退款工单结果 " + number, "clientRequestId": str(uuid.uuid4())}, "customer")
+    check("same ticket exposes verified final outcome", completed["events"]["order"]["refundReview"]["publicId"] == ticket_id
+          and "退款已完成" in completed["answer"])
 
     # Broker is unavailable when the cancellation transaction commits; the durable task survives process death.
     action = pending("outbox-restart", "SUCCESS")

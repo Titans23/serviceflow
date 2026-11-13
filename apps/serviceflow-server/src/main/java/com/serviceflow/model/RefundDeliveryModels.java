@@ -1,10 +1,17 @@
 package com.serviceflow.model;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.UUID;
 
 public final class RefundDeliveryModels {
     private RefundDeliveryModels() {}
+
+    public static String reviewActionId(String refundId) {
+        return UUID.nameUUIDFromBytes(("refund-review:" + refundId).getBytes(StandardCharsets.UTF_8))
+                .toString();
+    }
 
     public record Task(
             long refundId,

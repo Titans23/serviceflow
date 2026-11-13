@@ -3,12 +3,20 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { api } from '../api/client'
+import RefundReview from '../components/RefundReview.vue'
 
 type Order = {
   orderNo: string
   status: string
   totalAmount: number
   createdAt: string
+  refundReview?: {
+    publicId: string
+    status: string
+    progress: string
+    customerMessage: string | null
+    updatedAt: string
+  } | null
   items: { sku: string; productName: string; quantity: number; unitPrice: number }[]
   payment: { status: string; refundStatus: string } | null
   refund: {
@@ -232,6 +240,7 @@ onMounted(async () => {
         <p v-if="order.refund.failureReason">处理说明：{{ order.refund.failureReason }}</p>
         <p>更新时间：{{ order.refund.updatedAt }}</p>
       </template>
+      <RefundReview v-if="order.refundReview" :review="order.refundReview" />
       <router-link :to="{ path: '/chat', query: { orderNo: order.orderNo } }">
         <el-button type="primary">向客服咨询此订单</el-button>
       </router-link>
