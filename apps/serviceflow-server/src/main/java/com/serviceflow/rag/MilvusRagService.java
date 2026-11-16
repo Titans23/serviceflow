@@ -1,6 +1,7 @@
 package com.serviceflow.rag;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.config.ServiceFlowProperties;
 import com.serviceflow.mapper.KnowledgeMapper;
@@ -460,17 +461,14 @@ public class MilvusRagService implements RagService {
         return vector;
     }
 
-    private void ensureCloudReady() {
-        if (collectionReady.compareAndSet(false, true)) {
-            try {
-                if (!collectionExists()) {
-                    createCollection();
-                }
-            } catch (RuntimeException exception) {
-                collectionReady.set(false);
-                throw exception;
-            }
+    private synchronized void ensureCloudReady() {
+        if (collectionReady.get()) return;
+        if (!collectionExists()) {
+            createCollection();
+        } else {
+            verifyChineseAnalyzer();
         }
+        collectionReady.set(true);
     }
 
     private boolean collectionExists() {
@@ -485,6 +483,36 @@ public class MilvusRagService implements RagService {
         return response.path("data").path("has").asBoolean(false);
     }
 
+    private void verifyChineseAnalyzer() {
+        JsonNode response = milvusClient
+                .post()
+                .uri("/v2/vectordb/collections/describe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("collectionName", properties.rag().collectionName()))
+                .retrieve()
+                .body(JsonNode.class);
+        requireMilvusSuccess(response, "describe collection");
+        for (JsonNode field : response.path("data").path("fields")) {
+            if (!"content".equals(field.path("name").asText())) continue;
+            for (JsonNode parameter : field.path("params")) {
+                if (!"analyzer_params".equals(parameter.path("key").asText())) continue;
+                try {
+                    if ("chinese"
+                            .equals(new ObjectMapper()
+                                    .readTree(parameter.path("value").asText())
+                                    .path("type")
+                                    .asText())) return;
+                } catch (java.io.IOException exception) {
+                    throw new IllegalStateException("Cannot read content analyzer configuration", exception);
+                }
+            }
+        }
+        // Existing sparse vectors cannot be fixed by changing the Java schema declaration.
+        // Keep the old collection intact; an operator must explicitly rebuild the corpus.
+        throw new IllegalStateException("Milvus content analyzer is not chinese; select a new MILVUS_COLLECTION_NAME "
+                + "and re-ingest documents before switching traffic. Existing collection was not changed.");
+    }
+
     private void createCollection() {
         try {
             List<Map<String, Object>> fields = List.of(
@@ -496,7 +524,17 @@ public class MilvusRagService implements RagService {
                     field("title", "VarChar", false, Map.of("max_length", 512)),
                     field("category", "VarChar", false, Map.of("max_length", 128)),
                     field("source", "VarChar", false, Map.of("max_length", 512)),
-                    field("content", "VarChar", false, Map.of("max_length", 8192, "enable_analyzer", true)),
+                    field(
+                            "content",
+                            "VarChar",
+                            false,
+                            Map.of(
+                                    "max_length",
+                                    8192,
+                                    "enable_analyzer",
+                                    true,
+                                    "analyzer_params",
+                                    Map.of("type", "chinese"))),
                     field(
                             "denseVector",
                             "FloatVector",

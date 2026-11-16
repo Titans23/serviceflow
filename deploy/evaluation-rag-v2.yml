@@ -1,0 +1,24 @@
+# New project/volumes preserve the v1 corpus and request counter.
+# docker compose --env-file .env -p serviceflow-rag-v2 -f deploy/evaluation-rag-v2.yml ...
+services:
+  server:
+    extends: {file: evaluation-rag-benchmark.yml, service: server}
+    image: serviceflow-rag-v2-server:latest
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_rag_v2
+    volumes:
+      - ../quality/evaluation/reports/rag-v2-traces:/data/evaluation/rag-traces
+  mysql:
+    extends: {file: evaluation-rag-benchmark.yml, service: mysql}
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_rag_v2
+  redis:
+    extends: {file: evaluation-rag-benchmark.yml, service: redis}
+  rabbitmq:
+    extends: {file: evaluation-rag-benchmark.yml, service: rabbitmq}
+  milvus:
+    extends: {file: evaluation-rag-benchmark.yml, service: milvus}
+volumes:
+  eval-mysql:
+  eval-uploads:
+  eval-milvus:

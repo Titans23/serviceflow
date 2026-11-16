@@ -12,6 +12,7 @@ import uuid
 
 from eval_v2 import Client, ROOT, read_json, write_json
 from prepare_rag_benchmark import DESTINATION, validate
+from prepare_rag_benchmark_v2 import validate as validate_v2
 from rag_metrics import evidence_key, score, summarize
 
 MODES = ('BM25', 'DENSE', 'HYBRID', 'HYBRID_RERANK', 'HYBRID_RERANK_REWRITE')
@@ -70,14 +71,19 @@ def capture_chunks(ids, container):
 
 
 def write_report(output, rows, cases, metadata, stop):
-    result = {'metadata': metadata, 'stopReason': stop, 'summary': summarize(rows, cases, MODES),
+    modes = metadata['modes']
+    result = {'metadata': metadata, 'stopReason': stop, 'summary': summarize(rows, cases, modes),
               'perCategory': {category: summarize([r for r in rows if r['caseId'] in
                   {c['id'] for c in cases if c['category'] == category}],
-                  [c for c in cases if c['category'] == category], MODES)
+                  [c for c in cases if c['category'] == category], modes)
                   for category in sorted({c['category'] for c in cases})},
+              'perSplit': {split: summarize([r for r in rows if r['caseId'] in
+                  {c['id'] for c in cases if c['split'] == split}],
+                  [c for c in cases if c['split'] == split], modes)
+                  for split in sorted({c['split'] for c in cases})},
               'limitations': ['Section-level relevance on fixed-product knowledge QA; not whole-agent routing.',
                   'Known regression and project-authored challenges, no independent human-labelled holdout.',
-                  'Answer pass is exact source-fact coverage, selected-fact relevance and abstention.',
+                  'Answer grading follows the frozen label version; v2 permits explicitly labelled optional facts.',
                   'One measured attempt per case/configuration, balanced order, concurrency one; P95 is not a production SLA.',
                   'Failures/unattempted questions remain in planned quality denominators; latency lists their coverage separately.',
                   'No invented provider token usage or billing; provider request counts are recorded separately.']}
@@ -90,17 +96,26 @@ def write_report(output, rows, cases, metadata, stop):
         lines.append(f"| {mode} | {row['valid']}/{row['planned']} | {fmt(row['recallAt5'])} | "
                      f"{fmt(row['mrrAt5'])} | {fmt(row['answerPassRate'])} | {fmt(row['p95Ms'])} |")
     lines += ['', 'Stop reason: ' + str(stop), '', *['- ' + note for note in result['limitations']]]
+    for split, summaries in result['perSplit'].items():
+        lines += ['', '## ' + split, '', '| Mode | Valid/planned | Recall@5 | MRR@5 | Answer pass | P95 ms |',
+                  '|---|---:|---:|---:|---:|---:|']
+        for mode, row in summaries.items():
+            lines.append(f"| {mode} | {row['valid']}/{row['planned']} | {fmt(row['recallAt5'])} | "
+                         f"{fmt(row['mrrAt5'])} | {fmt(row['answerPassRate'])} | {fmt(row['p95Ms'])} |")
     (output / 'report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
 def run(args):
     if not args.allow_cloud:
-        raise SystemExit('Explicit authorization required: public corpus, 104 x 5 + 5 warmups; shared <=2400 provider requests including ingestion')
+        raise SystemExit('Explicit authorization required for the selected frozen suite; shared <=2400 provider requests including ingestion')
     suite = read_json(args.suite)
-    inventory = validate(suite)
+    validator = validate_v2 if suite['version']=='rag-retrieval-v2' else validate
+    inventory = validator(suite)
     cases = suite['cases']
-    if len(cases) != 104:
+    expected_cases = {'rag-retrieval-v1':104, 'rag-retrieval-v2':144}
+    if suite['version'] not in expected_cases or len(cases) != expected_cases[suite['version']]:
         raise ValueError('Recalculate and approve scope when the dataset changes')
+    modes = tuple(suite.get('modes', MODES))
     status = subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True)
     if status.strip():
         raise ValueError('Commit the reviewed implementation and frozen labels before the real run')
@@ -120,16 +135,17 @@ def run(args):
                 'datasetSha256': hashlib.sha256(args.suite.read_bytes()).hexdigest(),
                 'sourceHashes': suite['sourceHashes'], 'inventory': inventory, 'runtime': before,
                 'providerRequestLimit': 2400, 'concurrency': 1, 'seed': 20261116,
-                'warmupRequests': 5, 'measuredRequests': 520, 'startedAt': datetime.now().astimezone().isoformat()}
+                'modes': modes, 'suiteVersion': suite['version'],
+                'warmupRequests': len(modes), 'measuredRequests': len(cases)*len(modes), 'startedAt': datetime.now().astimezone().isoformat()}
     metadata['environment'] = {'dockerVersion': engine['ServerVersion'], 'cpus': engine['NCPU'],
                                'memoryBytes': engine['MemTotal'], 'runningContainers': engine['ContainersRunning']}
     write_json(output / 'metadata.json', metadata)
     rows, stop = [], None
     shuffled = list(cases)
     random.Random(metadata['seed']).shuffle(shuffled)
-    schedule = [(cases[0], mode, True) for mode in MODES]
+    schedule = [(cases[0], mode, True) for mode in modes]
     for index, case in enumerate(shuffled):
-        order = MODES[index % 5:] + MODES[:index % 5]
+        order = modes[index % len(modes):] + modes[:index % len(modes)]
         schedule.extend((case, mode, False) for mode in order)
     print('OUTPUT', output, flush=True)
     for case, mode, warmup in schedule:
@@ -150,7 +166,7 @@ def run(args):
             body = response['body']
             trace_id = body['result']['diagnosticId']
             uuid.UUID(trace_id)
-            trace = read_json(TRACE_DIR / (trace_id + '.raw.json'))
+            trace = read_json(args.trace_dir / (trace_id + '.raw.json'))
             candidates = {entry['chunkId'] for stage in trace['stages']
                           for entry in stage['input'] + stage['output']}
             chunks = capture_chunks(candidates, args.milvus)
@@ -179,7 +195,7 @@ def run(args):
     if not stop:
         if client.request('GET', '/admin/knowledge-documents', principal='admin')['body'] != documents:
             stop = 'Knowledge versions changed'
-        validate(suite)
+        validator(suite)
         if hashlib.sha256(args.suite.read_bytes()).hexdigest() != metadata['datasetSha256']:
             stop = 'Dataset changed during execution'
         metadata['runtimeAfter'] = provider_state(args.server)
@@ -195,4 +211,5 @@ if __name__ == '__main__':
     parser.add_argument('--allow-cloud', action='store_true')
     parser.add_argument('--server', default='serviceflow-rag-bench-server-1')
     parser.add_argument('--milvus', default='serviceflow-rag-bench-milvus-1')
+    parser.add_argument('--trace-dir', type=Path, default=TRACE_DIR)
     run(parser.parse_args())

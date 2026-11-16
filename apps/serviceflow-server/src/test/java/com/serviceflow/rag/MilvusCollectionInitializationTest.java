@@ -70,7 +70,12 @@ class MilvusCollectionInitializationTest {
         service.deleteVersion(7);
         service.deleteVersion(8);
 
-        http.verify(1, postRequestedFor(urlEqualTo("/v2/vectordb/collections/create")));
+        http.verify(
+                1,
+                postRequestedFor(urlEqualTo("/v2/vectordb/collections/create"))
+                        .withRequestBody(
+                                matchingJsonPath(
+                                        "$.schema.fields[?(@.fieldName == 'content' && @.elementTypeParams.analyzer_params.type == 'chinese')]")));
         http.verify(
                 1,
                 postRequestedFor(urlEqualTo("/v2/vectordb/entities/delete"))
@@ -86,9 +91,29 @@ class MilvusCollectionInitializationTest {
     void existingCollectionDoesNotGetRecreated() {
         http.stubFor(post(urlEqualTo("/v2/vectordb/collections/has"))
                 .willReturn(okJson("{\"code\":0,\"data\":{\"has\":true}}")));
+        http.stubFor(post(urlEqualTo("/v2/vectordb/collections/describe"))
+                .willReturn(okJson("{\"code\":0,\"data\":{\"fields\":[{\"name\":\"content\",\"params\":["
+                        + "{\"key\":\"analyzer_params\",\"value\":\"{\\\"type\\\":\\\"chinese\\\"}\"}]}]}}")));
         http.stubFor(post(urlEqualTo("/v2/vectordb/entities/delete")).willReturn(okJson("{\"code\":0}")));
         service.deleteVersion(9);
         http.verify(0, postRequestedFor(urlEqualTo("/v2/vectordb/collections/create")));
+    }
+
+    @Test
+    void oldStandardCollectionIsPreservedAndRequiresExplicitReindexing() {
+        http.stubFor(post(urlEqualTo("/v2/vectordb/collections/has"))
+                .willReturn(okJson("{\"code\":0,\"data\":{\"has\":true}}")));
+        http.stubFor(post(urlEqualTo("/v2/vectordb/collections/describe"))
+                .willReturn(okJson("{\"code\":0,\"data\":{\"fields\":[{\"name\":\"content\",\"params\":[]}]}}")));
+        assertThatThrownBy(() -> service.deleteVersion(9))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("new MILVUS_COLLECTION_NAME");
+        assertThatThrownBy(() -> service.deleteVersion(9)).isInstanceOf(IllegalStateException.class);
+        http.verify(2, postRequestedFor(urlEqualTo("/v2/vectordb/collections/describe")));
+        http.verify(0, postRequestedFor(urlEqualTo("/v2/vectordb/collections/create")));
+        http.verify(0, postRequestedFor(urlEqualTo("/v2/vectordb/entities/delete")));
+        http.verify(0, postRequestedFor(urlEqualTo("/v2/vectordb/collections/drop")));
+        verifyNoInteractions(embedding);
     }
 
     @Test

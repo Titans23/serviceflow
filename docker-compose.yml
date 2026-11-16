@@ -11,6 +11,7 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER:-serviceflow}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-serviceflow}
       MILVUS_REST_URL: http://milvus:19530
+      MILVUS_COLLECTION_NAME: ${MILVUS_COLLECTION_NAME:-serviceflow_chunks}
       UPLOAD_DIR: /data/uploads
       JWT_SECRET: ${JWT_SECRET:-development-secret-must-be-replaced-32}
       SERVICEFLOW_AI_MODE: ${SERVICEFLOW_AI_MODE:-demo}

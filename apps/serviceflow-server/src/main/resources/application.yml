@@ -103,7 +103,7 @@ serviceflow:
     milvus-rest-url: ${MILVUS_REST_URL:http://localhost:19530}
     connect-timeout: ${MILVUS_CONNECT_TIMEOUT:3s}
     read-timeout: ${MILVUS_READ_TIMEOUT:10s}
-    collection-name: serviceflow_chunks
+    collection-name: ${MILVUS_COLLECTION_NAME:serviceflow_chunks}
     embedding-dimension: 1024
   outbox:
     poll-interval: 2s
