@@ -1,0 +1,1897 @@
+{
+  "version": "rag-retrieval-v1",
+  "package": "data/retail-v1.1",
+  "origin": "project-authored; AI-assisted and source-checked; no independent human annotation",
+  "scope": "fixed-product knowledge QA; reused development/holdout are now known regression",
+  "labelUnit": "source-file + section, deduplicating SKU copies; not chunk-level relevance",
+  "answerMetric": "exact source-paragraph fact coverage and selected-evidence relevance; not general semantic accuracy",
+  "sourceHashes": {
+    "manifest.json": "6bf7acbe9f5d1c732776b9f70c09bf5b1c3f423af11e3204f46ea7ab995ed8cd",
+    "catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+    "knowledge/pura80.md": "efdeccf781cef77f1d8ce8d5adedfd011b8671c4af49e57e1af7f808594abe51",
+    "knowledge/pura80-pro.md": "2f20879d53ebefd64068606a6d2245a29b424bd85d612a6bd1d0f3d4a5215638",
+    "knowledge/mate70.md": "0b8379981323a0dbd20f5cd43626a1adc8fee5aeb0108259ba9d560e082c29b1",
+    "knowledge/mate70-pro-plus.md": "397a56ac3bb1b7f7df4518c9356fd58e369f72e4d494f600fc83e41fd1ab5769",
+    "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+    "knowledge/nova14-pro.md": "efefadd08c5c36aee3a12df30948ba60b21313d70bd11d7f4c4bd589f1e5fb5a",
+    "knowledge/nova14-ultra.md": "064afa490c53c1a0af67db81425585f996f162b22c9db95f5932573cb85429d7",
+    "knowledge/mate-x6.md": "566713ad91665ff48c8a813d525a32f2dfbd75045b450b1fca858a97e42098a0",
+    "knowledge/freebuds6.md": "e84db13907d9c48f728d068a5e37140a3b0305c000c465825d4ce047928dabb1",
+    "knowledge/freeclip.md": "81736940e6371fa46076aa7426d684503e2ff92609a19fc0e5810c628ae235c8",
+    "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+  },
+  "cases": [
+    {
+      "id": "knowledge-pura80-screen",
+      "question": "我在看 Pura 80，想确认屏幕尺寸如何理解，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#screen"
+      ],
+      "requiredFacts": [
+        "6.6 英寸为标称值，圆角显示区按矩形测量的对角线约 6.58 英寸，可视面积更小。"
+      ],
+      "referenceAnswer": "6.6 英寸为标称值，圆角显示区按矩形测量的对角线约 6.58 英寸，可视面积更小。"
+    },
+    {
+      "id": "knowledge-pura80-storage",
+      "question": "我在看 Pura 80，想确认实际可用空间，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#storage"
+      ],
+      "requiredFacts": [
+        "系统与软件占用部分空间，可用容量小于标称容量；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "系统与软件占用部分空间，可用容量小于标称容量；不支持存储卡扩展。"
+    },
+    {
+      "id": "knowledge-pura80-wired",
+      "question": "我在看 Pura 80，想确认有线快充配套，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#wired"
+      ],
+      "requiredFacts": [
+        "达到最高 66 W 需配套 66 W 或以上华为超级快充套装，功率会随使用条件变化。"
+      ],
+      "referenceAnswer": "达到最高 66 W 需配套 66 W 或以上华为超级快充套装，功率会随使用条件变化。"
+    },
+    {
+      "id": "knowledge-pura80-wireless",
+      "question": "我在看 Pura 80，想确认无线快充配套，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#wireless"
+      ],
+      "requiredFacts": [
+        "最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。"
+      ],
+      "referenceAnswer": "最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。"
+    },
+    {
+      "id": "knowledge-pura80-water",
+      "question": "我在看 Pura 80，想确认抗水实验边界，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#water"
+      ],
+      "requiredFacts": [
+        "IP68 的实验使用 2 米深静止清水，持续 30 分钟，温差不超过 5 摄氏度；不能当作水下使用承诺。"
+      ],
+      "referenceAnswer": "IP68 的实验使用 2 米深静止清水，持续 30 分钟，温差不超过 5 摄氏度；不能当作水下使用承诺。"
+    },
+    {
+      "id": "knowledge-pura80-wet",
+      "question": "我在看 Pura 80，想确认进水与充电，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#wet"
+      ],
+      "requiredFacts": [
+        "防护会随磨损下降；潮湿时不要充电，浸液损坏不在该页面所述保修范围。"
+      ],
+      "referenceAnswer": "防护会随磨损下降；潮湿时不要充电，浸液损坏不在该页面所述保修范围。"
+    },
+    {
+      "id": "knowledge-pura80-system",
+      "question": "我在看 Pura 80，想确认出厂系统与升级，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#system"
+      ],
+      "requiredFacts": [
+        "规格列 HarmonyOS 5.1，可通过 HOTA 升级至 6 或以上，部分批次出厂预装新版；需区分当前设备版本与出厂规格。"
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，可通过 HOTA 升级至 6 或以上，部分批次出厂预装新版；需区分当前设备版本与出厂规格。"
+    },
+    {
+      "id": "knowledge-pura80-video",
+      "question": "我在看 Pura 80，想确认慢动作录制，请说明适用条件。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#video"
+      ],
+      "requiredFacts": [
+        "1080p 480fps 慢动作采用 AI 插帧，不代表所有拍摄模式均以该帧率输出。"
+      ],
+      "referenceAnswer": "1080p 480fps 慢动作采用 AI 插帧，不代表所有拍摄模式均以该帧率输出。"
+    },
+    {
+      "id": "knowledge-pura80-pro-screen",
+      "question": "我在看 Pura 80 Pro，想确认圆角显示区域，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#screen"
+      ],
+      "requiredFacts": [
+        "6.8 英寸为标称值，标准矩形对角线约 6.78 英寸，实际显示区域较小。"
+      ],
+      "referenceAnswer": "6.8 英寸为标称值，标准矩形对角线约 6.78 英寸，实际显示区域较小。"
+    },
+    {
+      "id": "knowledge-pura80-pro-storage",
+      "question": "我在看 Pura 80 Pro，想确认存储扩展限制，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#storage"
+      ],
+      "requiredFacts": [
+        "机身容量包括系统占用，不能把标称容量理解为全部可用；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "机身容量包括系统占用，不能把标称容量理解为全部可用；不支持存储卡扩展。"
+    },
+    {
+      "id": "knowledge-pura80-pro-wired",
+      "question": "我在看 Pura 80 Pro，想确认百瓦快充条件，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#wired"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线超级快充要求 100 W 华为快充套装，功率不是持续恒定值。"
+      ],
+      "referenceAnswer": "最高 100 W 有线超级快充要求 100 W 华为快充套装，功率不是持续恒定值。"
+    },
+    {
+      "id": "knowledge-pura80-pro-wireless",
+      "question": "我在看 Pura 80 Pro，想确认无线充电附件，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#wireless"
+      ],
+      "requiredFacts": [
+        "最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。"
+      ],
+      "referenceAnswer": "最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。"
+    },
+    {
+      "id": "knowledge-pura80-pro-water",
+      "question": "我在看 Pura 80 Pro，想确认抗水测试条件，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#water"
+      ],
+      "requiredFacts": [
+        "IP68 以 2 米静止清水、30 分钟及不超过 5 摄氏度温差测试；IP69 是另一套喷水实验。"
+      ],
+      "referenceAnswer": "IP68 以 2 米静止清水、30 分钟及不超过 5 摄氏度温差测试；IP69 是另一套喷水实验。"
+    },
+    {
+      "id": "knowledge-pura80-pro-wet",
+      "question": "我在看 Pura 80 Pro，想确认防护使用限制，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#wet"
+      ],
+      "requiredFacts": [
+        "潮湿时禁止充电，防护会随磨损衰减；浸液损坏不在页面所述保修范围。"
+      ],
+      "referenceAnswer": "潮湿时禁止充电，防护会随磨损衰减；浸液损坏不在页面所述保修范围。"
+    },
+    {
+      "id": "knowledge-pura80-pro-system",
+      "question": "我在看 Pura 80 Pro，想确认系统版本差异，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#system"
+      ],
+      "requiredFacts": [
+        "规格列 HarmonyOS 5.1，支持升级到 6 或以上，部分批次可能出厂搭载新版。"
+      ],
+      "referenceAnswer": "规格列 HarmonyOS 5.1，支持升级到 6 或以上，部分批次可能出厂搭载新版。"
+    },
+    {
+      "id": "knowledge-pura80-pro-video",
+      "question": "我在看 Pura 80 Pro，想确认高帧率来源，请说明适用条件。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#video"
+      ],
+      "requiredFacts": [
+        "1080p 960fps 慢动作基于 AI 插帧；不同模式的像素和视频输出可能不同。"
+      ],
+      "referenceAnswer": "1080p 960fps 慢动作基于 AI 插帧；不同模式的像素和视频输出可能不同。"
+    },
+    {
+      "id": "knowledge-mate70-screen",
+      "question": "我在看 Mate 70，想确认屏幕测量，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#screen"
+      ],
+      "requiredFacts": [
+        "6.7 英寸按标准矩形对角线测量，圆角使实际可视区域更小。"
+      ],
+      "referenceAnswer": "6.7 英寸按标准矩形对角线测量，圆角使实际可视区域更小。"
+    },
+    {
+      "id": "knowledge-mate70-storage",
+      "question": "我在看 Mate 70，想确认可用容量与扩展，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#storage"
+      ],
+      "requiredFacts": [
+        "机身容量含系统占用，实际可用空间更少；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "机身容量含系统占用，实际可用空间更少；不支持存储卡扩展。"
+    },
+    {
+      "id": "knowledge-mate70-wired",
+      "question": "我在看 Mate 70，想确认有线快充条件，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#wired"
+      ],
+      "requiredFacts": [
+        "最高 66 W 有线超级快充需要 66 W 或以上华为快充套装，实际功率随场景改变。"
+      ],
+      "referenceAnswer": "最高 66 W 有线超级快充需要 66 W 或以上华为快充套装，实际功率随场景改变。"
+    },
+    {
+      "id": "knowledge-mate70-wireless",
+      "question": "我在看 Mate 70，想确认无线快充条件，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#wireless"
+      ],
+      "requiredFacts": [
+        "最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。"
+      ],
+      "referenceAnswer": "最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。"
+    },
+    {
+      "id": "knowledge-mate70-water",
+      "question": "我在看 Mate 70，想确认实验水深，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#water"
+      ],
+      "requiredFacts": [
+        "IP68 实验条件为 4 米静止清水、30 分钟、温差不超过 5 摄氏度，不能替代实际使用限制。"
+      ],
+      "referenceAnswer": "IP68 实验条件为 4 米静止清水、30 分钟、温差不超过 5 摄氏度，不能替代实际使用限制。"
+    },
+    {
+      "id": "knowledge-mate70-wet",
+      "question": "我在看 Mate 70，想确认磨损与浸液，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#wet"
+      ],
+      "requiredFacts": [
+        "防护并非永久；潮湿时不要充电，浸液损坏不在页面列明的保修范围。"
+      ],
+      "referenceAnswer": "防护并非永久；潮湿时不要充电，浸液损坏不在页面列明的保修范围。"
+    },
+    {
+      "id": "knowledge-mate70-system",
+      "question": "我在看 Mate 70，想确认先锋版系统，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#system"
+      ],
+      "requiredFacts": [
+        "普通版本列 HarmonyOS 4.3，鸿蒙 NEXT 先锋版出厂为 5.0；4.3 设备支持升级至 5.0。"
+      ],
+      "referenceAnswer": "普通版本列 HarmonyOS 4.3，鸿蒙 NEXT 先锋版出厂为 5.0；4.3 设备支持升级至 5.0。"
+    },
+    {
+      "id": "knowledge-mate70-camera",
+      "question": "我在看 Mate 70，想确认相机输出范围，请说明适用条件。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#camera"
+      ],
+      "requiredFacts": [
+        "标称照片像素和最高 4K 录像并不代表所有拍摄模式输出相同，需看当前模式。"
+      ],
+      "referenceAnswer": "标称照片像素和最高 4K 录像并不代表所有拍摄模式输出相同，需看当前模式。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-screen",
+      "question": "我在看 Mate 70 Pro+，想确认屏幕可视区域，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#screen"
+      ],
+      "requiredFacts": [
+        "6.9 英寸按矩形对角线计量，圆角区域不能按完整矩形面积使用。"
+      ],
+      "referenceAnswer": "6.9 英寸按矩形对角线计量，圆角区域不能按完整矩形面积使用。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-storage",
+      "question": "我在看 Mate 70 Pro+，想确认存储卡限制，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#storage"
+      ],
+      "requiredFacts": [
+        "512 GB 和 1 TB 是标称容量；系统占用空间，且不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "512 GB 和 1 TB 是标称容量；系统占用空间，且不支持存储卡扩展。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-system",
+      "question": "我在看 Mate 70 Pro+，想确认系统版本选择，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#system"
+      ],
+      "requiredFacts": [
+        "普通版本和鸿蒙 NEXT 先锋版分别列 4.3 与 5.0，不能仅凭商品名确定设备当前系统。"
+      ],
+      "referenceAnswer": "普通版本和鸿蒙 NEXT 先锋版分别列 4.3 与 5.0，不能仅凭商品名确定设备当前系统。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-upgrade",
+      "question": "我在看 Mate 70 Pro+，想确认系统升级说明，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#upgrade"
+      ],
+      "requiredFacts": [
+        "官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。"
+      ],
+      "referenceAnswer": "官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-weight",
+      "question": "我在看 Mate 70 Pro+，想确认重量误差，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#weight"
+      ],
+      "requiredFacts": [
+        "约 226 g 包含电池；配置、制造和测量方式会带来差异。"
+      ],
+      "referenceAnswer": "约 226 g 包含电池；配置、制造和测量方式会带来差异。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-battery",
+      "question": "我在看 Mate 70 Pro+，想确认电池容量口径，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#battery"
+      ],
+      "requiredFacts": [
+        "5700 mAh 是典型值，5600 mAh 为额定值；电池为内置不可拆卸。"
+      ],
+      "referenceAnswer": "5700 mAh 是典型值，5600 mAh 为额定值；电池为内置不可拆卸。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-photo",
+      "question": "我在看 Mate 70 Pro+，想确认拍照模式差异，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#photo"
+      ],
+      "requiredFacts": [
+        "标称相机像素是能力说明，不同拍摄模式的实际输出可能不同。"
+      ],
+      "referenceAnswer": "标称相机像素是能力说明，不同拍摄模式的实际输出可能不同。"
+    },
+    {
+      "id": "knowledge-mate70-pro-plus-zoom",
+      "question": "我在看 Mate 70 Pro+，想确认变焦口径，请说明适用条件。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#zoom"
+      ],
+      "requiredFacts": [
+        "4 倍光学变焦是近似标称值；100 倍数字变焦与光学变焦是不同口径。"
+      ],
+      "referenceAnswer": "4 倍光学变焦是近似标称值；100 倍数字变焦与光学变焦是不同口径。"
+    },
+    {
+      "id": "knowledge-nova14-screen",
+      "question": "我在看 nova 14，想确认圆角屏幕，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#screen"
+      ],
+      "requiredFacts": [
+        "6.7 英寸按矩形对角线测量，实际可视区域因圆角而减小。"
+      ],
+      "referenceAnswer": "6.7 英寸按矩形对角线测量，实际可视区域因圆角而减小。"
+    },
+    {
+      "id": "knowledge-nova14-storage",
+      "question": "我在看 nova 14，想确认容量使用，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#storage"
+      ],
+      "requiredFacts": [
+        "256 GB 与 512 GB 是机身标称容量，软件占用使可用容量较少。"
+      ],
+      "referenceAnswer": "256 GB 与 512 GB 是机身标称容量，软件占用使可用容量较少。"
+    },
+    {
+      "id": "knowledge-nova14-wired",
+      "question": "我在看 nova 14，想确认快充配套要求，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#wired"
+      ],
+      "requiredFacts": [
+        "100 W 是最大有线充电能力，需匹配华为 100 W 超级快充套装，实际功率随场景变化。"
+      ],
+      "referenceAnswer": "100 W 是最大有线充电能力，需匹配华为 100 W 超级快充套装，实际功率随场景变化。"
+    },
+    {
+      "id": "knowledge-nova14-usb",
+      "question": "我在看 nova 14，想确认接口速率，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#usb"
+      ],
+      "requiredFacts": [
+        "虽然接口为 USB Type-C，数据协议仍为 USB 2.0，不能仅由接口形状推断速率。"
+      ],
+      "referenceAnswer": "虽然接口为 USB Type-C，数据协议仍为 USB 2.0，不能仅由接口形状推断速率。"
+    },
+    {
+      "id": "knowledge-nova14-headset",
+      "question": "我在看 nova 14，想确认有线耳机兼容，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#headset"
+      ],
+      "requiredFacts": [
+        "Type-C 口支持数字耳机，其他耳机需搭配对应数字音频转换器。"
+      ],
+      "referenceAnswer": "Type-C 口支持数字耳机，其他耳机需搭配对应数字音频转换器。"
+    },
+    {
+      "id": "knowledge-nova14-wifi",
+      "question": "我在看 nova 14，想确认无线网络速度，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#wifi"
+      ],
+      "requiredFacts": [
+        "需要相应路由器支持；协议的理论峰值不是现场实测速率。"
+      ],
+      "referenceAnswer": "需要相应路由器支持；协议的理论峰值不是现场实测速率。"
+    },
+    {
+      "id": "knowledge-nova14-battery",
+      "question": "我在看 nova 14，想确认电池口径，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#battery"
+      ],
+      "requiredFacts": [
+        "典型容量为 5500 mAh，额定容量为 5400 mAh，电池内置不可拆卸。"
+      ],
+      "referenceAnswer": "典型容量为 5500 mAh，额定容量为 5400 mAh，电池内置不可拆卸。"
+    },
+    {
+      "id": "knowledge-nova14-nfc",
+      "question": "我在看 nova 14，想确认SIM 支付卡槽，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#nfc"
+      ],
+      "requiredFacts": [
+        "SIM 卡支付使用的 SIM 卡需放入 SIM1 卡槽。"
+      ],
+      "referenceAnswer": "SIM 卡支付使用的 SIM 卡需放入 SIM1 卡槽。"
+    },
+    {
+      "id": "knowledge-nova14-pro-screen",
+      "question": "我在看 nova 14 Pro，想确认屏幕面积口径，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#screen"
+      ],
+      "requiredFacts": [
+        "6.78 英寸为矩形对角线尺寸，圆角使可视区域略小。"
+      ],
+      "referenceAnswer": "6.78 英寸为矩形对角线尺寸，圆角使可视区域略小。"
+    },
+    {
+      "id": "knowledge-nova14-pro-storage",
+      "question": "我在看 nova 14 Pro，想确认可用存储空间，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#storage"
+      ],
+      "requiredFacts": [
+        "机身提供 256 GB、512 GB、1 TB 规格，实际可用空间扣除系统及软件占用。"
+      ],
+      "referenceAnswer": "机身提供 256 GB、512 GB、1 TB 规格，实际可用空间扣除系统及软件占用。"
+    },
+    {
+      "id": "knowledge-nova14-pro-wired",
+      "question": "我在看 nova 14 Pro，想确认快充附件，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#wired"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线快充需要华为 100 W 超级快充套装。"
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需要华为 100 W 超级快充套装。"
+    },
+    {
+      "id": "knowledge-nova14-pro-power",
+      "question": "我在看 nova 14 Pro，想确认实际充电功率，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#power"
+      ],
+      "requiredFacts": [
+        "最高功率不是持续功率，充电会随不同使用场景调整。"
+      ],
+      "referenceAnswer": "最高功率不是持续功率，充电会随不同使用场景调整。"
+    },
+    {
+      "id": "knowledge-nova14-pro-weight",
+      "question": "我在看 nova 14 Pro，想确认不同版本重量，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#weight"
+      ],
+      "requiredFacts": [
+        "普通版约 207 g，昆仑版约 204 g；不能把其中一个重量套用到全部版本。"
+      ],
+      "referenceAnswer": "普通版约 207 g，昆仑版约 204 g；不能把其中一个重量套用到全部版本。"
+    },
+    {
+      "id": "knowledge-nova14-pro-battery",
+      "question": "我在看 nova 14 Pro，想确认电池容量差异，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#battery"
+      ],
+      "requiredFacts": [
+        "典型容量 5500 mAh，额定容量 5400 mAh；电池内置不可拆卸。"
+      ],
+      "referenceAnswer": "典型容量 5500 mAh，额定容量 5400 mAh；电池内置不可拆卸。"
+    },
+    {
+      "id": "knowledge-nova14-pro-selfie",
+      "question": "我在看 nova 14 Pro，想确认前置变焦口径，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#selfie"
+      ],
+      "requiredFacts": [
+        "前置支持 2 倍光学变焦与 5 倍数字变焦，两种数值不能等同。"
+      ],
+      "referenceAnswer": "前置支持 2 倍光学变焦与 5 倍数字变焦，两种数值不能等同。"
+    },
+    {
+      "id": "knowledge-nova14-pro-camera",
+      "question": "我在看 nova 14 Pro，想确认照片输出，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#camera"
+      ],
+      "requiredFacts": [
+        "拍摄模式不同，输出像素和视频规格也可能不同。"
+      ],
+      "referenceAnswer": "拍摄模式不同，输出像素和视频规格也可能不同。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-screen",
+      "question": "我在看 nova 14 Ultra，想确认圆角可视面积，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#screen"
+      ],
+      "requiredFacts": [
+        "标称 6.81 英寸按矩形测量，实际显示区域略小。"
+      ],
+      "referenceAnswer": "标称 6.81 英寸按矩形测量，实际显示区域略小。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-storage",
+      "question": "我在看 nova 14 Ultra，想确认存储口径，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#storage"
+      ],
+      "requiredFacts": [
+        "256 GB、512 GB、1 TB 为标称规格，系统与软件占用后可用空间较少。"
+      ],
+      "referenceAnswer": "256 GB、512 GB、1 TB 为标称规格，系统与软件占用后可用空间较少。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-wired",
+      "question": "我在看 nova 14 Ultra，想确认百瓦充电条件，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#wired"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线快充需配套华为 100 W 超级快充套装，功率会动态调整。"
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需配套华为 100 W 超级快充套装，功率会动态调整。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-usb",
+      "question": "我在看 nova 14 Ultra，想确认Type-C 不等于高速 USB，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#usb"
+      ],
+      "requiredFacts": [
+        "该机的数据接口为 Type-C，规格注明 USB 2.0。"
+      ],
+      "referenceAnswer": "该机的数据接口为 Type-C，规格注明 USB 2.0。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-headset",
+      "question": "我在看 nova 14 Ultra，想确认耳机转接，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#headset"
+      ],
+      "requiredFacts": [
+        "Type-C 口适配数字耳机；其他耳机需使用相应数字音频转换器。"
+      ],
+      "referenceAnswer": "Type-C 口适配数字耳机；其他耳机需使用相应数字音频转换器。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-wifi",
+      "question": "我在看 nova 14 Ultra，想确认路由器与网速，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#wifi"
+      ],
+      "requiredFacts": [
+        "无线协议需要配套路由器支持；理论峰值不代表实际网络速度。"
+      ],
+      "referenceAnswer": "无线协议需要配套路由器支持；理论峰值不代表实际网络速度。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-battery",
+      "question": "我在看 nova 14 Ultra，想确认容量与拆卸，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#battery"
+      ],
+      "requiredFacts": [
+        "5500 mAh 为典型容量，5400 mAh 为额定容量，电池不可自行拆卸。"
+      ],
+      "referenceAnswer": "5500 mAh 为典型容量，5400 mAh 为额定容量，电池不可自行拆卸。"
+    },
+    {
+      "id": "knowledge-nova14-ultra-nfc",
+      "question": "我在看 nova 14 Ultra，想确认支付卡槽条件，请说明适用条件。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#nfc"
+      ],
+      "requiredFacts": [
+        "使用 SIM 卡支付时，应将相关 SIM 卡放在 SIM1 卡槽。"
+      ],
+      "referenceAnswer": "使用 SIM 卡支付时，应将相关 SIM 卡放在 SIM1 卡槽。"
+    },
+    {
+      "id": "knowledge-mate-x6-screen",
+      "question": "我在看 Mate X6，想确认内外屏区别，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#screen"
+      ],
+      "requiredFacts": [
+        "展开内屏为 7.93 英寸，折叠外屏为 6.45 英寸，均以矩形对角线计量。"
+      ],
+      "referenceAnswer": "展开内屏为 7.93 英寸，折叠外屏为 6.45 英寸，均以矩形对角线计量。"
+    },
+    {
+      "id": "knowledge-mate-x6-storage",
+      "question": "我在看 Mate X6，想确认标准版与典藏版，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#storage"
+      ],
+      "requiredFacts": [
+        "标准版为 12 GB RAM 配 256/512 GB；典藏版为 16 GB RAM 配 512 GB/1 TB，均不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "标准版为 12 GB RAM 配 256/512 GB；典藏版为 16 GB RAM 配 512 GB/1 TB，均不支持存储卡扩展。"
+    },
+    {
+      "id": "knowledge-mate-x6-battery",
+      "question": "我在看 Mate X6，想确认电池版本差异，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#battery"
+      ],
+      "requiredFacts": [
+        "标准版典型电池为 5110 mAh，典藏版为 5200 mAh，不能混用。"
+      ],
+      "referenceAnswer": "标准版典型电池为 5110 mAh，典藏版为 5200 mAh，不能混用。"
+    },
+    {
+      "id": "knowledge-mate-x6-wired",
+      "question": "我在看 Mate X6，想确认快充条件，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#wired"
+      ],
+      "requiredFacts": [
+        "最高 66 W 有线与 50 W 无线快充都需要相应华为配套设备，实际功率会变化。"
+      ],
+      "referenceAnswer": "最高 66 W 有线与 50 W 无线快充都需要相应华为配套设备，实际功率会变化。"
+    },
+    {
+      "id": "knowledge-mate-x6-water",
+      "question": "我在看 Mate X6，想确认IPX8 的边界，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#water"
+      ],
+      "requiredFacts": [
+        "IPX8 实验使用 2 米静止清水、30 分钟和不超过 5 摄氏度温差；潮湿时不要充电。"
+      ],
+      "referenceAnswer": "IPX8 实验使用 2 米静止清水、30 分钟和不超过 5 摄氏度温差；潮湿时不要充电。"
+    },
+    {
+      "id": "knowledge-mate-x6-usb",
+      "question": "我在看 Mate X6，想确认线材与数据速率，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#usb"
+      ],
+      "requiredFacts": [
+        "USB 3.1 GEN1 需要支持该协议的数据线；标配线只支持 USB 2.0。"
+      ],
+      "referenceAnswer": "USB 3.1 GEN1 需要支持该协议的数据线；标配线只支持 USB 2.0。"
+    },
+    {
+      "id": "knowledge-mate-x6-satellite",
+      "question": "我在看 Mate X6，想确认卫星能力按版本，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#satellite"
+      ],
+      "requiredFacts": [
+        "标准版列北斗卫星消息，典藏版另有天通卫星通信，运营商业务开通条件需另行满足。"
+      ],
+      "referenceAnswer": "标准版列北斗卫星消息，典藏版另有天通卫星通信，运营商业务开通条件需另行满足。"
+    },
+    {
+      "id": "knowledge-mate-x6-activation",
+      "question": "我在看 Mate X6，想确认北斗使用条件，请说明适用条件。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#activation"
+      ],
+      "requiredFacts": [
+        "首次使用需要地面网络激活，使用时要空旷无遮蔽，适用地区为中国大陆、不含港澳台。"
+      ],
+      "referenceAnswer": "首次使用需要地面网络激活，使用时要空旷无遮蔽，适用地区为中国大陆、不含港澳台。"
+    },
+    {
+      "id": "knowledge-freebuds6-volume",
+      "question": "我在看 FreeBuds 6，想确认调节音量，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#volume"
+      ],
+      "requiredFacts": [
+        "耳机上滑或下滑可调整音量。"
+      ],
+      "referenceAnswer": "耳机上滑或下滑可调整音量。"
+    },
+    {
+      "id": "knowledge-freebuds6-charging",
+      "question": "我在看 FreeBuds 6，想确认充电方式，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#charging"
+      ],
+      "requiredFacts": [
+        "充电盒支持 USB Type-C 有线和无线充电，不能把无线充电视为耳机本体直接充电。"
+      ],
+      "referenceAnswer": "充电盒支持 USB Type-C 有线和无线充电，不能把无线充电视为耳机本体直接充电。"
+    },
+    {
+      "id": "knowledge-freebuds6-time",
+      "question": "我在看 FreeBuds 6，想确认充电时长口径，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#time"
+      ],
+      "requiredFacts": [
+        "仅充电盒有线约 45 分钟，无线约 150 分钟；盒内耳机充电约 25 分钟。"
+      ],
+      "referenceAnswer": "仅充电盒有线约 45 分钟，无线约 150 分钟；盒内耳机充电约 25 分钟。"
+    },
+    {
+      "id": "knowledge-freebuds6-battery",
+      "question": "我在看 FreeBuds 6，想确认续航条件，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#battery"
+      ],
+      "requiredFacts": [
+        "标称续航受音量、音源、干扰和功能开关影响；实验音乐测试使用 50% 音量等特定条件。"
+      ],
+      "referenceAnswer": "标称续航受音量、音源、干扰和功能开关影响；实验音乐测试使用 50% 音量等特定条件。"
+    },
+    {
+      "id": "knowledge-freebuds6-popup",
+      "question": "我在看 FreeBuds 6，想确认弹窗的系统要求，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#popup"
+      ],
+      "requiredFacts": [
+        "靠近发现弹窗要求适配的华为手机或平板，EMUI 10.0 以上或 HarmonyOS 2.0 以上。"
+      ],
+      "referenceAnswer": "靠近发现弹窗要求适配的华为手机或平板，EMUI 10.0 以上或 HarmonyOS 2.0 以上。"
+    },
+    {
+      "id": "knowledge-freebuds6-multi",
+      "question": "我在看 FreeBuds 6，想确认多设备连接条件，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#multi"
+      ],
+      "requiredFacts": [
+        "多设备连接需要适配 HarmonyOS 3.0 或以上的华为手机或平板。"
+      ],
+      "referenceAnswer": "多设备连接需要适配 HarmonyOS 3.0 或以上的华为手机或平板。"
+    },
+    {
+      "id": "knowledge-freebuds6-water",
+      "question": "我在看 FreeBuds 6，想确认耳机与盒子防护不同，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#water"
+      ],
+      "requiredFacts": [
+        "IP54 仅适用于耳机机身，充电盒不支持此等级；潮湿时不要充电。"
+      ],
+      "referenceAnswer": "IP54 仅适用于耳机机身，充电盒不支持此等级；潮湿时不要充电。"
+    },
+    {
+      "id": "knowledge-freebuds6-latency",
+      "question": "我在看 FreeBuds 6，想确认低时延适配，请说明适用条件。",
+      "sku": "HUAWEI-FREEBUDS-6",
+      "category": "single_evidence",
+      "split": "known_development",
+      "sourceGroups": [
+        "freebuds6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freebuds6.md#latency"
+      ],
+      "requiredFacts": [
+        "约 90 ms 是实验室数据，需适配 EMUI 10.0 以上或 HarmonyOS 2.0 及以上的华为设备。"
+      ],
+      "referenceAnswer": "约 90 ms 是实验室数据，需适配 EMUI 10.0 以上或 HarmonyOS 2.0 及以上的华为设备。"
+    },
+    {
+      "id": "knowledge-freeclip-double",
+      "question": "我在看 FreeClip，想确认双击控制，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#double"
+      ],
+      "requiredFacts": [
+        "双击可播放或暂停音乐，也可接听或挂断电话。"
+      ],
+      "referenceAnswer": "双击可播放或暂停音乐，也可接听或挂断电话。"
+    },
+    {
+      "id": "knowledge-freeclip-triple",
+      "question": "我在看 FreeClip，想确认切歌控制，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#triple"
+      ],
+      "requiredFacts": [
+        "敲击三下可以切换下一首。"
+      ],
+      "referenceAnswer": "敲击三下可以切换下一首。"
+    },
+    {
+      "id": "knowledge-freeclip-gesture",
+      "question": "我在看 FreeClip，想确认不支持的手势，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#gesture"
+      ],
+      "requiredFacts": [
+        "规格列明不支持滑动和按捏控制，不应套用其他耳机的操作方法。"
+      ],
+      "referenceAnswer": "规格列明不支持滑动和按捏控制，不应套用其他耳机的操作方法。"
+    },
+    {
+      "id": "knowledge-freeclip-pair",
+      "question": "我在看 FreeClip，想确认进入配对，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#pair"
+      ],
+      "requiredFacts": [
+        "长按充电盒按键 2 秒可进入配对。"
+      ],
+      "referenceAnswer": "长按充电盒按键 2 秒可进入配对。"
+    },
+    {
+      "id": "knowledge-freeclip-reset",
+      "question": "我在看 FreeClip，想确认恢复出厂设置，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#reset"
+      ],
+      "requiredFacts": [
+        "长按充电盒按键 10 秒执行恢复出厂设置，不能与普通配对操作混淆。"
+      ],
+      "referenceAnswer": "长按充电盒按键 10 秒执行恢复出厂设置，不能与普通配对操作混淆。"
+    },
+    {
+      "id": "knowledge-freeclip-codec",
+      "question": "我在看 FreeClip，想确认音频编码支持，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#codec"
+      ],
+      "requiredFacts": [
+        "支持 SBC、AAC、L2HC；不支持 LHDC、LDAC 和 Apt-x。"
+      ],
+      "referenceAnswer": "支持 SBC、AAC、L2HC；不支持 LHDC、LDAC 和 Apt-x。"
+    },
+    {
+      "id": "knowledge-freeclip-l2hc",
+      "question": "我在看 FreeClip，想确认L2HC 使用条件，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#l2hc"
+      ],
+      "requiredFacts": [
+        "需要部分适配的华为手机或平板，并使用 HarmonyOS 3 或以上。"
+      ],
+      "referenceAnswer": "需要部分适配的华为手机或平板，并使用 HarmonyOS 3 或以上。"
+    },
+    {
+      "id": "knowledge-freeclip-charging",
+      "question": "我在看 FreeClip，想确认充电接口，请说明适用条件。",
+      "sku": "HUAWEI-FREECLIP-1",
+      "category": "single_evidence",
+      "split": "known_holdout",
+      "sourceGroups": [
+        "freeclip"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "freeclip.md#charging"
+      ],
+      "requiredFacts": [
+        "充电盒支持 USB-C 有线充电，无线充电最高约 2 W。"
+      ],
+      "referenceAnswer": "充电盒支持 USB-C 有线充电，无线充电最高约 2 W。"
+    },
+    {
+      "id": "multi-pura80-0",
+      "question": "标称屏幕和存储容量都能完整用上吗？空间不够能不能插卡？",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#screen",
+        "pura80.md#storage"
+      ],
+      "requiredFacts": [
+        "6.6 英寸为标称值，圆角显示区按矩形测量的对角线约 6.58 英寸，可视面积更小。",
+        "系统与软件占用部分空间，可用容量小于标称容量；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "6.6 英寸为标称值，圆角显示区按矩形测量的对角线约 6.58 英寸，可视面积更小。\n系统与软件占用部分空间，可用容量小于标称容量；不支持存储卡扩展。"
+    },
+    {
+      "id": "multi-pura80-2",
+      "question": "插线和不插线充电各能到多少瓦？要买什么配套设备，功率会不会变？",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80.md#wired",
+        "pura80.md#wireless"
+      ],
+      "requiredFacts": [
+        "达到最高 66 W 需配套 66 W 或以上华为超级快充套装，功率会随使用条件变化。",
+        "最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。"
+      ],
+      "referenceAnswer": "达到最高 66 W 需配套 66 W 或以上华为超级快充套装，功率会随使用条件变化。\n最高 50 W 无线快充需另购相应华为无线充电器，并配套特定 66 W 或以上充电套装。"
+    },
+    {
+      "id": "unknown-pura80",
+      "question": "屏幕摔裂后换一块原厂屏幕具体要多少钱？没有维修报价就说明没有。",
+      "sku": "HUAWEI-PURA80-12-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-pura80-pro-0",
+      "question": "屏幕尺寸按什么算，整块矩形都能显示吗？标称容量能全用、能扩容吗？",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80-pro"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#screen",
+        "pura80-pro.md#storage"
+      ],
+      "requiredFacts": [
+        "6.8 英寸为标称值，标准矩形对角线约 6.78 英寸，实际显示区域较小。",
+        "机身容量包括系统占用，不能把标称容量理解为全部可用；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "6.8 英寸为标称值，标准矩形对角线约 6.78 英寸，实际显示区域较小。\n机身容量包括系统占用，不能把标称容量理解为全部可用；不支持存储卡扩展。"
+    },
+    {
+      "id": "multi-pura80-pro-2",
+      "question": "想用上最快的有线和无线充电，分别需要什么配件、最高多少瓦？",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80-pro"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "pura80-pro.md#wired",
+        "pura80-pro.md#wireless"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线超级快充要求 100 W 华为快充套装，功率不是持续恒定值。",
+        "最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。"
+      ],
+      "referenceAnswer": "最高 100 W 有线超级快充要求 100 W 华为快充套装，功率不是持续恒定值。\n最高 80 W 无线快充需另购对应 80 W 华为无线充电器及特定 100 W 或以上充电套装。"
+    },
+    {
+      "id": "unknown-pura80-pro",
+      "question": "官方给出的平均无故障运行时间是多少小时？资料没给就别估计。",
+      "sku": "HUAWEI-PURA80PRO-12-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "pura80-pro"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-mate70-0",
+      "question": "屏幕对角线是不是等于完整可视面积？容量是不是全部可用，还能插存储卡吗？",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#screen",
+        "mate70.md#storage"
+      ],
+      "requiredFacts": [
+        "6.7 英寸按标准矩形对角线测量，圆角使实际可视区域更小。",
+        "机身容量含系统占用，实际可用空间更少；不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "6.7 英寸按标准矩形对角线测量，圆角使实际可视区域更小。\n机身容量含系统占用，实际可用空间更少；不支持存储卡扩展。"
+    },
+    {
+      "id": "multi-mate70-2",
+      "question": "有线和无线两种充法的最高功率各是多少，用什么套装才能达到？",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70.md#wired",
+        "mate70.md#wireless"
+      ],
+      "requiredFacts": [
+        "最高 66 W 有线超级快充需要 66 W 或以上华为快充套装，实际功率随场景改变。",
+        "最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。"
+      ],
+      "referenceAnswer": "最高 66 W 有线超级快充需要 66 W 或以上华为快充套装，实际功率随场景改变。\n最高 50 W 需另购指定华为无线充电器，配合 66 W 或以上华为快充套装。"
+    },
+    {
+      "id": "unknown-mate70",
+      "question": "资料能否确认这台设备出厂固件的 SHA-256 校验值？请给出具体值。",
+      "sku": "HUAWEI-MATE70-12-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-mate70-pro-plus-0",
+      "question": "介绍一下屏幕的测量口径，以及机身容量、可用空间和存储卡支持情况。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70-pro-plus"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#screen",
+        "mate70-pro-plus.md#storage"
+      ],
+      "requiredFacts": [
+        "6.9 英寸按矩形对角线计量，圆角区域不能按完整矩形面积使用。",
+        "512 GB 和 1 TB 是标称容量；系统占用空间，且不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "6.9 英寸按矩形对角线计量，圆角区域不能按完整矩形面积使用。\n512 GB 和 1 TB 是标称容量；系统占用空间，且不支持存储卡扩展。"
+    },
+    {
+      "id": "multi-mate70-pro-plus-2",
+      "question": "同一个型号为什么会有不同系统版本？4.3 的设备能否升级到 5.0，怎么确认？",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70-pro-plus"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate70-pro-plus.md#system",
+        "mate70-pro-plus.md#upgrade"
+      ],
+      "requiredFacts": [
+        "普通版本和鸿蒙 NEXT 先锋版分别列 4.3 与 5.0，不能仅凭商品名确定设备当前系统。",
+        "官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。"
+      ],
+      "referenceAnswer": "普通版本和鸿蒙 NEXT 先锋版分别列 4.3 与 5.0，不能仅凭商品名确定设备当前系统。\n官方说明搭载 HarmonyOS 4.3 的设备支持升级至 5.0；需查看设备实际版本。"
+    },
+    {
+      "id": "unknown-mate70-pro-plus",
+      "question": "更新系统之后，官方保证能额外续航多少分钟？资料没有数值就明确说明。",
+      "sku": "HUAWEI-MATE70PLUS-16-512",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate70-pro-plus"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-nova14-0",
+      "question": "屏幕有多大、按什么口径测量？有哪些容量，系统会不会占用空间？",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#screen",
+        "nova14.md#storage"
+      ],
+      "requiredFacts": [
+        "6.7 英寸按矩形对角线测量，实际可视区域因圆角而减小。",
+        "256 GB 与 512 GB 是机身标称容量，软件占用使可用容量较少。"
+      ],
+      "referenceAnswer": "6.7 英寸按矩形对角线测量，实际可视区域因圆角而减小。\n256 GB 与 512 GB 是机身标称容量，软件占用使可用容量较少。"
+    },
+    {
+      "id": "multi-nova14-2",
+      "question": "这款机器的充电头要怎么配才能用上最高功率？Type-C 接口的数据协议是什么？",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14.md#wired",
+        "nova14.md#usb"
+      ],
+      "requiredFacts": [
+        "100 W 是最大有线充电能力，需匹配华为 100 W 超级快充套装，实际功率随场景变化。",
+        "虽然接口为 USB Type-C，数据协议仍为 USB 2.0，不能仅由接口形状推断速率。"
+      ],
+      "referenceAnswer": "100 W 是最大有线充电能力，需匹配华为 100 W 超级快充套装，实际功率随场景变化。\n虽然接口为 USB Type-C，数据协议仍为 USB 2.0，不能仅由接口形状推断速率。"
+    },
+    {
+      "id": "unknown-nova14",
+      "question": "用该手机拍摄 4K 视频满一小时，官方测试的平均机身温度是多少度？",
+      "sku": "HUAWEI-NOVA14-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-nova14-pro-0",
+      "question": "屏幕尺寸包括圆角吗？存储有哪些规格，实际空间是否与标称相同？",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-pro"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#screen",
+        "nova14-pro.md#storage"
+      ],
+      "requiredFacts": [
+        "6.78 英寸为矩形对角线尺寸，圆角使可视区域略小。",
+        "机身提供 256 GB、512 GB、1 TB 规格，实际可用空间扣除系统及软件占用。"
+      ],
+      "referenceAnswer": "6.78 英寸为矩形对角线尺寸，圆角使可视区域略小。\n机身提供 256 GB、512 GB、1 TB 规格，实际可用空间扣除系统及软件占用。"
+    },
+    {
+      "id": "multi-nova14-pro-2",
+      "question": "要用最高功率充电需要什么套装？充电全程都会保持这个功率吗？",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-pro"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-pro.md#wired",
+        "nova14-pro.md#power"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线快充需要华为 100 W 超级快充套装。",
+        "最高功率不是持续功率，充电会随不同使用场景调整。"
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需要华为 100 W 超级快充套装。\n最高功率不是持续功率，充电会随不同使用场景调整。"
+    },
+    {
+      "id": "unknown-nova14-pro",
+      "question": "电池完成 1200 次充放电后，官方保证剩余容量百分比是多少？",
+      "sku": "HUAWEI-NOVA14PRO-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-pro"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-nova14-ultra-0",
+      "question": "请说明屏幕尺寸及实际显示区域，以及存储规格与实际可用空间的区别。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-ultra"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#screen",
+        "nova14-ultra.md#storage"
+      ],
+      "requiredFacts": [
+        "标称 6.81 英寸按矩形测量，实际显示区域略小。",
+        "256 GB、512 GB、1 TB 为标称规格，系统与软件占用后可用空间较少。"
+      ],
+      "referenceAnswer": "标称 6.81 英寸按矩形测量，实际显示区域略小。\n256 GB、512 GB、1 TB 为标称规格，系统与软件占用后可用空间较少。"
+    },
+    {
+      "id": "multi-nova14-ultra-2",
+      "question": "用什么套装才能达到最高充电功率？Type-C 口传数据采用什么协议？",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-ultra"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "nova14-ultra.md#wired",
+        "nova14-ultra.md#usb"
+      ],
+      "requiredFacts": [
+        "最高 100 W 有线快充需配套华为 100 W 超级快充套装，功率会动态调整。",
+        "该机的数据接口为 Type-C，规格注明 USB 2.0。"
+      ],
+      "referenceAnswer": "最高 100 W 有线快充需配套华为 100 W 超级快充套装，功率会动态调整。\n该机的数据接口为 Type-C，规格注明 USB 2.0。"
+    },
+    {
+      "id": "unknown-nova14-ultra",
+      "question": "官方对 Wi-Fi 连续传输时的平均功耗给出了多少瓦？没有数据不要推算。",
+      "sku": "HUAWEI-NOVA14ULTRA-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "nova14-ultra"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    },
+    {
+      "id": "multi-mate-x6-0",
+      "question": "内外两块屏幕分别多大？标准版、典藏版的内存存储怎么配，能插卡吗？",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#screen",
+        "mate-x6.md#storage"
+      ],
+      "requiredFacts": [
+        "展开内屏为 7.93 英寸，折叠外屏为 6.45 英寸，均以矩形对角线计量。",
+        "标准版为 12 GB RAM 配 256/512 GB；典藏版为 16 GB RAM 配 512 GB/1 TB，均不支持存储卡扩展。"
+      ],
+      "referenceAnswer": "展开内屏为 7.93 英寸，折叠外屏为 6.45 英寸，均以矩形对角线计量。\n标准版为 12 GB RAM 配 256/512 GB；典藏版为 16 GB RAM 配 512 GB/1 TB，均不支持存储卡扩展。"
+    },
+    {
+      "id": "multi-mate-x6-2",
+      "question": "两个版本的电池容量一样吗？有线无线快充各能到多少瓦，需要哪些配套条件？",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "multi_evidence",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": true,
+      "goldEvidence": [
+        "mate-x6.md#battery",
+        "mate-x6.md#wired"
+      ],
+      "requiredFacts": [
+        "标准版典型电池为 5110 mAh，典藏版为 5200 mAh，不能混用。",
+        "最高 66 W 有线与 50 W 无线快充都需要相应华为配套设备，实际功率会变化。"
+      ],
+      "referenceAnswer": "标准版典型电池为 5110 mAh，典藏版为 5200 mAh，不能混用。\n最高 66 W 有线与 50 W 无线快充都需要相应华为配套设备，实际功率会变化。"
+    },
+    {
+      "id": "unknown-mate-x6",
+      "question": "折叠铰链的官方逐年故障率和统计样本量是多少？资料未给就明确说明。",
+      "sku": "HUAWEI-MATEX6-12-256",
+      "category": "unanswerable",
+      "split": "authored_challenge",
+      "sourceGroups": [
+        "mate-x6"
+      ],
+      "answerable": false,
+      "goldEvidence": [],
+      "requiredFacts": [],
+      "referenceAnswer": "现有资料未提供回答该问题所需的信息。"
+    }
+  ]
+}

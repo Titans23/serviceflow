@@ -214,6 +214,12 @@ class EvaluationProviderBudgetTest {
                         .run(application -> assertThat(application).hasFailed());
             }
             context("http://127.0.0.1:" + server.getAddress().getPort(), true)
+                    .withPropertyValues(
+                            "serviceflow.evaluation.ingestion-enabled=true",
+                            "spring.rabbitmq.listener.simple.auto-startup=true",
+                            "spring.rabbitmq.listener.direct.auto-startup=true")
+                    .run(application -> assertThat(application).hasNotFailed());
+            context("http://127.0.0.1:" + server.getAddress().getPort(), true)
                     .withPropertyValues("serviceflow.evaluation.provider-request-limit=" + limit)
                     .run(application -> {
                         assertThat(application).hasNotFailed();

@@ -1,0 +1,74 @@
+# Isolated RAG corpus and fixed-request-cap ablation. Start only after cloud-run approval.
+# docker compose --env-file .env -p serviceflow-rag-bench -f deploy/evaluation-rag-benchmark.yml ...
+services:
+  server:
+    extends: {file: evaluation-compose.yml, service: server}
+    image: serviceflow-rag-benchmark-server:latest
+    restart: "no"
+    mem_limit: 1g
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_rag_benchmark
+      SERVICEFLOW_AI_MODE: cloud
+      SERVICEFLOW_RAG_MODE: cloud
+      SERVICEFLOW_REFUND_SANDBOX_ENABLED: "false"
+      SERVICEFLOW_REFUND_DISPATCH_ENABLED: "false"
+      SERVICEFLOW_RAG_DIAGNOSTICS_DIR: /data/evaluation/rag-traces
+      SERVICEFLOW_EVALUATION_PROVIDER_BUDGET_ENABLED: "true"
+      SERVICEFLOW_EVALUATION_PROVIDER_REQUEST_LIMIT: "2400"
+      SERVICEFLOW_EVALUATION_INGESTION_ENABLED: "true"
+      SERVICEFLOW_EVALUATION_STOP_ON_PROVIDER_FAILURE: "true"
+      SERVICEFLOW_AI_HTTP1_ENABLED: "false"
+      JAVA_TOOL_OPTIONS: "-Djdk.httpclient.redirects.retrylimit=1"
+      SPRING_AI_RETRY_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_CHAT_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_EMBEDDING_MAX_ATTEMPTS: "1"
+      RESILIENCE4J_RETRY_INSTANCES_RERANKER_MAX_ATTEMPTS: "1"
+      SPRING_RABBITMQ_LISTENER_SIMPLE_AUTO_STARTUP: "true"
+      SPRING_RABBITMQ_LISTENER_DIRECT_AUTO_STARTUP: "true"
+      SPRING_AI_MODEL_CHAT: openai
+      SPRING_AI_MODEL_EMBEDDING: none
+      SPRING_AI_OPENAI_CHAT_OPTIONS_MAX_TOKENS: "1024"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Existing cloud evaluation credential required}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode}
+      OPENAI_MODEL: ${OPENAI_MODEL:-qwen-plus}
+      OPENAI_EMBEDDING_BASE_URL: ${OPENAI_EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      OPENAI_EMBEDDING_API_KEY: ${OPENAI_EMBEDDING_API_KEY:-${OPENAI_API_KEY}}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-v4}
+      OPENAI_RERANKER_BASE_URL: ${OPENAI_RERANKER_BASE_URL:-https://dashscope.aliyuncs.com/api/v1}
+      OPENAI_RERANKER_API_KEY: ${OPENAI_RERANKER_API_KEY:-${OPENAI_API_KEY}}
+      OPENAI_RERANKER_MODEL: ${OPENAI_RERANKER_MODEL:-qwen3-rerank}
+      MILVUS_REST_URL: http://milvus:19530
+    volumes:
+      - ../quality/evaluation/reports/rag-benchmark-traces:/data/evaluation/rag-traces
+    depends_on:
+      milvus: {condition: service_healthy}
+  mysql:
+    extends: {file: evaluation-compose.yml, service: mysql}
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_rag_benchmark
+  redis:
+    extends: {file: evaluation-compose.yml, service: redis}
+  rabbitmq:
+    extends: {file: evaluation-compose.yml, service: rabbitmq}
+  milvus:
+    image: milvusdb/milvus:v2.6.22
+    mem_limit: 2g
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_USE_EMBED: "true"
+      ETCD_DATA_DIR: /var/lib/milvus/etcd
+      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+      COMMON_STORAGETYPE: local
+      DEPLOY_MODE: STANDALONE
+    volumes:
+      - eval-milvus:/var/lib/milvus
+      - ./milvus/embed-etcd.yaml:/milvus/configs/embedEtcd.yaml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+volumes:
+  eval-mysql:
+  eval-uploads:
+  eval-milvus:

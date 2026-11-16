@@ -23,6 +23,18 @@ import org.springframework.web.client.RestClient;
 @Service
 public class MilvusRagService implements RagService {
 
+    public enum RetrievalMode {
+        BM25,
+        DENSE,
+        HYBRID,
+        HYBRID_RERANK,
+        HYBRID_RERANK_REWRITE;
+
+        boolean usesReranker() {
+            return this == HYBRID_RERANK || this == HYBRID_RERANK_REWRITE;
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(MilvusRagService.class);
     private static final int RETRIEVAL_LIMIT = 20;
     private static final int RERANK_LIMIT = 5;
@@ -65,6 +77,12 @@ public class MilvusRagService implements RagService {
     @CircuitBreaker(name = "milvus")
     @Bulkhead(name = "milvus", type = Bulkhead.Type.SEMAPHORE)
     public SearchResult search(String query, String documentType, List<Long> productIds) {
+        return search(query, documentType, productIds, RetrievalMode.HYBRID_RERANK_REWRITE);
+    }
+
+    /** Evaluation varies retrieval only; production keeps the full pipeline above. */
+    public SearchResult search(String query, String documentType, List<Long> productIds, RetrievalMode mode) {
+        Objects.requireNonNull(mode, "retrieval mode required");
         long started = System.nanoTime();
         if (isDemoMode()) {
             return demo(query, documentType, productIds);
@@ -83,10 +101,10 @@ public class MilvusRagService implements RagService {
             }
 
             EvaluationResult evaluated =
-                    runPass(query, query, documentType, productIds, activeVersions, "initial", trace);
+                    runPass(query, query, documentType, productIds, activeVersions, "initial", trace, mode);
             boolean firstPassDegraded = evaluated.degraded();
             // 首轮证据不足时只进行一次查询改写与重试，避免无限检索循环。
-            if (!evaluated.sufficient()) {
+            if (!evaluated.sufficient() && mode == RetrievalMode.HYBRID_RERANK_REWRITE) {
                 evaluated = evaluateRewrittenQuery(query, documentType, productIds, activeVersions, evaluated, trace);
             }
 
@@ -145,7 +163,15 @@ public class MilvusRagService implements RagService {
 
             // 使用改写后的问题完整重跑混合召回和重排，而不是只重新执行 Grader。
             // Retrieval may use a rewrite; sufficiency must always answer the original user's question.
-            return runPass(query, rewrittenQuery, documentType, productIds, activeVersions, "rewritten", trace);
+            return runPass(
+                    query,
+                    rewrittenQuery,
+                    documentType,
+                    productIds,
+                    activeVersions,
+                    "rewritten",
+                    trace,
+                    RetrievalMode.HYBRID_RERANK_REWRITE);
         } catch (Exception exception) {
             // 改写或第二轮检索失败时保留首轮证据，同时标记为不足且已降级。
             log.warn("Query rewrite failed; keeping original evidence", exception);
@@ -169,11 +195,12 @@ public class MilvusRagService implements RagService {
             List<Long> productIds,
             List<Long> versions,
             String pass,
-            RagTraceRecorder.Trace trace) {
+            RagTraceRecorder.Trace trace,
+            RetrievalMode mode) {
         long started = System.nanoTime();
         List<Evidence> candidates;
         try {
-            candidates = hybrid(retrievalQuery, documentType, productIds, versions);
+            candidates = retrieve(retrievalQuery, documentType, productIds, versions, mode);
         } catch (RuntimeException error) {
             trace.stage(
                     pass + ".retrieval",
@@ -191,12 +218,16 @@ public class MilvusRagService implements RagService {
                 retrievalQuery,
                 List.of(),
                 candidates,
-                candidates.isEmpty() ? "empty_recall" : "hybrid_rrf",
+                candidates.isEmpty()
+                        ? "empty_recall"
+                        : mode == RetrievalMode.BM25 ? "bm25" : mode == RetrievalMode.DENSE ? "dense" : "hybrid_rrf",
                 false,
                 false,
                 started);
         started = System.nanoTime();
-        RankedEvidence ranked = rerank(retrievalQuery, candidates);
+        RankedEvidence ranked = mode.usesReranker()
+                ? rerank(retrievalQuery, candidates)
+                : new RankedEvidence(candidates.stream().limit(RERANK_LIMIT).toList(), false);
         trace.stage(
                 pass + ".rerank",
                 retrievalQuery,
@@ -204,7 +235,9 @@ public class MilvusRagService implements RagService {
                 ranked.evidence(),
                 candidates.isEmpty()
                         ? "skipped_empty"
-                        : ranked.degraded() ? "reranker_error_rrf_top5" : "reranker_top5",
+                        : !mode.usesReranker()
+                                ? "retrieval_top5"
+                                : ranked.degraded() ? "reranker_error_rrf_top5" : "reranker_top5",
                 false,
                 ranked.degraded(),
                 started);
@@ -231,9 +264,10 @@ public class MilvusRagService implements RagService {
                 result.evidence(), result.sufficient(), result.degraded(), trace.finish(result, started));
     }
 
-    private List<Evidence> hybrid(String query, String documentType, List<Long> productIds, List<Long> activeVersions) {
+    private List<Evidence> retrieve(
+            String query, String documentType, List<Long> productIds, List<Long> activeVersions, RetrievalMode mode) {
         // 稠密检索：先把用户问题 Embedding 成向量，用于匹配语义相近的切片。
-        float[] vector = embed(query);
+        float[] vector = mode == RetrievalMode.BM25 ? null : embed(query);
         String filter = "documentType == \"" + documentType + "\" and documentVersionId in " + activeVersions;
         if (productIds != null && !productIds.isEmpty()) {
             filter += " and productId in " + productIds;
@@ -241,7 +275,7 @@ public class MilvusRagService implements RagService {
 
         Map<String, Object> denseSearch = Map.of(
                 "data",
-                List.of(vector),
+                mode == RetrievalMode.BM25 ? List.of() : List.of(vector),
                 "annsField",
                 "denseVector",
                 "limit",
@@ -254,16 +288,22 @@ public class MilvusRagService implements RagService {
         Map<String, Object> sparseSearch =
                 Map.of("data", List.of(query), "annsField", "sparseVector", "limit", RETRIEVAL_LIMIT, "filter", filter);
         // 一次 hybrid_search 同时执行两路检索，再通过 RRF 融合两份候选排名。
-        Map<String, Object> request = Map.of(
+        Map<String, Object> request = new LinkedHashMap<>(Map.of(
                 "collectionName", properties.rag().collectionName(),
                 "search", List.of(denseSearch, sparseSearch),
                 "rerank", Map.of("strategy", "rrf", "params", Map.of("k", 60)),
                 "limit", RETRIEVAL_LIMIT,
-                "outputFields", List.of("chunkId", "title", "source", "content"));
+                "outputFields", List.of("chunkId", "title", "source", "content")));
+        boolean single = mode == RetrievalMode.BM25 || mode == RetrievalMode.DENSE;
+        if (single) {
+            request.remove("search");
+            request.remove("rerank");
+            request.putAll(mode == RetrievalMode.BM25 ? sparseSearch : denseSearch);
+        }
 
         JsonNode response = milvusClient
                 .post()
-                .uri("/v2/vectordb/entities/hybrid_search")
+                .uri(single ? "/v2/vectordb/entities/search" : "/v2/vectordb/entities/hybrid_search")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()

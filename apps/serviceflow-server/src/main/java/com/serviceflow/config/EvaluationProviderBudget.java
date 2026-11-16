@@ -55,10 +55,12 @@ public final class EvaluationProviderBudget {
         }) {
             require(environment.getProperty(property, Integer.class, 0) == 1, property + " must be 1");
         }
+        boolean ingestion = environment.getProperty("serviceflow.evaluation.ingestion-enabled", Boolean.class, false);
         for (String type : new String[] {"simple", "direct"}) {
             require(
-                    "false".equals(environment.getProperty("spring.rabbitmq.listener." + type + ".auto-startup")),
-                    "background ingestion listeners must be disabled");
+                    Boolean.toString(ingestion)
+                            .equals(environment.getProperty("spring.rabbitmq.listener." + type + ".auto-startup")),
+                    "ingestion listener state must match the explicit evaluation ingestion scope");
         }
         require(
                 !environment.getProperty("serviceflow.ai.http1-enabled", Boolean.class, false),

@@ -99,6 +99,64 @@ class RagRewriteDiagnosticsTest {
     }
 
     @Test
+    void bm25BaselineDoesNotUseEmbeddingRerankerOrRewrite() throws Exception {
+        var body = Map.of(
+                "code",
+                0,
+                "data",
+                List.of(Map.of(
+                        "chunkId",
+                        "fixture-brightness",
+                        "title",
+                        "fixture",
+                        "source",
+                        "iphone16-us.md",
+                        "content",
+                        "source paragraph",
+                        "distance",
+                        1)));
+        http.stubFor(post(urlEqualTo("/v2/vectordb/entities/search"))
+                .willReturn(okJson(new ObjectMapper().writeValueAsString(body))));
+        when(ai.evaluateEvidence(anyString(), anyList()))
+                .thenReturn(new AiGateway.EvidenceEvaluation(false, List.of("fixture-brightness")));
+        var result = rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L), MilvusRagService.RetrievalMode.BM25);
+        assertThat(result.evidence()).hasSize(1);
+        verifyNoInteractions(embedding, reranker);
+        verify(ai, never()).rewriteQuery(anyString());
+        http.verify(postRequestedFor(urlEqualTo("/v2/vectordb/entities/search"))
+                .withRequestBody(matchingJsonPath("$.annsField", equalTo("sparseVector")))
+                .withRequestBody(matchingJsonPath("$.filter", containing("documentVersionId in [25]"))));
+        assertThat(trace(result).path("stages").get(0).path("reason").asText()).isEqualTo("bm25");
+    }
+
+    @Test
+    void hybridBaselineKeepsFusedRankingWithoutRerankOrRewrite() throws Exception {
+        when(ai.evaluateEvidence(anyString(), anyList()))
+                .thenReturn(new AiGateway.EvidenceEvaluation(false, List.of("fixture-brightness")));
+        var result = rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L), MilvusRagService.RetrievalMode.HYBRID);
+        verify(embedding).embed(ORIGINAL);
+        verifyNoInteractions(reranker);
+        verify(ai, never()).rewriteQuery(anyString());
+        assertThat(trace(result).path("stages").get(1).path("reason").asText()).isEqualTo("retrieval_top5");
+    }
+
+    @Test
+    void denseBaselineUsesDenseSearchAndRerankVariantStopsBeforeRewrite() throws Exception {
+        http.stubFor(post(urlEqualTo("/v2/vectordb/entities/search")).willReturn(okJson("{\"code\":0,\"data\":[]}")));
+        var dense = rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L), MilvusRagService.RetrievalMode.DENSE);
+        assertThat(dense.evidence()).isEmpty();
+        verify(embedding).embed(ORIGINAL);
+        verifyNoInteractions(reranker);
+        http.verify(postRequestedFor(urlEqualTo("/v2/vectordb/entities/search"))
+                .withRequestBody(matchingJsonPath("$.annsField", equalTo("denseVector"))));
+        when(ai.evaluateEvidence(anyString(), anyList()))
+                .thenReturn(new AiGateway.EvidenceEvaluation(false, List.of("fixture-brightness")));
+        rag.search(ORIGINAL, "PRODUCT_MANUAL", List.of(29L), MilvusRagService.RetrievalMode.HYBRID_RERANK);
+        verify(reranker).rank(eq(ORIGINAL), anyList(), eq(5));
+        verify(ai, never()).rewriteQuery(anyString());
+    }
+
+    @Test
     void rewrittenRetrievalMustStillBeGradedAgainstOriginalUserQuestion() throws Exception {
         when(ai.rewriteQuery(ORIGINAL)).thenReturn(DRIFTED);
         when(ai.evaluateEvidence(anyString(), anyList()))

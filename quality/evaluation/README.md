@@ -1,5 +1,43 @@
 # ServiceFlow 评测基线
 
+## 五组真实 RAG 对照
+
+[rag-retrieval-v1.json](datasets/rag-retrieval-v1.json) 用于比较 `BM25`、`DENSE`、`HYBRID`（RRF k=60）、`HYBRID_RERANK` 和 `HYBRID_RERANK_REWRITE`。评测接口仅在隔离评测开关开启时注册，要求管理员身份；复用实际 Milvus 检索、证据判定、查询改写和答案组装代码。每题显式提供商品 ID，答案上下文不包含商品表里的规格，避免绕过检索直接回答。本实验不测路由、商品识别、多轮记忆或订单工具执行。
+
+数据基于 `data/retail-v1.1` 的 11 份公开资料摘要、88 个来源章节。80 题沿用已有知识问答，另外编写 16 道跨两个章节的问题和 8 道资料不足问题，共 104 题。多证据题组合屏幕与存储、有线与无线充电、系统版本与升级等事实；资料不足题覆盖维修报价、寿命、固件校验值、温度、功耗等缺失信息。这是项目内回归与挑战集，不能宣称独立人工标注或真实客服流量。旧 development/holdout 已经用于过调试，本次分别标为 known_development/known_holdout。问题、参考答案、必要事实、来源文件及章节标签在执行前冻结，并核验来源 SHA-256。`prepare_rag_benchmark.py` 的生成过程可复查，已有文件不会被自动覆盖。
+
+所有组使用相同商品和生效文档版本过滤、最多 20 个召回候选、最终 Top 5 及同一个证据判定器。最后两组启用重排，最后一组仅在证据不足时最多改写一次；并非每题都会改写。单商品只有约 8 个来源章节，候选空间较小，不能据此推断大规模知识库效果。
+
+| 指标 | 计算口径 |
+| --- | --- |
+| Recall@5 | Top 5 命中的不同必要章节数 / 标注必要章节数，再对 96 道可回答题宏平均；同一章节的 SKU 副本不重复得分 |
+| Hit@5、MRR@5 | 是否命中任一必要章节、首个正确章节排名倒数；只看前 5，未命中计 0 |
+| 答案通过率 | 必要来源段落全部选中、未混入无关文档段落且未错误拒答；资料不足题须返回不足且不选择文档事实 |
+| 事实覆盖、事实精确率、拒答 | 另行报告必要事实覆盖比例、所选事实相关比例、8 道无答案题正确拒答率和可回答题错误拒答率 |
+| P50 / P95 | 单并发下评测接口的客户端总耗时，包含检索、判定、回答和追踪写入；5 次预热不计入，成功请求与全部已尝试请求分开统计，使用 nearest-rank 分位数，不代表线上 `/chat` 的 P95 |
+
+检索指标读取证据判定前的真实候选排名。改写组使用最后一轮排名，同时保存首轮指标。答案通过率是项目现有“模型选事实编号、服务端输出原文”的契约检查，不是独立人工语义正确率，也不能写成通用幻觉率。没有答案的题不计入召回分母。执行失败和未执行题保留在计划质量分母中；中断报告只能称部分结果。
+
+离线检查：
+
+```powershell
+python -B scripts/evaluation/prepare_rag_benchmark.py
+python -B -m unittest discover -s scripts/evaluation/tests
+```
+
+云执行前需授权公开资料与调用范围：104 × 5 次正式问答、5 次预热，连同首次入库共用最多 2400 次供应商请求。使用已有 `qwen-plus`、`text-embedding-v4`、`qwen3-rerank` 配置；单次聊天输出限制 1024 token。请求数限制不是金额硬上限。供应商失败后停止，不自动重试，也不能通过重启服务重置计数继续跑。
+
+确认授权并提交冻结代码后执行：
+
+```powershell
+New-Item -ItemType Directory -Force quality/evaluation/reports/rag-benchmark-traces
+docker compose --env-file .env -p serviceflow-rag-bench -f deploy/evaluation-rag-benchmark.yml up -d --build
+python -u -B scripts/evaluation/import_retail.py --package data/retail-v1.1 --receipt quality/evaluation/reports/rag-benchmark-import.json --allow-cloud-ingestion --wait-seconds 1200
+python -u -B scripts/evaluation/rag_benchmark.py --allow-cloud
+```
+
+环境使用独立 MySQL 数据库、Milvus 卷和本机 18080 端口。正式运行以固定种子打乱题序，并轮换五组执行顺序。逐条原始证据、模型选择和计时写入被 Git 忽略的 `reports/rag-benchmark-*/attempts.raw.jsonl`；`summary.json`、`report.md` 保存总体与分题型指标、失败数、源码提交、资料哈希、镜像和模型配置。公开结果前仍需检查脱敏，不发布原始模型响应或凭据。
+
 当前基线是 [serviceflow-eval-v2.json](datasets/serviceflow-eval-v2.json)，配合 [retail-v1 数据包](../../data/retail-v1/README.md) 和 Python 标准库执行器。历史 `serviceflow-eval-200.json`、Smoke 集、PowerShell 执行器及旧报告保留用于回溯，不能与 v2 分数直接比较。
 
 ## 范围与分组
