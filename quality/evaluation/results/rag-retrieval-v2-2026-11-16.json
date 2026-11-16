@@ -1,0 +1,5429 @@
+{
+  "metadata": {
+    "sourceCommit": "8e1fbcec9b1fd23d5cd515ac34944713903f0215",
+    "datasetSha256": "ab87237733814a163aa223a1f25f5b32c7e3437fb4cfd2815a94461b0c1bef8b",
+    "sourceHashes": {
+      "manifest.json": "6bf7acbe9f5d1c732776b9f70c09bf5b1c3f423af11e3204f46ea7ab995ed8cd",
+      "catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+      "knowledge/pura80.md": "efdeccf781cef77f1d8ce8d5adedfd011b8671c4af49e57e1af7f808594abe51",
+      "knowledge/pura80-pro.md": "2f20879d53ebefd64068606a6d2245a29b424bd85d612a6bd1d0f3d4a5215638",
+      "knowledge/mate70.md": "0b8379981323a0dbd20f5cd43626a1adc8fee5aeb0108259ba9d560e082c29b1",
+      "knowledge/mate70-pro-plus.md": "397a56ac3bb1b7f7df4518c9356fd58e369f72e4d494f600fc83e41fd1ab5769",
+      "knowledge/nova14.md": "686501f8404d19097aabc09233e6ee28f5597880967d5bcac8b9914f779649e3",
+      "knowledge/nova14-pro.md": "efefadd08c5c36aee3a12df30948ba60b21313d70bd11d7f4c4bd589f1e5fb5a",
+      "knowledge/nova14-ultra.md": "064afa490c53c1a0af67db81425585f996f162b22c9db95f5932573cb85429d7",
+      "knowledge/mate-x6.md": "566713ad91665ff48c8a813d525a32f2dfbd75045b450b1fca858a97e42098a0",
+      "knowledge/freebuds6.md": "e84db13907d9c48f728d068a5e37140a3b0305c000c465825d4ce047928dabb1",
+      "knowledge/freeclip.md": "81736940e6371fa46076aa7426d684503e2ff92609a19fc0e5810c628ae235c8",
+      "knowledge/huawei-phone-warranty-v1.md": "586d9a681ea62314ffebecc1869e7dc9e733a76f3e746034627593c999c16c0f"
+    },
+    "inventory": {
+      "cases": 144,
+      "splits": {
+        "revised_regression": 104,
+        "frozen_question_holdout": 40
+      },
+      "categories": {
+        "single_evidence": 99,
+        "multi_evidence": 27,
+        "unanswerable": 18
+      },
+      "questionEdits": 13,
+      "casesWithOptionalFacts": 20,
+      "evidenceSections": 88
+    },
+    "runtime": {
+      "image": "sha256:37dd34a1ee5e2163530871080679e486d31047042cb63db31d4723234210840b",
+      "used": 192,
+      "models": {
+        "OPENAI_MODEL": "qwen-plus",
+        "OPENAI_EMBEDDING_MODEL": "text-embedding-v4",
+        "OPENAI_RERANKER_MODEL": "qwen3-rerank"
+      }
+    },
+    "providerRequestLimit": 2400,
+    "concurrency": 1,
+    "seed": 20261116,
+    "modes": [
+      "BM25",
+      "DENSE",
+      "HYBRID",
+      "HYBRID_RERANK"
+    ],
+    "suiteVersion": "rag-retrieval-v2",
+    "warmupRequests": 4,
+    "measuredRequests": 576,
+    "startedAt": "2026-11-16T16:12:38.209005+08:00",
+    "environment": {
+      "dockerVersion": "29.7.2",
+      "cpus": 64,
+      "memoryBytes": 101236711424,
+      "runningContainers": 5
+    },
+    "runtimeAfter": {
+      "image": "sha256:37dd34a1ee5e2163530871080679e486d31047042cb63db31d4723234210840b",
+      "used": 1932,
+      "models": {
+        "OPENAI_MODEL": "qwen-plus",
+        "OPENAI_EMBEDDING_MODEL": "text-embedding-v4",
+        "OPENAI_RERANKER_MODEL": "qwen3-rerank"
+      }
+    },
+    "finishedAt": "2026-11-16T16:43:58.743788+08:00"
+  },
+  "stopReason": null,
+  "summary": {
+    "BM25": {
+      "planned": 144,
+      "attempted": 144,
+      "valid": 144,
+      "failed": 0,
+      "notAttempted": 0,
+      "recallAt5": 1.0,
+      "hitAt5": 1.0,
+      "mrrAt5": 0.9828042328042328,
+      "answerPassCount": 142,
+      "answerPassRate": 0.9861111111111112,
+      "factCoverage": 1.0,
+      "selectedFactPrecision": 0.996031746031746,
+      "correctAbstentionRate": 1.0,
+      "falseAbstentionRate": 0.007936507936507936,
+      "rewriteTriggered": 0,
+      "meanCandidateCount": 7.520833333333333,
+      "p50Ms": 2093.4549499997956,
+      "p95Ms": 3011.6611999983434,
+      "allAttemptsP95Ms": 3011.6611999983434,
+      "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+      "strictAnswerPassRate": 0.9652777777777778,
+      "casesWithOptionalFacts": 3,
+      "casesWithForbiddenFacts": 1
+    },
+    "DENSE": {
+      "planned": 144,
+      "attempted": 144,
+      "valid": 144,
+      "failed": 0,
+      "notAttempted": 0,
+      "recallAt5": 1.0,
+      "hitAt5": 1.0,
+      "mrrAt5": 0.996031746031746,
+      "answerPassCount": 141,
+      "answerPassRate": 0.9791666666666666,
+      "factCoverage": 1.0,
+      "selectedFactPrecision": 0.9920634920634921,
+      "correctAbstentionRate": 1.0,
+      "falseAbstentionRate": 0.007936507936507936,
+      "rewriteTriggered": 0,
+      "meanCandidateCount": 8,
+      "p50Ms": 2235.2560000017547,
+      "p95Ms": 3268.607299996802,
+      "allAttemptsP95Ms": 3268.607299996802,
+      "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+      "strictAnswerPassRate": 0.9375,
+      "casesWithOptionalFacts": 7,
+      "casesWithForbiddenFacts": 2
+    },
+    "HYBRID": {
+      "planned": 144,
+      "attempted": 144,
+      "valid": 144,
+      "failed": 0,
+      "notAttempted": 0,
+      "recallAt5": 1.0,
+      "hitAt5": 1.0,
+      "mrrAt5": 0.9880952380952381,
+      "answerPassCount": 141,
+      "answerPassRate": 0.9791666666666666,
+      "factCoverage": 1.0,
+      "selectedFactPrecision": 0.9920634920634921,
+      "correctAbstentionRate": 1.0,
+      "falseAbstentionRate": 0.007936507936507936,
+      "rewriteTriggered": 0,
+      "meanCandidateCount": 8,
+      "p50Ms": 2210.191449999911,
+      "p95Ms": 3210.2371999972092,
+      "allAttemptsP95Ms": 3210.2371999972092,
+      "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+      "strictAnswerPassRate": 0.9444444444444444,
+      "casesWithOptionalFacts": 6,
+      "casesWithForbiddenFacts": 2
+    },
+    "HYBRID_RERANK": {
+      "planned": 144,
+      "attempted": 144,
+      "valid": 144,
+      "failed": 0,
+      "notAttempted": 0,
+      "recallAt5": 1.0,
+      "hitAt5": 1.0,
+      "mrrAt5": 0.9900793650793651,
+      "answerPassCount": 141,
+      "answerPassRate": 0.9791666666666666,
+      "factCoverage": 1.0,
+      "selectedFactPrecision": 0.9920634920634921,
+      "correctAbstentionRate": 1.0,
+      "falseAbstentionRate": 0.007936507936507936,
+      "rewriteTriggered": 0,
+      "meanCandidateCount": 8,
+      "p50Ms": 2404.1903000015736,
+      "p95Ms": 3511.5536999983306,
+      "allAttemptsP95Ms": 3511.5536999983306,
+      "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+      "strictAnswerPassRate": 0.9375,
+      "casesWithOptionalFacts": 7,
+      "casesWithForbiddenFacts": 2
+    }
+  },
+  "perCategory": {
+    "multi_evidence": {
+      "BM25": {
+        "planned": 27,
+        "attempted": 27,
+        "valid": 27,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 1.0,
+        "answerPassCount": 27,
+        "answerPassRate": 1.0,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 1.0,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 6.62962962962963,
+        "p50Ms": 2754.015399998025,
+        "p95Ms": 3151.1798999999883,
+        "allAttemptsP95Ms": 3151.1798999999883,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "DENSE": {
+        "planned": 27,
+        "attempted": 27,
+        "valid": 27,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 1.0,
+        "answerPassCount": 27,
+        "answerPassRate": 1.0,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 1.0,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2995.6625000013446,
+        "p95Ms": 3268.607299996802,
+        "allAttemptsP95Ms": 3268.607299996802,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "HYBRID": {
+        "planned": 27,
+        "attempted": 27,
+        "valid": 27,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 1.0,
+        "answerPassCount": 27,
+        "answerPassRate": 1.0,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 1.0,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2988.975500000379,
+        "p95Ms": 3421.07390000092,
+        "allAttemptsP95Ms": 3421.07390000092,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "HYBRID_RERANK": {
+        "planned": 27,
+        "attempted": 27,
+        "valid": 27,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 1.0,
+        "answerPassCount": 27,
+        "answerPassRate": 1.0,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 1.0,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 3221.008599997731,
+        "p95Ms": 3626.5274999968824,
+        "allAttemptsP95Ms": 3626.5274999968824,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      }
+    },
+    "single_evidence": {
+      "BM25": {
+        "planned": 99,
+        "attempted": 99,
+        "valid": 99,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.978114478114478,
+        "answerPassCount": 97,
+        "answerPassRate": 0.9797979797979798,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9949494949494949,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.010101010101010102,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 7.747474747474747,
+        "p50Ms": 2071.1274999994203,
+        "p95Ms": 2854.403600002115,
+        "allAttemptsP95Ms": 2854.403600002115,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9494949494949495,
+        "casesWithOptionalFacts": 3,
+        "casesWithForbiddenFacts": 1
+      },
+      "DENSE": {
+        "planned": 99,
+        "attempted": 99,
+        "valid": 99,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9949494949494949,
+        "answerPassCount": 96,
+        "answerPassRate": 0.9696969696969697,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.98989898989899,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.010101010101010102,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2171.0025999964273,
+        "p95Ms": 3870.2627000020584,
+        "allAttemptsP95Ms": 3870.2627000020584,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9090909090909091,
+        "casesWithOptionalFacts": 7,
+        "casesWithForbiddenFacts": 2
+      },
+      "HYBRID": {
+        "planned": 99,
+        "attempted": 99,
+        "valid": 99,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9848484848484849,
+        "answerPassCount": 96,
+        "answerPassRate": 0.9696969696969697,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.98989898989899,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.010101010101010102,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2179.544500002521,
+        "p95Ms": 3055.9880000000703,
+        "allAttemptsP95Ms": 3055.9880000000703,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9191919191919192,
+        "casesWithOptionalFacts": 6,
+        "casesWithForbiddenFacts": 2
+      },
+      "HYBRID_RERANK": {
+        "planned": 99,
+        "attempted": 99,
+        "valid": 99,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9873737373737373,
+        "answerPassCount": 96,
+        "answerPassRate": 0.9696969696969697,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.98989898989899,
+        "correctAbstentionRate": null,
+        "falseAbstentionRate": 0.010101010101010102,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2353.9302999997744,
+        "p95Ms": 3473.728900000424,
+        "allAttemptsP95Ms": 3473.728900000424,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9090909090909091,
+        "casesWithOptionalFacts": 7,
+        "casesWithForbiddenFacts": 2
+      }
+    },
+    "unanswerable": {
+      "BM25": {
+        "planned": 18,
+        "attempted": 18,
+        "valid": 18,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": null,
+        "hitAt5": null,
+        "mrrAt5": null,
+        "answerPassCount": 18,
+        "answerPassRate": 1.0,
+        "factCoverage": null,
+        "selectedFactPrecision": null,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": null,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 7.611111111111111,
+        "p50Ms": 1222.0328500006872,
+        "p95Ms": 1721.1496000018087,
+        "allAttemptsP95Ms": 1721.1496000018087,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "DENSE": {
+        "planned": 18,
+        "attempted": 18,
+        "valid": 18,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": null,
+        "hitAt5": null,
+        "mrrAt5": null,
+        "answerPassCount": 18,
+        "answerPassRate": 1.0,
+        "factCoverage": null,
+        "selectedFactPrecision": null,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": null,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 1597.9459999998653,
+        "p95Ms": 3693.995800000266,
+        "allAttemptsP95Ms": 3693.995800000266,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "HYBRID": {
+        "planned": 18,
+        "attempted": 18,
+        "valid": 18,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": null,
+        "hitAt5": null,
+        "mrrAt5": null,
+        "answerPassCount": 18,
+        "answerPassRate": 1.0,
+        "factCoverage": null,
+        "selectedFactPrecision": null,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": null,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 1536.7201499993826,
+        "p95Ms": 2209.9018000008073,
+        "allAttemptsP95Ms": 2209.9018000008073,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      },
+      "HYBRID_RERANK": {
+        "planned": 18,
+        "attempted": 18,
+        "valid": 18,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": null,
+        "hitAt5": null,
+        "mrrAt5": null,
+        "answerPassCount": 18,
+        "answerPassRate": 1.0,
+        "factCoverage": null,
+        "selectedFactPrecision": null,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": null,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 1707.156299999042,
+        "p95Ms": 2351.313300001493,
+        "allAttemptsP95Ms": 2351.313300001493,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 1.0,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 0
+      }
+    }
+  },
+  "perSplit": {
+    "frozen_question_holdout": {
+      "BM25": {
+        "planned": 40,
+        "attempted": 40,
+        "valid": 40,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.961111111111111,
+        "answerPassCount": 39,
+        "answerPassRate": 0.975,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9833333333333333,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 7.15,
+        "p50Ms": 2131.3432499991904,
+        "p95Ms": 2930.0889000005554,
+        "allAttemptsP95Ms": 2930.0889000005554,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.975,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 1
+      },
+      "DENSE": {
+        "planned": 40,
+        "attempted": 40,
+        "valid": 40,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9833333333333333,
+        "answerPassCount": 39,
+        "answerPassRate": 0.975,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9833333333333333,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2119.3308500023704,
+        "p95Ms": 3237.825800002611,
+        "allAttemptsP95Ms": 3237.825800002611,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.975,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 1
+      },
+      "HYBRID": {
+        "planned": 40,
+        "attempted": 40,
+        "valid": 40,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9666666666666667,
+        "answerPassCount": 39,
+        "answerPassRate": 0.975,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9833333333333333,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2240.408049998223,
+        "p95Ms": 3400.533500000165,
+        "allAttemptsP95Ms": 3400.533500000165,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.975,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 1
+      },
+      "HYBRID_RERANK": {
+        "planned": 40,
+        "attempted": 40,
+        "valid": 40,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9833333333333333,
+        "answerPassCount": 39,
+        "answerPassRate": 0.975,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9833333333333333,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.0,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2404.1903000015736,
+        "p95Ms": 3330.1677999988897,
+        "allAttemptsP95Ms": 3330.1677999988897,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.975,
+        "casesWithOptionalFacts": 0,
+        "casesWithForbiddenFacts": 1
+      }
+    },
+    "revised_regression": {
+      "BM25": {
+        "planned": 104,
+        "attempted": 104,
+        "valid": 104,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9895833333333334,
+        "answerPassCount": 103,
+        "answerPassRate": 0.9903846153846154,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 1.0,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.010416666666666666,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 7.663461538461538,
+        "p50Ms": 2076.7869999999675,
+        "p95Ms": 3011.6611999983434,
+        "allAttemptsP95Ms": 3011.6611999983434,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9615384615384616,
+        "casesWithOptionalFacts": 3,
+        "casesWithForbiddenFacts": 0
+      },
+      "DENSE": {
+        "planned": 104,
+        "attempted": 104,
+        "valid": 104,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 1.0,
+        "answerPassCount": 102,
+        "answerPassRate": 0.9807692307692307,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9947916666666666,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.010416666666666666,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2248.651099998824,
+        "p95Ms": 3693.995800000266,
+        "allAttemptsP95Ms": 3693.995800000266,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9230769230769231,
+        "casesWithOptionalFacts": 7,
+        "casesWithForbiddenFacts": 1
+      },
+      "HYBRID": {
+        "planned": 104,
+        "attempted": 104,
+        "valid": 104,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9947916666666666,
+        "answerPassCount": 102,
+        "answerPassRate": 0.9807692307692307,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9947916666666666,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.010416666666666666,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2197.953349999807,
+        "p95Ms": 3188.5345999980927,
+        "allAttemptsP95Ms": 3188.5345999980927,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9326923076923077,
+        "casesWithOptionalFacts": 6,
+        "casesWithForbiddenFacts": 1
+      },
+      "HYBRID_RERANK": {
+        "planned": 104,
+        "attempted": 104,
+        "valid": 104,
+        "failed": 0,
+        "notAttempted": 0,
+        "recallAt5": 1.0,
+        "hitAt5": 1.0,
+        "mrrAt5": 0.9921875,
+        "answerPassCount": 102,
+        "answerPassRate": 0.9807692307692307,
+        "factCoverage": 1.0,
+        "selectedFactPrecision": 0.9947916666666666,
+        "correctAbstentionRate": 1.0,
+        "falseAbstentionRate": 0.010416666666666666,
+        "rewriteTriggered": 0,
+        "meanCandidateCount": 8,
+        "p50Ms": 2405.3447499991307,
+        "p95Ms": 3511.5536999983306,
+        "allAttemptsP95Ms": 3511.5536999983306,
+        "qualityScope": "v2 required fact coverage + optional fact allowance + forbidden fact exclusion + abstention; not human semantic accuracy",
+        "strictAnswerPassRate": 0.9230769230769231,
+        "casesWithOptionalFacts": 7,
+        "casesWithForbiddenFacts": 1
+      }
+    }
+  },
+  "limitations": [
+    "Section-level relevance on fixed-product knowledge QA; not whole-agent routing.",
+    "Known regression and project-authored challenges, no independent human-labelled holdout.",
+    "Answer grading follows the frozen label version; v2 permits explicitly labelled optional facts.",
+    "One measured attempt per case/configuration, balanced order, concurrency one; P95 is not a production SLA.",
+    "Failures/unattempted questions remain in planned quality denominators; latency lists their coverage separately.",
+    "No invented provider token usage or billing; provider request counts are recorded separately.",
+    "Question-disjoint holdout on known source material; not source-disjoint or independently human labelled.",
+    "About eight eligible sections per question: retrieval saturation remains.",
+    "v1/v2 answer pass rates are not directly comparable because thirteen questions and the label policy changed.",
+    "Paired BM25 comparison uses the same v2 questions on identical old/new source content and makes zero provider requests."
+  ],
+  "runId": "rag-benchmark-20261116-161238-a7d2cb82",
+  "providerCalls": {
+    "ingestion": 192,
+    "warmup": 12,
+    "BM25": 288,
+    "DENSE": 432,
+    "HYBRID": 432,
+    "HYBRID_RERANK": 576,
+    "total": 1932
+  },
+  "failedCases": {
+    "BM25": [
+      {
+        "caseId": "knowledge-nova14-wifi",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 1.0,
+          "answerPass": false,
+          "insufficient": true,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 7.893593,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 0,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "fresh-pura80-2",
+        "split": "frozen_question_holdout",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet"
+          ],
+          "returnedCandidateCount": 3,
+          "retrievalMs": 8.146003,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 1,
+          "requiredContextCoverage": 1.0
+        }
+      }
+    ],
+    "DENSE": [
+      {
+        "caseId": "knowledge-pura80-wet",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wet",
+            "pura80.md#water",
+            "pura80.md#wireless",
+            "pura80.md#wired",
+            "pura80.md#storage"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 160.772766,
+          "strictAnswerPass": false,
+          "optionalFactCount": 1,
+          "forbiddenFactCount": 2,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-wifi",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 1.0,
+          "answerPass": false,
+          "insufficient": true,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#wired",
+            "nova14.md#usb",
+            "nova14.md#screen",
+            "nova14.md#battery"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 2334.255837,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 0,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "fresh-pura80-2",
+        "split": "frozen_question_holdout",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#water"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 147.311163,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 1,
+          "requiredContextCoverage": 1.0
+        }
+      }
+    ],
+    "HYBRID": [
+      {
+        "caseId": "knowledge-pura80-wet",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wet",
+            "pura80.md#wireless",
+            "pura80.md#wired",
+            "pura80.md#water",
+            "pura80.md#storage"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 288.155715,
+          "strictAnswerPass": false,
+          "optionalFactCount": 1,
+          "forbiddenFactCount": 2,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-wifi",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 1.0,
+          "answerPass": false,
+          "insufficient": true,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#nfc",
+            "nova14.md#wired"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 171.10082,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 0,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "fresh-pura80-2",
+        "split": "frozen_question_holdout",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#water"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 150.941873,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 1,
+          "requiredContextCoverage": 1.0
+        }
+      }
+    ],
+    "HYBRID_RERANK": [
+      {
+        "caseId": "knowledge-pura80-wet",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wet",
+            "pura80.md#wireless",
+            "pura80.md#wired",
+            "pura80.md#water",
+            "pura80.md#system"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 641.44733,
+          "strictAnswerPass": false,
+          "optionalFactCount": 1,
+          "forbiddenFactCount": 2,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-wifi",
+        "split": "revised_regression",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 1.0,
+          "answerPass": false,
+          "insufficient": true,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#nfc",
+            "nova14.md#headset",
+            "nova14.md#usb",
+            "nova14.md#wired"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 156.403482,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 0,
+          "requiredContextCoverage": 1.0
+        }
+      },
+      {
+        "caseId": "fresh-pura80-2",
+        "split": "frozen_question_holdout",
+        "score": {
+          "retrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "initialRetrieval": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          },
+          "factCoverage": 1.0,
+          "selectedFactPrecision": 0.5,
+          "answerPass": false,
+          "insufficient": false,
+          "rewriteTriggered": false,
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#water",
+            "pura80.md#video",
+            "pura80.md#storage"
+          ],
+          "returnedCandidateCount": 8,
+          "retrievalMs": 245.477348,
+          "strictAnswerPass": false,
+          "optionalFactCount": 0,
+          "forbiddenFactCount": 1,
+          "requiredContextCoverage": 1.0
+        }
+      }
+    ]
+  },
+  "pairedBm25": {
+    "providerRequests": 0,
+    "analyzers": [
+      {
+        "type": "standard"
+      },
+      {
+        "type": "chinese"
+      }
+    ],
+    "sourceSectionsPerSku": {
+      "HUAWEI-PURA80PRO-12-256": 8,
+      "HUAWEI-NOVA14ULTRA-256": 8,
+      "HUAWEI-PURA80-12-256": 8,
+      "HUAWEI-MATE70-12-256": 8,
+      "HUAWEI-NOVA14PRO-256": 8,
+      "HUAWEI-FREEBUDS-6": 8,
+      "HUAWEI-MATE70PLUS-16-512": 8,
+      "HUAWEI-MATEX6-12-256": 8,
+      "HUAWEI-FREECLIP-1": 8,
+      "HUAWEI-NOVA14-256": 8
+    },
+    "summary": {
+      "all": {
+        "standard": {
+          "recallAt5": 0.5674603174603174,
+          "hitAt5": 0.5793650793650794,
+          "mrrAt5": 0.36574074074074076
+        },
+        "chinese": {
+          "recallAt5": 1.0,
+          "hitAt5": 1.0,
+          "mrrAt5": 0.9828042328042328
+        },
+        "answerableQuestions": 126
+      },
+      "revised_regression": {
+        "standard": {
+          "recallAt5": 0.5989583333333334,
+          "hitAt5": 0.6145833333333334,
+          "mrrAt5": 0.3342013888888889
+        },
+        "chinese": {
+          "recallAt5": 1.0,
+          "hitAt5": 1.0,
+          "mrrAt5": 0.9895833333333334
+        },
+        "answerableQuestions": 96
+      },
+      "frozen_question_holdout": {
+        "standard": {
+          "recallAt5": 0.4666666666666667,
+          "hitAt5": 0.4666666666666667,
+          "mrrAt5": 0.4666666666666667
+        },
+        "chinese": {
+          "recallAt5": 1.0,
+          "hitAt5": 1.0,
+          "mrrAt5": 0.961111111111111
+        },
+        "answerableQuestions": 30
+      }
+    },
+    "cases": [
+      {
+        "caseId": "knowledge-pura80-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#screen",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#wired",
+            "pura80.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-wireless",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wireless",
+            "pura80.md#wired",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-water",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#water",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#wired",
+            "pura80.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-wet",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wet",
+            "pura80.md#wireless",
+            "pura80.md#wired",
+            "pura80.md#storage",
+            "pura80.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-system",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#system",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#wired",
+            "pura80.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-video",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#video",
+            "pura80.md#wet",
+            "pura80.md#storage",
+            "pura80.md#wired",
+            "pura80.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#screen",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wired",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#screen",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-wireless",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-water",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#water",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-wet",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wet",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-system",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wet",
+            "pura80-pro.md#system",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-pura80-pro-video",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#storage",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#video",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#screen",
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#wireless",
+            "mate70.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#storage",
+            "mate70.md#wet",
+            "mate70.md#screen",
+            "mate70.md#wireless",
+            "mate70.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#wired",
+            "mate70.md#wet",
+            "mate70.md#wireless",
+            "mate70.md#screen",
+            "mate70.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-wireless",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#wireless",
+            "mate70.md#wet",
+            "mate70.md#wired",
+            "mate70.md#screen",
+            "mate70.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-water",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#water",
+            "mate70.md#wet",
+            "mate70.md#screen",
+            "mate70.md#storage",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-wet",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#screen",
+            "mate70.md#storage",
+            "mate70.md#wireless",
+            "mate70.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-system",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#camera",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#system",
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-camera",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#camera",
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#camera",
+            "mate70.md#screen",
+            "mate70.md#wireless",
+            "mate70.md#wired",
+            "mate70.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-system",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-upgrade",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-weight",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#battery",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-photo",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate70-pro-plus-zoom",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#battery",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#photo"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#screen",
+            "nova14.md#nfc",
+            "nova14.md#battery",
+            "nova14.md#storage",
+            "nova14.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#storage",
+            "nova14.md#battery",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#wired",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-usb",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#usb",
+            "nova14.md#wifi",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-headset",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#headset",
+            "nova14.md#wired",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-wifi",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#battery",
+            "nova14.md#storage",
+            "nova14.md#wired",
+            "nova14.md#nfc",
+            "nova14.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-nfc",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#nfc",
+            "nova14.md#wifi",
+            "nova14.md#headset",
+            "nova14.md#screen",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery",
+            "nova14.md#storage",
+            "nova14.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#storage",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-power",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#storage",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-weight",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#weight",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#power",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#battery",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-selfie",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-pro-camera",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#camera",
+            "nova14-pro.md#power",
+            "nova14-pro.md#weight",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#storage",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wired",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-usb",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-headset",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-wifi",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-nova14-ultra-nfc",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-screen",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#screen",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#usb",
+            "mate-x6.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-storage",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#storage",
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#storage",
+            "mate-x6.md#battery",
+            "mate-x6.md#satellite",
+            "mate-x6.md#usb",
+            "mate-x6.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#battery",
+            "mate-x6.md#screen",
+            "mate-x6.md#wired",
+            "mate-x6.md#usb",
+            "mate-x6.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-wired",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#wired",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen",
+            "mate-x6.md#usb",
+            "mate-x6.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-water",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#water",
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#water",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen",
+            "mate-x6.md#usb",
+            "mate-x6.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-usb",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#usb",
+            "mate-x6.md#activation",
+            "mate-x6.md#satellite",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-satellite",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#storage",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-mate-x6-activation",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#activation",
+            "mate-x6.md#satellite",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen",
+            "mate-x6.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-volume",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#battery",
+            "freebuds6.md#multi",
+            "freebuds6.md#time",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-charging",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#charging",
+            "freebuds6.md#time",
+            "freebuds6.md#water",
+            "freebuds6.md#volume",
+            "freebuds6.md#multi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-time",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#time",
+            "freebuds6.md#water",
+            "freebuds6.md#charging",
+            "freebuds6.md#volume",
+            "freebuds6.md#multi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-battery",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#battery",
+            "freebuds6.md#volume",
+            "freebuds6.md#multi",
+            "freebuds6.md#time",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-popup",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#popup",
+            "freebuds6.md#volume",
+            "freebuds6.md#multi",
+            "freebuds6.md#time",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-multi",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#multi",
+            "freebuds6.md#latency",
+            "freebuds6.md#volume",
+            "freebuds6.md#popup",
+            "freebuds6.md#time"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-water",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#water",
+            "freebuds6.md#volume",
+            "freebuds6.md#time",
+            "freebuds6.md#charging",
+            "freebuds6.md#multi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freebuds6-latency",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#water",
+            "freebuds6.md#multi",
+            "freebuds6.md#battery",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#latency",
+            "freebuds6.md#multi",
+            "freebuds6.md#popup",
+            "freebuds6.md#volume",
+            "freebuds6.md#time"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-double",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#double",
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-triple",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#pair",
+            "freeclip.md#double",
+            "freeclip.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-gesture",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#gesture",
+            "freeclip.md#codec",
+            "freeclip.md#charging",
+            "freeclip.md#triple",
+            "freeclip.md#pair"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-pair",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.25
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#pair",
+            "freeclip.md#reset",
+            "freeclip.md#triple",
+            "freeclip.md#double",
+            "freeclip.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-reset",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.2
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#reset",
+            "freeclip.md#triple",
+            "freeclip.md#pair",
+            "freeclip.md#double",
+            "freeclip.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-codec",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#codec",
+            "freeclip.md#l2hc",
+            "freeclip.md#gesture",
+            "freeclip.md#charging",
+            "freeclip.md#triple"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-l2hc",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#l2hc",
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#codec",
+            "freeclip.md#l2hc",
+            "freeclip.md#triple",
+            "freeclip.md#pair",
+            "freeclip.md#double"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        }
+      },
+      {
+        "caseId": "knowledge-freeclip-charging",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#triple",
+            "freeclip.md#gesture",
+            "freeclip.md#double",
+            "freeclip.md#pair",
+            "freeclip.md#reset"
+          ],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#charging",
+            "freeclip.md#pair",
+            "freeclip.md#reset",
+            "freeclip.md#triple",
+            "freeclip.md#double"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-pura80-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#video",
+            "pura80.md#wireless",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 0.5,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#storage",
+            "pura80.md#screen",
+            "pura80.md#video",
+            "pura80.md#wet",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-pura80-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet",
+            "pura80.md#system",
+            "pura80.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-pura80",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#screen",
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#wired",
+            "pura80.md#wireless"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-pura80-pro-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#screen",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-pura80-pro-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-pura80-pro",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#water",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-mate70-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#storage",
+            "mate70.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-mate70-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#wired",
+            "mate70.md#wireless",
+            "mate70.md#camera",
+            "mate70.md#wet",
+            "mate70.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-mate70",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#system",
+            "mate70.md#wet",
+            "mate70.md#screen",
+            "mate70.md#storage",
+            "mate70.md#wireless"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-mate70-pro-plus-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#battery",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-mate70-pro-plus-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#zoom"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-mate70-pro-plus",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#weight"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-nova14-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#screen",
+            "nova14.md#storage",
+            "nova14.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-nova14-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#headset",
+            "nova14.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 0.5,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#usb",
+            "nova14.md#headset",
+            "nova14.md#wired",
+            "nova14.md#wifi",
+            "nova14.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-nova14",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#storage",
+            "nova14.md#wired",
+            "nova14.md#nfc",
+            "nova14.md#wifi",
+            "nova14.md#screen"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-nova14-pro-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#screen",
+            "nova14-pro.md#storage",
+            "nova14-pro.md#weight",
+            "nova14-pro.md#power",
+            "nova14-pro.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-nova14-pro-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-nova14-pro",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#battery"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-nova14-ultra-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#storage",
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-nova14-ultra-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#headset"
+          ],
+          "metrics": {
+            "recallAt5": 0.5,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#wired",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-nova14-ultra",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#screen"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "multi-mate-x6-0",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#storage",
+            "mate-x6.md#battery",
+            "mate-x6.md#satellite",
+            "mate-x6.md#screen",
+            "mate-x6.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "multi-mate-x6-2",
+        "split": "revised_regression",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#wired",
+            "mate-x6.md#battery",
+            "mate-x6.md#usb",
+            "mate-x6.md#activation",
+            "mate-x6.md#satellite"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "unknown-mate-x6",
+        "split": "revised_regression",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#screen",
+            "mate-x6.md#water",
+            "mate-x6.md#usb",
+            "mate-x6.md#battery",
+            "mate-x6.md#wired"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-pura80-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80.md#screen",
+            "pura80.md#system"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#screen",
+            "pura80.md#water",
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wired",
+            "pura80.md#wireless",
+            "pura80.md#wet"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.5
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#wet",
+            "pura80.md#water",
+            "pura80.md#screen",
+            "pura80.md#storage",
+            "pura80.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80.md#screen",
+            "pura80.md#water",
+            "pura80.md#storage",
+            "pura80.md#wet",
+            "pura80.md#wired"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-pura80-pro-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "pura80-pro.md#wired",
+            "pura80-pro.md#wireless"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#water",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 0.3333333333333333
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-pro-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#video",
+            "pura80-pro.md#water",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen",
+            "pura80-pro.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-pro-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wireless",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#wet",
+            "pura80-pro.md#video",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-pura80-pro-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "pura80-pro.md#wet",
+            "pura80-pro.md#water",
+            "pura80-pro.md#video",
+            "pura80-pro.md#wired",
+            "pura80-pro.md#screen"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-mate70-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70.md#system",
+            "mate70.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#system",
+            "mate70.md#water",
+            "mate70.md#storage",
+            "mate70.md#screen",
+            "mate70.md#wet"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#storage",
+            "mate70.md#water",
+            "mate70.md#camera"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#camera",
+            "mate70.md#screen",
+            "mate70.md#wireless",
+            "mate70.md#wired",
+            "mate70.md#wet"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70.md#screen",
+            "mate70.md#wet",
+            "mate70.md#storage",
+            "mate70.md#wireless",
+            "mate70.md#wired"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-mate70-pro-plus-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#photo"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-pro-plus-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#weight"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#weight",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#battery",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-pro-plus-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#zoom"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#system",
+            "mate70-pro-plus.md#upgrade",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate70-pro-plus-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate70-pro-plus.md#storage",
+            "mate70-pro-plus.md#zoom",
+            "mate70-pro-plus.md#screen",
+            "mate70-pro-plus.md#photo",
+            "mate70-pro-plus.md#battery"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-nova14-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#usb",
+            "nova14.md#headset"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#usb",
+            "nova14.md#headset",
+            "nova14.md#storage",
+            "nova14.md#wired",
+            "nova14.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#nfc"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#nfc"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14.md#headset",
+            "nova14.md#usb"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#headset",
+            "nova14.md#usb",
+            "nova14.md#wifi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14.md#storage",
+            "nova14.md#wired",
+            "nova14.md#nfc",
+            "nova14.md#screen",
+            "nova14.md#battery"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-nova14-pro-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#weight"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#weight",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-pro-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "nova14-pro.md#selfie"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#weight",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-pro-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#power",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#screen",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-pro-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-pro.md#selfie",
+            "nova14-pro.md#camera",
+            "nova14-pro.md#wired",
+            "nova14-pro.md#power",
+            "nova14-pro.md#screen"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-nova14-ultra-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#nfc"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-ultra-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#headset",
+            "nova14-ultra.md#wifi",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-ultra-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#storage",
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#nfc"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-nova14-ultra-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "nova14-ultra.md#usb",
+            "nova14-ultra.md#screen",
+            "nova14-ultra.md#battery",
+            "nova14-ultra.md#nfc",
+            "nova14-ultra.md#wifi"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-mate-x6-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "mate-x6.md#usb",
+            "mate-x6.md#storage"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#usb",
+            "mate-x6.md#activation",
+            "mate-x6.md#satellite",
+            "mate-x6.md#water",
+            "mate-x6.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate-x6-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#battery",
+            "mate-x6.md#storage",
+            "mate-x6.md#satellite",
+            "mate-x6.md#wired"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate-x6-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#satellite",
+            "mate-x6.md#activation",
+            "mate-x6.md#water",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-mate-x6-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "mate-x6.md#wired",
+            "mate-x6.md#usb",
+            "mate-x6.md#water",
+            "mate-x6.md#battery",
+            "mate-x6.md#screen"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-freebuds6-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freebuds6.md#water"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#water",
+            "freebuds6.md#charging",
+            "freebuds6.md#time",
+            "freebuds6.md#volume",
+            "freebuds6.md#battery"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freebuds6-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#volume",
+            "freebuds6.md#charging",
+            "freebuds6.md#water",
+            "freebuds6.md#time",
+            "freebuds6.md#multi"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freebuds6-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#popup",
+            "freebuds6.md#multi",
+            "freebuds6.md#latency",
+            "freebuds6.md#volume",
+            "freebuds6.md#charging"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freebuds6-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freebuds6.md#water",
+            "freebuds6.md#volume",
+            "freebuds6.md#time",
+            "freebuds6.md#charging",
+            "freebuds6.md#battery"
+          ],
+          "metrics": null
+        }
+      },
+      {
+        "caseId": "fresh-freeclip-1",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#reset",
+            "freeclip.md#pair",
+            "freeclip.md#l2hc",
+            "freeclip.md#gesture"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freeclip-2",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": {
+            "recallAt5": 0.0,
+            "hitAt5": 0.0,
+            "mrrAt5": 0.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#gesture",
+            "freeclip.md#reset",
+            "freeclip.md#pair",
+            "freeclip.md#triple",
+            "freeclip.md#double"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freeclip-3",
+        "split": "frozen_question_holdout",
+        "answerable": true,
+        "standard": {
+          "rankedEvidence": [
+            "freeclip.md#l2hc",
+            "freeclip.md#codec"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#codec",
+            "freeclip.md#gesture",
+            "freeclip.md#l2hc",
+            "freeclip.md#charging",
+            "freeclip.md#triple"
+          ],
+          "metrics": {
+            "recallAt5": 1.0,
+            "hitAt5": 1.0,
+            "mrrAt5": 1.0
+          }
+        }
+      },
+      {
+        "caseId": "fresh-freeclip-4",
+        "split": "frozen_question_holdout",
+        "answerable": false,
+        "standard": {
+          "rankedEvidence": [],
+          "metrics": null
+        },
+        "chinese": {
+          "rankedEvidence": [
+            "freeclip.md#gesture",
+            "freeclip.md#l2hc",
+            "freeclip.md#triple",
+            "freeclip.md#pair",
+            "freeclip.md#double"
+          ],
+          "metrics": null
+        }
+      }
+    ]
+  },
+  "audit": {
+    "attemptRows": 580,
+    "measuredRows": 576,
+    "warmupRows": 4,
+    "uniqueCaseModePairs": 576,
+    "allScoresAndSplitsRecomputed": true,
+    "pairedBm25MatchesCloudBm25PerCase": true,
+    "sameServerProcess": true,
+    "oldDataAndReportsByteIdentical": true,
+    "parentDatasetSha256": "df23a62d2b1342ec561d5c6bad9babdc18860e045a200449d8a4b91f0f94ec17",
+    "rawAttemptsSha256": "d24d3a9467248385a86a5da5815ebebff327fee2920029ace6ca6c52b413aeb7"
+  },
+  "metricDefinitions": {
+    "answerPassRate": "all required source paragraphs selected, optional paragraphs accepted, forbidden paragraphs excluded, insufficiency flag checked; not human semantic accuracy",
+    "recallAt5": "macro required-section recall before Grader; 126 answerable cases overall, 96 regression and 30 fresh",
+    "p95Ms": "nearest-rank total HTTP latency per group at concurrency 1; 4 warmups excluded; includes diagnostics"
+  }
+}
