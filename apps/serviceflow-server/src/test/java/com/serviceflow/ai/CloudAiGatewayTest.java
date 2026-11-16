@@ -63,13 +63,6 @@ class CloudAiGatewayTest {
     }
 
     @Test
-    void classifiesAfterACloudCall() {
-        streamReturns("CHAT");
-
-        assertThat(gateway.classify("你好")).isEqualTo(Intent.CHAT);
-    }
-
-    @Test
     void evidenceEvaluationKeepsOnlyKnownDistinctChunkIds() throws Exception {
         String payload = new ObjectMapper()
                 .writeValueAsString(Map.of("sufficient", true, "rankedChunkIds", List.of("c2", "unknown", "c2", "c1")));

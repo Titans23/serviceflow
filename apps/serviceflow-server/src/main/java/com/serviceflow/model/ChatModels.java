@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.Instant;
-import java.util.List;
 
 public final class ChatModels {
     private ChatModels() {}
@@ -39,6 +38,4 @@ public final class ChatModels {
     public record CreateSessionRequest(String title) {}
 
     public record ConfirmRequest(@NotBlank @Pattern(regexp = "CONFIRM|REJECT") String decision) {}
-
-    public record SseMeta(String intent, boolean degraded, List<String> citations) {}
 }

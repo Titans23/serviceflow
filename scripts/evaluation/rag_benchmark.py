@@ -1,4 +1,4 @@
-"""Run the five fixed-product RAG configurations through the real application."""
+"""Run the frozen suite's fixed-product RAG configurations through the real application."""
 import argparse
 from datetime import datetime
 import hashlib
@@ -70,6 +70,18 @@ def capture_chunks(ids, container):
     return rows
 
 
+def summary_table(summaries):
+    def fmt(value):
+        return 'N/A' if value is None else f'{value:.4f}'
+
+    lines = ['| Mode | Valid/planned | Recall@5 | MRR@5 | Answer pass | P95 ms |',
+             '|---|---:|---:|---:|---:|---:|']
+    for mode, row in summaries.items():
+        lines.append(f"| {mode} | {row['valid']}/{row['planned']} | {fmt(row['recallAt5'])} | "
+                     f"{fmt(row['mrrAt5'])} | {fmt(row['answerPassRate'])} | {fmt(row['p95Ms'])} |")
+    return lines
+
+
 def write_report(output, rows, cases, metadata, stop):
     modes = metadata['modes']
     result = {'metadata': metadata, 'stopReason': stop, 'summary': summarize(rows, cases, modes),
@@ -89,19 +101,10 @@ def write_report(output, rows, cases, metadata, stop):
                   'No invented provider token usage or billing; provider request counts are recorded separately.']}
     write_json(output / 'summary.json', result)
     lines = ['# RAG retrieval ablation', '', 'Actual result; see summary.json for scope and failed/unattempted counts.', '',
-             '| Mode | Valid/planned | Recall@5 | MRR@5 | Answer pass | P95 ms |',
-             '|---|---:|---:|---:|---:|---:|']
-    for mode, row in result['summary'].items():
-        fmt = lambda value: 'N/A' if value is None else f'{value:.4f}'
-        lines.append(f"| {mode} | {row['valid']}/{row['planned']} | {fmt(row['recallAt5'])} | "
-                     f"{fmt(row['mrrAt5'])} | {fmt(row['answerPassRate'])} | {fmt(row['p95Ms'])} |")
+             *summary_table(result['summary'])]
     lines += ['', 'Stop reason: ' + str(stop), '', *['- ' + note for note in result['limitations']]]
     for split, summaries in result['perSplit'].items():
-        lines += ['', '## ' + split, '', '| Mode | Valid/planned | Recall@5 | MRR@5 | Answer pass | P95 ms |',
-                  '|---|---:|---:|---:|---:|---:|']
-        for mode, row in summaries.items():
-            lines.append(f"| {mode} | {row['valid']}/{row['planned']} | {fmt(row['recallAt5'])} | "
-                         f"{fmt(row['mrrAt5'])} | {fmt(row['answerPassRate'])} | {fmt(row['p95Ms'])} |")
+        lines += ['', '## ' + split, '', *summary_table(summaries)]
     (output / 'report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 

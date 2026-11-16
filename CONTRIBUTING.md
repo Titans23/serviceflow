@@ -29,6 +29,10 @@ Cloud-model evaluation is intentionally excluded from pull-request checks. Never
 
 Without Docker, use `mvn -DskipITs verify` for offline backend checks; this does **not** establish MySQL migration/concurrency correctness. The opt-in local Grader acceptance suite additionally needs its own configured model. Refund/data live checks use the [isolated evaluation runbook](docs/guides/evaluation-and-refund.md). Browser tests use mocked APIs and are reported separately from live refund scenarios. CI runs both and never calls paid cloud models.
 
+## Wiki documentation
+
+Edit `docs/wiki/*.md`, not the generated `docs/architecture-guide.html`. With the web application's dependencies installed, run `node scripts/docs/build-wiki.mjs`, then `node scripts/docs/build-wiki.mjs --check` from the repository root. The check validates local source links and detects stale HTML. Changes to the reader UI also require `node scripts/docs/check-wiki-ui.mjs` (uses installed Chrome or Playwright Chromium; no application or model service needed).
+
 ## Commit convention
 
 Use `type(scope): summary`, for example:

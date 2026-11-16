@@ -94,8 +94,11 @@ jobs:
         working-directory: apps/serviceflow-web
         run: npm ci
       - name: Lint
+        # Wiki reuses the installed Markdown renderer; no separate package lock.
         working-directory: apps/serviceflow-web
         run: npm run lint
+      - name: Check generated architecture Wiki
+        run: node scripts/docs/build-wiki.mjs --check
       - name: Unit tests
         working-directory: apps/serviceflow-web
         run: npm test -- --run

@@ -1,20 +1,37 @@
-# ServiceFlow 文档索引
+# ServiceFlow 文档
 
-| 文档 | 用途 |
+**[架构 Wiki（离线 HTML）](architecture-guide.html)** 是当前设计的阅读入口。正文源文件是下面的 Markdown，GitHub 上可直接阅读。README 负责启动入口，Wiki 解释实现，指南给出操作步骤，历史报告保留当时的证据。
+
+## 当前架构
+
+| 章节 | 内容 |
 | --- | --- |
-| [最终版本交付报告](final-delivery-2026-11-13.md) | 当前完整业务范围、实现原理、验证结果及部署边界 |
-| [第 1～4 批优化报告](optimization-report-2026-11-04.md) | 订单查询、确认恢复、后台退款及性能对照 |
-| [技术报告](technical-report.md) | 技术选型、全部核心实现、测试与边界 |
-| [系统架构](architecture/system-overview.md) | 组件关系、请求链路与部署拓扑 |
-| [架构决策记录](adr/) | MVC + Virtual Threads、事实/RAG 分离、Outbox 与幂等 |
-| [故障演练](runbooks/fault-drills.md) | RabbitMQ、Reranker、订单幂等和请求恢复证据 |
-| [演示脚本](guides/demo-script.md) | 约5分钟业务执行与恢复；使用现有云证据，不现场付费重跑 |
-| [评测 v2 与退款运行手册](guides/evaluation-and-refund.md) | 独立数据库、数据导入、多轮评测与退款沙箱验证 |
-| [A6000 后训练交接](guides/a6000-post-training-handoff.md) | 模型任务边界、数据隔离、基线与 SFT 实施计划 |
-| [Grader SFT 最终模型](../training/README.md) | 最终模型、统一命令入口、评测与恢复 |
-| [Grader SFT 代码学习指南](guides/grader-sft-learning-guide.md) | 从来源与预处理到 LoRA、checkpoint、评测和 Java 验收；练习与接续学习 |
-| [简历项目描述](portfolio/resume-project.md) | 可追溯的简历和面试表述 |
-| [最新多轮RAG开发诊断](../quality/evaluation/results/rag-context-followup-2026-10-25.md) | 4场景/7轮、31次provider尝试，商品范围与自然二轮的实际来源裁决 |
-| [原始需求与强化计划](requirements/original-plan.md) | 项目范围和历史设计输入 |
+| [架构导读](wiki/overview.md) | 系统组成、职责边界、源码分层 |
+| [聊天与会话](wiki/chat.md) | POST SSE、请求幂等、图状态与审计 |
+| [订单定位与工具规划](wiki/orders.md) | 查询计划、候选选择、商品/订单上下文 |
+| [取消确认与恢复](wiki/confirmation.md) | 持久动作、事务裁决、重复请求、只读核验 |
+| [异步退款](wiki/refund.md) | 数据库任务、消息通知、租约与人工接手 |
+| [工单与退货](wiki/after-sales.md) | 持续对话、单件全额退货、收货后退款 |
+| [知识版本](wiki/knowledge.md) | 上传、Outbox、租约、活动版本切换 |
+| [RAG 链路](wiki/rag.md) | 中文分词、混合检索、重排、改写与事实编号 |
+| [RAG 评测](wiki/evaluation.md) | 题目构造、证据标签、指标口径与最新真实数据 |
+| [运行与排查](wiki/operations.md) | Demo/Cloud、观测、权限与数据边界 |
+| [验证与开发](wiki/verification.md) | 测试地图、订单性能、Wiki 维护方式 |
+| [术语](wiki/glossary.md) | 各技术词在当前代码中的具体含义 |
 
-README 负责快速启动；本目录负责设计、运行和项目证据，不放置构建产物或环境密钥。
+## 操作手册与决策
+
+- [开发环境启动](guides/quickstart.md)、[接口导航](guides/api.md)、[五分钟演示](guides/demo-script.md)。
+- [隔离评测与退款运行手册](guides/evaluation-and-refund.md)、[故障演练](runbooks/fault-drills.md)。
+- [架构决策 ADR](adr/)：MVC/虚拟线程、事实与 RAG 分离、Outbox/幂等。
+- [Grader SFT](../training/README.md)、[代码学习指南](guides/grader-sft-learning-guide.md)：独立可选实验，不是主服务前置步骤。
+- [开发检查](../CONTRIBUTING.md)、[后续工作](../TODO.md)。
+
+## 证据与历史
+
+- [评测索引](../quality/evaluation/README.md)：协议、数据集、回归与云质量结果。
+- [最新 RAG v2 报告](../quality/evaluation/results/rag-retrieval-v2-2026-11-16.md)、[v1 五组对照](../quality/evaluation/results/rag-retrieval-ablation-2026-11-16.md)。
+- [性能目录](../quality/performance/)、[历史设计/交付索引](archive/README.md)。
+- [简历与面试表述的证据边界](portfolio/resume-project.md)：历史口径供追溯，最新数值以相应实验报告为准。
+
+文档中不保存密钥、客户上传、原始模型响应或构建产物。Wiki 的 HTML 是唯一有意提交的生成文档；构建命令见 [验证章节](wiki/verification.md#文档如何维护)。

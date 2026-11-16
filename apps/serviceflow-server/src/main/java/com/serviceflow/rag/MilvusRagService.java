@@ -267,39 +267,36 @@ public class MilvusRagService implements RagService {
 
     private List<Evidence> retrieve(
             String query, String documentType, List<Long> productIds, List<Long> activeVersions, RetrievalMode mode) {
-        // 稠密检索：先把用户问题 Embedding 成向量，用于匹配语义相近的切片。
-        float[] vector = mode == RetrievalMode.BM25 ? null : embed(query);
         String filter = "documentType == \"" + documentType + "\" and documentVersionId in " + activeVersions;
         if (productIds != null && !productIds.isEmpty()) {
             filter += " and productId in " + productIds;
         }
 
-        Map<String, Object> denseSearch = Map.of(
-                "data",
-                mode == RetrievalMode.BM25 ? List.of() : List.of(vector),
-                "annsField",
-                "denseVector",
-                "limit",
-                RETRIEVAL_LIMIT,
-                "filter",
-                filter,
-                "searchParams",
-                Map.of("metricType", "COSINE", "params", Map.of("ef", 64)));
-        // 稀疏检索：把原始问题交给 Milvus 的 BM25 分词和关键词权重计算，匹配精确词语。
-        Map<String, Object> sparseSearch =
-                Map.of("data", List.of(query), "annsField", "sparseVector", "limit", RETRIEVAL_LIMIT, "filter", filter);
-        // 一次 hybrid_search 同时执行两路检索，再通过 RRF 融合两份候选排名。
         Map<String, Object> request = new LinkedHashMap<>(Map.of(
                 "collectionName", properties.rag().collectionName(),
-                "search", List.of(denseSearch, sparseSearch),
-                "rerank", Map.of("strategy", "rrf", "params", Map.of("k", 60)),
                 "limit", RETRIEVAL_LIMIT,
                 "outputFields", List.of("chunkId", "title", "source", "content")));
         boolean single = mode == RetrievalMode.BM25 || mode == RetrievalMode.DENSE;
-        if (single) {
-            request.remove("search");
-            request.remove("rerank");
-            request.putAll(mode == RetrievalMode.BM25 ? sparseSearch : denseSearch);
+        if (mode == RetrievalMode.BM25) {
+            request.putAll(sparseSearch(query, filter));
+        } else {
+            Map<String, Object> denseSearch = Map.of(
+                    "data",
+                    List.of(embed(query)),
+                    "annsField",
+                    "denseVector",
+                    "limit",
+                    RETRIEVAL_LIMIT,
+                    "filter",
+                    filter,
+                    "searchParams",
+                    Map.of("metricType", "COSINE", "params", Map.of("ef", 64)));
+            if (single) {
+                request.putAll(denseSearch);
+            } else {
+                request.put("search", List.of(denseSearch, sparseSearch(query, filter)));
+                request.put("rerank", Map.of("strategy", "rrf", "params", Map.of("k", 60)));
+            }
         }
 
         JsonNode response = milvusClient
@@ -309,7 +306,7 @@ public class MilvusRagService implements RagService {
                 .body(request)
                 .retrieve()
                 .body(JsonNode.class);
-        requireMilvusSuccess(response, "hybrid search");
+        requireMilvusSuccess(response, single ? "search" : "hybrid search");
 
         List<Evidence> evidence = new ArrayList<>();
         if (response != null && response.path("data").isArray()) {
@@ -323,6 +320,10 @@ public class MilvusRagService implements RagService {
             }
         }
         return evidence;
+    }
+
+    private Map<String, Object> sparseSearch(String query, String filter) {
+        return Map.of("data", List.of(query), "annsField", "sparseVector", "limit", RETRIEVAL_LIMIT, "filter", filter);
     }
 
     private RankedEvidence rerank(String query, List<Evidence> candidates) {

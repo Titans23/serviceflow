@@ -7,7 +7,7 @@
 从仓库根目录执行。需要已安装Docker、Python、Node及项目依赖。不要在现场安装依赖、上传知识或跑全套测试。Cloud与Demo共用宿主端口；若Cloud仍运行，先按[运行手册](evaluation-and-refund.md)停止并保留卷。
 
 ```powershell
-$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+$docker = (Get-Command docker).Source
 & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
 python -u -B scripts/evaluation/recovery_demo.py --docker $docker --allow-isolated-faults
 ```
@@ -17,7 +17,7 @@ python -u -B scripts/evaluation/recovery_demo.py --docker $docker --allow-isolat
 从本次REPORT路径设置下面的目录，勿挑选旧夹具。该脚本已经验证了取消→沙箱退款成功，另留了浏览器场景尚未执行的订单。
 
 ```powershell
-$run = 'D:\learn_project\ServiceFlow\quality\evaluation\reports\recovery-<本次runId>'
+$run = (Resolve-Path 'quality/evaluation/reports/recovery-<本次runId>').Path
 $env:RECOVERY_FIXTURES = Join-Path $run 'fixtures.json'
 $env:DOCKER_BIN = $docker
 $env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:15173'

@@ -35,7 +35,7 @@ Pop-Location
 
 ```powershell
 # Docker 安装在 D 盘且当前终端尚未更新 PATH 时：
-$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+$docker = (Get-Command docker).Source
 & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml config --quiet
 & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
 Invoke-RestMethod http://127.0.0.1:18080/api/actuator/info
@@ -116,7 +116,7 @@ V6 迁移允许未知商品报价；V7 增加退款请求/事件及支付 FAILED
 python -B scripts/evaluation/prepare_cloud_smoke.py
 python -B scripts/evaluation/eval_v2.py validate --suite quality/evaluation/reports/cloud-smoke-inputs/suite.json --package quality/evaluation/reports/cloud-smoke-inputs/package
 
-$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+$docker = (Get-Command docker).Source
 # 两套隔离环境使用相同宿主端口；停止 Demo，不删除数据卷。
 & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml stop
 # .env 使用已有百炼配置；仅校验，禁止打印展开后的含密钥配置。
@@ -155,11 +155,11 @@ python -B scripts/evaluation/eval_v2.py run --suite quality/evaluation/reports/c
 复现故障→恢复（会新增独立合成客户/订单，只删除这些动作的Redis键并重启评测server；不清空数据库或Redis）：
 
 ```powershell
-$docker = 'D:\Applications\Docker\resources\bin\docker.exe'
+$docker = (Get-Command docker).Source
 & $docker compose -p serviceflow-eval -f deploy/evaluation-compose.yml up -d --build --wait --wait-timeout 300
 python -u -B scripts/evaluation/recovery_demo.py --docker $docker --allow-isolated-faults
 # 将下面路径替换为上一步输出目录中的 fixtures.json；每次浏览器复测使用新生成的夹具。
-$env:RECOVERY_FIXTURES = 'D:\learn_project\ServiceFlow\quality\evaluation\reports\recovery-<runId>\fixtures.json'
+$env:RECOVERY_FIXTURES = (Resolve-Path 'quality/evaluation/reports/recovery-<runId>/fixtures.json').Path
 $env:DOCKER_BIN = $docker
 $env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:15173'
 Push-Location apps/serviceflow-web
@@ -189,7 +189,7 @@ Cloud Compose 现在启用自动退款，AI/RAG 仍为 cloud。部署前在本�
 docker compose -p serviceflow-refund-verification -f deploy/refund-verification-compose.yml up -d --build --wait --wait-timeout 300
 python -B scripts/evaluation/refund_delivery.py --allow-isolated-faults
 # 用上一步目录中的 fixtures.json 替换下方路径
-$env:REFUND_DELIVERY_FIXTURES = 'D:\learn_project\ServiceFlow\quality\evaluation\reports\refund-delivery-<runId>\fixtures.json'
+$env:REFUND_DELIVERY_FIXTURES = (Resolve-Path 'quality/evaluation/reports/refund-delivery-<runId>/fixtures.json').Path
 $env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:28173'
 Push-Location apps/serviceflow-web
 npx.cmd playwright test e2e/refund-delivery-live.spec.ts
