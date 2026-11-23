@@ -130,7 +130,7 @@ public class OpenAiRerankerClient implements RerankerClient {
         for (JsonNode row : rows) {
             // 大多数重排 API 返回候选数组中的下标；用该下标取回本地保留的分块 ID。
             int index = row.path("index").asInt(-1);
-            // Missing scores are unusable for an automatic product choice.
+            // 分数缺失时保留候选 ID，商品解析会禁止用该条结果自动选款。
             double score = row.path("relevance_score").asDouble(Double.NaN);
             if (index >= 0 && index < documents.size()) {
                 ranked.add(new ScoredDocument(documents.get(index).id(), score));

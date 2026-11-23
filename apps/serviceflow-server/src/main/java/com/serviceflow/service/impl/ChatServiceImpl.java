@@ -129,12 +129,14 @@ public final class ChatServiceImpl implements ChatService {
                 if ("product_selection_required".equals(name)
                         && data instanceof List<?> candidates
                         && !candidates.isEmpty()) {
+                    // 保存发起澄清的原问题，刷新或重放时能按具体规格继续回答这条问题。
                     businessMetadata.put("productCandidates", candidates);
                     businessMetadata.put("productQuestion", request.message());
                 }
                 if ("action_required".equals(name)) businessMetadata.put("action", data);
                 events.send(emitter, name, data);
             });
+            // 单品问答更新会话商品。明确尝试换款但尚未解析时清除旧引用。
             if (state.productIds().size() == 1) {
                 memory.setActiveProduct(
                         principal.subject(), sessionId, state.productIds().getFirst());

@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+/** 将本轮点名、商品页和会话记忆解析为商品目录中的具体商品。 */
 @Component
 public final class ProductReferenceResolver {
     private static final int CATALOG_LIMIT = 50;
@@ -65,6 +66,7 @@ public final class ProductReferenceResolver {
     }
 
     Resolution resolve(String query, Long currentId, Long selectedId, ProductReference reference, String mention) {
+        // 用户点选具体规格后，按 ID 取商品，原问题里的简称或拼写错误无需重新解析。
         if (selectedId != null) {
             ProductView selected = find(selectedId);
             return selected == null ? unresolved(List.of(), true, false) : resolved(List.of(selected), false);
@@ -73,6 +75,7 @@ public final class ProductReferenceResolver {
         String normalizedQuery = Normalizer.normalize(query, Normalizer.Form.NFKC);
         List<String> skus = CustomerWorkflow.skuMentions(normalizedQuery);
         List<String> models = CustomerWorkflow.modelMentions(normalizedQuery);
+        // 模型摘出的原文可补上正则识别不到的俗称，同时保留 SKU 和多个明确型号供比较。
         if (mention != null && query.contains(mention) && skus.isEmpty() && models.size() <= 1) {
             models = List.of(mention);
         } else if (models.isEmpty() && skus.isEmpty()) {
@@ -82,6 +85,7 @@ public final class ProductReferenceResolver {
 
         ProductView current = find(currentId);
         if (skus.isEmpty() && models.isEmpty()) {
+            // 尝试换商品但无法确定对象时，请用户澄清，防止旧商品的说明书进入本轮。
             if (reference == ProductReference.NEW) return unresolved(List.of(), true, true);
             if (current != null && (reference == ProductReference.CURRENT || !semanticEnabled)) {
                 return resolved(List.of(current), false);
@@ -90,7 +94,7 @@ public final class ProductReferenceResolver {
             return candidates.size() == 1 ? resolved(candidates, false) : unresolved(candidates, false, false);
         }
 
-        // Keep explicitly named products separate until every side of a comparison is resolved.
+        // 对比前逐个确认点名的商品，避免只解析到其中一款就回答整道对比题。
         var named = new LinkedHashMap<Long, ProductView>();
         for (String sku : skus) {
             List<ProductView> matches = products.resolve(sku).stream()
@@ -117,6 +121,7 @@ public final class ProductReferenceResolver {
     }
 
     private Resolution single(String query, String mention, ProductView current) {
+        // 紧跟型号的容量用于选择规格，问题里其他位置的容量可能是用户想核实的参数。
         String identity = CAPACITY.matcher(mention).replaceAll("").trim();
         String capacity = first(CAPACITY, mention);
         int mentionStart = query.indexOf(mention);
@@ -130,6 +135,7 @@ public final class ProductReferenceResolver {
         if (!exact.isEmpty()) return singleMatch(query, exact, current);
 
         var page = products.search(null, null, 0, CATALOG_LIMIT);
+        // 目录过大时请用户补充型号，防止只看前一页就选错商品。
         if (page == null || page.total() > CATALOG_LIMIT) return unresolved(List.of(), true, false);
         List<ProductView> compatible = page.items().stream()
                 .filter(p -> compatible(identity, requestedCapacity, p))
@@ -139,6 +145,7 @@ public final class ProductReferenceResolver {
         if (!near.isEmpty()) return singleMatch(query, near, current);
         if (!semanticEnabled || compatible.isEmpty()) return unresolved(List.of(), true, false);
 
+        // 云端只对商品目录描述评分，候选仍须通过本地型号和规格校验。
         List<ScoredDocument> ranked;
         try {
             ranked = reranker.rankScored(
@@ -159,7 +166,7 @@ public final class ProductReferenceResolver {
                 .toList();
         if (candidates.isEmpty()) return unresolved(List.of(), true, false);
         ProductView first = candidates.getFirst();
-        // A calibrated margin is meaningful only against a second score from this same request.
+        // 设置校准门槛后才允许自动选款。分差取自同一次请求，并检查同型号是否还有其他规格。
         if (minimumScoreGap > 0
                 && ranked.size() >= 2
                 && ranked.getFirst().id().equals(Long.toString(first.id()))
@@ -209,6 +216,7 @@ public final class ProductReferenceResolver {
     }
 
     private static boolean similarModel(String mention, ProductView candidate) {
+        // 型号数字及版本后缀一致后，才用一次字符编辑修正 Galxy 这样的错拼。
         String modelNumber = first(NUMBER, candidate.model());
         String modelVariant = first(VARIANT, candidate.model());
         return !modelNumber.isEmpty()

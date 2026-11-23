@@ -152,6 +152,7 @@ public final class CustomerWorkflow {
             input.put("query", state.query());
             input.put("pageProductId", state.pageProductId() == null ? 0L : state.pageProductId());
             input.put("selectedProductId", state.selectedProductId() == null ? 0L : state.selectedProductId());
+            // 商品片段属于本轮输入，进入工作流时清空上一轮检查点里的摘录。
             input.put("productReference", ProductReference.UNCLEAR.name());
             input.put("productMention", "");
             input.put("clientRequestId", state.clientRequestId() == null ? "" : state.clientRequestId());
@@ -340,6 +341,7 @@ public final class CustomerWorkflow {
     }
 
     private Result product(ServiceFlowState state, BiConsumer<String, Object> events) {
+        // 先确定商品范围。需要澄清时直接返回，等用户选择后再查说明书。
         var resolution = productReferences.resolve(
                 state.query(),
                 state.pageProductId(),

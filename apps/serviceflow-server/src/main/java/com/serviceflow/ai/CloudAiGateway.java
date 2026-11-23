@@ -142,6 +142,7 @@ public class CloudAiGateway implements AiGateway {
             ProductReference reference =
                     ProductReference.valueOf(response.path("reference").asText());
             String mention = response.path("mention").asText(null);
+            // 只接受用户确实说过的字词，型号纠错和商品 ID 由目录解析负责。
             if (reference == ProductReference.NEW
                     && (mention == null || mention.isBlank() || !message.contains(mention))) {
                 return new ProductRouting(intent, ProductReference.UNCLEAR, null);

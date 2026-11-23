@@ -228,6 +228,7 @@ async function send(
 }
 async function askCandidate(candidate: { id: number }, question: string) {
   if (!question || sending.value || sessionBusy.value) return
+  // 同型号的不同容量可能共用一个型号名，用商品 ID 继续回答原问题。
   input.value = question
   await send(undefined, candidate.id)
 }
