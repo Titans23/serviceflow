@@ -132,6 +132,35 @@ class ServiceFlowIntegrationIT {
         assertThat(response.getBody()).contains("HUAWEI Pura 80");
     }
 
+    @Test
+    void productTypoSwitchesTheManualScopeAndUnresolvedVariantClearsIt() {
+        var token = http.postForObject("/auth/guest", null, TokenResponse.class);
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(token.accessToken());
+        var session = http.postForObject(
+                "/chat/sessions", new HttpEntity<>(headers), com.serviceflow.model.ChatModels.Session.class);
+        String path = "/chat/sessions/" + session.publicId() + "/messages/stream";
+        var typo = new com.serviceflow.model.ChatModels.MessageRequest(
+                "Pua 80 的屏幕呢？", UUID.randomUUID().toString(), new com.serviceflow.model.ChatModels.PageContext(2L));
+        assertThat(http.postForObject(path, new HttpEntity<>(typo, headers), String.class))
+                .contains("\"productIds\":[1]");
+
+        var next = new com.serviceflow.model.ChatModels.MessageRequest(
+                "这款的屏幕呢？", UUID.randomUUID().toString(), null);
+        assertThat(http.postForObject(path, new HttpEntity<>(next, headers), String.class))
+                .contains("\"productIds\":[1]");
+
+        var missing = new com.serviceflow.model.ChatModels.MessageRequest(
+                "苹果16promax 的屏幕呢？", UUID.randomUUID().toString(), null);
+        assertThat(http.postForObject(path, new HttpEntity<>(missing, headers), String.class))
+                .contains("\"productIds\":[]", "没有找到对应商品");
+
+        var afterMissing = new com.serviceflow.model.ChatModels.MessageRequest(
+                "这款的屏幕呢？", UUID.randomUUID().toString(), null);
+        assertThat(http.postForObject(path, new HttpEntity<>(afterMissing, headers), String.class))
+                .contains("\"productIds\":[]");
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void sessionDeletionIsScopedToTheOwner(
@@ -945,6 +974,7 @@ class ServiceFlowIntegrationIT {
     @Test
     void workflowShortcutsKeepAuthorizationAndSkipModelCalls(
             @Autowired com.serviceflow.service.ProductService products,
+            @Autowired com.serviceflow.agent.ProductReferenceResolver productReferences,
             @Autowired ChatMemory memory,
             @Autowired com.fasterxml.jackson.databind.ObjectMapper json,
             @Autowired org.springframework.boot.autoconfigure.data.redis.RedisProperties redisProperties,
@@ -953,6 +983,7 @@ class ServiceFlowIntegrationIT {
         var workflow = new com.serviceflow.agent.CustomerWorkflow(
                 ai,
                 products,
+                productReferences,
                 orders,
                 org.mockito.Mockito.mock(com.serviceflow.service.ActionDecisionService.class),
                 org.mockito.Mockito.mock(com.serviceflow.service.TicketService.class),

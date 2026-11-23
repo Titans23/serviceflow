@@ -7,12 +7,14 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.agent.CustomerWorkflow;
 import com.serviceflow.agent.Intent;
+import com.serviceflow.agent.ProductReferenceResolver;
 import com.serviceflow.agent.ServiceFlowState;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatModels;
 import com.serviceflow.model.ProductModels;
 import com.serviceflow.rag.RagService;
+import com.serviceflow.rag.RerankerClient;
 import com.serviceflow.security.CurrentPrincipal;
 import com.serviceflow.service.AiAuditService;
 import com.serviceflow.service.ChatSessionService;
@@ -37,6 +39,8 @@ class ProductContextFlowTest {
     private final ChatMemory memory = mock(ChatMemory.class);
     private final CustomerWorkflow workflow = mock(CustomerWorkflow.class, CALLS_REAL_METHODS);
     private final AiGateway ai = mock(AiGateway.class);
+    private final SseEventWriter events = mock(SseEventWriter.class);
+    private final ChatRequestStore requests = mock(ChatRequestStore.class);
     private final AtomicReference<Long> remembered = new AtomicReference<>();
     private final AtomicReference<CustomerWorkflow.Result> result = new AtomicReference<>();
     private final AtomicReference<String> selectionPrompt = new AtomicReference<>();
@@ -44,9 +48,12 @@ class ProductContextFlowTest {
 
     @BeforeEach
     void setup() {
-        var requests = mock(ChatRequestStore.class);
         var sessions = mock(ChatSessionService.class);
         ReflectionTestUtils.setField(workflow, "products", products);
+        ReflectionTestUtils.setField(
+                workflow,
+                "productReferences",
+                new ProductReferenceResolver(products, mock(RerankerClient.class), false, "demo", 0));
         ReflectionTestUtils.setField(workflow, "rag", rag);
         ReflectionTestUtils.setField(workflow, "objectMapper", mapper);
         var apple = product(29, "APPLE-IP16-US-128", "iPhone 16");
@@ -56,6 +63,8 @@ class ProductContextFlowTest {
         when(products.resolve(anyString())).thenReturn(List.of());
         when(products.resolve("APPLE-IP16-US-128")).thenReturn(List.of(apple));
         when(products.resolve("SAMSUNG-S24-US-128")).thenReturn(List.of(samsung));
+        when(products.search(null, null, 0, 50))
+                .thenReturn(new ProductModels.ProductPage(List.of(apple, samsung), 0, 50, 2));
         when(memory.activeProduct(anyString(), anyString())).thenAnswer(call -> remembered.get());
         doAnswer(call -> {
                     remembered.set(null);
@@ -116,7 +125,7 @@ class ProductContextFlowTest {
                 mock(StringRedisTemplate.class),
                 mapper,
                 mock(AiAuditService.class),
-                mock(SseEventWriter.class));
+                events);
     }
 
     @Test
@@ -149,6 +158,57 @@ class ProductContextFlowTest {
     void pronounWithoutExplicitSwitchStillUsesSuppliedPage() {
         send("它的圆角算可视区吗？", 29L);
         verify(rag).search("它的圆角算可视区吗？", "PRODUCT_MANUAL", List.of(29L));
+    }
+
+    @Test
+    void typoUpdatesTheProductThatNextTurnSearches() {
+        send("GalxyS24 的屏幕呢？", 29L);
+        verify(rag).search("GalxyS24 的屏幕呢？", "PRODUCT_MANUAL", List.of(30L));
+        assertThat(remembered.get()).isEqualTo(30L);
+        send("这款屏幕的圆角呢？", null);
+        verify(rag).search("这款屏幕的圆角呢？", "PRODUCT_MANUAL", List.of(30L));
+    }
+
+    @Test
+    void missingVariantClearsOldProductAndSelectedIdAnswersOriginalQuestion() {
+        remembered.set(29L);
+        String query = "苹果16promax 的屏幕是什么规格？";
+        send(query, null);
+        assertThat(remembered.get()).isNull();
+        verifyNoInteractions(rag);
+        send("这款的屏幕呢？", null);
+        verifyNoInteractions(rag);
+
+        service.stream(
+                new CurrentPrincipal("owner", "CUSTOMER", 1L),
+                "session",
+                new ChatModels.MessageRequest(query, UUID.randomUUID().toString(), null, null, 30L),
+                new SseEmitter());
+        verify(rag).search(query, "PRODUCT_MANUAL", List.of(30L));
+        assertThat(remembered.get()).isEqualTo(30L);
+    }
+
+    @Test
+    void duplicateRequestReplaysCandidatesWithoutRunningTheWorkflow() throws Exception {
+        var completed = new ChatModels.Message(
+                "reply",
+                "ASSISTANT",
+                "请选择规格。",
+                "PRODUCT_QUERY",
+                "{\"productCandidates\":[{\"id\":30}]}",
+                java.time.Instant.now());
+        when(requests.begin(anyLong(), anyString(), anyString()))
+                .thenReturn(new ChatRequestStore.BeginResult(false, completed));
+        var emitter = new SseEmitter();
+        service.stream(
+                new CurrentPrincipal("owner", "CUSTOMER", 1L),
+                "session",
+                new ChatModels.MessageRequest(
+                        "Galaxy S24 的屏幕呢？", UUID.randomUUID().toString(), null),
+                emitter);
+        verify(events).send(emitter, "product_selection_required", mapper.readTree("[{\"id\":30}]"));
+        verify(workflow, never()).execute(any(), any());
+        verifyNoInteractions(rag);
     }
 
     private void send(String query, Long page) {

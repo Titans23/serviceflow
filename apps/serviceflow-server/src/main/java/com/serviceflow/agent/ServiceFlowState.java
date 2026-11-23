@@ -1,5 +1,6 @@
 package com.serviceflow.agent;
 
+import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.model.ChatModels;
 import com.serviceflow.security.CurrentPrincipal;
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ public final class ServiceFlowState {
     private final List<Long> productIds = new ArrayList<>();
     private String activeOrderNo;
     private ChatModels.OrderSelection orderSelection;
+    private Long selectedProductId;
+    private ProductReference productReference = ProductReference.UNCLEAR;
+    private String productMention;
+    private boolean clearProductContext;
     private int retryCount;
 
     public ServiceFlowState(String sessionId, CurrentPrincipal principal, String query, Long pageProductId) {
@@ -76,6 +81,35 @@ public final class ServiceFlowState {
 
     public void orderSelection(ChatModels.OrderSelection value) {
         orderSelection = value;
+    }
+
+    public Long selectedProductId() {
+        return selectedProductId;
+    }
+
+    public void selectedProductId(Long value) {
+        selectedProductId = value;
+    }
+
+    ProductReference productReference() {
+        return productReference;
+    }
+
+    String productMention() {
+        return productMention;
+    }
+
+    void productReference(ProductReference reference, String mention) {
+        productReference = reference;
+        productMention = mention;
+    }
+
+    public boolean clearProductContext() {
+        return clearProductContext;
+    }
+
+    void clearProductContext(boolean value) {
+        clearProductContext = value;
     }
 
     public int retryCount() {

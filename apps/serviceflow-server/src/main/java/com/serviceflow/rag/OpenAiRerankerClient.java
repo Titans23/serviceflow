@@ -59,6 +59,20 @@ public class OpenAiRerankerClient implements RerankerClient {
     @CircuitBreaker(name = "reranker")
     @Bulkhead(name = "reranker", type = Bulkhead.Type.SEMAPHORE)
     public List<String> rank(String query, List<Document> documents, int topN) {
+        return requestRanking(query, documents, topN).stream()
+                .map(ScoredDocument::id)
+                .toList();
+    }
+
+    @Override
+    @Retry(name = "reranker")
+    @CircuitBreaker(name = "reranker")
+    @Bulkhead(name = "reranker", type = Bulkhead.Type.SEMAPHORE)
+    public List<ScoredDocument> rankScored(String query, List<Document> documents, int topN) {
+        return requestRanking(query, documents, topN);
+    }
+
+    private List<ScoredDocument> requestRanking(String query, List<Document> documents, int topN) {
         if (query == null || query.isBlank() || documents == null || documents.isEmpty()) {
             throw new IllegalArgumentException("Reranker query and documents are required");
         }
@@ -103,7 +117,7 @@ public class OpenAiRerankerClient implements RerankerClient {
                 && !"disabled".equalsIgnoreCase(properties.apiKey());
     }
 
-    private List<String> parseRanking(JsonNode response, List<Document> documents, int limit) {
+    private List<ScoredDocument> parseRanking(JsonNode response, List<Document> documents, int limit) {
         JsonNode rows = response == null ? null : response.path("output").path("results");
         if (rows == null || !rows.isArray()) {
             rows = response == null ? null : response.path("results");
@@ -112,26 +126,27 @@ public class OpenAiRerankerClient implements RerankerClient {
             throw new IllegalStateException("Reranker endpoint returned no results");
         }
 
-        List<RankedDocument> ranked = new ArrayList<>();
+        List<ScoredDocument> ranked = new ArrayList<>();
         for (JsonNode row : rows) {
             // 大多数重排 API 返回候选数组中的下标；用该下标取回本地保留的分块 ID。
             int index = row.path("index").asInt(-1);
+            // Missing scores are unusable for an automatic product choice.
+            double score = row.path("relevance_score").asDouble(Double.NaN);
             if (index >= 0 && index < documents.size()) {
-                ranked.add(new RankedDocument(
-                        documents.get(index).id(), row.path("relevance_score").asDouble(0D)));
+                ranked.add(new ScoredDocument(documents.get(index).id(), score));
             } else if (row.hasNonNull("id")) {
-                ranked.add(new RankedDocument(
-                        row.path("id").asText(), row.path("relevance_score").asDouble(0D)));
+                ranked.add(new ScoredDocument(row.path("id").asText(), score));
             }
         }
-        // 按相关性分数从高到低排序；最终只向上层返回去重后的分块 ID，而不是模型响应下标。
-        ranked.sort(Comparator.comparingDouble(RankedDocument::score).reversed());
+        ranked.sort(Comparator.comparingDouble(
+                        (ScoredDocument document) -> Double.isFinite(document.score()) ? document.score() : 0D)
+                .reversed());
 
         Set<String> seen = new HashSet<>();
-        List<String> result = new ArrayList<>();
-        for (RankedDocument document : ranked) {
+        List<ScoredDocument> result = new ArrayList<>();
+        for (ScoredDocument document : ranked) {
             if (seen.add(document.id())) {
-                result.add(document.id());
+                result.add(document);
             }
             if (result.size() == limit) {
                 break;
@@ -142,6 +157,4 @@ public class OpenAiRerankerClient implements RerankerClient {
         }
         return result;
     }
-
-    private record RankedDocument(String id, double score) {}
 }

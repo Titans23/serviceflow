@@ -45,6 +45,47 @@ test('guest is redirected away from admin routes', async ({ page }) => {
   await expect(page).toHaveURL(/\/login\?redirect=/)
 })
 
+test('a restored candidate submits its exact product ID and the original question', async ({
+  page,
+}) => {
+  const question = 'Pura 80 的屏幕呢？'
+  const candidates = [
+    { ...product, id: 11, sku: 'PURA80-12-256' },
+    { ...product, id: 12, sku: 'PURA80-12-512' },
+  ]
+  await page.route('**/api/chat/sessions', (route) =>
+    route.fulfill({ json: [{ publicId: 'candidate-session', title: '商品咨询' }] }),
+  )
+  await page.route('**/api/chat/sessions/candidate-session/messages', (route) =>
+    route.fulfill({
+      json: [
+        { publicId: 'question', role: 'USER', content: question },
+        { publicId: 'later-question', role: 'USER', content: '这款的续航呢？' },
+        {
+          publicId: 'candidates',
+          role: 'ASSISTANT',
+          content: '请选择规格。',
+          metadataJson: JSON.stringify({
+            productCandidates: candidates,
+            productQuestion: question,
+          }),
+        },
+      ],
+    }),
+  )
+  await page.route('**/api/chat/sessions/candidate-session/messages/stream', (route) =>
+    route.fulfill({
+      contentType: 'text/event-stream',
+      body: 'event: token\ndata: 已选择 512 GB 的商品。\n\nevent: done\ndata: {}\n\n',
+    }),
+  )
+  await page.goto('/chat?sessionId=candidate-session')
+  const request = page.waitForRequest('**/api/chat/sessions/candidate-session/messages/stream')
+  await page.getByRole('button', { name: /PURA80-12-512/ }).click()
+  expect((await request).postDataJSON()).toMatchObject({ message: question, selectedProductId: 12 })
+  await expect(page.getByText('已选择 512 GB 的商品。')).toBeVisible()
+})
+
 for (const policyFirst of [false, true]) {
   test(`page product hint follows explicit switches (policy first: ${policyFirst})`, async ({
     page,

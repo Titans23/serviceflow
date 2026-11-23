@@ -40,6 +40,20 @@ class CloudAiGatewayTest {
     }
 
     @Test
+    void productRoutingKeepsOnlyMentionsCopiedFromTheUserMessage() {
+        String question = "苹果16promax 的屏幕呢？";
+        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"苹果16promax\"}");
+        assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
+                .isEqualTo(new AiGateway.ProductRouting(
+                        Intent.PRODUCT_QUERY, AiGateway.ProductReference.NEW, "苹果16promax"));
+
+        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"iPhone 16 Pro Max\"}");
+        assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
+                .isEqualTo(
+                        new AiGateway.ProductRouting(Intent.PRODUCT_QUERY, AiGateway.ProductReference.UNCLEAR, null));
+    }
+
+    @Test
     void streamsOnlyTextDeltas() {
         when(streamingChatModel.stream(
                         org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))

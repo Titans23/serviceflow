@@ -114,13 +114,9 @@ public final class ChatServiceImpl implements ChatService {
                     request.pageContext() != null && request.pageContext().productId() != null
                             ? request.pageContext().productId()
                             : memory.activeProduct(principal.subject(), sessionId);
-            Long resolvedContext = workflow.resolveRememberedProduct(request.message(), contextProduct);
-            if (contextProduct != null && resolvedContext == null) {
-                // An explicit switch (including an unknown SKU) invalidates the old reference until resolved.
-                memory.clearActiveProduct(principal.subject(), sessionId);
-            }
             state = new ServiceFlowState(
-                    sessionId, principal, request.message(), resolvedContext, request.clientRequestId());
+                    sessionId, principal, request.message(), contextProduct, request.clientRequestId());
+            state.selectedProductId(request.selectedProductId());
             state.activeOrderNo(
                     request.pageContext() == null ? null : request.pageContext().orderNo());
             state.orderSelection(request.orderSelection());
@@ -130,12 +126,20 @@ public final class ChatServiceImpl implements ChatService {
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
                 if ("order".equals(name)) businessMetadata.put("order", data);
                 if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
+                if ("product_selection_required".equals(name)
+                        && data instanceof List<?> candidates
+                        && !candidates.isEmpty()) {
+                    businessMetadata.put("productCandidates", candidates);
+                    businessMetadata.put("productQuestion", request.message());
+                }
                 if ("action_required".equals(name)) businessMetadata.put("action", data);
                 events.send(emitter, name, data);
             });
             if (state.productIds().size() == 1) {
                 memory.setActiveProduct(
                         principal.subject(), sessionId, state.productIds().getFirst());
+            } else if (contextProduct != null && state.clearProductContext()) {
+                memory.clearActiveProduct(principal.subject(), sessionId);
             }
             // 生成最终回答；生成期间每个文本片段已经通过 token 事件实时发送给前端。
             String answer = generateAnswer(state, result, request.message(), emitter, startedNanos);
@@ -150,7 +154,12 @@ public final class ChatServiceImpl implements ChatService {
                         sessionId,
                         request.clientRequestId(),
                         new ChatMemory.CompletedResponse(
-                                messageId, answer, state.intent().name(), result.citations(), result.degraded()));
+                                messageId,
+                                answer,
+                                state.intent().name(),
+                                result.citations(),
+                                result.degraded(),
+                                metadata));
             } else {
                 // 登录用户将助手消息写入 MySQL，并把 chat_request 状态改为 COMPLETED。
                 requests.complete(
@@ -162,7 +171,11 @@ public final class ChatServiceImpl implements ChatService {
                         metadata);
             }
             // 无论访客还是登录用户，都在 Redis 近期对话中保存完整助手回答，供下一轮构造上下文。
-            memory.append(principal.subject(), sessionId, "ASSISTANT", answer);
+            if (databaseId == null && businessMetadata.containsKey("productCandidates")) {
+                memory.append(principal.subject(), sessionId, "ASSISTANT", answer, metadata);
+            } else {
+                memory.append(principal.subject(), sessionId, "ASSISTANT", answer);
+            }
             audit.success(
                     databaseId, state, request.message(), answer, result.citations(), result.degraded(), startedNanos);
             audited = true;
@@ -262,6 +275,7 @@ public final class ChatServiceImpl implements ChatService {
                         "citations",
                         completed.citations()));
         events.send(emitter, "token", completed.answer());
+        replayProductCandidates(emitter, completed.metadataJson());
         events.send(
                 emitter,
                 "done",
@@ -279,6 +293,8 @@ public final class ChatServiceImpl implements ChatService {
         events.send(emitter, "token", completed.content());
         try {
             var metadata = objectMapper.readTree(completed.metadataJson() == null ? "{}" : completed.metadataJson());
+            if (metadata.hasNonNull("productCandidates"))
+                events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
             if (metadata.hasNonNull("order")) events.send(emitter, "order", metadata.get("order"));
             if (metadata.hasNonNull("orderCandidates"))
                 events.send(emitter, "order_selection_required", metadata.get("orderCandidates"));
@@ -299,6 +315,17 @@ public final class ChatServiceImpl implements ChatService {
                         "replayed",
                         true));
         emitter.complete();
+    }
+
+    private void replayProductCandidates(SseEmitter emitter, String metadataJson) {
+        if (metadataJson == null) return;
+        try {
+            var metadata = objectMapper.readTree(metadataJson);
+            if (metadata.hasNonNull("productCandidates"))
+                events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
+            // Historical guest responses may lack structured metadata.
+        }
     }
 
     private void acquireGuestLock(String key) {

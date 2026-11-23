@@ -68,7 +68,12 @@ public final class ChatSessionServiceImpl implements ChatSessionService {
         Instant now = Instant.now();
         return memory.history(principal.subject(), sessionId).stream()
                 .map(item -> new ChatModels.Message(
-                        UUID.randomUUID().toString(), item.get("role"), item.get("content"), null, "{}", now))
+                        UUID.randomUUID().toString(),
+                        item.get("role"),
+                        item.get("content"),
+                        null,
+                        item.getOrDefault("metadataJson", "{}"),
+                        now))
                 .toList();
     }
 

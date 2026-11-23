@@ -10,5 +10,9 @@ public interface RerankerClient {
      */
     List<String> rank(String query, List<Document> documents, int topN);
 
+    List<ScoredDocument> rankScored(String query, List<Document> documents, int topN);
+
     record Document(String id, String text) {}
+
+    record ScoredDocument(String id, double score) {}
 }

@@ -8,6 +8,18 @@ import java.util.function.Consumer;
 public interface AiGateway {
     Intent classify(String message);
 
+    default ProductRouting classifyProductReference(String message, String routingContext) {
+        return new ProductRouting(classify(routingContext + message), ProductReference.UNCLEAR, null);
+    }
+
+    enum ProductReference {
+        CURRENT,
+        NEW,
+        UNCLEAR
+    }
+
+    record ProductRouting(Intent intent, ProductReference reference, String mention) {}
+
     OrderPlan planOrder(
             String message,
             String today,

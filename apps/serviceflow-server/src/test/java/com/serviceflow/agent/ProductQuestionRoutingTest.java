@@ -17,22 +17,11 @@ class ProductQuestionRoutingTest {
     }
 
     @Test
-    void explicitSkuAndModelSwitchCannotReusePreviousProduct() {
-        var old = product("HUAWEI-PURA80-12-256", "Pura 80");
-        assertThat(CustomerWorkflow.retainsRememberedProduct("改问 HUAWEI-NOVA14PRO-256 的充电", old, List.of()))
-                .isFalse();
-        assertThat(CustomerWorkflow.retainsRememberedProduct("UNKNOWN-PHONE-999 是否支持？", old, List.of()))
-                .isFalse();
-        assertThat(CustomerWorkflow.retainsRememberedProduct(
-                        "改问 nova 14 Pro", old, List.of(product("HUAWEI-NOVA14PRO-256", "nova 14 Pro"))))
-                .isFalse();
-        assertThat(CustomerWorkflow.retainsRememberedProduct("它支持无线充电吗？", old, List.of()))
-                .isTrue();
-        assertThat(CustomerWorkflow.retainsRememberedProduct("Pura 80 的屏幕呢？", old, List.of(old)))
-                .isTrue();
+    void extractsCompleteModelNamesApartFromSkus() {
         assertThat(CustomerWorkflow.modelMentions("HUAWEI-PURA80-12-256 支持什么？")).isEmpty();
         assertThat(CustomerWorkflow.modelMentions("HUAWEI-PURA80-12-256 和 nova 14 Pro 比较"))
                 .containsExactly("nova 14 Pro");
+        assertThat(CustomerWorkflow.modelMentions("iPhone 16 Pro Max 的屏幕呢")).containsExactly("iPhone 16 Pro Max");
     }
 
     @Test
@@ -62,6 +51,8 @@ class ProductQuestionRoutingTest {
                     .isEqualTo(Intent.PRODUCT_QUERY);
         }
         assertThat(CustomerWorkflow.prioritizePageProduct(Intent.KNOWLEDGE_QUERY, 1, "保修政策适用哪些地区？"))
+                .isEqualTo(Intent.KNOWLEDGE_QUERY);
+        assertThat(CustomerWorkflow.prioritizePageProduct(Intent.PRODUCT_QUERY, 1, "这款的保修政策是什么？"))
                 .isEqualTo(Intent.KNOWLEDGE_QUERY);
         assertThat(CustomerWorkflow.prioritizePageProduct(Intent.ORDER_QUERY, 1, "查询订单"))
                 .isEqualTo(Intent.ORDER_QUERY);

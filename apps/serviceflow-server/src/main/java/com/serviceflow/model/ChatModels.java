@@ -24,7 +24,13 @@ public final class ChatModels {
                                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
                     String clientRequestId,
             PageContext pageContext,
-            @jakarta.validation.Valid OrderSelection orderSelection) {
+            @jakarta.validation.Valid OrderSelection orderSelection,
+            @jakarta.validation.constraints.Positive Long selectedProductId) {
+        public MessageRequest(
+                String message, String clientRequestId, PageContext pageContext, OrderSelection orderSelection) {
+            this(message, clientRequestId, pageContext, orderSelection, null);
+        }
+
         public MessageRequest(String message, String clientRequestId, PageContext pageContext) {
             this(message, clientRequestId, pageContext, null);
         }

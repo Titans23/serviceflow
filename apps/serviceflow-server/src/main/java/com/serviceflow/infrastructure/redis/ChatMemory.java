@@ -62,10 +62,16 @@ public final class ChatMemory {
     }
 
     public void append(String subject, String sessionId, String role, String content) {
+        append(subject, sessionId, role, content, null);
+    }
+
+    public void append(String subject, String sessionId, String role, String content, String metadataJson) {
         try {
             String key = memoryKey(subject, sessionId);
-            redis.opsForList()
-                    .rightPush(key, objectMapper.writeValueAsString(Map.of("role", role, "content", content)));
+            Map<String, String> message = metadataJson == null
+                    ? Map.of("role", role, "content", content)
+                    : Map.of("role", role, "content", content, "metadataJson", metadataJson);
+            redis.opsForList().rightPush(key, objectMapper.writeValueAsString(message));
             redis.opsForList().trim(key, -MAX_HISTORY_SIZE, -1);
             redis.expire(key, SESSION_TTL);
         } catch (Exception exception) {
@@ -204,5 +210,10 @@ public final class ChatMemory {
     }
 
     public record CompletedResponse(
-            String messageId, String answer, String intent, List<String> citations, boolean degraded) {}
+            String messageId,
+            String answer,
+            String intent,
+            List<String> citations,
+            boolean degraded,
+            String metadataJson) {}
 }

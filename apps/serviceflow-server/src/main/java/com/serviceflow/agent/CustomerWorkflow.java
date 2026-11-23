@@ -7,6 +7,7 @@ import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
+import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ProductModels;
@@ -20,7 +21,6 @@ import com.serviceflow.service.TicketService;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,11 +54,13 @@ public final class CustomerWorkflow {
     private static final Logger log = LoggerFactory.getLogger(CustomerWorkflow.class);
     private static final Pattern ORDER_NO = Pattern.compile("SF\\d{12,}", Pattern.CASE_INSENSITIVE);
     private static final Pattern MODEL = Pattern.compile(
-            "(?:[A-Za-z]+\\s+)*[A-Za-z]+\\s*\\d+(?:\\s*(?:Pro\\+?|Ultra|Max|Air))?", Pattern.CASE_INSENSITIVE);
+            "(?:[A-Za-z]+\\s+)*[A-Za-z]+\\s*\\d+(?:\\s*(?:Pro\\s*Max|Pro\\+?|Ultra|Plus|Max|Air|Mini))?",
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern SKU = Pattern.compile(
             "(?<![A-Za-z0-9])[A-Za-z0-9]+(?:-[A-Za-z0-9]+){2,}(?![A-Za-z0-9])", Pattern.CASE_INSENSITIVE);
     private final AiGateway ai;
     private final ProductService products;
+    private final ProductReferenceResolver productReferences;
     private final OrderConversation orderConversation;
     private final ActionDecisionService actions;
     private final TicketService tickets;
@@ -71,6 +73,7 @@ public final class CustomerWorkflow {
     public CustomerWorkflow(
             AiGateway ai,
             ProductService products,
+            ProductReferenceResolver productReferences,
             OrderService orders,
             ActionDecisionService actions,
             TicketService tickets,
@@ -81,6 +84,7 @@ public final class CustomerWorkflow {
             StringRedisTemplate redis) {
         this.ai = ai;
         this.products = products;
+        this.productReferences = productReferences;
         this.orderConversation = new OrderConversation(ai, orders, memory, actions);
         this.actions = actions;
         this.tickets = tickets;
@@ -101,17 +105,15 @@ public final class CustomerWorkflow {
                     .build();
             this.graph = new StateGraph<>(WorkflowGraphState.SCHEMA, WorkflowGraphState::new)
                     // 所有请求先经过 router：识别意图并把结果写入图状态的 intent 字段。
-                    .addNode(
-                            "router",
-                            node_async(s -> Map.of("intent", routeIntent(s).name())))
+                    .addNode("router", node_async(this::route))
                     .addNode("product", node_async(s -> branch(s, this::product)))
                     .addNode("knowledge", node_async(s -> branch(s, this::knowledge)))
                     .addNode("order", node_async(s -> branch(s, this::order)))
                     .addNode("complaint", node_async(s -> branch(s, this::complaint)))
                     .addNode(
                             "chat",
-                            node_async(
-                                    s -> result(new Result("您好，我可以帮助您了解商品、比较型号、查询订单或处理售后问题。", List.of()), List.of())))
+                            node_async(s ->
+                                    result(new Result("您好，我可以帮助您了解商品、比较型号、查询订单或处理售后问题。", List.of()), List.of(), false)))
                     .addEdge(START, "router")
                     .addConditionalEdges(
                             "router",
@@ -149,6 +151,9 @@ public final class CustomerWorkflow {
                             : state.principal().customerId());
             input.put("query", state.query());
             input.put("pageProductId", state.pageProductId() == null ? 0L : state.pageProductId());
+            input.put("selectedProductId", state.selectedProductId() == null ? 0L : state.selectedProductId());
+            input.put("productReference", ProductReference.UNCLEAR.name());
+            input.put("productMention", "");
             input.put("clientRequestId", state.clientRequestId() == null ? "" : state.clientRequestId());
             input.put("activeOrderNo", state.activeOrderNo() == null ? "" : state.activeOrderNo());
             input.put(
@@ -172,6 +177,7 @@ public final class CustomerWorkflow {
             Intent intent = Intent.valueOf(finalState.intent());
             state.intent(intent);
             state.productIds().addAll(finalState.productIds());
+            state.clearProductContext(finalState.clearProductContext());
             events.accept(
                     "meta",
                     Map.of(
@@ -211,16 +217,27 @@ public final class CustomerWorkflow {
 
     private Map<String, Object> branch(WorkflowGraphState graphState, Branch branch) {
         List<Event> events = new ArrayList<>();
-        Result result =
-                branch.apply(graphState.runtime(), (name, value) -> events.add(new Event(name, writeJson(value))));
-        return result(result, events);
+        ServiceFlowState runtime = graphState.runtime();
+        Result result = branch.apply(runtime, (name, value) -> events.add(new Event(name, writeJson(value))));
+        return result(result, events, runtime.clearProductContext());
+    }
+
+    private Map<String, Object> route(WorkflowGraphState state) {
+        ServiceFlowState runtime = state.runtime();
+        Intent intent = routeIntent(state, runtime);
+        return Map.of(
+                "intent",
+                intent.name(),
+                "productReference",
+                runtime.productReference().name(),
+                "productMention",
+                runtime.productMention() == null ? "" : runtime.productMention());
     }
 
     /**
      * 先由 AI 判断用户问题的基础意图，再结合当前商品页面和型号信息进行项目规则修正。
      */
-    private Intent routeIntent(WorkflowGraphState state) {
-        ServiceFlowState runtime = state.runtime();
+    private Intent routeIntent(WorkflowGraphState state, ServiceFlowState runtime) {
         if (runtime.orderSelection() != null || OrderConversation.isSelection(state.query())) return Intent.ORDER_QUERY;
         boolean pendingOrders = !runtime.principal().guest()
                 && memory.orderCandidates(runtime.principal().subject(), runtime.sessionId()) != null;
@@ -230,13 +247,21 @@ public final class CustomerWorkflow {
         if (OrderConversation.isExactLookup(state.query())
                 || (!pendingOrders && currentOrder && OrderConversation.isCurrentLookup(state.query())))
             return Intent.ORDER_QUERY;
+        if (runtime.selectedProductId() != null) return Intent.PRODUCT_QUERY;
         // 云模式调用大模型分类；演示模式使用关键词规则分类。
-        String classificationQuery = state.pageProductId() > 0
-                ? "当前商品：" + products.get(state.pageProductId()).name() + "。\n用户问题：" + state.query()
-                : state.query();
-        if (pendingOrders) classificationQuery = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationQuery;
-        else if (currentOrder) classificationQuery = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationQuery;
-        Intent classified = ai.classify(classificationQuery);
+        var contextProduct = productReferences.find(runtime.pageProductId());
+        String classificationContext = contextProduct == null ? "" : "当前商品：" + contextProduct.name() + "。\n";
+        if (pendingOrders) classificationContext = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationContext;
+        else if (currentOrder) classificationContext = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationContext;
+        Intent classified;
+        if (productReferences.semanticEnabled()) {
+            var routing = ai.classifyProductReference(state.query(), classificationContext);
+            classified = routing.intent();
+            runtime.productReference(routing.reference(), routing.mention());
+        } else {
+            classified = ai.classify(
+                    classificationContext.isEmpty() ? state.query() : classificationContext + "用户问题：" + state.query());
+        }
         if (state.query().contains("退货")
                 && currentOrder
                 && !state.query().contains("政策")
@@ -255,6 +280,8 @@ public final class CustomerWorkflow {
                 && (state.pageProductId() > 0
                         || !modelMentions(state.query()).isEmpty()
                         || !skuMentions(state.query()).isEmpty()
+                        || ProductReferenceResolver.hasHanModel(state.query())
+                        || runtime.productReference() == ProductReference.NEW
                         || !products.resolve(state.query()).isEmpty())) {
             return Intent.PRODUCT_QUERY;
         }
@@ -268,6 +295,7 @@ public final class CustomerWorkflow {
         if (query == null || query.isBlank()) {
             return classified;
         }
+        if (query.contains("政策")) return Intent.KNOWLEDGE_QUERY;
         return PAGE_PRODUCT_REFERENCE.matcher(query).find()
                         || !modelMentions(query).isEmpty()
                 ? Intent.PRODUCT_QUERY
@@ -299,67 +327,39 @@ public final class CustomerWorkflow {
         return mentions;
     }
 
-    public Long resolveRememberedProduct(String query, Long rememberedId) {
-        if (rememberedId == null) {
-            return null;
-        }
-        List<ProductModels.ProductView> mentioned = modelMentions(query).stream()
-                .flatMap(model -> products.resolve(model).stream())
-                .toList();
-        return retainsRememberedProduct(query, products.get(rememberedId), mentioned) ? rememberedId : null;
-    }
-
-    static boolean retainsRememberedProduct(
-            String query, ProductModels.ProductView remembered, List<ProductModels.ProductView> mentioned) {
-        // An explicit SKU (including an unknown one) must be resolved without silently reusing old context.
-        return skuMentions(query).isEmpty()
-                && mentioned.stream().allMatch(product -> product.model().equalsIgnoreCase(remembered.model()));
-    }
-
-    private Map<String, Object> result(Result result, List<Event> events) {
+    private Map<String, Object> result(Result result, List<Event> events, boolean clearProductContext) {
         return Map.of(
                 "answer", result.answer(),
                 "citations", result.citations(),
                 "degraded", result.degraded(),
                 "groundingContext", result.groundingContext() == null ? "" : result.groundingContext(),
                 "productIds", result.productIds(),
+                "clearProductContext", clearProductContext,
                 "eventNames", events.stream().map(Event::name).toList(),
                 "eventPayloads", events.stream().map(Event::payload).toList());
     }
 
     private Result product(ServiceFlowState state, BiConsumer<String, Object> events) {
-        LinkedHashSet<Long> ids = new LinkedHashSet<>();
-        if (state.pageProductId() != null) {
-            ids.add(state.pageProductId());
-        }
-        skuMentions(state.query())
-                .forEach(mention -> products.resolve(mention).forEach(product -> ids.add(product.id())));
-        modelMentions(state.query())
-                .forEach(mention -> products.resolve(mention).forEach(product -> ids.add(product.id())));
-        if (ids.isEmpty()) {
-            List<ProductModels.ProductView> candidates = products.resolve(state.query());
-            if (candidates.size() == 1) {
-                ids.add(candidates.getFirst().id());
-            } else {
-                events.accept("product_selection_required", candidates);
-                return new Result(
-                        candidates.isEmpty() ? "没有找到对应商品，请提供 SKU、型号或从商品页发起咨询。" : "找到多个可能的商品，请先选择具体型号。", List.of());
+        var resolution = productReferences.resolve(
+                state.query(),
+                state.pageProductId(),
+                state.selectedProductId(),
+                state.productReference(),
+                state.productMention());
+        state.clearProductContext(resolution.clearCurrent());
+        if (!resolution.resolved()) {
+            events.accept("product_selection_required", resolution.products());
+            String reply = "请确认你指的是哪一款商品。";
+            if (resolution.products().isEmpty()) {
+                reply = resolution.degraded() ? "暂时无法确认对应商品，请提供 SKU 或完整型号。" : "没有找到对应商品，请提供 SKU、型号或从商品页发起咨询。";
             }
+            return new Result(reply, List.of(), resolution.degraded(), null);
         }
-        boolean compare = isProductComparison(
-                state.query(), ids.stream().map(products::get).toList());
-        if (!compare && ids.size() > 1) {
-            if (state.pageProductId() == null) {
-                events.accept(
-                        "product_selection_required",
-                        ids.stream().map(products::get).toList());
-                return new Result("该型号有多个规格，请先选择具体商品。", List.of());
-            }
-            ids.clear();
-            ids.add(state.pageProductId());
-        }
+        List<Long> ids = resolution.products().stream()
+                .map(ProductModels.ProductView::id)
+                .toList();
         state.productIds().addAll(ids);
-        if (compare) {
+        if (resolution.comparison()) {
             if (ids.size() < 2) {
                 return new Result("请明确选择至少两个同类别商品后再比较。", List.of(), ids.stream().toList());
             }
@@ -372,7 +372,7 @@ public final class CustomerWorkflow {
             return new Result(
                     "已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of(), ids.stream().toList());
         }
-        ProductModels.ProductView product = products.get(ids.getFirst());
+        ProductModels.ProductView product = resolution.products().getFirst();
         // 只检索当前商品的有效说明书分块，避免其他型号的文档混入回答依据。
         RagService.SearchResult docs = rag.search(state.query(), "PRODUCT_MANUAL", List.of(product.id()));
         events.accept("rag_evidence", evidenceTrace(docs));
@@ -403,10 +403,9 @@ public final class CustomerWorkflow {
     }
 
     static boolean isProductComparison(String query, List<ProductModels.ProductView> candidates) {
-        boolean requested = query.contains("对比") || query.contains("区别") || query.contains("比较");
         // Multiple capacity SKUs inferred from one model name do not imply a cross-product comparison.
         // A question about a device's inner/outer screen or left/right earbud still needs its manual.
-        return requested
+        return requestsProductComparison(query)
                 && (candidates.stream()
                                         .map(ProductModels.ProductView::model)
                                         .distinct()
@@ -417,6 +416,10 @@ public final class CustomerWorkflow {
                                         .distinct()
                                         .count()
                                 > 1);
+    }
+
+    static boolean requestsProductComparison(String query) {
+        return query.contains("对比") || query.contains("区别") || query.contains("比较");
     }
 
     static List<Map<String, String>> evidenceTrace(RagService.SearchResult result) {
@@ -550,6 +553,10 @@ public final class CustomerWorkflow {
                 Map.entry("customerId", Channels.base(() -> 0L)),
                 Map.entry("query", Channels.base(() -> "")),
                 Map.entry("pageProductId", Channels.base(() -> 0L)),
+                Map.entry("selectedProductId", Channels.base(() -> 0L)),
+                Map.entry("productReference", Channels.base(() -> ProductReference.UNCLEAR.name())),
+                Map.entry("productMention", Channels.base(() -> "")),
+                Map.entry("clearProductContext", Channels.base(() -> false)),
                 Map.entry("clientRequestId", Channels.base(() -> "")),
                 Map.entry("activeOrderNo", Channels.base(() -> "")),
                 Map.entry("orderSelectionQuery", Channels.base(() -> "")),
@@ -588,6 +595,10 @@ public final class CustomerWorkflow {
 
         boolean degraded() {
             return value("degraded", false);
+        }
+
+        boolean clearProductContext() {
+            return value("clearProductContext", false);
         }
 
         String groundingContext() {
@@ -635,6 +646,13 @@ public final class CustomerWorkflow {
                     requestId.isBlank() ? null : requestId);
             String orderNo = value("activeOrderNo", "");
             runtime.activeOrderNo(orderNo.isBlank() ? null : orderNo);
+            Number selectedId =
+                    value("selectedProductId").map(Number.class::cast).orElse(0L);
+            runtime.selectedProductId(selectedId.longValue() > 0 ? selectedId.longValue() : null);
+            String mention = value("productMention", "");
+            runtime.productReference(
+                    ProductReference.valueOf(value("productReference", ProductReference.UNCLEAR.name())),
+                    mention.isBlank() ? null : mention);
             String selection = value("orderSelectionQuery", "");
             if (!selection.isBlank())
                 runtime.orderSelection(

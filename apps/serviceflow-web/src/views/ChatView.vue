@@ -63,6 +63,8 @@ async function select(id: string, useEntryHint = false) {
   for (const message of history) {
     try {
       const metadata = JSON.parse(message.metadataJson || '{}')
+      message.candidates = metadata.productCandidates
+      message.candidateQuestion = metadata.productQuestion
       message.orderCandidates = metadata.orderCandidates
       message.order = metadata.order
       message.action = metadata.action
@@ -149,7 +151,10 @@ async function removeSessions(id?: string) {
     await select(sessions.value[0]?.publicId ?? '')
   }
 }
-async function send(orderSelection?: { queryId: string; orderNo: string }) {
+async function send(
+  orderSelection?: { queryId: string; orderNo: string },
+  selectedProductId?: number,
+) {
   if (!input.value.trim() || sending.value || sessionBusy.value) return
   const text = input.value
   sending.value = true
@@ -160,7 +165,12 @@ async function send(orderSelection?: { queryId: string; orderNo: string }) {
     action.value = null
     followOutput.value = true
     messages.value.push({ role: 'USER', content: text })
-    const assistant: any = { role: 'ASSISTANT', content: '', comparison: null }
+    const assistant: any = {
+      role: 'ASSISTANT',
+      content: '',
+      comparison: null,
+      candidateQuestion: text,
+    }
     messages.value.push(assistant)
     await stream(
       `/chat/sessions/${current.value}/messages/stream`,
@@ -173,6 +183,7 @@ async function send(orderSelection?: { queryId: string; orderNo: string }) {
             ? { productId: entryPageContext.productId }
             : null,
         orderSelection,
+        selectedProductId,
       },
       (name, data) => {
         if (name === 'progress') assistant.progress = data.message
@@ -215,9 +226,10 @@ async function send(orderSelection?: { queryId: string; orderNo: string }) {
     sending.value = false
   }
 }
-async function askCandidate(candidate: any) {
-  input.value = `请介绍 ${candidate.model}`
-  await send()
+async function askCandidate(candidate: { id: number }, question: string) {
+  if (!question || sending.value || sessionBusy.value) return
+  input.value = question
+  await send(undefined, candidate.id)
 }
 async function chooseOrder(queryId: string, orderNo: string) {
   input.value = `选择订单 ${orderNo}`
@@ -457,8 +469,11 @@ onMounted(() =>
             :closable="false"
           />
           <div v-if="m.candidates?.length">
-            <el-button v-for="p in m.candidates" :key="p.id" @click="askCandidate(p)"
-              >{{ p.name }}（{{ p.model }}）</el-button
+            <el-button
+              v-for="p in m.candidates"
+              :key="p.id"
+              @click="askCandidate(p, m.candidateQuestion)"
+              >{{ p.name }}（{{ p.sku }}）</el-button
             >
           </div>
           <table v-if="m.comparison" class="spec-table">
