@@ -43,6 +43,7 @@ final class ProductComparisonConversation {
         }
         List<TargetMatch> resolved;
         if (modelTargets && references.semanticEnabled() && targets.size() > 1) {
+            // 各商品可以并行检索。按提交顺序收集结果，候选卡位置和最终表格列仍对应原文顺序。
             try (var lookups = Executors.newVirtualThreadPerTaskExecutor()) {
                 var tasks = targets.stream()
                         .map(target -> CompletableFuture.supplyAsync(
@@ -65,6 +66,7 @@ final class ProductComparisonConversation {
             }
             items.add(item);
         }
+        // 用户要求比较的数量超过提取结果时，为缺少名称的商品保留可单独补充的位置。
         while (items.size() < Math.max(2, expected)) {
             items.add(new ComparisonTarget("第 " + (items.size() + 1) + " 款商品", null, List.of()));
         }
@@ -84,6 +86,7 @@ final class ProductComparisonConversation {
         Integer index = selection.targetIndex();
         Long selectedId = selection.productId();
         String term = selection.term() == null ? "" : selection.term().strip();
+        // 先比较只取当前确认的商品。保留待确认项，用户看完部分结果后还能继续补充。
         if (selection.compareConfirmed() && index == null && selectedId == null && term.isEmpty()) {
             return finishOrAsk(comparison, true, false, events);
         }
@@ -133,6 +136,7 @@ final class ProductComparisonConversation {
         items.set(index, match.target());
         var updated = new PendingComparison(comparison.comparisonId(), List.copyOf(items));
         if (!memory.updatePendingComparison(subject, sessionId, comparison, updated)) {
+            // 有并发更新时，以 Redis 里的最新清单为准，避免把旧卡片上的选择套到新状态上。
             var latest = memory.pendingComparison(subject, sessionId);
             return latest != null && latest.comparisonId().equals(comparison.comparisonId())
                     ? ask(latest, "比较选项已更新，请根据最新清单操作。", false, events)
@@ -152,6 +156,7 @@ final class ProductComparisonConversation {
                 .map(ComparisonProduct::id)
                 .toList();
         int total = comparison.targets().size();
+        // 有待确认项时先发候选卡。用户主动选择部分比较时，仍需至少两款才能生成表格。
         if (ids.size() < 2 || (!compareConfirmed && ids.size() < total)) {
             return ask(
                     comparison, countMessage(ids.size(), total) + (degraded ? " 部分商品暂时无法核对。" : ""), degraded, events);

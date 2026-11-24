@@ -85,6 +85,7 @@ public class CloudAiGateway implements AiGateway {
             String message, LocalDate today, boolean hasCurrentOrder, List<OrderModels.Summary> candidates) {
         if (!orderToolsEnabled) return Optional.empty();
         try {
+            // 保留候选顺序和用户能用来区分订单的字段。候选序号与订单号的对应关系留在服务端。
             var summaries = candidates.stream()
                     .map(item -> Map.of(
                             "status", item.status(),
@@ -108,6 +109,7 @@ public class CloudAiGateway implements AiGateway {
                     hasCurrentOrder,
                     "candidates",
                     summaries));
+            // Spring AI 只返回调用请求。后续的身份校验、查询和回应由订单会话处理。
             var options = OpenAiChatOptions.builder()
                     .tools(OrderTools.DEFINITIONS)
                     .internalToolExecutionEnabled(false)
@@ -151,6 +153,7 @@ public class CloudAiGateway implements AiGateway {
             var comparison = response.path("comparison");
             var extracted = response.path("targets");
             if (!comparison.isBoolean() || !extracted.isArray()) return Optional.empty();
+            // 模型只能摘录用户说过的名称。具体商品 ID 由后续目录匹配决定。
             List<ProductTarget> targets = new ArrayList<>();
             for (var target : extracted) {
                 ProductReference reference =
@@ -169,6 +172,7 @@ public class CloudAiGateway implements AiGateway {
                     return Optional.empty();
                 }
                 targets.add(new ProductTarget(reference, mention));
+                // 多保留一项，让比较分支能提示超出上限。
                 if (targets.size() > ProductModels.MAX_CHAT_COMPARISON) break;
             }
             return Optional.of(new ProductRouting(intent, comparison.booleanValue(), List.copyOf(targets)));

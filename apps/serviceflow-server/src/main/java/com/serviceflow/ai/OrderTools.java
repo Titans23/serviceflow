@@ -57,6 +57,7 @@ final class OrderTools {
 
     static OrderCommand parse(ObjectMapper mapper, ToolCall call, String message, List<OrderModels.Summary> candidates)
             throws JsonProcessingException {
+        // 工具定义约束模型返回的格式。这里校验实际参数，再把合法调用转换成业务命令。
         JsonNode arguments = mapper.reader()
                 .with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
                 .with(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)

@@ -29,6 +29,7 @@ final class OrderSearchRules {
         String filter = normalize(message)
                 .replaceFirst("^(?:请帮我|帮我|请)?(?:查询|查看|查一下|查|取消)?(?:我的)?", "")
                 .replaceFirst("(?:请帮我|帮我|请)?取消$", "");
+        // 完整匹配简短的查询表达。若只认得部分条件，例如商品类别却认不出日期，就交给澄清分支。
         var matched = FILTERS.matcher(filter);
         if (!matched.matches()) return null;
         String date = matched.group("date");

@@ -71,6 +71,7 @@ final class OrderConversation {
         String subject = state.principal().subject();
         String session = state.sessionId();
         ChatMemory.OrderCandidates pending = memory.orderCandidates(subject, session);
+        // 用户改为查询时，将候选卡的待处理意图切回查询，后续点选也沿用这个意图。
         if (pending != null && pending.cancellation() && OrderCancellationIntent.readOnly(state.query())) {
             pending = new ChatMemory.OrderCandidates(pending.queryId(), pending.items(), pending.hasMore(), false);
             memory.putOrderCandidates(subject, session, pending);
@@ -115,6 +116,7 @@ final class OrderConversation {
             if (Thread.currentThread().isInterrupted()) throw failure;
             log.debug("Order tool planning degraded ({})", failure.getClass().getSimpleName());
         }
+        // 对于空筛选，只有用户明确要求看列表时才查询本人订单。其他情况交给本地规则或追问。
         if (command == null
                 || (command instanceof OrderCommand.Search search
                         && search.filters().equals(new OrderModels.Search(null, null, null, null))
@@ -132,6 +134,7 @@ final class OrderConversation {
                 yield current == null ? ask(pending, events) : show(state, current, cancel, events);
             }
             case OrderCommand.SelectCandidate selected -> {
+                // 序号只对发给模型的那组候选有效。模型推断的选择仅用于读单。
                 var latest = memory.orderCandidates(subject, session);
                 yield Objects.equals(pending, latest)
                         ? choose(state, pending, selected.index(), false, events)
@@ -190,6 +193,7 @@ final class OrderConversation {
         long customerId = state.principal().requireCustomerId();
         OrderModels.OrderView order = orders.get(orderNo, customerId);
         boolean canCancel = cancel && orders.canCancel(orderNo, customerId);
+        // 这里只创建待确认动作。实际取消要等用户提交确认，再由决定接口校验并执行。
         String actionId = canCancel
                 ? actions.prepare(
                         new ChatActionModels.Pending(

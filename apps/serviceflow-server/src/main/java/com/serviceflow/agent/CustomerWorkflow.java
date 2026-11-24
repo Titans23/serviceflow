@@ -360,10 +360,12 @@ public final class CustomerWorkflow {
     }
 
     private Result product(ServiceFlowState state, BiConsumer<String, Object> events) {
+        // 比较卡提交的是已有目标位置，直接续接 Redis 中的目标列表，避免重新解析原问题。
         if (state.comparisonSelection() != null) return comparison.continueComparison(state, events);
         ProductRouting routing = state.productRouting();
         List<ProductTarget> targets = routing == null ? List.of() : routing.targets();
         String targetClause = ProductReferenceRules.targetClause(state.query());
+        // 句子明确转向新目标时，再核对模型摘录是否落在本轮目标范围内。
         if (!targetClause.isBlank() && !targetClause.equals(state.query())) {
             targets = targets.stream()
                     .filter(target ->
@@ -376,8 +378,7 @@ public final class CustomerWorkflow {
             int expected = ProductReferenceRules.expectedCount(state.query());
             if ((routing != null && routing.comparison())
                     || ProductReferenceRules.comparesProducts(state.query(), rules, expected)) {
-                // If an explicitly counted list is complete in the source, retain its positions even if the model
-                // omitted some.
+                // 原文已列足用户要求的数量时，可用规则补回模型漏掉的位置，保留原来的商品顺序。
                 boolean completeSourceList = expected >= 2 && rules.size() == expected && rules.size() > targets.size();
                 boolean modelTargets = !targets.isEmpty() && !completeSourceList;
                 return comparison.start(state, modelTargets ? targets : rules, expected, modelTargets, events);

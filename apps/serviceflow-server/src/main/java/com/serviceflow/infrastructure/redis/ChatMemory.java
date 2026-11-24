@@ -210,6 +210,7 @@ public final class ChatMemory {
             String sessionId,
             ChatModels.PendingComparison expected,
             ChatModels.PendingComparison updated) {
+        // Lua 原子校验旧快照、写入新快照并刷新有效期，避免并发补充覆盖彼此，也避免恢复已过期的比较。
         return Long.valueOf(1)
                 .equals(redis.execute(
                         UPDATE_COMPARISON,

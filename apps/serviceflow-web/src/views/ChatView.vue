@@ -280,6 +280,7 @@ async function compareConfirmed(comparison: PendingComparison) {
   if (sending.value || sessionBusy.value) return
   const count = confirmedProducts(comparison).length
   input.value = `先比较已确认的 ${count} 款商品`
+  // 传比较编号表达用户的选择。实际纳入表格的商品由后端读取本次比较的快照确定。
   await send(undefined, undefined, {
     comparisonId: comparison.comparisonId,
     compareConfirmed: true,

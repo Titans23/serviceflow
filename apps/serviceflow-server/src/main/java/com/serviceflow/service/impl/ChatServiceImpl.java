@@ -127,6 +127,7 @@ public final class ChatServiceImpl implements ChatService {
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
                 if ("order".equals(name)) businessMetadata.put("order", data);
                 if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
+                // 结构化比较数据随回复保存，历史与重放可以恢复当时的表格和待确认清单。
                 if ("comparison_selection_required".equals(name)) businessMetadata.put("pendingComparison", data);
                 if ("product_comparison".equals(name)) businessMetadata.put("productComparison", data);
                 if ("product_selection_required".equals(name)
