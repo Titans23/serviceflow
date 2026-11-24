@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import com.serviceflow.ai.AiGateway;
+import com.serviceflow.ai.AiGateway.OrderCommand;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ChatModels;
@@ -14,9 +15,12 @@ import com.serviceflow.service.ActionDecisionService;
 import com.serviceflow.service.OrderService;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,14 +73,8 @@ class OrderConversationTest {
 
     @Test
     void searchesWithModelFiltersThenAsksAndRemembersCancellationAcrossSelection() {
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.SEARCH_ORDERS,
-                AiGateway.OrderPurpose.CANCEL,
-                "耳机",
-                null,
-                "2026-11-03",
-                "2026-11-03",
-                null));
+        plan(new OrderCommand.Search(
+                new OrderModels.Search("耳机", null, LocalDate.of(2026, 11, 3), LocalDate.of(2026, 11, 3))));
         when(orders.search(eq(7L), any(), isNull(), eq(10)))
                 .thenReturn(new OrderModels.Page(List.of(summary(FIRST), summary(SECOND)), null));
         assertThat(run(state("昨天买的耳机不要了")).answer()).contains("多笔");
@@ -101,8 +99,6 @@ class OrderConversationTest {
         assertThat(active.get()).isEqualTo(SECOND);
         assertThat(pending.get()).isNull();
         verify(orders, never()).cancel(anyString(), anyLong(), anyString());
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.READ_CURRENT, AiGateway.OrderPurpose.QUERY, null, null, null, null, null));
         assertThat(run(state("它的物流呢")).answer()).contains(SECOND);
     }
 
@@ -146,29 +142,18 @@ class OrderConversationTest {
     @Test
     void emptyNewSearchClearsOldOrderAndDoesNotFallBackToIt() {
         active.set(FIRST);
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.SEARCH_ORDERS, AiGateway.OrderPurpose.QUERY, "找不到", null, null, null, null));
+        plan(new OrderCommand.Search(new OrderModels.Search("商品", null, null, null)));
         when(orders.search(eq(7L), any(), isNull(), eq(10))).thenReturn(new OrderModels.Page(List.of(), null));
         assertThat(run(state("查另一个商品")).answer()).contains("没有找到");
         assertThat(active.get()).isNull();
         assertThat(events).anyMatch(event -> event.getKey().equals("order_selection_required"));
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.READ_CURRENT, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
+        plan(new OrderCommand.ReadCurrent());
         assertThat(run(state("取消它")).answer()).contains("告诉我");
         verify(actions, never()).prepare(any(), any());
     }
 
     @Test
-    void invalidDatesAndOutOfRangeSelectionDoNotChooseAnOrder() {
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.SEARCH_ORDERS,
-                AiGateway.OrderPurpose.CANCEL,
-                null,
-                null,
-                "not-a-date",
-                null,
-                null));
-        assertThat(run(state("查订单")).answer()).contains("有效");
+    void outOfRangeSelectionDoesNotChooseAnOrder() {
         pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST)), false, true));
         assertThat(run(state("第二笔")).answer()).contains("不能确定");
         verify(orders, never()).search(anyLong(), any(), any(), anyInt());
@@ -178,8 +163,7 @@ class OrderConversationTest {
     @Test
     void modelCanSelectOnlyFromTheCurrentCandidatesAndCanChangeCancelToQuery() {
         pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST), summary(SECOND)), false, true));
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.SELECT_CANDIDATE, AiGateway.OrderPurpose.QUERY, null, null, null, null, 2));
+        plan(new OrderCommand.SelectCandidate(2));
         assertThat(run(state("先别取消，查便宜的那笔")).answer()).contains(SECOND);
         verify(actions, never()).prepare(any(), any());
     }
@@ -210,11 +194,10 @@ class OrderConversationTest {
                 "只查退款状态",
                 "取消成功了吗"
             })
-    void readOnlyRequestsNeverCreateActionsEvenWhenPlannerSaysCancel(String query) {
+    void readOnlyRequestsNeverCreateActionsWhenPlannerReadsAnOrder(String query) {
         assertThat(run(state(FIRST + " " + query)).answer()).contains(FIRST);
         active.set(FIRST);
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.READ_CURRENT, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
+        plan(new OrderCommand.ReadCurrent());
         assertThat(run(state(query)).answer()).contains(FIRST);
         verify(actions, never()).prepare(any(), any());
     }
@@ -222,8 +205,7 @@ class OrderConversationTest {
     @Test
     void withdrawingCancellationClearsCandidateIntentBeforeLaterSelection() {
         pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST), summary(SECOND)), false, true));
-        plan(new AiGateway.OrderPlan(
-                AiGateway.OrderTool.ASK_USER, AiGateway.OrderPurpose.CANCEL, null, null, null, null, null));
+        plan(new OrderCommand.AskUser());
         run(state("不用取消，先查状态"));
         assertThat(pending.get().cancellation()).isFalse();
         run(state("第二笔"));
@@ -238,9 +220,35 @@ class OrderConversationTest {
         verify(orders, never()).cancel(anyString(), anyLong(), anyString());
     }
 
-    private void plan(AiGateway.OrderPlan plan) {
-        when(ai.planOrder(anyString(), anyString(), anyBoolean(), anyList(), anyBoolean()))
-                .thenReturn(plan);
+    @Test
+    void modelFailureFallsBackToGroundedFiltersAndKeepsCancellationPending() {
+        when(ai.requestOrderTool(anyString(), any(), anyBoolean(), anyList()))
+                .thenThrow(new IllegalStateException("unavailable"));
+        when(orders.search(eq(7L), any(), isNull(), eq(10)))
+                .thenReturn(new OrderModels.Page(List.of(summary(FIRST), summary(SECOND)), null));
+        LocalDate yesterday = LocalDate.now(ZoneId.of("Asia/Shanghai")).minusDays(1);
+
+        assertThat(run(state("昨天买的耳机不要了")).answer()).contains("多笔");
+        verify(orders).search(7L, new OrderModels.Search("耳机", null, yesterday, yesterday), null, 10);
+        assertThat(pending.get().cancellation()).isTrue();
+        assertThat(run(state("查上个月买的耳机")).answer()).contains("不能确定");
+        assertThat(run(state("查还没发货的订单")).answer()).contains("明确");
+        verify(orders, times(1)).search(anyLong(), any(), any(), anyInt());
+        verify(actions, never()).prepare(any(), any());
+    }
+
+    @Test
+    void dataAccessFailurePreservesTheCurrentCandidateList() {
+        pending.set(new ChatMemory.OrderCandidates("latest", List.of(summary(FIRST)), false, false));
+        when(orders.search(eq(7L), any(), isNull(), eq(10)))
+                .thenThrow(new org.springframework.dao.DataAccessResourceFailureException("temporary"));
+
+        assertThat(run(state("我的订单")).answer()).contains("暂时不可用");
+        assertThat(pending.get().queryId()).isEqualTo("latest");
+    }
+
+    private void plan(OrderCommand command) {
+        when(ai.requestOrderTool(anyString(), any(), anyBoolean(), anyList())).thenReturn(Optional.of(command));
     }
 
     @org.junit.jupiter.params.ParameterizedTest

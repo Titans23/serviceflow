@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public final class OrderModels {
+    public static final Set<String> STATUSES =
+            Set.of("CREATED", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDING", "REFUNDED");
+
     private OrderModels() {}
 
     public record Order(

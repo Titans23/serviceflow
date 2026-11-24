@@ -8,7 +8,9 @@
 
 ## 一次规划与确定性执行
 
-从订单卡进入客服会创建独立会话，页面传入 `pageContext.orderNo`，后端使用前再次查归属。Cloud 模式在 ORDER_QUERY 分支调用模型输出一个受约束的 JSON 查询计划：`SEARCH_ORDERS`、`READ_CURRENT`、`SELECT_CANDIDATE` 或 `ASK_USER`。后端校验工具名、参数形状、日期范围及候选序号，再调用既有 OrderService；这是一轮规划加确定性执行，没有自动循环调用工具。
+从订单卡进入客服会创建独立会话，页面传入 `pageContext.orderNo`，后端使用前再次查归属。Cloud 模式在 ORDER_QUERY 分支提供 `search_orders`、`read_current_order`、`select_order_candidate`、`ask_order_clarification` 四个原生工具。Spring AI 返回调用请求，Java 校验参数后调用既有 OrderService，直接用结果生成回复与 SSE 卡片。
+
+订单工具规划默认最多等待 5 秒。模型超时、不可用或返回非法调用时，使用和演示模式一致的本地规则。已知商品类别、明确日期词或明确的订单列表请求可以继续查询，条件不完整时请用户补充。可用 `serviceflow.ai.order-tools-enabled=false` 直接使用本地规则。
 
 完整订单号查询，以及已有明确订单且没有待选候选时的限定状态追问，直接进入订单分支并查询业务服务，省去分类与规划模型调用。规则采用完整匹配；投诉、取消和混合请求不会被这个快捷路径吞掉。快捷路径同样使用登录客户的身份查归属，不能跳过授权，也不以规则命中率代表模型理解能力。
 

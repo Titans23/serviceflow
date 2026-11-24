@@ -44,7 +44,7 @@ class LocalGraderAcceptanceTest {
                 .build();
         metrics = new SimpleMeterRegistry();
         calls = new AiCallExecutor(metrics);
-        gateway = new CloudAiGateway(model, calls, new ObjectMapper());
+        gateway = new CloudAiGateway(model, calls, new ObjectMapper(), true, 5000);
     }
 
     @AfterEach

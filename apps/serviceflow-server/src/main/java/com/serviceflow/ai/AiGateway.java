@@ -2,6 +2,7 @@ package com.serviceflow.ai;
 
 import com.serviceflow.agent.Intent;
 import com.serviceflow.model.OrderModels;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -19,33 +20,20 @@ public interface AiGateway {
 
     record ProductRouting(Intent intent, ProductReference reference, String mention) {}
 
-    OrderPlan planOrder(
-            String message,
-            String today,
-            boolean hasCurrentOrder,
-            List<OrderModels.Summary> candidates,
-            boolean pendingCancellation);
-
-    enum OrderTool {
-        SEARCH_ORDERS,
-        READ_CURRENT,
-        SELECT_CANDIDATE,
-        ASK_USER
+    default Optional<OrderCommand> requestOrderTool(
+            String message, LocalDate today, boolean hasCurrentOrder, List<OrderModels.Summary> candidates) {
+        return Optional.empty();
     }
 
-    enum OrderPurpose {
-        QUERY,
-        CANCEL
-    }
+    sealed interface OrderCommand {
+        record Search(OrderModels.Search filters) implements OrderCommand {}
 
-    record OrderPlan(
-            OrderTool tool,
-            OrderPurpose purpose,
-            String keyword,
-            String status,
-            String fromDate,
-            String toDate,
-            Integer candidateIndex) {}
+        record ReadCurrent() implements OrderCommand {}
+
+        record SelectCandidate(int index) implements OrderCommand {}
+
+        record AskUser() implements OrderCommand {}
+    }
 
     void streamAnswer(String systemPrompt, String userPrompt, Consumer<String> tokenConsumer);
 

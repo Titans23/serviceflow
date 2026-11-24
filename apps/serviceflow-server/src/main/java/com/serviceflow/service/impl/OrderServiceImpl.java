@@ -20,8 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class OrderServiceImpl implements OrderService {
     private static final Set<String> CANCELLABLE = Set.of("CREATED", "PAID", "PROCESSING");
     public static final ZoneId ORDER_ZONE = ZoneId.of("Asia/Shanghai");
-    private static final Set<String> STATUSES =
-            Set.of("CREATED", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDING", "REFUNDED");
     private final OrderMapper mapper;
     private final RefundMapper refunds;
 
@@ -44,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
                 || size > 50
                 || (keyword != null && keyword.length() > 80)
                 || (orderNo != null && orderNo.length() > 64)
-                || (status != null && !STATUSES.contains(status))
+                || (status != null && !OrderModels.STATUSES.contains(status))
                 || (query.from() != null && query.to() != null && query.from().isAfter(query.to()))
                 || (query.from() != null
                         && (query.from().getYear() < 2000 || query.from().getYear() > 2100))

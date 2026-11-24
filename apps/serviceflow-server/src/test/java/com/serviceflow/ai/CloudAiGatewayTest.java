@@ -8,28 +8,33 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.agent.Intent;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
-import org.springframework.ai.chat.model.StreamingChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import reactor.core.publisher.Flux;
 
 class CloudAiGatewayTest {
-    private StreamingChatModel streamingChatModel;
+    private ChatModel chatModel;
     private CloudAiGateway gateway;
 
     @BeforeEach
     void setUp() {
-        streamingChatModel = mock(StreamingChatModel.class);
+        chatModel = mock(ChatModel.class);
         gateway = new CloudAiGateway(
-                streamingChatModel,
+                chatModel,
                 new AiCallExecutor(new SimpleMeterRegistry()),
-                new ObjectMapper().findAndRegisterModules());
+                new ObjectMapper().findAndRegisterModules(),
+                true,
+                5000);
     }
 
     @Test
@@ -70,8 +75,7 @@ class CloudAiGatewayTest {
 
     @Test
     void streamsOnlyTextDeltas() {
-        when(streamingChatModel.stream(
-                        org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
+        when(chatModel.stream(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
                 .thenReturn(Flux.just(response("你"), response("好")));
         List<String> tokens = new ArrayList<>();
 
@@ -82,8 +86,7 @@ class CloudAiGatewayTest {
 
     @Test
     void rejectsResponseWithoutMessageContent() {
-        when(streamingChatModel.stream(
-                        org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
+        when(chatModel.stream(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
                 .thenReturn(Flux.error(new IllegalStateException("no message content")));
 
         assertThatThrownBy(() -> gateway.classifyProductReference("hello", ""))
@@ -112,52 +115,74 @@ class CloudAiGatewayTest {
     }
 
     @Test
-    void plansOrderSearchWithStructuredArguments() {
-        streamReturns(
-                """
-                {"tool":"SEARCH_ORDERS","purpose":"CANCEL","keyword":"耳机","status":null,
-                 "fromDate":"2026-11-03","toDate":"2026-11-03","candidateIndex":null}
-                """);
-        var result = gateway.planOrder("昨天买的耳机不要了", "2026-11-04", false, List.of(), false);
-        assertThat(result.tool()).isEqualTo(AiGateway.OrderTool.SEARCH_ORDERS);
-        assertThat(result.keyword()).isEqualTo("耳机");
-        assertThat(result.purpose()).isEqualTo(AiGateway.OrderPurpose.CANCEL);
-        assertThat(result.fromDate()).isEqualTo("2026-11-03");
-        var prompt = org.mockito.ArgumentCaptor.forClass(org.springframework.ai.chat.prompt.Prompt.class);
-        org.mockito.Mockito.verify(streamingChatModel).stream(prompt.capture());
+    void requestsOrderSearchWithNativeTools() {
+        toolsReturn(
+                tool(
+                        "search_orders",
+                        """
+                {"keyword":"耳机","fromDate":"2026-11-03","toDate":"2026-11-03"}
+                """));
+        var result = gateway.requestOrderTool("昨天买的耳机不要了", LocalDate.of(2026, 11, 4), false, List.of());
+        assertThat(result)
+                .contains(new AiGateway.OrderCommand.Search(new com.serviceflow.model.OrderModels.Search(
+                        "耳机", null, LocalDate.of(2026, 11, 3), LocalDate.of(2026, 11, 3))));
+        var prompt = org.mockito.ArgumentCaptor.forClass(Prompt.class);
+        org.mockito.Mockito.verify(chatModel).call(prompt.capture());
         assertThat(prompt.getValue().getContents()).contains("2026-11-04").contains("昨天买的耳机不要了");
+        var options = (OpenAiChatOptions) prompt.getValue().getOptions();
+        assertThat(options.getInternalToolExecutionEnabled()).isFalse();
+        assertThat(options.getTools())
+                .extracting(t -> t.getFunction().getName())
+                .containsExactly(
+                        "search_orders", "read_current_order", "select_order_candidate", "ask_order_clarification");
     }
 
     @Test
     void serializesOwnedCandidatesAndRejectsIgnoredFilters() {
-        streamReturns("{\"tool\":\"SELECT_CANDIDATE\",\"purpose\":\"QUERY\",\"candidateIndex\":2}");
+        toolsReturn(tool("select_order_candidate", "{\"index\":1}"));
         var candidates = List.of(new com.serviceflow.model.OrderModels.Summary(
                 "SF202611030001",
                 "PAID",
                 new java.math.BigDecimal("299.00"),
                 java.time.Instant.parse("2026-11-03T01:00:00Z"),
                 List.of()));
-        assertThat(gateway.planOrder("查一下第二笔", "2026-11-04", false, candidates, true)
-                        .candidateIndex())
-                .isEqualTo(2);
-        var prompt = org.mockito.ArgumentCaptor.forClass(org.springframework.ai.chat.prompt.Prompt.class);
-        org.mockito.Mockito.verify(streamingChatModel).stream(prompt.capture());
-        assertThat(prompt.getValue().getContents()).contains("SF202611030001").contains("\"pendingCancellation\":true");
-        streamReturns("{\"tool\":\"READ_CURRENT\",\"purpose\":\"CANCEL\",\"keyword\":\"耳机\"}");
-        assertThatThrownBy(() -> gateway.planOrder("耳机不要了", "2026-11-04", true, List.of(), false))
-                .isInstanceOf(IllegalStateException.class);
+        assertThat(gateway.requestOrderTool("查一下便宜的那笔", LocalDate.of(2026, 11, 4), false, candidates))
+                .contains(new AiGateway.OrderCommand.SelectCandidate(1));
+        var prompt = org.mockito.ArgumentCaptor.forClass(Prompt.class);
+        org.mockito.Mockito.verify(chatModel).call(prompt.capture());
+        assertThat(prompt.getValue().getContents()).contains("299.00").doesNotContain("SF202611030001");
+        toolsReturn(tool("read_current_order", "{\"keyword\":\"耳机\"}"));
+        assertThatThrownBy(() -> gateway.requestOrderTool("耳机不要了", LocalDate.now(), true, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void rejectsUnrecognizedOrderTools() {
-        streamReturns("{\"tool\":\"EXECUTE_SQL\",\"purpose\":\"CANCEL\"}");
-        assertThatThrownBy(() -> gateway.planOrder("查询", "2026-11-04", false, List.of(), false))
-                .isInstanceOf(IllegalStateException.class);
+    void rejectsUnrecognizedMultipleOrAbsentOrderTools() {
+        toolsReturn(tool("unknown", "{}"));
+        assertThatThrownBy(() -> gateway.requestOrderTool("查询", LocalDate.now(), false, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+        toolsReturn(tool("read_current_order", "{}"), tool("ask_order_clarification", "{}"));
+        assertThatThrownBy(() -> gateway.requestOrderTool("查询", LocalDate.now(), false, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+        toolsReturn();
+        assertThatThrownBy(() -> gateway.requestOrderTool("查询", LocalDate.now(), false, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private AssistantMessage.ToolCall tool(String name, String arguments) {
+        return new AssistantMessage.ToolCall(name, "function", name, arguments);
+    }
+
+    private void toolsReturn(AssistantMessage.ToolCall... tools) {
+        when(chatModel.call(org.mockito.ArgumentMatchers.any(Prompt.class)))
+                .thenReturn(new ChatResponse(List.of(new Generation(AssistantMessage.builder()
+                        .content("")
+                        .toolCalls(List.of(tools))
+                        .build()))));
     }
 
     private void streamReturns(String content) {
-        when(streamingChatModel.stream(
-                        org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
+        when(chatModel.stream(org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
                 .thenReturn(Flux.just(response(content)));
     }
 }

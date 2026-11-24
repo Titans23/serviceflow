@@ -20,16 +20,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
-import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 
 /** No database, embedding service, or remote model is called by these safety checks. */
 class CloudEvidenceSafetyTest {
-    private StreamingChatModel model;
+    private ChatModel model;
     private AiCallExecutor calls;
     private CloudAiGateway gateway;
     private SimpleMeterRegistry metrics;
@@ -38,10 +38,10 @@ class CloudEvidenceSafetyTest {
 
     @BeforeEach
     void setUp() {
-        model = mock(StreamingChatModel.class);
+        model = mock(ChatModel.class);
         metrics = new SimpleMeterRegistry();
         calls = new AiCallExecutor(metrics);
-        gateway = new CloudAiGateway(model, calls, new ObjectMapper());
+        gateway = new CloudAiGateway(model, calls, new ObjectMapper(), true, 5000);
     }
 
     @AfterEach

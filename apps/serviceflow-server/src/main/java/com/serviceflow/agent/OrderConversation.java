@@ -1,6 +1,7 @@
 package com.serviceflow.agent;
 
 import com.serviceflow.ai.AiGateway;
+import com.serviceflow.ai.AiGateway.OrderCommand;
 import com.serviceflow.ai.OrderCancellationIntent;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
@@ -11,12 +12,18 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Executes a bounded, read-only order plan; cancellation still requires a separate confirmation. */
 final class OrderConversation {
+    private static final Logger log = LoggerFactory.getLogger(OrderConversation.class);
     private static final Pattern ORDER_NO = Pattern.compile("SF\\d{12,}", Pattern.CASE_INSENSITIVE);
     private static final Pattern EXACT_LOOKUP =
             Pattern.compile("^(?:查询|查看|查)?(?:订单)?[:：\\s]*SF\\d{12,}[\\s。]*$", Pattern.CASE_INSENSITIVE);
@@ -50,6 +57,17 @@ final class OrderConversation {
 
     CustomerWorkflow.Result respond(ServiceFlowState state, BiConsumer<String, Object> events) {
         if (state.principal().guest()) return answer("订单服务需要登录客户账号后使用。");
+        try {
+            return respondToCustomer(state, events);
+        } catch (DataAccessException unavailable) {
+            return unavailable();
+        } catch (ResponseStatusException unavailable) {
+            if (!unavailable.getStatusCode().is5xxServerError()) throw unavailable;
+            return unavailable();
+        }
+    }
+
+    private CustomerWorkflow.Result respondToCustomer(ServiceFlowState state, BiConsumer<String, Object> events) {
         String subject = state.principal().subject();
         String session = state.sessionId();
         ChatMemory.OrderCandidates pending = memory.orderCandidates(subject, session);
@@ -81,49 +99,59 @@ final class OrderConversation {
         String current = pending == null ? state.activeOrderNo() : null;
         if (current == null && pending == null) current = memory.activeOrder(subject, session);
         if (current != null && isCurrentLookup(state.query())) return show(state, current, false, events);
+        if (OrderSearchRules.ambiguousStatus(state.query())) {
+            return answer("未发货涉及待付款、已付款和处理中，请明确要查询的状态。");
+        }
         // Page context is untrusted input. Check ownership before treating it as usable context.
         if (current != null) orders.get(current, state.principal().requireCustomerId());
-        AiGateway.OrderPlan plan = ai.planOrder(
-                state.query(),
-                LocalDate.now(ZoneId.of("Asia/Shanghai")).toString(),
-                current != null,
-                pending == null ? List.of() : pending.items(),
-                pending != null && pending.cancellation());
-        if (plan == null || plan.tool() == null || plan.purpose() == null) {
-            return answer("请提供订单号，或告诉我商品名称和大致下单日期。");
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Shanghai"));
+        OrderModels.Search fallback = OrderSearchRules.search(state.query(), today);
+        OrderCommand command = null;
+        try {
+            command = ai.requestOrderTool(
+                            state.query(), today, current != null, pending == null ? List.of() : pending.items())
+                    .orElse(null);
+        } catch (RuntimeException failure) {
+            if (Thread.currentThread().isInterrupted()) throw failure;
+            log.debug("Order tool planning degraded ({})", failure.getClass().getSimpleName());
         }
-        boolean cancel = plan.purpose() == AiGateway.OrderPurpose.CANCEL
-                && (wantsCancellation(state.query())
-                        || (plan.tool() == AiGateway.OrderTool.SELECT_CANDIDATE
-                                && pending != null
-                                && pending.cancellation()));
-        return switch (plan.tool()) {
-            case SEARCH_ORDERS -> search(state, plan, cancel, events);
-            case READ_CURRENT -> current == null ? ask(pending, events) : show(state, current, cancel, events);
-            case SELECT_CANDIDATE -> choose(state, pending, plan.candidateIndex(), cancel, events);
-            case ASK_USER -> ask(pending, events);
+        if (command == null
+                || (command instanceof OrderCommand.Search search
+                        && search.filters().equals(new OrderModels.Search(null, null, null, null))
+                        && !OrderSearchRules.listsOrders(state.query()))) {
+            command = fallback == null ? new OrderCommand.AskUser() : new OrderCommand.Search(fallback);
+            log.debug("Order tool source=rules command={}", command.getClass().getSimpleName());
+        } else {
+            log.debug("Order tool source=model command={}", command.getClass().getSimpleName());
+        }
+        boolean cancel = wantsCancellation(state.query());
+        return switch (command) {
+            case OrderCommand.Search search -> search(state, search.filters(), cancel, events);
+            case OrderCommand.ReadCurrent ignored -> {
+                if (fallback != null) yield search(state, fallback, cancel, events);
+                yield current == null ? ask(pending, events) : show(state, current, cancel, events);
+            }
+            case OrderCommand.SelectCandidate selected -> {
+                var latest = memory.orderCandidates(subject, session);
+                yield Objects.equals(pending, latest)
+                        ? choose(state, pending, selected.index(), false, events)
+                        : ask(latest, events);
+            }
+            case OrderCommand.AskUser ignored -> ask(pending, events);
         };
     }
 
     private CustomerWorkflow.Result search(
-            ServiceFlowState state, AiGateway.OrderPlan plan, boolean cancellation, BiConsumer<String, Object> events) {
-        LocalDate from, to;
-        try {
-            from = plan.fromDate() == null ? null : LocalDate.parse(plan.fromDate());
-            to = plan.toDate() == null ? null : LocalDate.parse(plan.toDate());
-        } catch (java.time.DateTimeException error) {
-            return answer("没有识别出有效的下单日期，请提供 YYYY-MM-DD 格式的日期。");
-        }
-        OrderModels.Page found = orders.search(
-                state.principal().requireCustomerId(),
-                new OrderModels.Search(plan.keyword(), plan.status(), from, to),
-                null,
-                10);
-        memory.clearActiveOrder(state.principal().subject(), state.sessionId());
-        memory.clearOrderCandidates(state.principal().subject(), state.sessionId());
+            ServiceFlowState state,
+            OrderModels.Search filters,
+            boolean cancellation,
+            BiConsumer<String, Object> events) {
+        OrderModels.Page found = orders.search(state.principal().requireCustomerId(), filters, null, 10);
         if (found.items().size() == 1 && found.nextCursor() == null) {
             return show(state, found.items().getFirst().orderNo(), cancellation, events);
         }
+        memory.clearActiveOrder(state.principal().subject(), state.sessionId());
+        memory.clearOrderCandidates(state.principal().subject(), state.sessionId());
         var candidates = new ChatMemory.OrderCandidates(
                 UUID.randomUUID().toString(), found.items(), found.nextCursor() != null, cancellation);
         if (!found.items().isEmpty())
@@ -161,20 +189,23 @@ final class OrderConversation {
             ServiceFlowState state, String orderNo, boolean cancel, BiConsumer<String, Object> events) {
         long customerId = state.principal().requireCustomerId();
         OrderModels.OrderView order = orders.get(orderNo, customerId);
+        boolean canCancel = cancel && orders.canCancel(orderNo, customerId);
+        String actionId = canCancel
+                ? actions.prepare(
+                        new ChatActionModels.Pending(
+                                "CANCEL_ORDER",
+                                state.principal().subject(),
+                                customerId,
+                                state.sessionId(),
+                                orderNo,
+                                state.query()),
+                        state.clientRequestId())
+                : null;
         memory.clearOrderCandidates(state.principal().subject(), state.sessionId());
         memory.setActiveOrder(state.principal().subject(), state.sessionId(), orderNo);
         events.accept("order", order);
         if (cancel) {
-            if (!orders.canCancel(orderNo, customerId)) return answer("该订单已发货或结束，不能直接取消；可以咨询退货政策。");
-            String actionId = actions.prepare(
-                    new ChatActionModels.Pending(
-                            "CANCEL_ORDER",
-                            state.principal().subject(),
-                            customerId,
-                            state.sessionId(),
-                            orderNo,
-                            state.query()),
-                    state.clientRequestId());
+            if (!canCancel) return answer("该订单已发货或结束，不能直接取消；可以咨询退货政策。");
             String purchase = order.items().isEmpty()
                     ? "该订单"
                     : order.items().getFirst().productName()
@@ -234,5 +265,9 @@ final class OrderConversation {
 
     private CustomerWorkflow.Result answer(String text) {
         return new CustomerWorkflow.Result(text, List.of());
+    }
+
+    private CustomerWorkflow.Result unavailable() {
+        return answer("订单服务暂时不可用，请稍后重试。");
     }
 }
