@@ -9,8 +9,11 @@ import static org.mockito.Mockito.when;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.ai.AiGateway.ProductRouting;
+import com.serviceflow.exception.ErrorCode;
+import com.serviceflow.exception.ServiceFlowException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 class CustomerWorkflowIntentRoutingTest {
 
@@ -21,33 +24,46 @@ class CustomerWorkflowIntentRoutingTest {
         var routing = new ProductRouting(Intent.CHAT, ProductReference.UNCLEAR, null);
         when(ai.classifyProductReference(question, "")).thenReturn(Optional.of(routing));
 
-        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, "")).isEqualTo(routing);
+        assertThat(CustomerWorkflow.classifyIntent(ai, question, "")).isEqualTo(routing);
         verify(ai).classifyProductReference(question, "");
         verifyNoMoreInteractions(ai);
     }
 
     @Test
-    void invalidStructuredOutputUsesOrdinaryIntent() {
+    void invalidStructuredOutputUsesKeywordsDirectly() {
         AiGateway ai = mock(AiGateway.class);
         String question = "这款的续航如何？";
         when(ai.classifyProductReference(question, "")).thenReturn(Optional.empty());
-        when(ai.classify(question)).thenReturn(Optional.of(Intent.PRODUCT_QUERY));
-
-        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, ""))
+        assertThat(CustomerWorkflow.classifyIntent(ai, question, ""))
                 .isEqualTo(new ProductRouting(Intent.PRODUCT_QUERY, ProductReference.UNCLEAR, null));
-        verify(ai).classify(question);
+        verify(ai).classifyProductReference(question, "");
+        verifyNoMoreInteractions(ai);
     }
 
     @Test
-    void unavailableOrInvalidModelsUseRulesOnTheOriginalQuestion() {
+    void unavailableModelUsesRulesOnTheOriginalQuestion() {
         AiGateway ai = mock(AiGateway.class);
         String question = "保修政策是什么？";
         String context = "当前商品：某型号。\n";
         when(ai.classifyProductReference(question, context)).thenThrow(new IllegalStateException("unavailable"));
-        when(ai.classify(context + "用户问题：" + question)).thenReturn(Optional.empty());
-
-        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, context))
+        assertThat(CustomerWorkflow.classifyIntent(ai, question, context))
                 .isEqualTo(new ProductRouting(Intent.KNOWLEDGE_QUERY, ProductReference.UNCLEAR, null));
+        verify(ai).classifyProductReference(question, context);
+        verifyNoMoreInteractions(ai);
+    }
+
+    @Test
+    void modelTimeoutUsesKeywordsDirectly() {
+        AiGateway ai = mock(AiGateway.class);
+        String question = "退款进度怎么样？";
+        when(ai.classifyProductReference(question, ""))
+                .thenThrow(
+                        new ServiceFlowException(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.MODEL_TIMEOUT, "timeout", true));
+
+        assertThat(CustomerWorkflow.classifyIntent(ai, question, ""))
+                .isEqualTo(new ProductRouting(Intent.ORDER_QUERY, ProductReference.UNCLEAR, null));
+        verify(ai).classifyProductReference(question, "");
+        verifyNoMoreInteractions(ai);
     }
 
     @Test

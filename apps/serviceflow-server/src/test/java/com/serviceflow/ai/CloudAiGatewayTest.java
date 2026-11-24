@@ -33,25 +33,26 @@ class CloudAiGatewayTest {
     }
 
     @Test
-    void classifiesUsingSpringAiResponse() {
-        streamReturns("PRODUCT_QUERY");
+    void acceptsAValidChatIntent() {
+        streamReturns("{\"intent\":\"CHAT\",\"reference\":\"UNCLEAR\",\"mention\":null}");
 
-        assertThat(gateway.classify("这款手机怎么样")).contains(Intent.PRODUCT_QUERY);
+        assertThat(gateway.classifyProductReference("你好", ""))
+                .contains(new AiGateway.ProductRouting(Intent.CHAT, AiGateway.ProductReference.UNCLEAR, null));
     }
 
     @Test
-    void rejectsUnknownIntentsWithoutConfusingThemWithChat() {
-        streamReturns("PRODUCT_ASK");
-        assertThat(gateway.classify("这款手机怎么样")).isEmpty();
-
+    void rejectsInvalidStructuredRoutingOutput() {
         streamReturns("{\"intent\":\"PRODUCT_ASK\",\"reference\":\"CURRENT\"}");
+        assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
+
+        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"PREVIOUS\"}");
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
 
         streamReturns("不是 JSON");
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
 
-        streamReturns(" chat ");
-        assertThat(gateway.classify("你好")).contains(Intent.CHAT);
+        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"CURRENT\"} 多余文本");
+        assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
     }
 
     @Test
@@ -85,7 +86,7 @@ class CloudAiGatewayTest {
                         org.mockito.ArgumentMatchers.any(org.springframework.ai.chat.prompt.Prompt.class)))
                 .thenReturn(Flux.error(new IllegalStateException("no message content")));
 
-        assertThatThrownBy(() -> gateway.classify("hello"))
+        assertThatThrownBy(() -> gateway.classifyProductReference("hello", ""))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("no message content");
     }

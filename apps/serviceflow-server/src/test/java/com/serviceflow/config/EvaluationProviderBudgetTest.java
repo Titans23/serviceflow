@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serviceflow.agent.Intent;
 import com.serviceflow.ai.AiCallExecutor;
 import com.serviceflow.ai.CloudAiGateway;
 import com.serviceflow.rag.OpenAiCompatibleEmbeddingModel;
@@ -106,6 +107,28 @@ class EvaluationProviderBudgetTest {
     }
 
     @Test
+    void intentClassificationMakesOneWireAttemptInOrdinaryMode() throws Exception {
+        var received = new AtomicInteger();
+        var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            received.incrementAndGet();
+            exchange.sendResponseHeaders(500, -1);
+            exchange.close();
+        });
+        server.start();
+        try {
+            context("http://127.0.0.1:" + server.getAddress().getPort(), false).run(application -> {
+                assertThatThrownBy(
+                                () -> application.getBean(CloudAiGateway.class).classifyProductReference("查询商品", ""))
+                        .isInstanceOf(RuntimeException.class);
+                assertThat(received.get()).isOne();
+            });
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     void cannotEnableBudgetWithoutExplicitJvmStartupFlag() {
         context("http://127.0.0.1:1", true).run(application -> {
             assertThat(application).hasFailed();
@@ -119,6 +142,8 @@ class EvaluationProviderBudgetTest {
         AtomicInteger received = new AtomicInteger();
         AtomicInteger redirects = new AtomicInteger();
         var counts = new ConcurrentHashMap<String, AtomicInteger>();
+        String routingContent = new ObjectMapper()
+                .writeValueAsString("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"UNCLEAR\",\"mention\":null}");
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/", exchange -> {
             if (exchange.getRequestURI().getPath().equals("/redirect-target")) {
@@ -169,7 +194,8 @@ class EvaluationProviderBudgetTest {
             } else {
                 type = "text/event-stream";
                 response =
-                        "data: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"stub\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"PRODUCT_QUERY\"},\"finish_reason\":null}]}\n\n"
+                        "data: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"stub\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":"
+                                + routingContent + "},\"finish_reason\":null}]}\n\n"
                                 + "data: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1,\"model\":\"stub\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n"
                                 + "data: [DONE]\n\n";
             }
@@ -255,7 +281,7 @@ class EvaluationProviderBudgetTest {
                                                 : () -> {
                                                     if (number == 3) chat.streamAnswer("test", input, token -> {});
                                                     else if (number == 6) chat.rewriteQuery(input);
-                                                    else chat.classify(input);
+                                                    else chat.classifyProductReference(input, "");
                                                 };
                                         case 1 -> () -> embedding.embed(input);
                                         default -> () -> reranker.rank(input, documents, 1);
@@ -271,7 +297,8 @@ class EvaluationProviderBudgetTest {
                                     .as("one wire attempt for fixture %s", i)
                                     .isEqualTo(i + 1);
                         }
-                        assertThatThrownBy(() -> chat.classify("fixture-" + (limit + 1) + "-success"))
+                        assertThatThrownBy(
+                                        () -> chat.classifyProductReference("fixture-" + (limit + 1) + "-success", ""))
                                 .hasStackTraceContaining("budget exhausted");
                         assertThatThrownBy(() -> embedding.embed("fixture-" + (limit + 2) + "-success"))
                                 .hasStackTraceContaining("budget exhausted");
@@ -295,8 +322,12 @@ class EvaluationProviderBudgetTest {
                                 "serviceflow.evaluation.stop-on-provider-failure=true",
                                 "serviceflow.evaluation.provider-request-limit=63")
                         .run(application -> {
-                            assertThat(application.getBean(CloudAiGateway.class).classify("fixture-1-splitdone"))
-                                    .contains(com.serviceflow.agent.Intent.PRODUCT_QUERY);
+                            assertThat(application
+                                            .getBean(CloudAiGateway.class)
+                                            .classifyProductReference("fixture-1-splitdone", "")
+                                            .orElseThrow()
+                                            .intent())
+                                    .isEqualTo(Intent.PRODUCT_QUERY);
                             application.getBean(OpenAiEmbeddingClient.class).embed("fixture-2-success");
                             application
                                     .getBean(OpenAiRerankerClient.class)
@@ -348,7 +379,7 @@ class EvaluationProviderBudgetTest {
                                             } else {
                                                 application
                                                         .getBean(CloudAiGateway.class)
-                                                        .classify("fixture-1-" + mode);
+                                                        .classifyProductReference("fixture-1-" + mode, "");
                                             }
                                         })
                                         .isInstanceOf(RuntimeException.class);
@@ -361,7 +392,7 @@ class EvaluationProviderBudgetTest {
                                         .hasStackTraceContaining("stopped after external failure");
                                 assertThatThrownBy(() -> application
                                                 .getBean(CloudAiGateway.class)
-                                                .classify("fixture-3-success"))
+                                                .classifyProductReference("fixture-3-success", ""))
                                         .hasStackTraceContaining("stopped after external failure");
                                 assertThatThrownBy(() -> application
                                                 .getBean(OpenAiRerankerClient.class)

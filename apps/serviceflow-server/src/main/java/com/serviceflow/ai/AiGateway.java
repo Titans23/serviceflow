@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface AiGateway {
-    Optional<Intent> classify(String message);
-
     default Optional<ProductRouting> classifyProductReference(String message, String routingContext) {
         return Optional.empty();
     }

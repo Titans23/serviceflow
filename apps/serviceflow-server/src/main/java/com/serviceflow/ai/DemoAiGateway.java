@@ -1,10 +1,8 @@
 package com.serviceflow.ai;
 
-import com.serviceflow.agent.Intent;
 import com.serviceflow.model.OrderModels;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -12,11 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 @ConditionalOnProperty(name = "serviceflow.ai.mode", havingValue = "demo", matchIfMissing = true)
 public final class DemoAiGateway implements AiGateway {
-
-    @Override
-    public Optional<Intent> classify(String message) {
-        return Optional.of(Intent.fromKeywords(message));
-    }
 
     @Override
     public OrderPlan planOrder(
