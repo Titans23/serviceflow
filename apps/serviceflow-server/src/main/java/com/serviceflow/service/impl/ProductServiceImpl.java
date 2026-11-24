@@ -66,14 +66,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductModels.Comparison compare(List<? extends Number> ids) {
+        return compare(ids, 3);
+    }
+
+    @Override
+    public ProductModels.Comparison compareForChat(List<Long> ids) {
+        return compare(ids, ProductModels.MAX_CHAT_COMPARISON);
+    }
+
+    private ProductModels.Comparison compare(List<? extends Number> ids, int limit) {
         if (ids == null) {
-            throw new ResponseStatusException(BAD_REQUEST, "请选择 2 至 3 个不同商品");
+            throw new ResponseStatusException(BAD_REQUEST, "请选择 2 至 " + limit + " 个不同商品");
         }
         List<Long> normalizedIds = ids.stream().map(Number::longValue).toList();
         if (normalizedIds.size() < 2
-                || normalizedIds.size() > 3
+                || normalizedIds.size() > limit
                 || new HashSet<>(normalizedIds).size() != normalizedIds.size()) {
-            throw new ResponseStatusException(BAD_REQUEST, "请选择 2 至 3 个不同商品");
+            throw new ResponseStatusException(BAD_REQUEST, "请选择 2 至 " + limit + " 个不同商品");
         }
 
         List<ProductModels.Product> products = mapper.findByIds(normalizedIds);

@@ -120,12 +120,15 @@ public final class ChatServiceImpl implements ChatService {
             state.activeOrderNo(
                     request.pageContext() == null ? null : request.pageContext().orderNo());
             state.orderSelection(request.orderSelection());
+            state.comparisonSelection(request.comparisonSelection());
             // 暂时把工作流视为黑盒：输入本次请求状态，输出业务结果，并把过程中产生的事件转发给前端。
             Map<String, Object> businessMetadata = new java.util.LinkedHashMap<>();
             events.send(emitter, "progress", Map.of("message", "正在核对资料与业务状态"));
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
                 if ("order".equals(name)) businessMetadata.put("order", data);
                 if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
+                if ("comparison_selection_required".equals(name)) businessMetadata.put("pendingComparison", data);
+                if ("product_comparison".equals(name)) businessMetadata.put("productComparison", data);
                 if ("product_selection_required".equals(name)
                         && data instanceof List<?> candidates
                         && !candidates.isEmpty()) {
@@ -173,7 +176,10 @@ public final class ChatServiceImpl implements ChatService {
                         metadata);
             }
             // 无论访客还是登录用户，都在 Redis 近期对话中保存完整助手回答，供下一轮构造上下文。
-            if (databaseId == null && businessMetadata.containsKey("productCandidates")) {
+            if (databaseId == null
+                    && (businessMetadata.containsKey("productCandidates")
+                            || businessMetadata.containsKey("pendingComparison")
+                            || businessMetadata.containsKey("productComparison"))) {
                 memory.append(principal.subject(), sessionId, "ASSISTANT", answer, metadata);
             } else {
                 memory.append(principal.subject(), sessionId, "ASSISTANT", answer);
@@ -277,7 +283,7 @@ public final class ChatServiceImpl implements ChatService {
                         "citations",
                         completed.citations()));
         events.send(emitter, "token", completed.answer());
-        replayProductCandidates(emitter, completed.metadataJson());
+        replayProductEvents(emitter, completed.metadataJson());
         events.send(
                 emitter,
                 "done",
@@ -295,8 +301,7 @@ public final class ChatServiceImpl implements ChatService {
         events.send(emitter, "token", completed.content());
         try {
             var metadata = objectMapper.readTree(completed.metadataJson() == null ? "{}" : completed.metadataJson());
-            if (metadata.hasNonNull("productCandidates"))
-                events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
+            sendProductEvents(emitter, metadata);
             if (metadata.hasNonNull("order")) events.send(emitter, "order", metadata.get("order"));
             if (metadata.hasNonNull("orderCandidates"))
                 events.send(emitter, "order_selection_required", metadata.get("orderCandidates"));
@@ -319,15 +324,24 @@ public final class ChatServiceImpl implements ChatService {
         emitter.complete();
     }
 
-    private void replayProductCandidates(SseEmitter emitter, String metadataJson) {
+    private void replayProductEvents(SseEmitter emitter, String metadataJson) {
         if (metadataJson == null) return;
         try {
             var metadata = objectMapper.readTree(metadataJson);
-            if (metadata.hasNonNull("productCandidates"))
-                events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
+            sendProductEvents(emitter, metadata);
         } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
             // Historical guest responses may lack structured metadata.
         }
+    }
+
+    private void sendProductEvents(SseEmitter emitter, com.fasterxml.jackson.databind.JsonNode metadata) {
+        if (metadata == null) return;
+        if (metadata.hasNonNull("productCandidates"))
+            events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
+        if (metadata.hasNonNull("productComparison"))
+            events.send(emitter, "product_comparison", metadata.get("productComparison"));
+        if (metadata.hasNonNull("pendingComparison"))
+            events.send(emitter, "comparison_selection_required", metadata.get("pendingComparison"));
     }
 
     private void acquireGuestLock(String key) {

@@ -122,6 +122,34 @@ class ProductReferenceResolverTest {
         assertThat(failure.clearCurrent()).isTrue();
     }
 
+    @Test
+    void switchDoesNotReadTheBackgroundModelWhenExtractionIsUnavailable() {
+        var result =
+                resolver(false, 0).resolve("之前说的是 Galaxy S24，那关于苹果16呢？", 30L, null, ProductReference.UNCLEAR, null);
+        assertThat(result.resolved()).isFalse();
+        assertThat(result.clearCurrent()).isTrue();
+        org.mockito.Mockito.verify(products, org.mockito.Mockito.never()).resolve("Galaxy S24");
+    }
+
+    @Test
+    void comparesCapacityVariantsOnlyAfterAnExplicitChoice() {
+        var other = product(32, "APPLE-IP16-US-256", "Apple", "iPhone 16", "256 GB");
+        when(products.resolve("iPhone 16")).thenReturn(List.of(iphone, other));
+        var resolver = resolver(true, .2);
+        assertThat(resolver.resolveComparisonTarget(
+                                new com.serviceflow.ai.AiGateway.ProductTarget(ProductReference.NEW, "iPhone 16"),
+                                null,
+                                false)
+                        .resolved())
+                .isFalse();
+        assertThat(resolver.resolveComparisonTarget(
+                                new com.serviceflow.ai.AiGateway.ProductTarget(ProductReference.NEW, "iPhone 16 256GB"),
+                                null,
+                                false)
+                        .products())
+                .containsExactly(other);
+    }
+
     private ProductReferenceResolver resolver(boolean semanticEnabled, double gap) {
         return new ProductReferenceResolver(products, reranker, semanticEnabled, "cloud", gap);
     }

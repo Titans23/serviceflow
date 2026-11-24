@@ -1,5 +1,6 @@
 package com.serviceflow.infrastructure.redis;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.model.ChatModels;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 @Service("serviceFlowChatMemory")
@@ -18,6 +20,13 @@ public final class ChatMemory {
 
     private static final Duration SESSION_TTL = Duration.ofMinutes(30);
     private static final int MAX_HISTORY_SIZE = 20;
+    private static final DefaultRedisScript<Long> UPDATE_COMPARISON = new DefaultRedisScript<>(
+            """
+            if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
+            redis.call('SET', KEYS[1], ARGV[2], 'PX', ARGV[3])
+            return 1
+            """,
+            Long.class);
 
     private final StringRedisTemplate redis;
     private final ObjectMapper objectMapper;
@@ -45,7 +54,8 @@ public final class ChatMemory {
                 sessionKey(subject, id),
                 memoryKey(subject, id),
                 activeOrderKey(subject, id),
-                activeProductKey(subject, id)));
+                activeProductKey(subject, id),
+                pendingComparisonKey(subject, id)));
         redis.opsForZSet().remove(sessionIndexKey(subject), id);
     }
 
@@ -177,6 +187,46 @@ public final class ChatMemory {
         redis.delete(activeProductKey(subject, sessionId));
     }
 
+    public ChatModels.PendingComparison pendingComparison(String subject, String sessionId) {
+        String value = redis.opsForValue().get(pendingComparisonKey(subject, sessionId));
+        if (value == null) return null;
+        try {
+            return objectMapper.readValue(value, ChatModels.PendingComparison.class);
+        } catch (JsonProcessingException exception) {
+            throw new IllegalStateException("Cannot read pending comparison", exception);
+        }
+    }
+
+    public void putPendingComparison(String subject, String sessionId, ChatModels.PendingComparison comparison) {
+        redis.opsForValue().set(pendingComparisonKey(subject, sessionId), comparisonJson(comparison), SESSION_TTL);
+    }
+
+    public void clearPendingComparison(String subject, String sessionId) {
+        redis.delete(pendingComparisonKey(subject, sessionId));
+    }
+
+    public boolean updatePendingComparison(
+            String subject,
+            String sessionId,
+            ChatModels.PendingComparison expected,
+            ChatModels.PendingComparison updated) {
+        return Long.valueOf(1)
+                .equals(redis.execute(
+                        UPDATE_COMPARISON,
+                        List.of(pendingComparisonKey(subject, sessionId)),
+                        comparisonJson(expected),
+                        comparisonJson(updated),
+                        Long.toString(SESSION_TTL.toMillis())));
+    }
+
+    private String comparisonJson(ChatModels.PendingComparison comparison) {
+        try {
+            return objectMapper.writeValueAsString(comparison);
+        } catch (JsonProcessingException exception) {
+            throw new IllegalStateException("Cannot encode pending comparison", exception);
+        }
+    }
+
     private Map<String, String> deserializeMessage(String value) {
         try {
             return objectMapper.readValue(value, new TypeReference<>() {});
@@ -207,6 +257,10 @@ public final class ChatMemory {
 
     private String activeProductKey(String subject, String sessionId) {
         return "chat:product:" + subject + ':' + sessionId;
+    }
+
+    private String pendingComparisonKey(String subject, String sessionId) {
+        return "chat:comparison:" + subject + ':' + sessionId;
     }
 
     public record CompletedResponse(

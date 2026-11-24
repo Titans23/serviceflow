@@ -143,7 +143,7 @@ class EvaluationProviderBudgetTest {
         AtomicInteger redirects = new AtomicInteger();
         var counts = new ConcurrentHashMap<String, AtomicInteger>();
         String routingContent = new ObjectMapper()
-                .writeValueAsString("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"UNCLEAR\",\"mention\":null}");
+                .writeValueAsString("{\"intent\":\"PRODUCT_QUERY\",\"comparison\":false,\"targets\":[]}");
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/", exchange -> {
             if (exchange.getRequestURI().getPath().equals("/redirect-target")) {

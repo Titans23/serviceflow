@@ -10,6 +10,8 @@ public interface ProductService {
 
     ProductModels.Comparison compare(List<? extends Number> ids);
 
+    ProductModels.Comparison compareForChat(List<Long> ids);
+
     List<ProductModels.ProductView> resolve(String term);
 
     ProductModels.ImportResponse importProducts(List<ProductModels.ProductImport> imports);

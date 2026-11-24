@@ -192,7 +192,11 @@ class OrderConversationTest {
                 "怎么取消",
                 "如果取消会怎么样",
                 "只查退款状态",
-                "取消成功了吗"
+                "取消成功了吗",
+                "上次说取消这笔订单",
+                "之前说过取消，现在需要发票",
+                "取消过的那笔",
+                "查询退款工单"
             })
     void readOnlyRequestsNeverCreateActionsWhenPlannerReadsAnOrder(String query) {
         assertThat(run(state(FIRST + " " + query)).answer()).contains(FIRST);
@@ -245,6 +249,16 @@ class OrderConversationTest {
 
         assertThat(run(state("我的订单")).answer()).contains("暂时不可用");
         assertThat(pending.get().queryId()).isEqualTo("latest");
+    }
+
+    @Test
+    void fallsBackWhenTheCancellationVerbFollowsTheOrderDescription() {
+        when(orders.search(eq(7L), any(), isNull(), eq(10)))
+                .thenReturn(new OrderModels.Page(List.of(summary(FIRST), summary(SECOND)), null));
+        assertThat(run(state("我的手机订单帮我取消")).answer()).contains("多笔");
+        verify(orders).search(7L, new OrderModels.Search("手机", null, null, null), null, 10);
+        assertThat(pending.get().cancellation()).isTrue();
+        verify(actions, never()).prepare(any(), any());
     }
 
     private void plan(OrderCommand command) {

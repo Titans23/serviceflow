@@ -15,10 +15,19 @@
 6. `SseEventWriter` 统一发出 `progress`、`meta`、`token`、结构化业务事件、`done` 或稳定错误码，并在关闭/超时/异常时递减连接指标。工作流执行前发送处理进度；首段非空正文产生时记录 `serviceflow.chat.first_token_server`，口径是服务端处理起点到正文产生，不包含缓存重放，也不代表浏览器收到数据的时间。
 7. 客户请求的 begin 事务登记请求与用户消息，complete 事务登记助手消息与完成状态；两者之间包含外部模型调用，不是一笔长事务。独立 AI 审计默认不复制问题/回答正文，读取接口默认隐藏历史正文；`SERVICEFLOW_AUDIT_RECORD_CONTENT=true` 可显式开启。原聊天历史与旧审计数据均保留，不能宣称已删除或全面匿名化。公共报告只保留脱敏结果，不提交原始记录、JWT 或 API Key。
 
+## 多商品比较
+
+商品路由一次提取有序目标列表，MySQL 逐项核对 SKU、型号、容量和地区。需要澄清时，`comparison_selection_required` 带已确认商品和逐项候选。比如要比较 10 款、已确认 8 款，用户可补充其余两款，也可先比较已确认的 8 款。
+
+聊天支持比较 2–10 款同类别商品，独立比较页支持 2–3 款。待比较列表在 Redis 按主体与会话保存 30 分钟。通过 `comparisonSelection` 选择候选、补充型号或请求先比较已确认的商品。部分比较后仍可继续补充，候选与对比表都支持历史展示和同请求重放。
+
+模型不可用时，规则按明确列出的商品逐项匹配目录。查不准的商品保留为待确认，已确认的商品可以继续比较。
+
 ## 源码阅读入口
 
 - [ChatController](../../apps/serviceflow-server/src/main/java/com/serviceflow/controller/ChatController.java)
 - [ChatServiceImpl](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/ChatServiceImpl.java)
 - [ChatRequestStore](../../apps/serviceflow-server/src/main/java/com/serviceflow/service/impl/support/ChatRequestStore.java)
 - [CustomerWorkflow](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/CustomerWorkflow.java)
+- [ProductComparisonConversation](../../apps/serviceflow-server/src/main/java/com/serviceflow/agent/ProductComparisonConversation.java)
 - [SseEventWriter](../../apps/serviceflow-server/src/main/java/com/serviceflow/web/sse/SseEventWriter.java)

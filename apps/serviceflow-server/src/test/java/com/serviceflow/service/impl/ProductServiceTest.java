@@ -57,6 +57,20 @@ class ProductServiceTest {
     }
 
     @Test
+    void chatComparesTenProductsWithOneCatalogReadInRequestOrder() {
+        var rows = java.util.stream.LongStream.rangeClosed(1, 10)
+                .mapToObj(id -> product(id, "Model " + id, "phone", "{}"))
+                .toList();
+        var ids = rows.reversed().stream().map(ProductModels.Product::id).toList();
+        when(mapper.findByIds(ids)).thenReturn(rows);
+        assertThat(service.compareForChat(ids).products())
+                .extracting(ProductModels.ProductView::id)
+                .containsExactlyElementsOf(ids);
+        assertThatThrownBy(() -> service.compare(ids)).isInstanceOf(ResponseStatusException.class);
+        verify(mapper).findByIds(ids);
+    }
+
+    @Test
     void importsProductsWithNormalizedSkuAndReturnsPersistedViews() {
         var request = new ProductModels.ProductImport(
                 " sf-phone-x1 ",

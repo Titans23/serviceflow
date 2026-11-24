@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.ai.AiGateway.ProductRouting;
+import com.serviceflow.ai.AiGateway.ProductTarget;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
+import com.serviceflow.model.ChatModels;
 import com.serviceflow.model.ProductModels;
 import com.serviceflow.model.TicketModels;
 import com.serviceflow.rag.RagService;
@@ -62,6 +64,7 @@ public final class CustomerWorkflow {
     private final AiGateway ai;
     private final ProductService products;
     private final ProductReferenceResolver productReferences;
+    private final ProductComparisonConversation comparison;
     private final OrderConversation orderConversation;
     private final ActionDecisionService actions;
     private final TicketService tickets;
@@ -86,6 +89,7 @@ public final class CustomerWorkflow {
         this.ai = ai;
         this.products = products;
         this.productReferences = productReferences;
+        this.comparison = new ProductComparisonConversation(products, productReferences, memory);
         this.orderConversation = new OrderConversation(ai, orders, memory, actions);
         this.actions = actions;
         this.tickets = tickets;
@@ -154,8 +158,10 @@ public final class CustomerWorkflow {
             input.put("pageProductId", state.pageProductId() == null ? 0L : state.pageProductId());
             input.put("selectedProductId", state.selectedProductId() == null ? 0L : state.selectedProductId());
             // 商品片段属于本轮输入，进入工作流时清空上一轮检查点里的摘录。
-            input.put("productReference", ProductReference.UNCLEAR.name());
-            input.put("productMention", "");
+            input.put("productRouting", "");
+            input.put(
+                    "comparisonSelection",
+                    state.comparisonSelection() == null ? "" : writeJson(state.comparisonSelection()));
             input.put("clientRequestId", state.clientRequestId() == null ? "" : state.clientRequestId());
             input.put("activeOrderNo", state.activeOrderNo() == null ? "" : state.activeOrderNo());
             input.put(
@@ -219,27 +225,26 @@ public final class CustomerWorkflow {
 
     private Map<String, Object> branch(WorkflowGraphState graphState, Branch branch) {
         List<Event> events = new ArrayList<>();
-        ServiceFlowState runtime = graphState.runtime();
+        ServiceFlowState runtime = graphState.runtime(objectMapper);
         Result result = branch.apply(runtime, (name, value) -> events.add(new Event(name, writeJson(value))));
         return result(result, events, runtime.clearProductContext());
     }
 
     private Map<String, Object> route(WorkflowGraphState state) {
-        ServiceFlowState runtime = state.runtime();
+        ServiceFlowState runtime = state.runtime(objectMapper);
         Intent intent = routeIntent(state, runtime);
         return Map.of(
                 "intent",
                 intent.name(),
-                "productReference",
-                runtime.productReference().name(),
-                "productMention",
-                runtime.productMention() == null ? "" : runtime.productMention());
+                "productRouting",
+                runtime.productRouting() == null ? "" : writeJson(runtime.productRouting()));
     }
 
     /**
      * 先由 AI 判断用户问题的基础意图，再结合当前商品页面和型号信息进行项目规则修正。
      */
     private Intent routeIntent(WorkflowGraphState state, ServiceFlowState runtime) {
+        if (runtime.comparisonSelection() != null) return Intent.PRODUCT_QUERY;
         if (runtime.orderSelection() != null || OrderConversation.isSelection(state.query())) return Intent.ORDER_QUERY;
         boolean pendingOrders = !runtime.principal().guest()
                 && memory.orderCandidates(runtime.principal().subject(), runtime.sessionId()) != null;
@@ -251,14 +256,19 @@ public final class CustomerWorkflow {
             return Intent.ORDER_QUERY;
         if (runtime.selectedProductId() != null) return Intent.PRODUCT_QUERY;
         // 云模式调用大模型分类；演示模式使用关键词规则分类。
-        var contextProduct = productReferences.find(runtime.pageProductId());
-        String classificationContext = contextProduct == null ? "" : "当前商品：" + contextProduct.name() + "。\n";
+        String classificationContext = "";
+        try {
+            var contextProduct = productReferences.find(runtime.pageProductId());
+            if (contextProduct != null) classificationContext = "当前商品：" + contextProduct.name() + "。\n";
+        } catch (org.springframework.dao.DataAccessException unavailable) {
+            log.debug("Product context unavailable for intent routing");
+        }
         if (pendingOrders) classificationContext = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationContext;
         else if (currentOrder) classificationContext = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationContext;
         var routing = classifyIntent(ai, state.query(), classificationContext);
         Intent classified = routing.intent();
         if (productReferences.semanticEnabled()) {
-            runtime.productReference(routing.reference(), routing.mention());
+            runtime.productRouting(routing);
         }
         if (state.query().contains("退货")
                 && currentOrder
@@ -279,7 +289,7 @@ public final class CustomerWorkflow {
                         || !modelMentions(state.query()).isEmpty()
                         || !skuMentions(state.query()).isEmpty()
                         || ProductReferenceResolver.hasHanModel(state.query())
-                        || runtime.productReference() == ProductReference.NEW
+                        || !routing.targets().isEmpty()
                         || !products.resolve(state.query()).isEmpty())) {
             return Intent.PRODUCT_QUERY;
         }
@@ -295,7 +305,7 @@ public final class CustomerWorkflow {
             log.debug(
                     "Intent classification unavailable ({})", failure.getClass().getSimpleName());
         }
-        return new ProductRouting(Intent.fromKeywords(query), ProductReference.UNCLEAR, null);
+        return new ProductRouting(Intent.fromKeywords(query), false, List.of());
     }
 
     static Intent prioritizePageProduct(Intent classified, long pageProductId, String query) {
@@ -350,13 +360,37 @@ public final class CustomerWorkflow {
     }
 
     private Result product(ServiceFlowState state, BiConsumer<String, Object> events) {
+        if (state.comparisonSelection() != null) return comparison.continueComparison(state, events);
+        ProductRouting routing = state.productRouting();
+        List<ProductTarget> targets = routing == null ? List.of() : routing.targets();
+        String targetClause = ProductReferenceRules.targetClause(state.query());
+        if (!targetClause.isBlank() && !targetClause.equals(state.query())) {
+            targets = targets.stream()
+                    .filter(target ->
+                            target.reference() == ProductReference.CURRENT || targetClause.contains(target.mention()))
+                    .toList();
+        }
+        if (state.selectedProductId() == null
+                && (requestsProductComparison(state.query()) || (routing != null && routing.comparison()))) {
+            List<ProductTarget> rules = ProductReferenceRules.comparisonTargets(state.query());
+            int expected = ProductReferenceRules.expectedCount(state.query());
+            if ((routing != null && routing.comparison())
+                    || ProductReferenceRules.comparesProducts(state.query(), rules, expected)) {
+                // If an explicitly counted list is complete in the source, retain its positions even if the model
+                // omitted some.
+                boolean completeSourceList = expected >= 2 && rules.size() == expected && rules.size() > targets.size();
+                boolean modelTargets = !targets.isEmpty() && !completeSourceList;
+                return comparison.start(state, modelTargets ? targets : rules, expected, modelTargets, events);
+            }
+        }
         // 先确定商品范围。需要澄清时直接返回，等用户选择后再查说明书。
+        ProductTarget target = targets.size() == 1 ? targets.getFirst() : null;
         var resolution = productReferences.resolve(
                 state.query(),
                 state.pageProductId(),
                 state.selectedProductId(),
-                state.productReference(),
-                state.productMention());
+                target == null ? ProductReference.UNCLEAR : target.reference(),
+                target == null ? null : target.mention());
         state.clearProductContext(resolution.clearCurrent());
         if (!resolution.resolved()) {
             events.accept("product_selection_required", resolution.products());
@@ -374,12 +408,11 @@ public final class CustomerWorkflow {
             if (ids.size() < 2) {
                 return new Result("请明确选择至少两个同类别商品后再比较。", List.of(), ids.stream().toList());
             }
-            if (ids.size() > 3) {
+            if (ids.size() > ProductModels.MAX_CHAT_COMPARISON) {
                 return new Result(
-                        "一次最多比较 3 个商品，请缩小比较范围。", List.of(), ids.stream().toList());
+                        "一次最多比较 10 个商品，请缩小比较范围。", List.of(), ids.stream().toList());
             }
-            ProductModels.Comparison comparison = products.compare(ids.stream().toList());
-            events.accept("product_comparison", comparison);
+            events.accept("product_comparison", products.compareForChat(ids));
             return new Result(
                     "已按结构化规格列出差异。表格仅展示事实，不包含推荐排序。", List.of(), ids.stream().toList());
         }
@@ -565,8 +598,8 @@ public final class CustomerWorkflow {
                 Map.entry("query", Channels.base(() -> "")),
                 Map.entry("pageProductId", Channels.base(() -> 0L)),
                 Map.entry("selectedProductId", Channels.base(() -> 0L)),
-                Map.entry("productReference", Channels.base(() -> ProductReference.UNCLEAR.name())),
-                Map.entry("productMention", Channels.base(() -> "")),
+                Map.entry("productRouting", Channels.base(() -> "")),
+                Map.entry("comparisonSelection", Channels.base(() -> "")),
                 Map.entry("clearProductContext", Channels.base(() -> false)),
                 Map.entry("clientRequestId", Channels.base(() -> "")),
                 Map.entry("activeOrderNo", Channels.base(() -> "")),
@@ -641,7 +674,7 @@ public final class CustomerWorkflow {
             return value("eventPayloads").map(v -> (List<String>) v).orElse(List.of());
         }
 
-        ServiceFlowState runtime() {
+        ServiceFlowState runtime(ObjectMapper mapper) {
             Number customerId = value("customerId").map(Number.class::cast).orElse(0L);
             Number productId = value("pageProductId").map(Number.class::cast).orElse(0L);
             String requestId = value("clientRequestId", "");
@@ -660,15 +693,23 @@ public final class CustomerWorkflow {
             Number selectedId =
                     value("selectedProductId").map(Number.class::cast).orElse(0L);
             runtime.selectedProductId(selectedId.longValue() > 0 ? selectedId.longValue() : null);
-            String mention = value("productMention", "");
-            runtime.productReference(
-                    ProductReference.valueOf(value("productReference", ProductReference.UNCLEAR.name())),
-                    mention.isBlank() ? null : mention);
+            runtime.productRouting(readInput(mapper, value("productRouting", ""), ProductRouting.class));
+            runtime.comparisonSelection(
+                    readInput(mapper, value("comparisonSelection", ""), ChatModels.ComparisonSelection.class));
             String selection = value("orderSelectionQuery", "");
             if (!selection.isBlank())
                 runtime.orderSelection(
                         new com.serviceflow.model.ChatModels.OrderSelection(selection, value("orderSelectionNo", "")));
             return runtime;
+        }
+
+        private static <T> T readInput(ObjectMapper mapper, String value, Class<T> type) {
+            if (value.isBlank()) return null;
+            try {
+                return mapper.readValue(value, type);
+            } catch (com.fasterxml.jackson.core.JsonProcessingException error) {
+                throw new IllegalStateException("Cannot read workflow state", error);
+            }
         }
     }
 }

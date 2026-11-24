@@ -1,6 +1,7 @@
 package com.serviceflow.agent;
 
 import com.serviceflow.ai.AiGateway.ProductReference;
+import com.serviceflow.ai.AiGateway.ProductTarget;
 import com.serviceflow.model.ProductModels.ProductView;
 import com.serviceflow.rag.RerankerClient;
 import com.serviceflow.rag.RerankerClient.ScoredDocument;
@@ -34,6 +35,7 @@ public final class ProductReferenceResolver {
     private static final Pattern REFERENCE = Pattern.compile("这款|这台|该款|该机|它");
     private static final Map<String, String> REGIONS =
             Map.of("美版|美国规格", "unitedstates", "国行|大陆版|中国大陆", "china", "港版|香港版", "hongkong", "日版|日本版", "japan");
+    private static final Pattern REGION = Pattern.compile(String.join("|", REGIONS.keySet()));
 
     private final ProductService products;
     private final RerankerClient reranker;
@@ -72,11 +74,20 @@ public final class ProductReferenceResolver {
             return selected == null ? unresolved(List.of(), true, false) : resolved(List.of(selected), false);
         }
 
+        if (ProductReferenceRules.switchesProduct(query)) {
+            query = ProductReferenceRules.targetClause(query);
+            if (query.isBlank() && mention == null) return unresolved(List.of(), true, false);
+            if (mention != null && !query.isBlank() && !query.contains(mention)) mention = null;
+            if (query.isBlank()) query = mention;
+            currentId = null;
+            reference = ProductReference.NEW;
+        }
         String normalizedQuery = Normalizer.normalize(query, Normalizer.Form.NFKC);
         List<String> skus = CustomerWorkflow.skuMentions(normalizedQuery);
         List<String> models = CustomerWorkflow.modelMentions(normalizedQuery);
-        // 模型摘出的原文可补上正则识别不到的俗称，同时保留 SKU 和多个明确型号供比较。
-        if (mention != null && query.contains(mention) && skus.isEmpty() && models.size() <= 1) {
+        // A grounded target from routing takes precedence over mentions used as background.
+        if (mention != null && query.contains(mention) && !comparisonWithCurrent(query)) {
+            skus = CustomerWorkflow.skuMentions(mention);
             models = List.of(mention);
         } else if (models.isEmpty() && skus.isEmpty()) {
             Matcher hanModel = HAN_MODEL.matcher(normalizedQuery);
@@ -86,7 +97,10 @@ public final class ProductReferenceResolver {
         ProductView current = find(currentId);
         if (skus.isEmpty() && models.isEmpty()) {
             // 尝试换商品但无法确定对象时，请用户澄清，防止旧商品的说明书进入本轮。
-            if (reference == ProductReference.NEW) return unresolved(List.of(), true, true);
+            if (reference == ProductReference.NEW) {
+                List<ProductView> exact = exactModel(ProductReferenceRules.bareTarget(query));
+                return exact.size() == 1 ? resolved(exact, false) : unresolved(exact, true, false);
+            }
             if (current != null && (reference == ProductReference.CURRENT || !semanticEnabled)) {
                 return resolved(List.of(current), false);
             }
@@ -107,7 +121,7 @@ public final class ProductReferenceResolver {
             return resolved(List.copyOf(named.values()), false);
         }
         if (skus.isEmpty() && models.size() == 1) {
-            return single(query, models.getFirst(), current);
+            return named(query, models.getFirst(), current, mention != null, false);
         }
         for (String model : models) {
             List<ProductView> matches = exactModel(model);
@@ -120,9 +134,22 @@ public final class ProductReferenceResolver {
         return candidates.size() == 1 ? resolved(candidates, false) : unresolved(candidates, true, false);
     }
 
-    private Resolution single(String query, String mention, ProductView current) {
+    Resolution resolveComparisonTarget(ProductTarget target, Long currentId, boolean allowRerank) {
+        if (target.reference() == ProductReference.CURRENT) {
+            ProductView current = find(currentId);
+            return current == null ? unresolved(List.of(), false, false) : resolved(List.of(current), false);
+        }
+        String term = target.mention().strip();
+        return named(term, term, null, allowRerank, true);
+    }
+
+    private Resolution named(
+            String query, String mention, ProductView current, boolean allowRerank, boolean comparison) {
         // 紧跟型号的容量用于选择规格，问题里其他位置的容量可能是用户想核实的参数。
-        String identity = CAPACITY.matcher(mention).replaceAll("").trim();
+        String normalized = Normalizer.normalize(mention, Normalizer.Form.NFKC);
+        String identity = REGION.matcher(CAPACITY.matcher(normalized).replaceAll(""))
+                .replaceAll("")
+                .trim();
         String capacity = first(CAPACITY, mention);
         int mentionStart = query.indexOf(mention);
         if (capacity.isEmpty() && mentionStart >= 0) {
@@ -130,20 +157,24 @@ public final class ProductReferenceResolver {
         }
         String requestedCapacity = capacity;
         List<ProductView> exact = exactModel(identity).stream()
-                .filter(p -> compatible(identity, requestedCapacity, p))
+                .filter(p -> compatible(identity, normalized, requestedCapacity, p))
                 .toList();
         if (!exact.isEmpty()) return singleMatch(query, exact, current);
+        if (CustomerWorkflow.skuMentions(identity).stream().anyMatch(identity::equalsIgnoreCase)) {
+            return unresolved(List.of(), true, false);
+        }
+        if (comparison && !allowRerank) return unresolved(List.of(), true, false);
 
         var page = products.search(null, null, 0, CATALOG_LIMIT);
         // 目录过大时请用户补充型号，防止只看前一页就选错商品。
         if (page == null || page.total() > CATALOG_LIMIT) return unresolved(List.of(), true, false);
         List<ProductView> compatible = page.items().stream()
-                .filter(p -> compatible(identity, requestedCapacity, p))
+                .filter(p -> compatible(identity, normalized, requestedCapacity, p))
                 .toList();
         List<ProductView> near =
                 compatible.stream().filter(p -> similarModel(identity, p)).toList();
-        if (!near.isEmpty()) return singleMatch(query, near, current);
-        if (!semanticEnabled || compatible.isEmpty()) return unresolved(List.of(), true, false);
+        if (!near.isEmpty()) return comparison ? unresolved(near, false, false) : singleMatch(query, near, current);
+        if (!allowRerank || !semanticEnabled || compatible.isEmpty()) return unresolved(List.of(), true, false);
 
         // 云端只对商品目录描述评分，候选仍须通过本地型号和规格校验。
         List<ScoredDocument> ranked;
@@ -155,6 +186,7 @@ public final class ProductReferenceResolver {
                             .toList(),
                     MAX_CANDIDATES);
         } catch (RuntimeException exception) {
+            if (Thread.currentThread().isInterrupted()) throw exception;
             return unresolved(List.of(), true, true);
         }
         Map<String, ProductView> byId = new LinkedHashMap<>();
@@ -167,7 +199,8 @@ public final class ProductReferenceResolver {
         if (candidates.isEmpty()) return unresolved(List.of(), true, false);
         ProductView first = candidates.getFirst();
         // 设置校准门槛后才允许自动选款。分差取自同一次请求，并检查同型号是否还有其他规格。
-        if (minimumScoreGap > 0
+        if (!comparison
+                && minimumScoreGap > 0
                 && ranked.size() >= 2
                 && ranked.getFirst().id().equals(Long.toString(first.id()))
                 && !ranked.getFirst().id().equals(ranked.get(1).id())
@@ -201,7 +234,7 @@ public final class ProductReferenceResolver {
 
     private List<ProductView> exactModel(String term) {
         return products.resolve(term).stream()
-                .filter(p -> modelNames(p).contains(normalize(term)))
+                .filter(p -> p.sku().equalsIgnoreCase(term) || modelNames(p).contains(normalize(term)))
                 .toList();
     }
 
@@ -225,9 +258,10 @@ public final class ProductReferenceResolver {
                 && modelNames(candidate).stream().anyMatch(name -> withinOneEdit(normalize(mention), name));
     }
 
-    private static boolean compatible(String mention, String capacity, ProductView product) {
-        String variant = first(VARIANT, mention);
-        String series = first(NUMBER, mention);
+    private static boolean compatible(String identity, String mention, String capacity, ProductView product) {
+        if (product.sku().equalsIgnoreCase(identity)) return true;
+        String variant = first(VARIANT, identity);
+        String series = first(NUMBER, identity);
         String region = normalize(Objects.toString(product.specs().get("region"), ""));
         return (variant.isEmpty() || variant.equals(first(VARIANT, product.model())))
                 && (series.isEmpty() || series.equals(first(NUMBER, product.model())))

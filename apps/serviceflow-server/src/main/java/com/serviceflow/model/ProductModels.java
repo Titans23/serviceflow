@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class ProductModels {
+    public static final int MAX_CHAT_COMPARISON = 10;
+
     private ProductModels() {}
 
     public record Product(

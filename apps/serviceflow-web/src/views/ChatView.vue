@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RefundReview from '../components/RefundReview.vue'
 import ReturnProgress from '../components/ReturnProgress.vue'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
@@ -17,6 +17,19 @@ import {
 } from '../stores/pendingCancellation'
 
 const markdown = new MarkdownIt({ html: false, breaks: true, linkify: true })
+
+type ComparisonProduct = { id: number; name: string; sku: string }
+type PendingComparison = {
+  comparisonId: string
+  targets: { label: string; confirmed: ComparisonProduct | null; candidates: ComparisonProduct[] }[]
+}
+type ComparisonSelection = {
+  comparisonId: string
+  targetIndex?: number
+  productId?: number
+  term?: string
+  compareConfirmed?: boolean
+}
 
 const auth = useAuthStore(),
   route = useRoute(),
@@ -41,6 +54,7 @@ let productId = route.query.productId ? Number(route.query.productId) : undefine
 let entryOrderNo = typeof route.query.orderNo === 'string' ? route.query.orderNo : undefined
 const orderContext = ref<any>()
 let entryPageContext: { sessionId: string; productId: number } | null = null
+const comparisonTerms = ref<Record<string, string>>({})
 async function refresh() {
   sessions.value = await api('/chat/sessions')
 }
@@ -65,6 +79,8 @@ async function select(id: string, useEntryHint = false) {
       const metadata = JSON.parse(message.metadataJson || '{}')
       message.candidates = metadata.productCandidates
       message.candidateQuestion = metadata.productQuestion
+      message.comparison = metadata.productComparison
+      message.pendingComparison = metadata.pendingComparison
       message.orderCandidates = metadata.orderCandidates
       message.order = metadata.order
       message.action = metadata.action
@@ -80,6 +96,7 @@ async function select(id: string, useEntryHint = false) {
   entryPageContext = useEntryHint && productId ? { sessionId: id, productId } : null
   current.value = id
   messages.value = history
+  comparisonTerms.value = {}
   input.value = ''
   action.value = null
   const savedAction = history.at(-1)?.action
@@ -154,6 +171,7 @@ async function removeSessions(id?: string) {
 async function send(
   orderSelection?: { queryId: string; orderNo: string },
   selectedProductId?: number,
+  comparisonSelection?: ComparisonSelection,
 ) {
   if (!input.value.trim() || sending.value || sessionBusy.value) return
   const text = input.value
@@ -165,12 +183,12 @@ async function send(
     action.value = null
     followOutput.value = true
     messages.value.push({ role: 'USER', content: text })
-    const assistant: any = {
+    const assistant: any = reactive({
       role: 'ASSISTANT',
       content: '',
       comparison: null,
       candidateQuestion: text,
-    }
+    })
     messages.value.push(assistant)
     await stream(
       `/chat/sessions/${current.value}/messages/stream`,
@@ -184,6 +202,7 @@ async function send(
             : null,
         orderSelection,
         selectedProductId,
+        comparisonSelection,
       },
       (name, data) => {
         if (name === 'progress') assistant.progress = data.message
@@ -199,6 +218,7 @@ async function send(
         }
         if (name === 'product_selection_required') assistant.candidates = data
         if (name === 'product_comparison') assistant.comparison = data
+        if (name === 'comparison_selection_required') assistant.pendingComparison = data
         if (name === 'order') {
           assistant.order = data
           orderContext.value = data
@@ -231,6 +251,39 @@ async function askCandidate(candidate: { id: number }, question: string) {
   // 同型号的不同容量可能共用一个型号名，用商品 ID 继续回答原问题。
   input.value = question
   await send(undefined, candidate.id)
+}
+function comparisonTermKey(comparison: PendingComparison, index: number) {
+  return `${comparison.comparisonId}:${index}`
+}
+function confirmedProducts(comparison: PendingComparison) {
+  return comparison.targets.flatMap((target) => (target.confirmed ? [target.confirmed] : []))
+}
+async function supplementComparison(
+  comparison: PendingComparison,
+  targetIndex: number,
+  candidate?: ComparisonProduct,
+) {
+  if (sending.value || sessionBusy.value) return
+  const key = comparisonTermKey(comparison, targetIndex)
+  const term = comparisonTerms.value[key]?.trim()
+  if (!candidate && !term) return
+  const label = candidate ? `${candidate.name}（${candidate.sku}）` : term
+  input.value = `补充第 ${targetIndex + 1} 款商品：${label}`
+  await send(undefined, undefined, {
+    comparisonId: comparison.comparisonId,
+    targetIndex,
+    productId: candidate?.id,
+    term: candidate ? undefined : term,
+  })
+}
+async function compareConfirmed(comparison: PendingComparison) {
+  if (sending.value || sessionBusy.value) return
+  const count = confirmedProducts(comparison).length
+  input.value = `先比较已确认的 ${count} 款商品`
+  await send(undefined, undefined, {
+    comparisonId: comparison.comparisonId,
+    compareConfirmed: true,
+  })
 }
 async function chooseOrder(queryId: string, orderNo: string) {
   input.value = `选择订单 ${orderNo}`
@@ -464,7 +517,7 @@ onMounted(() =>
           <!-- eslint-enable vue/no-v-html -->
           <div v-else>{{ m.content }}</div>
           <el-alert
-            v-if="m.degraded"
+            v-if="m.degraded && !m.pendingComparison"
             title="检索服务已降级，以下内容来自融合检索结果"
             type="warning"
             :closable="false"
@@ -477,22 +530,81 @@ onMounted(() =>
               >{{ p.name }}（{{ p.sku }}）</el-button
             >
           </div>
-          <table v-if="m.comparison" class="spec-table">
-            <thead>
-              <tr>
-                <th>项目</th>
-                <th v-for="p in m.comparison.products" :key="p.id">{{ p.name }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="f in m.comparison.fields" :key="f">
-                <th>{{ f }}</th>
-                <td v-for="p in m.comparison.products" :key="p.id">
-                  {{ p.specs[f] ?? '暂无数据' }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="m.comparison" class="chat-comparison-table">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th scope="col">项目</th>
+                  <th v-for="p in m.comparison.products" :key="p.id" scope="col">
+                    {{ p.name }}<br /><small>{{ p.sku }}</small>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="f in m.comparison.fields" :key="f">
+                  <th scope="row">{{ f }}</th>
+                  <td v-for="p in m.comparison.products" :key="p.id">
+                    {{ p.specs[f] ?? '暂无数据' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="m.pendingComparison" class="comparison-choices">
+            <p v-if="confirmedProducts(m.pendingComparison).length">
+              已确认：{{
+                confirmedProducts(m.pendingComparison)
+                  .map((product) => `${product.name}（${product.sku}）`)
+                  .join('、')
+              }}
+            </p>
+            <template
+              v-for="(target, targetIndex) in m.pendingComparison.targets"
+              :key="targetIndex"
+            >
+              <div v-if="!target.confirmed" class="comparison-target">
+                <strong>待确认 · {{ target.label }}</strong>
+                <div v-if="target.candidates.length" class="comparison-options">
+                  <el-button
+                    v-for="candidate in target.candidates"
+                    :key="candidate.id"
+                    :disabled="sending || sessionBusy"
+                    @click="
+                      supplementComparison(m.pendingComparison, Number(targetIndex), candidate)
+                    "
+                    >{{ candidate.name }}（{{ candidate.sku }}）</el-button
+                  >
+                </div>
+                <form
+                  class="comparison-options"
+                  @submit.prevent="supplementComparison(m.pendingComparison, Number(targetIndex))"
+                >
+                  <el-input
+                    v-model="
+                      comparisonTerms[comparisonTermKey(m.pendingComparison, Number(targetIndex))]
+                    "
+                    :aria-label="`补充第 ${Number(targetIndex) + 1} 款商品的型号或 SKU`"
+                    placeholder="输入型号或 SKU"
+                    maxlength="120"
+                    :disabled="sending || sessionBusy"
+                  />
+                  <el-button native-type="submit" :disabled="sending || sessionBusy"
+                    >补充</el-button
+                  >
+                </form>
+              </div>
+            </template>
+            <el-button
+              v-if="confirmedProducts(m.pendingComparison).length >= 2 && !m.comparison"
+              :disabled="sending || sessionBusy"
+              @click="compareConfirmed(m.pendingComparison)"
+              >{{
+                confirmedProducts(m.pendingComparison).length === m.pendingComparison.targets.length
+                  ? '重试比较'
+                  : `先比较已确认的 ${confirmedProducts(m.pendingComparison).length} 款`
+              }}</el-button
+            >
+          </div>
           <el-card v-if="m.order" shadow="never"
             ><strong>订单 {{ m.order.orderNo }}</strong>
             <p>状态：{{ m.order.status }} · 金额：¥{{ m.order.totalAmount }}</p>

@@ -18,7 +18,9 @@ public interface AiGateway {
         UNCLEAR
     }
 
-    record ProductRouting(Intent intent, ProductReference reference, String mention) {}
+    record ProductTarget(ProductReference reference, String mention) {}
+
+    record ProductRouting(Intent intent, boolean comparison, List<ProductTarget> targets) {}
 
     default Optional<OrderCommand> requestOrderTool(
             String message, LocalDate today, boolean hasCurrentOrder, List<OrderModels.Summary> candidates) {

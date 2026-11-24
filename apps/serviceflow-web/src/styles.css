@@ -158,6 +158,31 @@ a {
   border: 1px solid #e5e7eb;
   text-align: left;
 }
+.chat-comparison-table {
+  margin-top: 10px;
+  overflow-x: auto;
+}
+.chat-comparison-table .spec-table th {
+  min-width: 112px;
+}
+.comparison-choices {
+  margin-top: 12px;
+}
+.comparison-target {
+  margin: 10px 0;
+}
+.comparison-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.comparison-options .el-input {
+  max-width: 240px;
+}
+.comparison-options .el-button + .el-button {
+  margin-left: 0;
+}
 .action-card {
   border: 1px solid #f0b429;
   padding: 12px;

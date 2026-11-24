@@ -26,7 +26,9 @@ final class OrderSearchRules {
 
     static OrderModels.Search search(String message, LocalDate today) {
         if (listsOrders(message)) return new OrderModels.Search(null, null, null, null);
-        String filter = normalize(message).replaceFirst("^(?:请帮我|帮我|请)?(?:查询|查看|查一下|查|取消)?", "");
+        String filter = normalize(message)
+                .replaceFirst("^(?:请帮我|帮我|请)?(?:查询|查看|查一下|查|取消)?(?:我的)?", "")
+                .replaceFirst("(?:请帮我|帮我|请)?取消$", "");
         var matched = FILTERS.matcher(filter);
         if (!matched.matches()) return null;
         String date = matched.group("date");

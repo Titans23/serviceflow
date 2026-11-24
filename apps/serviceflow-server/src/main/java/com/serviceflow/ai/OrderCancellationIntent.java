@@ -13,6 +13,11 @@ public final class OrderCancellationIntent {
     }
 
     public static boolean requested(String message) {
-        return !readOnly(message) && message.matches("(?s).*(?:取消|不要了|不想要了).*");
+        if (readOnly(message)) return false;
+        String text = message.replaceAll("\\s+", "").replaceFirst("[。！!]+$", "");
+        if (text.matches("^(?:我|你|客服)?(?:之前|上次|刚才).+")) return false;
+        return text.matches("^(?:请|麻烦|麻烦你|麻烦帮我|帮我|请帮我|我想|我要|我希望|现在|给我|那就)?" + "取消(?!了|过|的|后|记录|流程|政策|规则|完成|原因).*")
+                || text.matches("(?i).*(?:帮我取消|请取消|不要了|不想要了)(?:订单)?(?:SF\\d{12,})?$")
+                || text.matches("(?i)^(?:订单)?SF\\d{12,}取消$");
     }
 }

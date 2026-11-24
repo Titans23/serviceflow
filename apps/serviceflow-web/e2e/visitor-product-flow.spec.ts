@@ -316,3 +316,81 @@ test('chat renders safe markdown and keeps the composer visible after a long com
   await page.mouse.wheel(0, 600)
   await expect.poll(() => messagePane.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
 })
+
+test('an eight-of-ten comparison can be viewed first and supplemented afterward', async ({
+  page,
+}) => {
+  const products = Array.from({ length: 10 }, (_, index) => ({
+    id: index + 1,
+    name: `手机 ${index + 1}`,
+    sku: `TEST-PHONE-${index + 1}`,
+    specs: { storage: '128 GB' },
+  }))
+  const comparisonId = 'pending-compare'
+  let confirmed = 8
+  const pending = () => ({
+    comparisonId,
+    targets: products.map((product, index) => ({
+      label: product.name,
+      confirmed: index < confirmed ? product : null,
+      candidates: index === 9 ? [product] : [],
+    })),
+  })
+  const table = () => ({ fields: ['storage'], products: products.slice(0, confirmed) })
+  const sent: unknown[] = []
+  const history: { role: string; content: string; metadataJson?: string }[] = []
+  await page.route('**/api/chat/sessions', async (route) =>
+    route.fulfill({ json: [{ publicId: 'session-compare', title: '商品比较' }] }),
+  )
+  await page.route('**/api/chat/sessions/session-compare/messages', async (route) =>
+    route.fulfill({ json: history }),
+  )
+  await page.route('**/api/chat/sessions/session-compare/messages/stream', async (route) => {
+    const request = route.request().postDataJSON()
+    const selection = request.comparisonSelection
+    sent.push(selection)
+    if (selection?.targetIndex !== undefined) confirmed++
+    const showTable = selection?.compareConfirmed || confirmed === 10
+    const message = showTable
+      ? `本次比较已确认的 ${confirmed} 款商品。`
+      : `已确认 ${confirmed} 款商品，还有 ${10 - confirmed} 款待确认。`
+    const metadata = {
+      productComparison: showTable ? table() : undefined,
+      pendingComparison: confirmed < 10 ? pending() : undefined,
+    }
+    history.push(
+      { role: 'USER', content: request.message },
+      { role: 'ASSISTANT', content: message, metadataJson: JSON.stringify(metadata) },
+    )
+    const response = [`event: token\ndata: ${message}\n\n`]
+    if (metadata.productComparison)
+      response.push(
+        `event: product_comparison\ndata: ${JSON.stringify(metadata.productComparison)}\n\n`,
+      )
+    if (metadata.pendingComparison)
+      response.push(
+        `event: comparison_selection_required\ndata: ${JSON.stringify(metadata.pendingComparison)}\n\n`,
+      )
+    response.push('event: done\ndata: {}\n\n')
+    await route.fulfill({ contentType: 'text/event-stream', body: response.join('') })
+  })
+
+  await page.goto('/chat?sessionId=session-compare')
+  await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill('对比 10 款手机')
+  await page.getByRole('button', { name: '发送' }).click()
+  await expect(page.getByText('已确认 8 款商品，还有 2 款待确认。')).toBeVisible()
+  await expect(page.getByRole('table')).toHaveCount(0)
+  await page.getByRole('button', { name: '先比较已确认的 8 款' }).click()
+  await expect(page.getByRole('columnheader')).toHaveCount(9)
+  expect(sent[1]).toEqual({ comparisonId, compareConfirmed: true })
+
+  await page.reload()
+  await expect(page.getByRole('columnheader')).toHaveCount(9)
+  const ninth = page.locator('.comparison-target').filter({ hasText: '待确认 · 手机 9' }).last()
+  await ninth.getByRole('textbox').fill('TEST-PHONE-9')
+  await ninth.getByRole('button', { name: '补充', exact: true }).click()
+  expect(sent[2]).toEqual({ comparisonId, targetIndex: 8, term: 'TEST-PHONE-9' })
+  await page.getByRole('button', { name: '手机 10（TEST-PHONE-10）' }).last().click()
+  await expect(page.getByRole('table').last().getByRole('columnheader')).toHaveCount(11)
+  expect(sent[3]).toEqual({ comparisonId, targetIndex: 9, productId: 10 })
+})

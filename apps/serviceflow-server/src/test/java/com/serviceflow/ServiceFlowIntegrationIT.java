@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.mapper.OrderMapper;
+import com.serviceflow.model.ChatModels;
 import com.serviceflow.model.OrderModels;
 import com.serviceflow.model.RefundModels;
 import com.serviceflow.security.CurrentPrincipal;
@@ -202,6 +203,79 @@ class ServiceFlowIntegrationIT {
         assertThat(sessions.list(owner)).isEmpty();
         assertThatThrownBy(() -> sessions.messages(owner, second)).hasMessageContaining("404");
         assertThat(sessions.list(other)).extracting("publicId").containsExactly(foreign);
+    }
+
+    @Test
+    void comparisonSelectionSurvivesPartialComparisonAndResponseReplay(
+            @Autowired com.fasterxml.jackson.databind.ObjectMapper mapper) throws Exception {
+        String prefix =
+                "CHECK-COMPARE-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        var skus = java.util.stream.IntStream.rangeClosed(1, 10)
+                .mapToObj(index -> prefix + "-" + index)
+                .toList();
+        try {
+            for (String sku : skus) {
+                jdbc.update(
+                        """
+                        INSERT INTO product(sku,name,brand,model,category,specs,sale_status)
+                        VALUES(?,?,'Test',?,'phone','{"storage":"128 GB"}','ON_SALE')
+                        """,
+                        sku,
+                        sku,
+                        sku);
+            }
+            var token = http.postForObject("/auth/guest", null, TokenResponse.class);
+            var headers = new HttpHeaders();
+            headers.setBearerAuth(token.accessToken());
+            var session = http.postForObject("/chat/sessions", new HttpEntity<>(headers), ChatModels.Session.class);
+            String path = "/chat/sessions/" + session.publicId() + "/messages";
+            var start = new ChatModels.MessageRequest(
+                    "对比10款手机：" + String.join("、", skus.subList(0, 8)),
+                    UUID.randomUUID().toString(),
+                    null);
+            assertThat(http.postForObject(path + "/stream", new HttpEntity<>(start, headers), String.class))
+                    .contains("comparison_selection_required")
+                    .doesNotContain("product_comparison");
+            var history = http.exchange(path, GET, new HttpEntity<>(headers), ChatModels.Message[].class)
+                    .getBody();
+            var pending = mapper.readTree(history[1].metadataJson()).path("pendingComparison");
+            assertThat(pending.path("targets").size()).isEqualTo(10);
+            String id = pending.path("comparisonId").asText();
+
+            var partial = new ChatModels.MessageRequest(
+                    "先比较已确认商品",
+                    UUID.randomUUID().toString(),
+                    null,
+                    null,
+                    null,
+                    new ChatModels.ComparisonSelection(id, null, null, null, true));
+            assertThat(http.postForObject(path + "/stream", new HttpEntity<>(partial, headers), String.class))
+                    .contains("product_comparison", "comparison_selection_required", "本次比较已确认的 8 款")
+                    .doesNotContain(skus.get(8), skus.get(9));
+            assertThat(http.postForObject(path + "/stream", new HttpEntity<>(partial, headers), String.class))
+                    .contains("product_comparison", "comparison_selection_required", "\"replayed\":true");
+
+            for (int index = 9; index >= 8; index--) {
+                var complete = new ChatModels.MessageRequest(
+                        "补充商品",
+                        UUID.randomUUID().toString(),
+                        null,
+                        null,
+                        null,
+                        new ChatModels.ComparisonSelection(id, index, null, skus.get(index), false));
+                var response = http.postForObject(path + "/stream", new HttpEntity<>(complete, headers), String.class);
+                if (index == 9) assertThat(response).contains("已确认 9 款").doesNotContain("product_comparison");
+                else assertThat(response).contains("product_comparison", skus.get(8), skus.get(9));
+            }
+            history = http.exchange(path, GET, new HttpEntity<>(headers), ChatModels.Message[].class)
+                    .getBody();
+            var full = mapper.readTree(history[history.length - 1].metadataJson())
+                    .path("productComparison")
+                    .path("products");
+            assertThat(full).extracting(item -> item.path("sku").asText()).containsExactlyElementsOf(skus);
+        } finally {
+            jdbc.update("DELETE FROM product WHERE sku LIKE ?", prefix + "-%");
+        }
     }
 
     private CurrentPrincipal chatPrincipal(boolean guest) {

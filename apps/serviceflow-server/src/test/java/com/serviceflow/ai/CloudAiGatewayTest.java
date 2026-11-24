@@ -39,38 +39,65 @@ class CloudAiGatewayTest {
 
     @Test
     void acceptsAValidChatIntent() {
-        streamReturns("{\"intent\":\"CHAT\",\"reference\":\"UNCLEAR\",\"mention\":null}");
+        streamReturns("{\"intent\":\"CHAT\",\"comparison\":false,\"targets\":[]}");
 
         assertThat(gateway.classifyProductReference("你好", ""))
-                .contains(new AiGateway.ProductRouting(Intent.CHAT, AiGateway.ProductReference.UNCLEAR, null));
+                .contains(new AiGateway.ProductRouting(Intent.CHAT, false, List.of()));
     }
 
     @Test
     void rejectsInvalidStructuredRoutingOutput() {
-        streamReturns("{\"intent\":\"PRODUCT_ASK\",\"reference\":\"CURRENT\"}");
+        streamReturns("{\"intent\":\"PRODUCT_ASK\",\"comparison\":false,\"targets\":[]}");
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
 
-        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"PREVIOUS\"}");
+        streamReturns(
+                """
+                {"intent":"PRODUCT_QUERY","comparison":false,"targets":[{"reference":"PREVIOUS","mention":null}]}
+                """);
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
 
         streamReturns("不是 JSON");
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
 
-        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"CURRENT\"} 多余文本");
+        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"comparison\":false,\"targets\":[]} 多余文本");
         assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
     }
 
     @Test
     void productRoutingKeepsOnlyMentionsCopiedFromTheUserMessage() {
         String question = "苹果16promax 的屏幕呢？";
-        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"苹果16promax\"}");
+        streamReturns(
+                """
+                {"intent":"PRODUCT_QUERY","comparison":false,"targets":[{"reference":"NEW","mention":"苹果16promax"}]}
+                """);
         assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
                 .contains(new AiGateway.ProductRouting(
-                        Intent.PRODUCT_QUERY, AiGateway.ProductReference.NEW, "苹果16promax"));
+                        Intent.PRODUCT_QUERY,
+                        false,
+                        List.of(new AiGateway.ProductTarget(AiGateway.ProductReference.NEW, "苹果16promax"))));
 
-        streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"iPhone 16 Pro Max\"}");
-        assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
-                .contains(new AiGateway.ProductRouting(Intent.PRODUCT_QUERY, AiGateway.ProductReference.UNCLEAR, null));
+        streamReturns(
+                """
+                {"intent":"PRODUCT_QUERY","comparison":false,"targets":[{"reference":"NEW","mention":"iPhone 16 Pro Max"}]}
+                """);
+        assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16")).isEmpty();
+    }
+
+    @Test
+    void keepsOrderedProductTargetsAndExcludesTheBackgroundProduct() {
+        streamReturns(
+                """
+                {"intent":"PRODUCT_QUERY","comparison":true,"targets":[
+                  {"reference":"NEW","mention":"苹果16"},
+                  {"reference":"NEW","mention":"Pixel 9"}]}
+                """);
+        assertThat(gateway.classifyProductReference("之前聊的是 Galaxy S24，这次比较苹果16和 Pixel 9", ""))
+                .contains(new AiGateway.ProductRouting(
+                        Intent.PRODUCT_QUERY,
+                        true,
+                        List.of(
+                                new AiGateway.ProductTarget(AiGateway.ProductReference.NEW, "苹果16"),
+                                new AiGateway.ProductTarget(AiGateway.ProductReference.NEW, "Pixel 9"))));
     }
 
     @Test
