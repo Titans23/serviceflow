@@ -1,10 +1,54 @@
 package com.serviceflow.agent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
+import com.serviceflow.ai.AiGateway;
+import com.serviceflow.ai.AiGateway.ProductReference;
+import com.serviceflow.ai.AiGateway.ProductRouting;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class CustomerWorkflowIntentRoutingTest {
+
+    @Test
+    void validStructuredChatDoesNotFallBackToKeywords() {
+        AiGateway ai = mock(AiGateway.class);
+        String question = "暂时不需要商品推荐，谢谢";
+        var routing = new ProductRouting(Intent.CHAT, ProductReference.UNCLEAR, null);
+        when(ai.classifyProductReference(question, "")).thenReturn(Optional.of(routing));
+
+        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, "")).isEqualTo(routing);
+        verify(ai).classifyProductReference(question, "");
+        verifyNoMoreInteractions(ai);
+    }
+
+    @Test
+    void invalidStructuredOutputUsesOrdinaryIntent() {
+        AiGateway ai = mock(AiGateway.class);
+        String question = "这款的续航如何？";
+        when(ai.classifyProductReference(question, "")).thenReturn(Optional.empty());
+        when(ai.classify(question)).thenReturn(Optional.of(Intent.PRODUCT_QUERY));
+
+        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, ""))
+                .isEqualTo(new ProductRouting(Intent.PRODUCT_QUERY, ProductReference.UNCLEAR, null));
+        verify(ai).classify(question);
+    }
+
+    @Test
+    void unavailableOrInvalidModelsUseRulesOnTheOriginalQuestion() {
+        AiGateway ai = mock(AiGateway.class);
+        String question = "保修政策是什么？";
+        String context = "当前商品：某型号。\n";
+        when(ai.classifyProductReference(question, context)).thenThrow(new IllegalStateException("unavailable"));
+        when(ai.classify(context + "用户问题：" + question)).thenReturn(Optional.empty());
+
+        assertThat(CustomerWorkflow.classifyIntent(ai, true, question, context))
+                .isEqualTo(new ProductRouting(Intent.KNOWLEDGE_QUERY, ProductReference.UNCLEAR, null));
+    }
 
     @Test
     void extractsRealWorldModelsWithSpacesAndSuffixes() {

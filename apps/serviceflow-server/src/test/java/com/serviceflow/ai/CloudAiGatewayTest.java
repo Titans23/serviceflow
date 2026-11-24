@@ -36,7 +36,22 @@ class CloudAiGatewayTest {
     void classifiesUsingSpringAiResponse() {
         streamReturns("PRODUCT_QUERY");
 
-        assertThat(gateway.classify("这款手机怎么样")).isEqualTo(Intent.PRODUCT_QUERY);
+        assertThat(gateway.classify("这款手机怎么样")).contains(Intent.PRODUCT_QUERY);
+    }
+
+    @Test
+    void rejectsUnknownIntentsWithoutConfusingThemWithChat() {
+        streamReturns("PRODUCT_ASK");
+        assertThat(gateway.classify("这款手机怎么样")).isEmpty();
+
+        streamReturns("{\"intent\":\"PRODUCT_ASK\",\"reference\":\"CURRENT\"}");
+        assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
+
+        streamReturns("不是 JSON");
+        assertThat(gateway.classifyProductReference("这款手机怎么样", "")).isEmpty();
+
+        streamReturns(" chat ");
+        assertThat(gateway.classify("你好")).contains(Intent.CHAT);
     }
 
     @Test
@@ -44,13 +59,12 @@ class CloudAiGatewayTest {
         String question = "苹果16promax 的屏幕呢？";
         streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"苹果16promax\"}");
         assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
-                .isEqualTo(new AiGateway.ProductRouting(
+                .contains(new AiGateway.ProductRouting(
                         Intent.PRODUCT_QUERY, AiGateway.ProductReference.NEW, "苹果16promax"));
 
         streamReturns("{\"intent\":\"PRODUCT_QUERY\",\"reference\":\"NEW\",\"mention\":\"iPhone 16 Pro Max\"}");
         assertThat(gateway.classifyProductReference(question, "当前商品：iPhone 16"))
-                .isEqualTo(
-                        new AiGateway.ProductRouting(Intent.PRODUCT_QUERY, AiGateway.ProductReference.UNCLEAR, null));
+                .contains(new AiGateway.ProductRouting(Intent.PRODUCT_QUERY, AiGateway.ProductReference.UNCLEAR, null));
     }
 
     @Test

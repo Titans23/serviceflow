@@ -43,7 +43,7 @@ public final class ProductReferenceResolver {
     public ProductReferenceResolver(
             ProductService products,
             RerankerClient reranker,
-            @Value("${serviceflow.product-resolution.semantic-enabled:false}") boolean semanticEnabled,
+            @Value("${serviceflow.product-resolution.semantic-enabled:true}") boolean semanticEnabled,
             @Value("${serviceflow.ai.mode:demo}") String aiMode,
             @Value("${serviceflow.product-resolution.minimum-score-gap:0}") double minimumScoreGap) {
         if (!Double.isFinite(minimumScoreGap) || minimumScoreGap < 0 || minimumScoreGap > 1) {

@@ -8,6 +8,7 @@ import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway;
 import com.serviceflow.ai.AiGateway.ProductReference;
+import com.serviceflow.ai.AiGateway.ProductRouting;
 import com.serviceflow.infrastructure.redis.ChatMemory;
 import com.serviceflow.model.ChatActionModels;
 import com.serviceflow.model.ProductModels;
@@ -254,15 +255,9 @@ public final class CustomerWorkflow {
         String classificationContext = contextProduct == null ? "" : "当前商品：" + contextProduct.name() + "。\n";
         if (pendingOrders) classificationContext = "用户正在从候选订单中选择，可继续查询或更换话题。\n" + classificationContext;
         else if (currentOrder) classificationContext = "当前会话关联本人订单，可指代它查询，也可切换到商品等其他话题。\n" + classificationContext;
-        Intent classified;
-        if (productReferences.semanticEnabled()) {
-            var routing = ai.classifyProductReference(state.query(), classificationContext);
-            classified = routing.intent();
-            runtime.productReference(routing.reference(), routing.mention());
-        } else {
-            classified = ai.classify(
-                    classificationContext.isEmpty() ? state.query() : classificationContext + "用户问题：" + state.query());
-        }
+        var routing = classifyIntent(ai, productReferences.semanticEnabled(), state.query(), classificationContext);
+        Intent classified = routing.intent();
+        runtime.productReference(routing.reference(), routing.mention());
         if (state.query().contains("退货")
                 && currentOrder
                 && !state.query().contains("政策")
@@ -287,6 +282,30 @@ public final class CustomerWorkflow {
             return Intent.PRODUCT_QUERY;
         }
         return classified;
+    }
+
+    static ProductRouting classifyIntent(AiGateway ai, boolean withProductReference, String query, String context) {
+        if (withProductReference) {
+            try {
+                var routing = ai.classifyProductReference(query, context);
+                if (routing.isPresent()) return routing.get();
+            } catch (RuntimeException failure) {
+                if (Thread.currentThread().isInterrupted()) throw failure;
+                log.debug(
+                        "Product intent classification unavailable ({})",
+                        failure.getClass().getSimpleName());
+            }
+        }
+
+        try {
+            var intent = ai.classify(context.isEmpty() ? query : context + "用户问题：" + query);
+            if (intent.isPresent()) return new ProductRouting(intent.get(), ProductReference.UNCLEAR, null);
+        } catch (RuntimeException failure) {
+            if (Thread.currentThread().isInterrupted()) throw failure;
+            log.debug(
+                    "Intent classification unavailable ({})", failure.getClass().getSimpleName());
+        }
+        return new ProductRouting(Intent.fromKeywords(query), ProductReference.UNCLEAR, null);
     }
 
     static Intent prioritizePageProduct(Intent classified, long pageProductId, String query) {

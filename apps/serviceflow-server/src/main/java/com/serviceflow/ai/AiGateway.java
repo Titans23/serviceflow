@@ -3,13 +3,14 @@ package com.serviceflow.ai;
 import com.serviceflow.agent.Intent;
 import com.serviceflow.model.OrderModels;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface AiGateway {
-    Intent classify(String message);
+    Optional<Intent> classify(String message);
 
-    default ProductRouting classifyProductReference(String message, String routingContext) {
-        return new ProductRouting(classify(routingContext + message), ProductReference.UNCLEAR, null);
+    default Optional<ProductRouting> classifyProductReference(String message, String routingContext) {
+        return Optional.empty();
     }
 
     enum ProductReference {

@@ -1,5 +1,6 @@
 package com.serviceflow.ai;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.agent.Intent;
 import com.serviceflow.model.OrderModels;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -120,12 +122,12 @@ public class CloudAiGateway implements AiGateway {
     @Retry(name = "chat")
     @CircuitBreaker(name = "chat")
     @Bulkhead(name = "chat", type = Bulkhead.Type.SEMAPHORE)
-    public Intent classify(String message) {
+    public Optional<Intent> classify(String message) {
         String value = complete(INTENT_SYSTEM_PROMPT, message);
         try {
-            return Intent.valueOf(value.trim().toUpperCase(Locale.ROOT));
+            return Optional.of(Intent.valueOf(value.trim().toUpperCase(Locale.ROOT)));
         } catch (IllegalArgumentException exception) {
-            return Intent.CHAT;
+            return Optional.empty();
         }
     }
 
@@ -133,23 +135,24 @@ public class CloudAiGateway implements AiGateway {
     @Retry(name = "chat")
     @CircuitBreaker(name = "chat")
     @Bulkhead(name = "chat", type = Bulkhead.Type.SEMAPHORE)
-    public ProductRouting classifyProductReference(String message, String routingContext) {
+    public Optional<ProductRouting> classifyProductReference(String message, String routingContext) {
         try {
             String input = objectMapper.writeValueAsString(Map.of("message", message, "context", routingContext));
             var response = objectMapper.readTree(complete(PRODUCT_ROUTING_PROMPT, input));
-            if (response == null) return new ProductRouting(Intent.CHAT, ProductReference.UNCLEAR, null);
+            if (response == null) return Optional.empty();
             Intent intent = Intent.valueOf(response.path("intent").asText());
             ProductReference reference =
                     ProductReference.valueOf(response.path("reference").asText());
-            String mention = response.path("mention").asText(null);
+            String mention = response.path("mention").textValue();
             // 只接受用户确实说过的字词，型号纠错和商品 ID 由目录解析负责。
             if (reference == ProductReference.NEW
                     && (mention == null || mention.isBlank() || !message.contains(mention))) {
-                return new ProductRouting(intent, ProductReference.UNCLEAR, null);
+                return Optional.of(new ProductRouting(intent, ProductReference.UNCLEAR, null));
             }
-            return new ProductRouting(intent, reference, reference == ProductReference.NEW ? mention : null);
-        } catch (com.fasterxml.jackson.core.JsonProcessingException | IllegalArgumentException exception) {
-            return new ProductRouting(Intent.CHAT, ProductReference.UNCLEAR, null);
+            return Optional.of(
+                    new ProductRouting(intent, reference, reference == ProductReference.NEW ? mention : null));
+        } catch (JsonProcessingException | IllegalArgumentException exception) {
+            return Optional.empty();
         }
     }
 

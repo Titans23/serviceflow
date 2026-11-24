@@ -296,7 +296,7 @@ class EvaluationProviderBudgetTest {
                                 "serviceflow.evaluation.provider-request-limit=63")
                         .run(application -> {
                             assertThat(application.getBean(CloudAiGateway.class).classify("fixture-1-splitdone"))
-                                    .isEqualTo(com.serviceflow.agent.Intent.PRODUCT_QUERY);
+                                    .contains(com.serviceflow.agent.Intent.PRODUCT_QUERY);
                             application.getBean(OpenAiEmbeddingClient.class).embed("fixture-2-success");
                             application
                                     .getBean(OpenAiRerankerClient.class)
