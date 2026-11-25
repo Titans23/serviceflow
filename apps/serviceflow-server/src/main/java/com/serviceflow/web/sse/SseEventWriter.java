@@ -38,6 +38,10 @@ public final class SseEventWriter {
     /** 将事件名称和数据写入仍然打开的 SSE 响应通道。 */
     public void send(SseEmitter emitter, String name, Object data) {
         try {
+            if ("token".equals(name) && data instanceof String token) {
+                // SseEmitter 直接拼接 data: 和字符串。保留一个协议分隔空格，正文缩进也能被客户端还原。
+                data = " " + token.replace("\r\n", "\n").replace('\r', '\n').replace("\n", "\n ");
+            }
             emitter.send(SseEmitter.event().name(name).data(data));
         } catch (Exception exception) {
             // 常见原因是浏览器关闭页面或网络断开，此时后端不能再向该连接写数据。

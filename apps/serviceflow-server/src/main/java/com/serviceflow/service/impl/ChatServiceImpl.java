@@ -1,5 +1,6 @@
 package com.serviceflow.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.agent.CustomerWorkflow;
 import com.serviceflow.agent.Intent;
@@ -26,6 +27,14 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 public final class ChatServiceImpl implements ChatService {
     private static final int ANSWER_CHUNK_SIZE = 28;
+    private static final Map<String, String> BUSINESS_EVENT_KEYS = Map.of(
+            "order", "order",
+            "order_selection_required", "orderCandidates",
+            "product_selection_required", "productCandidates",
+            "comparison_selection_required", "pendingComparison",
+            "product_comparison", "productComparison",
+            "action_required", "action",
+            "ticket", "ticket");
 
     private final ChatMemory memory;
     private final ChatSessionService sessions;
@@ -109,30 +118,35 @@ public final class ChatServiceImpl implements ChatService {
                     request.pageContext() == null ? null : request.pageContext().orderNo());
             state.orderSelection(request.orderSelection());
             state.comparisonSelection(request.comparisonSelection());
-            // 暂时把工作流视为黑盒：输入本次请求状态，输出业务结果，并把过程中产生的事件转发给前端。
             Map<String, Object> businessMetadata = new java.util.LinkedHashMap<>();
+            List<WorkflowEvent> workflowEvents = new ArrayList<>();
             events.send(emitter, "progress", Map.of("message", "正在核对资料与业务状态"));
             CustomerWorkflow.Result result = workflow.execute(state, (name, data) -> {
-                if ("order".equals(name)) businessMetadata.put("order", data);
-                if ("order_selection_required".equals(name)) businessMetadata.put("orderCandidates", data);
-                // 结构化比较数据随回复保存，历史与重放可以恢复当时的表格和待确认清单。
-                if ("comparison_selection_required".equals(name)) businessMetadata.put("pendingComparison", data);
-                if ("product_comparison".equals(name)) businessMetadata.put("productComparison", data);
+                workflowEvents.add(new WorkflowEvent(name, data));
+                if ("meta".equals(name)) businessMetadata.put("meta", data);
+                String key = BUSINESS_EVENT_KEYS.get(name);
+                if (key != null) businessMetadata.put(key, data);
                 if ("product_selection_required".equals(name)
                         && data instanceof List<?> candidates
                         && !candidates.isEmpty()) {
-                    // 保存发起澄清的原问题，刷新或重放时能按具体规格继续回答这条问题。
-                    businessMetadata.put("productCandidates", candidates);
                     businessMetadata.put("productQuestion", request.message());
                 }
-                if ("action_required".equals(name)) businessMetadata.put("action", data);
-                events.send(emitter, name, data);
             });
-            // 生成最终回答；生成期间每个文本片段已经通过 token 事件实时发送给前端。
-            String answer = generateAnswer(state, result, request.message(), emitter, startedNanos);
+            boolean usesModel = state.intent() == Intent.CHAT
+                    || (result.groundingContext() != null
+                            && !result.groundingContext().isBlank()
+                            && ai.supportsGroundedGeneration());
+            String answer;
+            if (usesModel) {
+                workflowEvents.forEach(event -> events.send(emitter, event.name(), event.data()));
+                answer = generateModelAnswer(state, result, request.message(), emitter, startedNanos);
+            } else {
+                answer = result.answer();
+            }
             String messageId = UUID.randomUUID().toString();
             businessMetadata.put("citations", result.citations());
             businessMetadata.put("intent", state.intent().name());
+            businessMetadata.put("degraded", result.degraded());
             String metadata = writeJson(businessMetadata);
             if (databaseId == null) {
                 if (!memory.completeGuestRequest(
@@ -169,6 +183,12 @@ public final class ChatServiceImpl implements ChatService {
             }
             audit.success(
                     databaseId, state, request.message(), answer, result.citations(), result.degraded(), startedNanos);
+            if (!usesModel) {
+                // 确定性业务结果先提交，再写正文和卡片。断线后可按原请求重放已经提交的快照。
+                workflowEvents.forEach(event -> events.send(emitter, event.name(), event.data()));
+                StringBuilder sent = new StringBuilder();
+                chunks(answer, ANSWER_CHUNK_SIZE).forEach(token -> appendToken(sent, emitter, token, startedNanos));
+            }
             // token 事件传输正文；done 事件通知前端本轮回答已全部完成，并携带最终元数据。
             events.send(
                     emitter,
@@ -202,11 +222,9 @@ public final class ChatServiceImpl implements ChatService {
     }
 
     /**
-     * 根据意图选择回答来源，并把所有来源统一转换成逐片段输出。
-     *
-     * <p>普通聊天和有可信上下文的回答来自 AI 流；已有的非流式结果则由后端主动切片。
+     * 普通聊天直接转发模型文本，可信回答先解析事实选择，再发送确定性的正文片段。
      */
-    private String generateAnswer(
+    private String generateModelAnswer(
             ServiceFlowState state,
             CustomerWorkflow.Result result,
             String userMessage,
@@ -218,9 +236,7 @@ public final class ChatServiceImpl implements ChatService {
                     "你是 ServiceFlow 客服，只回答售前商品和售后服务范围的问题。",
                     userMessage,
                     token -> appendToken(answer, emitter, token, startedNanos));
-        } else if (result.groundingContext() != null
-                && !result.groundingContext().isBlank()
-                && ai.supportsGroundedGeneration()) {
+        } else {
             // 商品查询存在可信上下文时，再让大模型基于这些事实生成自然语言回答。
             StringBuilder selection = new StringBuilder();
             ai.streamAnswer(
@@ -230,10 +246,6 @@ public final class ChatServiceImpl implements ChatService {
             String grounded = com.serviceflow.ai.GroundedAnswerComposer.compose(
                     result.groundingContext(), selection.toString(), objectMapper);
             chunks(grounded, ANSWER_CHUNK_SIZE).forEach(token -> appendToken(answer, emitter, token, startedNanos));
-        } else {
-            // 即使上游只有完整答案，也按固定长度切片，让前端保持相同的 SSE 消费方式。
-            chunks(result.answer(), ANSWER_CHUNK_SIZE)
-                    .forEach(token -> appendToken(answer, emitter, token, startedNanos));
         }
         return answer.toString();
     }
@@ -252,76 +264,65 @@ public final class ChatServiceImpl implements ChatService {
     }
 
     private void replayGuest(SseEmitter emitter, ChatMemory.CompletedResponse completed) {
-        events.send(
+        replay(
                 emitter,
-                "meta",
-                Map.of(
-                        "intent",
-                        completed.intent(),
-                        "degraded",
-                        completed.degraded(),
-                        "citations",
-                        completed.citations()));
-        events.send(emitter, "token", completed.answer());
-        replayProductEvents(emitter, completed.metadataJson());
-        events.send(
-                emitter,
-                "done",
-                Map.of(
-                        "messageId", completed.messageId(),
-                        "intent", completed.intent(),
-                        "citations", completed.citations(),
-                        "replayed", true));
-        emitter.complete();
+                completed.messageId(),
+                completed.intent(),
+                completed.answer(),
+                readMetadata(completed.metadataJson()),
+                completed.citations(),
+                completed.degraded());
     }
 
     private void replayCustomer(SseEmitter emitter, ChatModels.Message completed) {
-        List<String> citations = citations(completed.metadataJson());
-        events.send(emitter, "meta", Map.of("intent", completed.intent(), "degraded", false, "citations", citations));
-        events.send(emitter, "token", completed.content());
+        JsonNode metadata = readMetadata(completed.metadataJson());
+        List<String> citations = new ArrayList<>();
+        metadata.path("citations").forEach(value -> citations.add(value.asText()));
+        replay(
+                emitter,
+                completed.publicId(),
+                completed.intent(),
+                completed.content(),
+                metadata,
+                citations,
+                metadata.path("degraded").asBoolean());
+    }
+
+    private JsonNode readMetadata(String metadataJson) {
         try {
-            var metadata = objectMapper.readTree(completed.metadataJson() == null ? "{}" : completed.metadataJson());
-            sendProductEvents(emitter, metadata);
-            if (metadata.hasNonNull("order")) events.send(emitter, "order", metadata.get("order"));
-            if (metadata.hasNonNull("orderCandidates"))
-                events.send(emitter, "order_selection_required", metadata.get("orderCandidates"));
-            if (metadata.hasNonNull("action")) events.send(emitter, "action_required", metadata.get("action"));
+            if (metadataJson != null && !metadataJson.isBlank()) {
+                JsonNode metadata = objectMapper.readTree(metadataJson);
+                if (metadata != null && metadata.isObject()) return metadata;
+            }
         } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
-            // Historical messages may not contain valid business metadata; their saved text remains replayable.
+            // Historical metadata can be missing or invalid. The saved text remains replayable.
         }
+        return objectMapper.createObjectNode();
+    }
+
+    private void replay(
+            SseEmitter emitter,
+            String messageId,
+            String intent,
+            String answer,
+            JsonNode metadata,
+            List<String> citations,
+            boolean degraded) {
+        events.send(
+                emitter,
+                "meta",
+                metadata.path("meta").isObject()
+                        ? metadata.get("meta")
+                        : Map.of("intent", intent, "degraded", degraded, "citations", citations));
+        events.send(emitter, "token", answer);
+        BUSINESS_EVENT_KEYS.forEach((name, key) -> {
+            if (metadata.hasNonNull(key)) events.send(emitter, name, metadata.get(key));
+        });
         events.send(
                 emitter,
                 "done",
-                Map.of(
-                        "messageId",
-                        completed.publicId(),
-                        "intent",
-                        completed.intent(),
-                        "citations",
-                        citations,
-                        "replayed",
-                        true));
+                Map.of("messageId", messageId, "intent", intent, "citations", citations, "replayed", true));
         emitter.complete();
-    }
-
-    private void replayProductEvents(SseEmitter emitter, String metadataJson) {
-        if (metadataJson == null) return;
-        try {
-            var metadata = objectMapper.readTree(metadataJson);
-            sendProductEvents(emitter, metadata);
-        } catch (com.fasterxml.jackson.core.JsonProcessingException exception) {
-            // Historical guest responses may lack structured metadata.
-        }
-    }
-
-    private void sendProductEvents(SseEmitter emitter, com.fasterxml.jackson.databind.JsonNode metadata) {
-        if (metadata == null) return;
-        if (metadata.hasNonNull("productCandidates"))
-            events.send(emitter, "product_selection_required", metadata.get("productCandidates"));
-        if (metadata.hasNonNull("productComparison"))
-            events.send(emitter, "product_comparison", metadata.get("productComparison"));
-        if (metadata.hasNonNull("pendingComparison"))
-            events.send(emitter, "comparison_selection_required", metadata.get("pendingComparison"));
     }
 
     private String writeJson(Object value) {
@@ -332,26 +333,18 @@ public final class ChatServiceImpl implements ChatService {
         }
     }
 
-    private List<String> citations(String metadata) {
-        try {
-            if (metadata == null || metadata.isBlank()) {
-                return List.of();
-            }
-            List<String> values = new ArrayList<>();
-            objectMapper.readTree(metadata).path("citations").forEach(value -> values.add(value.asText()));
-            return values;
-        } catch (Exception exception) {
-            return List.of();
-        }
-    }
+    private record WorkflowEvent(String name, Object data) {}
 
     private List<String> chunks(String value, int size) {
         List<String> result = new ArrayList<>();
         if (value == null || value.isEmpty()) {
             return result;
         }
-        for (int start = 0; start < value.length(); start += size) {
-            result.add(value.substring(start, Math.min(value.length(), start + size)));
+        for (int start = 0; start < value.length(); ) {
+            int end = Math.min(value.length(), start + size);
+            if (end < value.length() && Character.isSurrogatePair(value.charAt(end - 1), value.charAt(end))) end++;
+            result.add(value.substring(start, end));
+            start = end;
         }
         return result;
     }

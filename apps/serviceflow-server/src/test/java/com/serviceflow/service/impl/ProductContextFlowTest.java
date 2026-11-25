@@ -1,6 +1,7 @@
 package com.serviceflow.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -200,6 +201,128 @@ class ProductContextFlowTest {
         verify(events).send(emitter, "product_selection_required", mapper.readTree("[{\"id\":30}]"));
         verify(workflow, never()).execute(any(), any());
         verifyNoInteractions(rag);
+    }
+
+    @Test
+    void lostDoneReplaysTheSameModelAnswerAndMessageId() {
+        var saved = new AtomicReference<ChatModels.Message>();
+        var principal = new CurrentPrincipal("owner", "CUSTOMER", 1L);
+        var request = new ChatModels.MessageRequest("你好", UUID.randomUUID().toString(), null);
+        doAnswer(call -> {
+                    ServiceFlowState state = call.getArgument(0);
+                    state.intent(Intent.CHAT);
+                    return new CustomerWorkflow.Result("unused", List.of());
+                })
+                .when(workflow)
+                .execute(any(), any());
+        doAnswer(call -> {
+                    java.util.function.Consumer<String> consumer = call.getArgument(2);
+                    consumer.accept("你好，");
+                    consumer.accept(" 欢迎。\n下一行");
+                    return null;
+                })
+                .when(ai)
+                .streamAnswer(anyString(), eq(request.message()), any());
+        when(requests.begin(1L, request.clientRequestId(), request.message()))
+                .thenAnswer(call -> saved.get() == null
+                        ? new ChatRequestStore.BeginResult("attempt", true, null)
+                        : new ChatRequestStore.BeginResult(null, false, saved.get()));
+        doAnswer(call -> {
+                    saved.set(new ChatModels.Message(
+                            call.getArgument(3),
+                            "ASSISTANT",
+                            call.getArgument(4),
+                            call.getArgument(5),
+                            call.getArgument(6),
+                            java.time.Instant.now()));
+                    return null;
+                })
+                .when(requests)
+                .complete(
+                        eq(1L),
+                        eq(request.clientRequestId()),
+                        eq("attempt"),
+                        anyString(),
+                        anyString(),
+                        anyString(),
+                        anyString());
+        var disconnected = new SseEmitter();
+        doAnswer(call -> {
+                    assertThat(saved.get()).isNotNull();
+                    throw new IllegalStateException("socket closed before done");
+                })
+                .when(events)
+                .send(eq(disconnected), eq("done"), any());
+
+        assertThatThrownBy(() -> service.stream(principal, "session", request, disconnected))
+                .hasMessage("socket closed before done");
+        var retry = new SseEmitter();
+        service.stream(principal, "session", request, retry);
+
+        verify(events).send(retry, "token", "你好， 欢迎。\n下一行");
+        verify(events)
+                .send(
+                        retry,
+                        "done",
+                        Map.of(
+                                "messageId",
+                                saved.get().publicId(),
+                                "intent",
+                                "CHAT",
+                                "citations",
+                                List.of(),
+                                "replayed",
+                                true));
+        verify(ai).streamAnswer(anyString(), eq(request.message()), any());
+        verify(requests, never()).fail(anyLong(), anyString(), anyString(), anyString());
+        verify(memory).append("owner", "session", "USER", request.message());
+    }
+
+    @Test
+    void failedModelRetryUsesTheNewExecutionWithoutAppendingTheUserAgain() {
+        var principal = new CurrentPrincipal("owner", "CUSTOMER", 1L);
+        var request = new ChatModels.MessageRequest("你好", UUID.randomUUID().toString(), null);
+        doAnswer(call -> {
+                    ServiceFlowState state = call.getArgument(0);
+                    state.intent(Intent.CHAT);
+                    return new CustomerWorkflow.Result("unused", List.of());
+                })
+                .when(workflow)
+                .execute(any(), any());
+        doThrow(new com.serviceflow.exception.ServiceFlowException(
+                        org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE,
+                        com.serviceflow.exception.ErrorCode.MODEL_UNAVAILABLE,
+                        "模型暂时不可用",
+                        true))
+                .doAnswer(call -> {
+                    java.util.function.Consumer<String> consumer = call.getArgument(2);
+                    consumer.accept("完整回复");
+                    return null;
+                })
+                .when(ai)
+                .streamAnswer(anyString(), eq(request.message()), any());
+        when(requests.begin(1L, request.clientRequestId(), request.message()))
+                .thenReturn(
+                        new ChatRequestStore.BeginResult("previous", true, null),
+                        new ChatRequestStore.BeginResult("replacement", false, null));
+
+        assertThatThrownBy(() -> service.stream(principal, "session", request, new SseEmitter()))
+                .hasMessage("模型暂时不可用");
+        var retry = new SseEmitter();
+        service.stream(principal, "session", request, retry);
+        verify(requests).fail(1L, request.clientRequestId(), "previous", "MODEL_UNAVAILABLE");
+        verify(requests)
+                .complete(
+                        eq(1L),
+                        eq(request.clientRequestId()),
+                        eq("replacement"),
+                        anyString(),
+                        eq("完整回复"),
+                        eq("CHAT"),
+                        anyString());
+        verify(memory).append("owner", "session", "USER", request.message());
+        verify(events).send(retry, "token", "完整回复");
+        verify(events).send(eq(retry), eq("done"), any());
     }
 
     private void send(String query, Long page) {

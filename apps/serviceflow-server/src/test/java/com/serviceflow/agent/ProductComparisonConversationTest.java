@@ -119,6 +119,15 @@ class ProductComparisonConversationTest {
     }
 
     @Test
+    void repeatingAnAppliedSelectionReturnsTheTableWithoutWritingAgain() {
+        start(List.of(target("Phone 1")), 2, false);
+        var selection = new ComparisonSelection(stored.get().comparisonId(), 1, null, "Phone 2", false);
+        assertThat(continueWith(selection).productIds()).containsExactly(1L, 2L);
+        assertThat(continueWith(selection).productIds()).containsExactly(1L, 2L);
+        verify(memory).updatePendingComparison(eq("guest"), eq("session"), any(), any());
+    }
+
+    @Test
     void rejectsTooFewConfirmedProductsDuplicatesAndStaleSelections() {
         var initial = start(List.of(target("Phone 1"), target("Phone 1")), 2, false);
         assertThat(initial.answer()).contains("已确认 1 款", "至少确认 2 款");

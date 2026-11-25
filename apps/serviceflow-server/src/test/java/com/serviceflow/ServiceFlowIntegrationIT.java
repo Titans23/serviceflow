@@ -359,6 +359,40 @@ class ServiceFlowIntegrationIT {
                 .containsExactly("你好", "新答案");
     }
 
+    @Test
+    void failedComplaintRetryAndCompletedReplayReuseTheSameTicket(
+            @Autowired ChatSessionService sessions,
+            @Autowired ChatRequestStore requests,
+            @Autowired com.serviceflow.service.TicketService tickets,
+            @Autowired com.serviceflow.security.JwtService jwt) {
+        var principal = chatPrincipal(false);
+        var session = sessions.create(principal, "工单恢复测试");
+        long sessionId = sessions.requireCustomerSession(principal, session.publicId());
+        String requestId = UUID.randomUUID().toString();
+        String message = "我要投诉这次的服务";
+        var original = requests.begin(sessionId, requestId, message);
+        var created = tickets.createFromAction(requestId, principal.customerId(), session.publicId(), "客户投诉", message);
+        requests.fail(sessionId, requestId, original.executionId(), "SSE_CONNECTION_CLOSED");
+
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(jwt.issueUser(new com.serviceflow.model.AuthModels.User(
+                        130, "ticket-recovery-test", "", "CUSTOMER", principal.customerId(), true))
+                .accessToken());
+        String endpoint = "/chat/sessions/" + session.publicId() + "/messages/stream";
+        var request = new ChatModels.MessageRequest(message, requestId, null);
+        String first = http.postForObject(endpoint, new HttpEntity<>(request, headers), String.class);
+        var history = sessions.messages(principal, session.publicId());
+        assertThat(history).extracting(ChatModels.Message::role).containsExactly("USER", "ASSISTANT");
+        String messageId = history.getLast().publicId();
+        assertThat(first).contains("event:ticket", created.publicId(), messageId, "\"replayed\":false");
+        String replay = http.postForObject(endpoint, new HttpEntity<>(request, headers), String.class);
+        assertThat(replay).contains("event:ticket", created.publicId(), messageId, "\"replayed\":true");
+        assertThat(jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM ticket WHERE source_action_id=?", Integer.class, requestId))
+                .isEqualTo(1);
+        assertThat(sessions.messages(principal, session.publicId())).hasSize(2);
+    }
+
     private CurrentPrincipal chatPrincipal(boolean guest) {
         String subject = UUID.randomUUID().toString();
         if (guest) return new CurrentPrincipal(subject, "GUEST", null);

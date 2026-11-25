@@ -99,6 +99,12 @@ final class ProductComparisonConversation {
         }
         var previous = comparison.targets().get(index);
         if (previous.confirmed() != null) {
+            // 补充可能已写入 Redis，回复还未提交。同一目标重试时使用已有清单。
+            if (selectedId != null
+                    ? previous.confirmed().id() == selectedId
+                    : previous.label().equals(term)) {
+                return finishOrAsk(comparison, false, false, events);
+            }
             return ask(comparison, "这一项已经确认，请选择其他待确认的商品。", false, events);
         }
         TargetMatch match;

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import RefundReview from '../components/RefundReview.vue'
 import ReturnProgress from '../components/ReturnProgress.vue'
-import { nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue'
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
 import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
-import { api, stream } from '../api/client'
+import { api, stream, StreamRequestError } from '../api/client'
 import { useAuthStore } from '../stores/auth'
 import {
   clearPendingCancellation,
@@ -29,6 +29,20 @@ type ComparisonSelection = {
   productId?: number
   term?: string
   compareConfirmed?: boolean
+}
+type OrderSelection = { queryId: string; orderNo: string }
+type ChatTurn = {
+  sessionId: string
+  owner: string | null
+  assistant: any
+  request: {
+    message: string
+    clientRequestId: string
+    pageContext: { orderNo: string } | { productId: number } | null
+    orderSelection?: OrderSelection
+    selectedProductId?: number
+    comparisonSelection?: ComparisonSelection
+  }
 }
 
 const auth = useAuthStore(),
@@ -55,6 +69,19 @@ let entryOrderNo = typeof route.query.orderNo === 'string' ? route.query.orderNo
 const orderContext = ref<any>()
 let entryPageContext: { sessionId: string; productId: number } | null = null
 const comparisonTerms = ref<Record<string, string>>({})
+const retryableTurn = shallowRef<ChatTurn | null>(null)
+let chatStream: InstanceType<typeof globalThis.AbortController> | undefined
+let disposed = false
+
+function clearChatTurn() {
+  retryableTurn.value = null
+  chatStream?.abort()
+}
+
+onBeforeUnmount(() => {
+  disposed = true
+  clearChatTurn()
+})
 async function refresh() {
   sessions.value = await api('/chat/sessions')
 }
@@ -73,6 +100,7 @@ async function create() {
   await select(session.publicId, true)
 }
 async function select(id: string, useEntryHint = false) {
+  clearChatTurn()
   const history = id ? await api<any[]>(`/chat/sessions/${encodeURIComponent(id)}/messages`) : []
   for (const message of history) {
     try {
@@ -84,6 +112,7 @@ async function select(id: string, useEntryHint = false) {
       message.orderCandidates = metadata.orderCandidates
       message.order = metadata.order
       message.action = metadata.action
+      message.ticket = metadata.ticket
     } catch {
       /* Older messages may have no structured business metadata. */
     }
@@ -169,16 +198,18 @@ async function removeSessions(id?: string) {
   }
 }
 async function send(
-  orderSelection?: { queryId: string; orderNo: string },
+  orderSelection?: OrderSelection,
   selectedProductId?: number,
   comparisonSelection?: ComparisonSelection,
 ) {
   if (!input.value.trim() || sending.value || sessionBusy.value) return
   const text = input.value
+  const owner = auth.identity
   sending.value = true
   try {
     if (!current.value) await create()
-    const sourceSession = current.value
+    if (disposed || owner !== auth.identity) return
+    const sessionId = current.value
     input.value = ''
     action.value = null
     followOutput.value = true
@@ -190,60 +221,133 @@ async function send(
       candidateQuestion: text,
     })
     messages.value.push(assistant)
-    await stream(
-      `/chat/sessions/${current.value}/messages/stream`,
-      {
+    const turn: ChatTurn = {
+      sessionId,
+      owner,
+      assistant,
+      request: {
         message: text,
         clientRequestId: crypto.randomUUID(),
         pageContext: orderContext.value
           ? { orderNo: orderContext.value.orderNo }
-          : entryPageContext?.sessionId === sourceSession
+          : entryPageContext?.sessionId === sessionId
             ? { productId: entryPageContext.productId }
             : null,
         orderSelection,
         selectedProductId,
         comparisonSelection,
       },
-      (name, data) => {
-        if (name === 'progress') assistant.progress = data.message
-        if (name === 'token') assistant.content += data
-        if (name === 'meta') {
-          if (data.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sourceSession) {
-            entryPageContext = null
-            if (route.path === '/chat' && route.query.sessionId === sourceSession)
-              void router.replace({ query: { ...route.query, productId: undefined } })
-          }
-          assistant.citations = data.citations
-          assistant.degraded = data.degraded
-        }
-        if (name === 'product_selection_required') assistant.candidates = data
-        if (name === 'product_comparison') assistant.comparison = data
-        if (name === 'comparison_selection_required') assistant.pendingComparison = data
-        if (name === 'order') {
-          assistant.order = data
-          orderContext.value = data
-          if (route.path === '/chat' && route.query.sessionId === sourceSession)
-            void router.replace({ query: { ...route.query, orderNo: data.orderNo } })
-        }
-        if (name === 'order_selection_required') {
-          assistant.orderCandidates = data
-          orderContext.value = undefined
-          if (route.path === '/chat' && route.query.sessionId === sourceSession)
-            void router.replace({ query: { ...route.query, orderNo: undefined } })
-        }
-        if (name === 'action_required') {
-          action.value = data
-          assistant.action = data
-        }
-        if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
-        if (name === 'error') throw new Error(data.message)
-        nextTick(scroll)
-      },
-    )
-  } catch (e: any) {
-    ElMessage.error(e.message)
+    }
+    // 只有最新一轮可恢复。旧气泡保留原内容和中断标记。
+    retryableTurn.value = turn
+    await receiveTurn(turn)
+  } catch (error) {
+    if (!disposed && owner === auth.identity)
+      ElMessage.error(error instanceof Error ? error.message : '发送消息失败')
   } finally {
     sending.value = false
+  }
+}
+
+async function retryTurn() {
+  const turn = retryableTurn.value
+  if (!turn?.assistant.canRetry || !isCurrentTurn(turn) || sending.value || sessionBusy.value)
+    return
+  sending.value = true
+  followOutput.value = true
+  try {
+    await receiveTurn(turn)
+  } finally {
+    sending.value = false
+  }
+}
+
+function isCurrentTurn(turn: ChatTurn) {
+  return (
+    !disposed &&
+    retryableTurn.value === turn &&
+    turn.sessionId === current.value &&
+    turn.owner === auth.identity
+  )
+}
+
+async function receiveTurn(turn: ChatTurn) {
+  const { sessionId, assistant, request } = turn
+  const controller = new globalThis.AbortController()
+  chatStream = controller
+  const next: any = { content: '', comparison: null, candidateQuestion: request.message }
+  let done: any
+  try {
+    await stream(
+      `/chat/sessions/${encodeURIComponent(sessionId)}/messages/stream`,
+      request,
+      (name, data) => {
+        if (!isCurrentTurn(turn)) return
+        if (name === 'progress') assistant.progress = data.message
+        if (name === 'token') {
+          next.content += data
+          assistant.content = next.content
+        }
+        if (name === 'meta') {
+          next.intent = data.intent
+          next.citations = data.citations
+          next.degraded = data.degraded
+        }
+        if (name === 'product_selection_required') next.candidates = data
+        if (name === 'product_comparison') next.comparison = data
+        if (name === 'comparison_selection_required') next.pendingComparison = data
+        if (name === 'order') next.order = data
+        if (name === 'order_selection_required') next.orderCandidates = data
+        if (name === 'action_required') next.action = data
+        if (name === 'ticket') next.ticket = data
+        if (name === 'done' && data && typeof data === 'object') done = data
+        nextTick(scroll)
+      },
+      controller.signal,
+    )
+    if (!isCurrentTurn(turn)) return
+    if (!done) {
+      assistant.interrupted = '连接已结束，可以重试本轮。'
+      assistant.canRetry = true
+      return
+    }
+    // 收到完成事件后再把卡片和会话上下文交给界面。
+    Object.assign(assistant, next, {
+      publicId: done.messageId,
+      interrupted: undefined,
+      streamError: undefined,
+      canRetry: false,
+    })
+    const query: LocationQueryRaw = { ...route.query }
+    if (next.intent === 'PRODUCT_QUERY' && entryPageContext?.sessionId === sessionId) {
+      entryPageContext = null
+      query.productId = undefined
+    }
+    if (next.order || next.orderCandidates) {
+      orderContext.value = next.order
+      query.orderNo = next.order?.orderNo
+    }
+    action.value = next.action
+    if (
+      route.path === '/chat' &&
+      route.query.sessionId === sessionId &&
+      (query.orderNo !== route.query.orderNo || query.productId !== route.query.productId)
+    )
+      void router.replace({ query })
+    if (next.ticket) ElMessage.success(`工单 ${next.ticket.publicId} 已创建`)
+    retryableTurn.value = null
+  } catch (error) {
+    if (!isCurrentTurn(turn)) return
+    const failure = error instanceof StreamRequestError ? error : undefined
+    assistant.streamError = failure
+    assistant.canRetry = failure?.retryable ?? true
+    assistant.interrupted =
+      failure?.code === 'REQUEST_IN_PROGRESS'
+        ? '服务端仍在处理本轮，请稍后重试。'
+        : failure?.message || '网络连接中断，可以重试本轮。'
+  } finally {
+    if (chatStream === controller) chatStream = undefined
+    nextTick(scroll)
   }
 }
 async function askCandidate(candidate: { id: number }, question: string) {
@@ -320,7 +424,6 @@ async function confirm(decision: string) {
     await stream(`/chat/actions/${pending.actionId}/confirm`, { decision }, (name, data) => {
       if (name === 'token') assistant.content += data
       if (name === 'ticket') ElMessage.success(`工单 ${data.publicId} 已创建`)
-      if (name === 'error') throw new Error(data.message)
       if (name === 'done') completed = true
       nextTick(scroll)
     })
@@ -415,6 +518,7 @@ async function restoreCancellation() {
 watch(
   () => auth.identity,
   () => {
+    clearChatTurn()
     void restoreCancellation()
   },
 )
@@ -517,6 +621,18 @@ onMounted(() =>
           ></div>
           <!-- eslint-enable vue/no-v-html -->
           <div v-else>{{ m.content }}</div>
+          <div v-if="m.interrupted" class="chat-interruption">
+            <p role="status">回复未完整接收。{{ m.interrupted }}</p>
+            <el-button
+              v-if="retryableTurn?.assistant === m && m.canRetry"
+              :disabled="sending || sessionBusy"
+              @click="retryTurn"
+              >重试本轮</el-button
+            >
+          </div>
+          <router-link v-if="m.ticket?.publicId" :to="`/tickets/${m.ticket.publicId}`">
+            查看工单 {{ m.ticket.publicId }}
+          </router-link>
           <el-alert
             v-if="m.degraded && !m.pendingComparison"
             title="检索服务已降级，以下内容来自融合检索结果"
