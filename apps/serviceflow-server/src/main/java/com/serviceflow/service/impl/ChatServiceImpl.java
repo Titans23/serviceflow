@@ -1,7 +1,5 @@
 package com.serviceflow.service.impl;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.agent.CustomerWorkflow;
 import com.serviceflow.agent.Intent;
@@ -17,12 +15,10 @@ import com.serviceflow.service.ChatService;
 import com.serviceflow.service.ChatSessionService;
 import com.serviceflow.service.impl.support.ChatRequestStore;
 import com.serviceflow.web.sse.SseEventWriter;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -30,14 +26,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 public final class ChatServiceImpl implements ChatService {
     private static final int ANSWER_CHUNK_SIZE = 28;
-    private static final Duration GUEST_REQUEST_LOCK_TTL = Duration.ofMinutes(2);
 
     private final ChatMemory memory;
     private final ChatSessionService sessions;
     private final ChatRequestStore requests;
     private final CustomerWorkflow workflow;
     private final AiGateway ai;
-    private final StringRedisTemplate redis;
     private final ObjectMapper objectMapper;
     private final AiAuditService audit;
     private final SseEventWriter events;
@@ -48,7 +42,6 @@ public final class ChatServiceImpl implements ChatService {
             ChatRequestStore requests,
             CustomerWorkflow workflow,
             AiGateway ai,
-            StringRedisTemplate redis,
             ObjectMapper objectMapper,
             AiAuditService audit,
             SseEventWriter events) {
@@ -57,7 +50,6 @@ public final class ChatServiceImpl implements ChatService {
         this.requests = requests;
         this.workflow = workflow;
         this.ai = ai;
-        this.redis = redis;
         this.objectMapper = objectMapper;
         this.audit = audit;
         this.events = events;
@@ -75,41 +67,37 @@ public final class ChatServiceImpl implements ChatService {
         // 访客会话只保存在 Redis，不存在数据库主键，因此 databaseId 使用 null。
         Long databaseId = principal.guest() ? null : sessions.requireCustomerSession(principal, sessionId);
 
-        // 记录本次请求是否取得了访客锁，便于 finally 中只释放自己成功取得的锁。
-        boolean guestLock = false;
+        String subject = principal.subject();
+        String requestId = request.clientRequestId();
+        String executionId;
+        boolean firstCustomerExecution = false;
         if (principal.guest()) {
             // 校验当前访客只能访问自己的 Redis 会话。
             sessions.requireGuestSession(principal, sessionId);
 
-            // 相同 clientRequestId 已经完成时，直接重放旧结果，不再调用 AI。
-            ChatMemory.CompletedResponse completed =
-                    memory.completed(principal.subject(), sessionId, request.clientRequestId());
-            if (completed != null) {
-                replayGuest(emitter, completed);
+            executionId = UUID.randomUUID().toString();
+            var claim = memory.claimGuestRequest(subject, sessionId, requestId, executionId);
+            if (!claim.started()) {
+                if (claim.completed() == null) throw ChatRequestStore.inProgress();
+                replayGuest(emitter, claim.completed());
                 return;
             }
-
-            // Redis 锁保证同一访客请求在并发到达时，只有一个请求获得执行权。
-            acquireGuestLock(requestKey(principal, sessionId, request.clientRequestId()));
-            guestLock = true;
-            // 将用户消息加入 Redis 短期记忆，供后续构造 AI 上下文。
-            memory.append(principal.subject(), sessionId, "USER", request.message());
         } else {
             // 在同一数据库事务中登记请求并保存用户消息；started=false 表示已有结果可重放。
-            ChatRequestStore.BeginResult begin =
-                    requests.begin(databaseId, request.clientRequestId(), request.message());
+            ChatRequestStore.BeginResult begin = requests.begin(databaseId, requestId, request.message());
             if (!begin.started()) {
                 replayCustomer(emitter, begin.completed());
                 return;
             }
-            // 数据库负责可靠持久化，Redis 中的副本用于快速组装近期对话上下文。
-            memory.append(principal.subject(), sessionId, "USER", request.message());
+            executionId = begin.executionId();
+            firstCustomerExecution = begin.firstExecution();
         }
 
         long startedNanos = System.nanoTime();
         ServiceFlowState state = null;
-        boolean audited = false;
+        boolean committed = false;
         try {
+            if (firstCustomerExecution) memory.append(subject, sessionId, "USER", request.message());
             Long contextProduct =
                     request.pageContext() != null && request.pageContext().productId() != null
                             ? request.pageContext().productId()
@@ -140,13 +128,6 @@ public final class ChatServiceImpl implements ChatService {
                 if ("action_required".equals(name)) businessMetadata.put("action", data);
                 events.send(emitter, name, data);
             });
-            // 单品问答更新会话商品。明确尝试换款但尚未解析时清除旧引用。
-            if (state.productIds().size() == 1) {
-                memory.setActiveProduct(
-                        principal.subject(), sessionId, state.productIds().getFirst());
-            } else if (contextProduct != null && state.clearProductContext()) {
-                memory.clearActiveProduct(principal.subject(), sessionId);
-            }
             // 生成最终回答；生成期间每个文本片段已经通过 token 事件实时发送给前端。
             String answer = generateAnswer(state, result, request.message(), emitter, startedNanos);
             String messageId = UUID.randomUUID().toString();
@@ -154,40 +135,40 @@ public final class ChatServiceImpl implements ChatService {
             businessMetadata.put("intent", state.intent().name());
             String metadata = writeJson(businessMetadata);
             if (databaseId == null) {
-                // 访客没有数据库会话，将完整结果保存在 Redis，供相同 clientRequestId 重放。
-                memory.storeCompleted(
-                        principal.subject(),
+                if (!memory.completeGuestRequest(
+                        subject,
                         sessionId,
-                        request.clientRequestId(),
+                        requestId,
+                        executionId,
+                        request.message(),
                         new ChatMemory.CompletedResponse(
                                 messageId,
                                 answer,
                                 state.intent().name(),
                                 result.citations(),
                                 result.degraded(),
-                                metadata));
+                                metadata))) throw ChatRequestStore.inProgress();
             } else {
                 // 登录用户将助手消息写入 MySQL，并把 chat_request 状态改为 COMPLETED。
                 requests.complete(
                         databaseId,
-                        request.clientRequestId(),
+                        requestId,
+                        executionId,
                         messageId,
                         answer,
                         state.intent().name(),
                         metadata);
             }
-            // 无论访客还是登录用户，都在 Redis 近期对话中保存完整助手回答，供下一轮构造上下文。
-            if (databaseId == null
-                    && (businessMetadata.containsKey("productCandidates")
-                            || businessMetadata.containsKey("pendingComparison")
-                            || businessMetadata.containsKey("productComparison"))) {
-                memory.append(principal.subject(), sessionId, "ASSISTANT", answer, metadata);
-            } else {
-                memory.append(principal.subject(), sessionId, "ASSISTANT", answer);
+            committed = true;
+            if (databaseId != null) memory.append(subject, sessionId, "ASSISTANT", answer);
+            // 只有提交成功的执行可以发布新的单品上下文。
+            if (state.productIds().size() == 1) {
+                memory.setActiveProduct(subject, sessionId, state.productIds().getFirst());
+            } else if (contextProduct != null && state.clearProductContext()) {
+                memory.clearActiveProduct(subject, sessionId);
             }
             audit.success(
                     databaseId, state, request.message(), answer, result.citations(), result.degraded(), startedNanos);
-            audited = true;
             // token 事件传输正文；done 事件通知前端本轮回答已全部完成，并携带最终元数据。
             events.send(
                     emitter,
@@ -203,21 +184,19 @@ public final class ChatServiceImpl implements ChatService {
                             false));
             emitter.complete();
         } catch (RuntimeException exception) {
-            if (databaseId != null) {
-                // 登录用户的失败请求会被标记为 FAILED，之后允许恢复执行。
-                requests.fail(
-                        databaseId,
-                        request.clientRequestId(),
-                        errorCode(exception).name());
-            }
-            if (!audited) {
-                audit.failure(databaseId, request.clientRequestId(), state, request.message(), exception, startedNanos);
+            if (!committed) {
+                if (databaseId != null)
+                    requests.fail(
+                            databaseId,
+                            requestId,
+                            executionId,
+                            errorCode(exception).name());
+                audit.failure(databaseId, requestId, state, request.message(), exception, startedNanos);
             }
             throw exception;
         } finally {
-            if (guestLock) {
-                // 无论成功或失败都释放访客请求锁，避免后续请求一直被判定为处理中。
-                redis.delete(requestKey(principal, sessionId, request.clientRequestId()));
+            if (principal.guest() && !committed) {
+                memory.releaseGuestRequest(subject, sessionId, requestId, executionId);
             }
         }
     }
@@ -343,16 +322,6 @@ public final class ChatServiceImpl implements ChatService {
             events.send(emitter, "product_comparison", metadata.get("productComparison"));
         if (metadata.hasNonNull("pendingComparison"))
             events.send(emitter, "comparison_selection_required", metadata.get("pendingComparison"));
-    }
-
-    private void acquireGuestLock(String key) {
-        if (!Boolean.TRUE.equals(redis.opsForValue().setIfAbsent(key, "1", GUEST_REQUEST_LOCK_TTL))) {
-            throw new ServiceFlowException(CONFLICT, ErrorCode.REQUEST_IN_PROGRESS, "请求正在处理中", true);
-        }
-    }
-
-    private String requestKey(CurrentPrincipal principal, String sessionId, String clientRequestId) {
-        return "chat:request:" + principal.subject() + ':' + sessionId + ':' + clientRequestId;
     }
 
     private String writeJson(Object value) {

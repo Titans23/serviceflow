@@ -19,7 +19,33 @@ import org.springframework.stereotype.Service;
 public final class ChatMemory {
 
     private static final Duration SESSION_TTL = Duration.ofMinutes(30);
+    private static final Duration REQUEST_LOCK_TTL = Duration.ofMinutes(2);
     private static final int MAX_HISTORY_SIZE = 20;
+    private static final DefaultRedisScript<String> CLAIM_REQUEST = new DefaultRedisScript<>(
+            """
+            local completed = redis.call('GET', KEYS[1])
+            if completed then return completed end
+            if redis.call('SET', KEYS[2], ARGV[1], 'NX', 'PX', ARGV[2]) then return 'CLAIMED' end
+            return 'IN_PROGRESS'
+            """,
+            String.class);
+    private static final DefaultRedisScript<Long> COMPLETE_REQUEST = new DefaultRedisScript<>(
+            """
+            if redis.call('GET', KEYS[1]) ~= ARGV[1] or redis.call('EXISTS', KEYS[4]) == 0 then return 0 end
+            redis.call('RPUSH', KEYS[3], ARGV[3], ARGV[4])
+            redis.call('LTRIM', KEYS[3], -tonumber(ARGV[6]), -1)
+            redis.call('PEXPIRE', KEYS[3], ARGV[5])
+            redis.call('SET', KEYS[2], ARGV[2], 'PX', ARGV[5])
+            redis.call('DEL', KEYS[1])
+            return 1
+            """,
+            Long.class);
+    private static final DefaultRedisScript<Long> RELEASE_REQUEST = new DefaultRedisScript<>(
+            """
+            if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
+            return redis.call('DEL', KEYS[1])
+            """,
+            Long.class);
     private static final DefaultRedisScript<Long> UPDATE_COMPARISON = new DefaultRedisScript<>(
             """
             if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end
@@ -78,10 +104,7 @@ public final class ChatMemory {
     public void append(String subject, String sessionId, String role, String content, String metadataJson) {
         try {
             String key = memoryKey(subject, sessionId);
-            Map<String, String> message = metadataJson == null
-                    ? Map.of("role", role, "content", content)
-                    : Map.of("role", role, "content", content, "metadataJson", metadataJson);
-            redis.opsForList().rightPush(key, objectMapper.writeValueAsString(message));
+            redis.opsForList().rightPush(key, messageJson(role, content, metadataJson));
             redis.opsForList().trim(key, -MAX_HISTORY_SIZE, -1);
             redis.expire(key, SESSION_TTL);
         } catch (Exception exception) {
@@ -97,28 +120,60 @@ public final class ChatMemory {
         return values.stream().map(this::deserializeMessage).toList();
     }
 
-    public void storeCompleted(String subject, String sessionId, String clientRequestId, CompletedResponse response) {
+    public GuestRequest claimGuestRequest(
+            String subject, String sessionId, String clientRequestId, String executionId) {
+        // 查完成结果和抢锁在同一脚本中执行，上一执行刚提交的结果会直接用于重放。
+        String result = redis.execute(
+                CLAIM_REQUEST,
+                        List.of(
+                                completedKey(subject, sessionId, clientRequestId),
+                                requestKey(subject, sessionId, clientRequestId)),
+                executionId, Long.toString(REQUEST_LOCK_TTL.toMillis()));
+        if ("CLAIMED".equals(result)) return new GuestRequest(true, null);
+        if ("IN_PROGRESS".equals(result)) return new GuestRequest(false, null);
         try {
-            redis.opsForValue()
-                    .set(
-                            completedKey(subject, sessionId, clientRequestId),
-                            objectMapper.writeValueAsString(response),
-                            SESSION_TTL);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Cannot store completed response", exception);
-        }
-    }
-
-    public CompletedResponse completed(String subject, String sessionId, String clientRequestId) {
-        String value = redis.opsForValue().get(completedKey(subject, sessionId, clientRequestId));
-        if (value == null) {
-            return null;
-        }
-        try {
-            return objectMapper.readValue(value, CompletedResponse.class);
+            return new GuestRequest(false, objectMapper.readValue(result, CompletedResponse.class));
         } catch (Exception exception) {
             throw new IllegalStateException("Cannot read completed response", exception);
         }
+    }
+
+    public boolean completeGuestRequest(
+            String subject,
+            String sessionId,
+            String clientRequestId,
+            String executionId,
+            String userMessage,
+            CompletedResponse response) {
+        try {
+            // 仅提交成功时写入这一轮的两条历史，避免失败重试留下重复的访客提问。
+            return Long.valueOf(1)
+                    .equals(redis.execute(
+                            COMPLETE_REQUEST,
+                            List.of(
+                                    requestKey(subject, sessionId, clientRequestId),
+                                            completedKey(subject, sessionId, clientRequestId),
+                                    memoryKey(subject, sessionId), sessionKey(subject, sessionId)),
+                            executionId,
+                            objectMapper.writeValueAsString(response),
+                            messageJson("USER", userMessage, null),
+                            messageJson("ASSISTANT", response.answer(), response.metadataJson()),
+                            Long.toString(SESSION_TTL.toMillis()),
+                            Integer.toString(MAX_HISTORY_SIZE)));
+        } catch (JsonProcessingException exception) {
+            throw new IllegalStateException("Cannot encode completed response", exception);
+        }
+    }
+
+    public void releaseGuestRequest(String subject, String sessionId, String clientRequestId, String executionId) {
+        redis.execute(RELEASE_REQUEST, List.of(requestKey(subject, sessionId, clientRequestId)), executionId);
+    }
+
+    private String messageJson(String role, String content, String metadataJson) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(
+                metadataJson == null
+                        ? Map.of("role", role, "content", content)
+                        : Map.of("role", role, "content", content, "metadataJson", metadataJson));
     }
 
     public void setActiveOrder(String subject, String sessionId, String orderNo) {
@@ -252,6 +307,10 @@ public final class ChatMemory {
         return "chat:completed:" + subject + ':' + sessionId + ':' + clientRequestId;
     }
 
+    private String requestKey(String subject, String sessionId, String clientRequestId) {
+        return "chat:request:" + subject + ':' + sessionId + ':' + clientRequestId;
+    }
+
     private String activeOrderKey(String subject, String sessionId) {
         return "chat:order:" + subject + ':' + sessionId;
     }
@@ -263,6 +322,8 @@ public final class ChatMemory {
     private String pendingComparisonKey(String subject, String sessionId) {
         return "chat:comparison:" + subject + ':' + sessionId;
     }
+
+    public record GuestRequest(boolean started, CompletedResponse completed) {}
 
     public record CompletedResponse(
             String messageId,

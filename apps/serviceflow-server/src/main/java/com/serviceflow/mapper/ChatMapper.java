@@ -32,7 +32,10 @@ public interface ChatMapper {
             @Param("intent") String intent,
             @Param("metadata") String metadata);
 
-    int insertRequest(@Param("sessionId") long sessionId, @Param("clientRequestId") String clientRequestId);
+    void insertRequest(
+            @Param("sessionId") long sessionId,
+            @Param("clientRequestId") String clientRequestId,
+            @Param("executionId") String executionId);
 
     RequestRow request(@Param("sessionId") long sessionId, @Param("clientRequestId") String clientRequestId);
 
@@ -44,17 +47,20 @@ public interface ChatMapper {
     int restartRequest(
             @Param("sessionId") long sessionId,
             @Param("clientRequestId") String clientRequestId,
+            @Param("executionId") String executionId,
             @Param("staleBefore") Instant staleBefore);
 
     int completeRequest(
             @Param("sessionId") long sessionId,
             @Param("clientRequestId") String clientRequestId,
+            @Param("executionId") String executionId,
             @Param("assistantMessageId") String assistantMessageId);
 
     int failRequest(
             @Param("sessionId") long sessionId,
             @Param("clientRequestId") String clientRequestId,
+            @Param("executionId") String executionId,
             @Param("errorCode") String errorCode);
 
-    record RequestRow(String status, String userMessageId, String assistantMessageId, Instant updatedAt) {}
+    record RequestRow(String status, String executionId) {}
 }

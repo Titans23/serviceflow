@@ -24,28 +24,32 @@
     VALUES(#{publicId},#{sessionId},#{clientRequestId},#{role},#{content},#{intent},CAST(#{metadata} AS JSON))
   </insert>
   <insert id="insertRequest">
-    INSERT IGNORE INTO chat_request(session_id,client_request_id,status)
-    VALUES(#{sessionId},#{clientRequestId},'PROCESSING')
+    INSERT INTO chat_request(session_id,client_request_id,status,execution_id)
+    VALUES(#{sessionId},#{clientRequestId},'PROCESSING',#{executionId})
+    ON DUPLICATE KEY UPDATE id=id
   </insert>
   <select id="request" resultType="com.serviceflow.mapper.ChatMapper$RequestRow">
-    SELECT status,user_message_id,assistant_message_id,updated_at
+    SELECT status,execution_id
     FROM chat_request WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
+    FOR UPDATE
   </select>
   <update id="attachUserMessage">
     UPDATE chat_request SET user_message_id=#{userMessageId}
     WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId} AND user_message_id IS NULL
   </update>
   <update id="restartRequest">
-    UPDATE chat_request SET status='PROCESSING',error_code=NULL,started_at=CURRENT_TIMESTAMP(6)
+    UPDATE chat_request SET status='PROCESSING',execution_id=#{executionId},error_code=NULL,started_at=CURRENT_TIMESTAMP(6)
     WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
       AND (status='FAILED' OR (status='PROCESSING' AND updated_at &lt; #{staleBefore}))
   </update>
   <update id="completeRequest">
     UPDATE chat_request SET status='COMPLETED',assistant_message_id=#{assistantMessageId},error_code=NULL
-    WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId} AND status='PROCESSING'
+    WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
+      AND status='PROCESSING' AND execution_id=#{executionId}
   </update>
   <update id="failRequest">
     UPDATE chat_request SET status='FAILED',error_code=#{errorCode}
-    WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId} AND status='PROCESSING'
+    WHERE session_id=#{sessionId} AND client_request_id=#{clientRequestId}
+      AND status='PROCESSING' AND execution_id=#{executionId}
   </update>
 </mapper>

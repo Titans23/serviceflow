@@ -27,7 +27,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -82,7 +81,7 @@ class ProductContextFlowTest {
                 .thenReturn(List.of(Map.of("role", "ASSISTANT", "content", "上轮旧商品：iPhone 16。")));
         when(sessions.requireCustomerSession(any(), anyString())).thenReturn(1L);
         when(requests.begin(anyLong(), anyString(), anyString()))
-                .thenReturn(new ChatRequestStore.BeginResult(true, null));
+                .thenReturn(new ChatRequestStore.BeginResult("execution-1", true, null));
         when(rag.search(anyString(), eq("PRODUCT_MANUAL"), anyList())).thenAnswer(call -> {
             long id = ((List<Long>) call.getArgument(2)).getFirst();
             return new RagService.SearchResult(
@@ -117,15 +116,7 @@ class ProductContextFlowTest {
                 .when(ai)
                 .streamAnswer(anyString(), anyString(), any());
         service = new ChatServiceImpl(
-                memory,
-                sessions,
-                requests,
-                workflow,
-                ai,
-                mock(StringRedisTemplate.class),
-                mapper,
-                mock(AiAuditService.class),
-                events);
+                memory, sessions, requests, workflow, ai, mapper, mock(AiAuditService.class), events);
     }
 
     @Test
@@ -198,7 +189,7 @@ class ProductContextFlowTest {
                 "{\"productCandidates\":[{\"id\":30}]}",
                 java.time.Instant.now());
         when(requests.begin(anyLong(), anyString(), anyString()))
-                .thenReturn(new ChatRequestStore.BeginResult(false, completed));
+                .thenReturn(new ChatRequestStore.BeginResult(null, false, completed));
         var emitter = new SseEmitter();
         service.stream(
                 new CurrentPrincipal("owner", "CUSTOMER", 1L),

@@ -14,8 +14,10 @@ import com.serviceflow.security.CurrentPrincipal;
 import com.serviceflow.service.ChatSessionService;
 import com.serviceflow.service.OrderService;
 import com.serviceflow.service.RefundService;
+import com.serviceflow.service.impl.support.ChatRequestStore;
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -276,6 +278,85 @@ class ServiceFlowIntegrationIT {
         } finally {
             jdbc.update("DELETE FROM product WHERE sku LIKE ?", prefix + "-%");
         }
+    }
+
+    @Test
+    void customerChatRetryOnlyAllowsCurrentExecutionToPublish(
+            @Autowired ChatSessionService sessions, @Autowired ChatRequestStore requests) throws Exception {
+        var principal = chatPrincipal(false);
+        var session = sessions.create(principal, "执行权测试");
+        long sessionId = sessions.requireCustomerSession(principal, session.publicId());
+        String requestId = UUID.randomUUID().toString();
+        var original = requests.begin(sessionId, requestId, "你好");
+
+        try (var threads = Executors.newVirtualThreadPerTaskExecutor()) {
+            var duplicate = threads.submit(() -> requests.begin(sessionId, requestId, "你好"));
+            assertThatThrownBy(duplicate::get)
+                    .hasCauseInstanceOf(com.serviceflow.exception.ServiceFlowException.class)
+                    .hasRootCauseMessage("请求正在处理中");
+        }
+        jdbc.update(
+                "UPDATE chat_request SET updated_at=NOW(6)-INTERVAL 3 MINUTE WHERE session_id=? AND client_request_id=?",
+                sessionId,
+                requestId);
+        var replacement = requests.begin(sessionId, requestId, "你好");
+        assertThat(replacement.executionId()).isNotEqualTo(original.executionId());
+        requests.fail(sessionId, requestId, original.executionId(), "MODEL_TIMEOUT");
+        assertThatThrownBy(() -> requests.complete(
+                        sessionId,
+                        requestId,
+                        original.executionId(),
+                        UUID.randomUUID().toString(),
+                        "旧答案",
+                        "CHAT",
+                        "{}"))
+                .hasMessage("请求正在处理中");
+        String replyId = UUID.randomUUID().toString();
+        requests.complete(sessionId, requestId, replacement.executionId(), replyId, "新答案", "CHAT", "{}");
+        assertThat(requests.begin(sessionId, requestId, "你好").completed().publicId())
+                .isEqualTo(replyId);
+        assertThat(sessions.messages(principal, session.publicId()))
+                .extracting(ChatModels.Message::content)
+                .containsExactly("你好", "新答案");
+    }
+
+    @Test
+    void guestChatRetryKeepsTheWinnerLockAndReplaysAnAtomicPublication(
+            @Autowired ChatMemory memory, @Autowired org.springframework.data.redis.core.StringRedisTemplate redis)
+            throws Exception {
+        String subject = "guest:" + UUID.randomUUID();
+        String session = memory.createGuestSession(subject, "执行权测试");
+        String requestId = UUID.randomUUID().toString();
+        assertThat(memory.claimGuestRequest(subject, session, requestId, "old").started())
+                .isTrue();
+        assertThat(memory.claimGuestRequest(subject, session, requestId, "duplicate")
+                        .started())
+                .isFalse();
+        String key = "chat:request:" + subject + ':' + session + ':' + requestId;
+        // Age the lease directly to exercise takeover without waiting for a wall-clock timeout.
+        redis.expire(key, java.time.Duration.ZERO);
+        assertThat(memory.claimGuestRequest(subject, session, requestId, "winner")
+                        .started())
+                .isTrue();
+        memory.releaseGuestRequest(subject, session, requestId, "old");
+        assertThat(redis.opsForValue().get(key)).isEqualTo("winner");
+        var reply = new ChatMemory.CompletedResponse("reply", "新答案", "CHAT", java.util.List.of(), false, null);
+        assertThat(memory.completeGuestRequest(subject, session, requestId, "old", "你好", reply))
+                .isFalse();
+
+        try (var threads = Executors.newVirtualThreadPerTaskExecutor()) {
+            var publish = threads.submit(
+                    () -> memory.completeGuestRequest(subject, session, requestId, "winner", "你好", reply));
+            var competing = threads.submit(() -> memory.claimGuestRequest(subject, session, requestId, "competing"));
+            assertThat(publish.get()).isTrue();
+            assertThat(competing.get().started()).isFalse();
+        }
+        assertThat(memory.claimGuestRequest(subject, session, requestId, "retry")
+                        .completed())
+                .isEqualTo(reply);
+        assertThat(memory.history(subject, session))
+                .extracting(row -> row.get("content"))
+                .containsExactly("你好", "新答案");
     }
 
     private CurrentPrincipal chatPrincipal(boolean guest) {
