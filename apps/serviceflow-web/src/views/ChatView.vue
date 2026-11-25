@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import RefundReview from '../components/RefundReview.vue'
 import ReturnProgress from '../components/ReturnProgress.vue'
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue'
 import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
 import { ElMessage, ElMessageBox, type InputInstance } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
@@ -21,7 +30,12 @@ const markdown = new MarkdownIt({ html: false, breaks: true, linkify: true })
 type ComparisonProduct = { id: number; name: string; sku: string }
 type PendingComparison = {
   comparisonId: string
-  targets: { label: string; confirmed: ComparisonProduct | null; candidates: ComparisonProduct[] }[]
+  targets: {
+    label: string
+    confirmed: ComparisonProduct | null
+    candidates: ComparisonProduct[]
+    skipped?: boolean
+  }[]
 }
 type ComparisonSelection = {
   comparisonId: string
@@ -29,6 +43,7 @@ type ComparisonSelection = {
   productId?: number
   term?: string
   compareConfirmed?: boolean
+  skipTarget?: boolean
 }
 type OrderSelection = { queryId: string; orderNo: string }
 type ChatTurn = {
@@ -69,6 +84,13 @@ let entryOrderNo = typeof route.query.orderNo === 'string' ? route.query.orderNo
 const orderContext = ref<any>()
 let entryPageContext: { sessionId: string; productId: number } | null = null
 const comparisonTerms = ref<Record<string, string>>({})
+const latestComparisons = computed(() => {
+  const latest = new Map<string, PendingComparison>()
+  for (const { pendingComparison } of messages.value) {
+    if (pendingComparison) latest.set(pendingComparison.comparisonId, pendingComparison)
+  }
+  return latest
+})
 const retryableTurn = shallowRef<ChatTurn | null>(null)
 let chatStream: InstanceType<typeof globalThis.AbortController> | undefined
 let disposed = false
@@ -362,6 +384,14 @@ function comparisonTermKey(comparison: PendingComparison, index: number) {
 function confirmedProducts(comparison: PendingComparison) {
   return comparison.targets.flatMap((target) => (target.confirmed ? [target.confirmed] : []))
 }
+function showComparisonChoices(comparison: PendingComparison, hasTable: boolean) {
+  if (latestComparisons.value.get(comparison.comparisonId) !== comparison) return false
+  const active = comparison.targets.filter((target) => !target.skipped)
+  return active.length >= 2 && (!hasTable || active.some((target) => !target.confirmed))
+}
+function hasPendingComparisonTargets(comparison: PendingComparison) {
+  return comparison.targets.some((target) => !target.confirmed && !target.skipped)
+}
 async function supplementComparison(
   comparison: PendingComparison,
   targetIndex: number,
@@ -378,6 +408,15 @@ async function supplementComparison(
     targetIndex,
     productId: candidate?.id,
     term: candidate ? undefined : term,
+  })
+}
+async function skipComparisonTarget(comparison: PendingComparison, targetIndex: number) {
+  if (sending.value || sessionBusy.value) return
+  input.value = `跳过第 ${targetIndex + 1} 款商品`
+  await send(undefined, undefined, {
+    comparisonId: comparison.comparisonId,
+    targetIndex,
+    skipTarget: true,
   })
 }
 async function compareConfirmed(comparison: PendingComparison) {
@@ -667,7 +706,10 @@ onMounted(() =>
               </tbody>
             </table>
           </div>
-          <div v-if="m.pendingComparison" class="comparison-choices">
+          <div
+            v-if="m.pendingComparison && showComparisonChoices(m.pendingComparison, !!m.comparison)"
+            class="comparison-choices"
+          >
             <p v-if="confirmedProducts(m.pendingComparison).length">
               已确认：{{
                 confirmedProducts(m.pendingComparison)
@@ -679,7 +721,7 @@ onMounted(() =>
               v-for="(target, targetIndex) in m.pendingComparison.targets"
               :key="targetIndex"
             >
-              <div v-if="!target.confirmed" class="comparison-target">
+              <div v-if="!target.confirmed && !target.skipped" class="comparison-target">
                 <strong>待确认 · {{ target.label }}</strong>
                 <div v-if="target.candidates.length" class="comparison-options">
                   <el-button
@@ -690,6 +732,11 @@ onMounted(() =>
                       supplementComparison(m.pendingComparison, Number(targetIndex), candidate)
                     "
                     >{{ candidate.name }}（{{ candidate.sku }}）</el-button
+                  >
+                  <el-button
+                    :disabled="sending || sessionBusy"
+                    @click="skipComparisonTarget(m.pendingComparison, Number(targetIndex))"
+                    >都不要</el-button
                   >
                 </div>
                 <form
@@ -716,9 +763,9 @@ onMounted(() =>
               :disabled="sending || sessionBusy"
               @click="compareConfirmed(m.pendingComparison)"
               >{{
-                confirmedProducts(m.pendingComparison).length === m.pendingComparison.targets.length
-                  ? '重试比较'
-                  : `先比较已确认的 ${confirmedProducts(m.pendingComparison).length} 款`
+                hasPendingComparisonTargets(m.pendingComparison)
+                  ? `先比较已确认的 ${confirmedProducts(m.pendingComparison).length} 款`
+                  : '重试比较'
               }}</el-button
             >
           </div>

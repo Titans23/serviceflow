@@ -394,3 +394,71 @@ test('an eight-of-ten comparison can be viewed first and supplemented afterward'
   await expect(page.getByRole('table').last().getByRole('columnheader')).toHaveCount(11)
   expect(sent[3]).toEqual({ comparisonId, targetIndex: 9, productId: 10 })
 })
+
+test('visitor can decline all three candidates and compare the remaining products', async ({
+  page,
+}) => {
+  const products = Array.from({ length: 5 }, (_, index) => ({
+    id: index + 1,
+    name: `手机 ${index + 1}`,
+    sku: `TEST-PHONE-${index + 1}`,
+    specs: { storage: '128 GB' },
+  }))
+  const comparisonId = 'skip-compare'
+  const history: { role: string; content: string; metadataJson: string }[] = []
+  const sent: unknown[] = []
+  await page.route('**/api/chat/sessions', (route) =>
+    route.fulfill({ json: [{ publicId: 'session-skip', title: '商品比较' }] }),
+  )
+  await page.route('**/api/chat/sessions/session-skip/messages', (route) =>
+    route.fulfill({ json: history }),
+  )
+  await page.route('**/api/chat/sessions/session-skip/messages/stream', (route) => {
+    const request = route.request().postDataJSON()
+    const selection = request.comparisonSelection
+    sent.push(selection)
+    const skipped = selection?.skipTarget === true
+    const pendingComparison = {
+      comparisonId,
+      targets: [
+        ...products.slice(0, 2).map((product) => ({
+          label: product.name,
+          confirmed: product,
+          candidates: [],
+        })),
+        { label: '苹果16', confirmed: null, candidates: skipped ? [] : products.slice(2), skipped },
+      ],
+    }
+    const productComparison = skipped
+      ? { fields: ['storage'], products: products.slice(0, 2) }
+      : undefined
+    const message = skipped ? '已按所选商品的顺序列出规格差异。' : '已确认 2 款，还有 1 款待确认。'
+    history.push({
+      role: 'ASSISTANT',
+      content: message,
+      metadataJson: JSON.stringify({ pendingComparison, productComparison }),
+    })
+    const response = [
+      `event: token\ndata: ${message}\n\n`,
+      `event: comparison_selection_required\ndata: ${JSON.stringify(pendingComparison)}\n\n`,
+    ]
+    if (productComparison)
+      response.push(`event: product_comparison\ndata: ${JSON.stringify(productComparison)}\n\n`)
+    response.push('event: done\ndata: {}\n\n')
+    return route.fulfill({ contentType: 'text/event-stream', body: response.join('') })
+  })
+
+  await page.goto('/chat?sessionId=session-skip')
+  await page.getByPlaceholder('咨询商品、订单、物流、退款或售后政策').fill('对比三款手机')
+  await page.getByRole('button', { name: '发送' }).click()
+  const choices = page.locator('.comparison-options').filter({ hasText: '都不要' })
+  await expect(choices.getByRole('button')).toHaveCount(4)
+  await choices.getByRole('button', { name: '都不要' }).click()
+
+  expect(sent[1]).toEqual({ comparisonId, targetIndex: 2, skipTarget: true })
+  await expect(page.getByRole('table').getByRole('columnheader')).toHaveCount(3)
+  await expect(page.getByRole('button', { name: '都不要' })).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByRole('table').getByRole('columnheader')).toHaveCount(3)
+  await expect(page.getByRole('button', { name: '都不要' })).toHaveCount(0)
+})

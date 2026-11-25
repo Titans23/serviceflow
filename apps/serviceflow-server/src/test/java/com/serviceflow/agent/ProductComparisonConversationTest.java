@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.ai.AiGateway.ProductTarget;
 import com.serviceflow.infrastructure.redis.ChatMemory;
@@ -125,6 +126,50 @@ class ProductComparisonConversationTest {
         assertThat(continueWith(selection).productIds()).containsExactly(1L, 2L);
         assertThat(continueWith(selection).productIds()).containsExactly(1L, 2L);
         verify(memory).updatePendingComparison(eq("guest"), eq("session"), any(), any());
+    }
+
+    @Test
+    void skippingAnItemKeepsPositionsAndIsSafeToRepeat() {
+        start(List.of(target("Phone 1"), target("Unknown"), target("Phone 2")), 4, false);
+        String id = stored.get().comparisonId();
+        var skip = new ComparisonSelection(id, 1, null, null, false, true);
+        assertThat(continueWith(skip).answer()).contains("已确认 2 款", "1 款待确认");
+        assertThat(stored.get().targets().get(1).skipped()).isTrue();
+        assertThat(continueWith(new ComparisonSelection(id, 1, null, "Phone 4", false))
+                        .answer())
+                .contains("已跳过");
+        assertThat(continueWith(new ComparisonSelection(id, 3, null, "Phone 3", false))
+                        .productIds())
+                .containsExactly(1L, 2L, 3L);
+        assertThat(continueWith(skip).productIds()).containsExactly(1L, 2L, 3L);
+        verify(memory, times(2)).updatePendingComparison(eq("guest"), eq("session"), any(), any());
+    }
+
+    @Test
+    void skippingRequiresAPendingTargetAndStillRequiresTwoProducts() {
+        start(List.of(target("Phone 1"), target("Unknown")), 2, false);
+        String id = stored.get().comparisonId();
+        assertThat(continueWith(new ComparisonSelection(id, 0, null, null, false, true))
+                        .answer())
+                .contains("已经确认");
+        assertThat(continueWith(new ComparisonSelection(id, 1, 2L, null, false, true))
+                        .answer())
+                .contains("请为一个待确认项");
+        assertThat(continueWith(new ComparisonSelection(id, 1, null, null, false, true))
+                        .answer())
+                .contains("剩余商品不足 2 款");
+        verify(products, never()).compareForChat(anyList());
+    }
+
+    @Test
+    void existingComparisonSnapshotsStillRoundTripForRedisCompareAndSet() throws Exception {
+        var mapper = new ObjectMapper();
+        String legacy =
+                "{\"comparisonId\":\"comparison\",\"targets\":[{\"label\":\"Phone\",\"confirmed\":null,\"candidates\":[]}]}";
+        var snapshot = mapper.readValue(legacy, PendingComparison.class);
+
+        assertThat(snapshot.targets().getFirst().skipped()).isFalse();
+        assertThat(mapper.writeValueAsString(snapshot)).isEqualTo(legacy);
     }
 
     @Test

@@ -86,29 +86,38 @@ final class ProductComparisonConversation {
         Integer index = selection.targetIndex();
         Long selectedId = selection.productId();
         String term = selection.term() == null ? "" : selection.term().strip();
+        boolean skip = selection.skipTarget();
         // 先比较只取当前确认的商品。保留待确认项，用户看完部分结果后还能继续补充。
-        if (selection.compareConfirmed() && index == null && selectedId == null && term.isEmpty()) {
+        if (selection.compareConfirmed() && !skip && index == null && selectedId == null && term.isEmpty()) {
             return finishOrAsk(comparison, true, false, events);
         }
         if (selection.compareConfirmed()
                 || index == null
                 || index < 0
                 || index >= comparison.targets().size()
-                || (selectedId == null) == term.isEmpty()) {
-            return ask(comparison, "请为一个待确认项选择商品或补充一个型号。", false, events);
+                || (skip ? selectedId != null || !term.isEmpty() : (selectedId == null) == term.isEmpty())) {
+            return ask(comparison, "请为一个待确认项选择商品、补充型号或跳过该项。", false, events);
         }
         var previous = comparison.targets().get(index);
+        if (previous.skipped()) {
+            if (skip) return finishOrAsk(comparison, false, false, events);
+            return ask(comparison, "这一项已跳过，请选择其他待确认的商品。", false, events);
+        }
         if (previous.confirmed() != null) {
             // 补充可能已写入 Redis，回复还未提交。同一目标重试时使用已有清单。
-            if (selectedId != null
-                    ? previous.confirmed().id() == selectedId
-                    : previous.label().equals(term)) {
+            if (!skip
+                    && (selectedId != null
+                            ? previous.confirmed().id() == selectedId
+                            : previous.label().equals(term))) {
                 return finishOrAsk(comparison, false, false, events);
             }
             return ask(comparison, "这一项已经确认，请选择其他待确认的商品。", false, events);
         }
         TargetMatch match;
-        if (selectedId != null) {
+        if (skip) {
+            // 保留原位置，使旧卡片和断线重试仍指向同一项。
+            match = new TargetMatch(new ComparisonTarget(previous.label(), null, List.of(), true), false);
+        } else if (selectedId != null) {
             if (previous.candidates().stream().noneMatch(candidate -> candidate.id() == selectedId)) {
                 return ask(comparison, "该商品不在这一项的候选中，请重新选择。", false, events);
             }
@@ -161,7 +170,13 @@ final class ProductComparisonConversation {
                 .filter(Objects::nonNull)
                 .map(ComparisonProduct::id)
                 .toList();
-        int total = comparison.targets().size();
+        int total = (int) comparison.targets().stream()
+                .filter(target -> !target.skipped())
+                .count();
+        if (total < 2) {
+            events.accept("comparison_selection_required", comparison);
+            return answer("跳过后剩余商品不足 2 款，请重新发起比较。");
+        }
         // 有待确认项时先发候选卡。用户主动选择部分比较时，仍需至少两款才能生成表格。
         if (ids.size() < 2 || (!compareConfirmed && ids.size() < total)) {
             return ask(
@@ -175,6 +190,8 @@ final class ProductComparisonConversation {
                 return new CustomerWorkflow.Result(
                         "本次比较已确认的 " + ids.size() + " 款商品。还有 " + (total - ids.size()) + " 款待确认，可以继续补充。", List.of(), ids);
             }
+            // 保存跳过状态，恢复历史时也能停用该轮旧候选卡。
+            if (total < comparison.targets().size()) events.accept("comparison_selection_required", comparison);
             return new CustomerWorkflow.Result("已按所选商品的顺序列出规格差异。", List.of(), ids);
         } catch (DataAccessException unavailable) {
             return ask(comparison, "商品目录暂时不可用，请稍后重试。", true, events);

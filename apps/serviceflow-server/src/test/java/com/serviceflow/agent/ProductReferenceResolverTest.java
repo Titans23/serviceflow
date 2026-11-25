@@ -2,12 +2,15 @@ package com.serviceflow.agent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.serviceflow.ai.AiGateway.ProductReference;
+import com.serviceflow.ai.AiGateway.ProductTarget;
 import com.serviceflow.model.ProductModels.ProductPage;
 import com.serviceflow.model.ProductModels.ProductView;
 import com.serviceflow.rag.RerankerClient;
@@ -71,6 +74,43 @@ class ProductReferenceResolverTest {
         var confident = resolver(true, .2).resolve(query, 29L, null, ProductReference.NEW, "苹果16promax");
         assertThat(confident.resolved()).isTrue();
         assertThat(confident.products()).containsExactly(proMax);
+    }
+
+    @Test
+    void comparisonRanksOnlyCompatibleSpecsAndStillRequiresChoice() {
+        var otherCapacity = product(32, "APPLE-IP16PM-US-512", "Apple", "iPhone 16 Pro Max", "512 GB");
+        when(products.search(null, null, 0, 50))
+                .thenReturn(new ProductPage(List.of(iphone, proMax, galaxy, otherCapacity), 0, 50, 4));
+        String term = "苹果16promax 256GB";
+        when(reranker.rankScored(eq(term), anyList(), eq(3))).thenReturn(List.of(new ScoredDocument("31", .96)));
+
+        var result =
+                resolver(true, .2).resolveComparisonTarget(new ProductTarget(ProductReference.NEW, term), null, true);
+
+        assertThat(result.resolved()).isFalse();
+        assertThat(result.products()).containsExactly(proMax);
+        verify(reranker)
+                .rankScored(
+                        eq(term),
+                        argThat(documents -> documents.stream()
+                                .map(RerankerClient.Document::id)
+                                .toList()
+                                .equals(List.of("31"))),
+                        eq(3));
+    }
+
+    @Test
+    void comparisonReranksTyposAndKeepsLocalSuggestionIfModelFails() {
+        String term = "Galxy S24";
+        when(reranker.rankScored(eq(term), anyList(), eq(3)))
+                .thenThrow(new IllegalStateException("reranker unavailable"));
+
+        var result =
+                resolver(true, .2).resolveComparisonTarget(new ProductTarget(ProductReference.NEW, term), null, true);
+
+        assertThat(result.resolved()).isFalse();
+        assertThat(result.degraded()).isTrue();
+        assertThat(result.products()).containsExactly(galaxy);
     }
 
     @Test

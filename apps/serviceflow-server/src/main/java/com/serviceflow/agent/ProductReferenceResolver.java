@@ -173,21 +173,25 @@ public final class ProductReferenceResolver {
                 .toList();
         List<ProductView> near =
                 compatible.stream().filter(p -> similarModel(identity, p)).toList();
-        if (!near.isEmpty()) return comparison ? unresolved(near, false, false) : singleMatch(query, near, current);
-        if (!allowRerank || !semanticEnabled || compatible.isEmpty()) return unresolved(List.of(), true, false);
+        if (!comparison && !near.isEmpty()) return singleMatch(query, near, current);
+        List<ProductView> nearCandidates = near.stream().limit(MAX_CANDIDATES).toList();
+        if (!allowRerank || !semanticEnabled || compatible.isEmpty()) {
+            return unresolved(nearCandidates, nearCandidates.isEmpty(), false);
+        }
 
-        // 云端只对商品目录描述评分，候选仍须通过本地型号和规格校验。
+        // 对比时先过滤规格，避免错误规格占掉重排的前三个名额。
+        List<ProductView> rankingPool = comparison ? compatible : page.items();
         List<ScoredDocument> ranked;
         try {
             ranked = reranker.rankScored(
                     mention,
-                    page.items().stream()
+                    rankingPool.stream()
                             .map(p -> new RerankerClient.Document(Long.toString(p.id()), descriptor(p)))
                             .toList(),
                     MAX_CANDIDATES);
         } catch (RuntimeException exception) {
             if (Thread.currentThread().isInterrupted()) throw exception;
-            return unresolved(List.of(), true, true);
+            return unresolved(nearCandidates, nearCandidates.isEmpty(), true);
         }
         Map<String, ProductView> byId = new LinkedHashMap<>();
         compatible.forEach(p -> byId.put(Long.toString(p.id()), p));

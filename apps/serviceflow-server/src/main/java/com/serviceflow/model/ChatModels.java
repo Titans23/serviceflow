@@ -1,5 +1,6 @@
 package com.serviceflow.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -22,11 +23,26 @@ public final class ChatModels {
             @jakarta.validation.constraints.Min(0) @jakarta.validation.constraints.Max(9) Integer targetIndex,
             @jakarta.validation.constraints.Positive Long productId,
             @jakarta.validation.constraints.Size(max = 120) String term,
-            boolean compareConfirmed) {}
+            boolean compareConfirmed,
+            boolean skipTarget) {
+        public ComparisonSelection(
+                String comparisonId, Integer targetIndex, Long productId, String term, boolean compareConfirmed) {
+            this(comparisonId, targetIndex, productId, term, compareConfirmed, false);
+        }
+    }
 
     public record ComparisonProduct(long id, String name, String sku) {}
 
-    public record ComparisonTarget(String label, ComparisonProduct confirmed, List<ComparisonProduct> candidates) {}
+    public record ComparisonTarget(
+            String label,
+            ComparisonProduct confirmed,
+            List<ComparisonProduct> candidates,
+            // Redis compares the serialized snapshot. Existing active targets have no skipped field.
+            @JsonInclude(JsonInclude.Include.NON_DEFAULT) boolean skipped) {
+        public ComparisonTarget(String label, ComparisonProduct confirmed, List<ComparisonProduct> candidates) {
+            this(label, confirmed, candidates, false);
+        }
+    }
 
     public record PendingComparison(String comparisonId, List<ComparisonTarget> targets) {}
 
