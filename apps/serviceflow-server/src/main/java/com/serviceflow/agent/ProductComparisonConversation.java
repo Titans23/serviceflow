@@ -34,7 +34,7 @@ final class ProductComparisonConversation {
             ServiceFlowState state,
             List<ProductTarget> targets,
             int expected,
-            boolean modelTargets,
+            boolean allowSemanticMatching,
             BiConsumer<String, Object> events) {
         if (targets.size() > ProductModels.MAX_CHAT_COMPARISON || expected > ProductModels.MAX_CHAT_COMPARISON) {
             // A new comparison invalidates any preceding card, even when the new request exceeds the limit.
@@ -42,7 +42,7 @@ final class ProductComparisonConversation {
             return answer("一次最多比较 10 款商品，请缩小比较范围。");
         }
         List<TargetMatch> resolved;
-        if (modelTargets && references.semanticEnabled() && targets.size() > 1) {
+        if (allowSemanticMatching && references.semanticEnabled() && targets.size() > 1) {
             // 各商品可以并行检索。按提交顺序收集结果，候选卡位置和最终表格列仍对应原文顺序。
             try (var lookups = Executors.newVirtualThreadPerTaskExecutor()) {
                 var tasks = targets.stream()
@@ -53,7 +53,7 @@ final class ProductComparisonConversation {
             }
         } else {
             resolved = targets.stream()
-                    .map(target -> resolve(target, state.pageProductId(), modelTargets))
+                    .map(target -> resolve(target, state.pageProductId(), allowSemanticMatching))
                     .toList();
         }
         boolean degraded = resolved.stream().anyMatch(TargetMatch::degraded);

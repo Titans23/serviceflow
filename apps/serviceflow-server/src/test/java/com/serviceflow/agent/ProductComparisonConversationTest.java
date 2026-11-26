@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serviceflow.ai.AiGateway;
 import com.serviceflow.ai.AiGateway.ProductReference;
 import com.serviceflow.ai.AiGateway.ProductTarget;
 import com.serviceflow.infrastructure.redis.ChatMemory;
@@ -104,6 +105,50 @@ class ProductComparisonConversationTest {
                 .containsExactly(2L, 1L);
         verify(products, never()).resolve("Galaxy S24");
         verifyNoInteractions(reranker);
+    }
+
+    @Test
+    void completeRuleListCanRerankAliasesWithoutConfirmingThem() {
+        String query = "对比这 5 款手机：Phone 1、苹果叫法、Phone 2、另一种叫法、Phone 5";
+        AiGateway ai = mock(AiGateway.class);
+        when(ai.classifyProductReference(query, "")).thenThrow(new IllegalStateException("classifier unavailable"));
+        assertThat(CustomerWorkflow.classifyIntent(ai, query, "").targets()).isEmpty();
+        var terms = ProductReferenceRules.comparisonTargets(query);
+        int expected = ProductReferenceRules.expectedCount(query);
+        when(products.search(null, null, 0, 50))
+                .thenReturn(new ProductModels.ProductPage(fixtures, 0, 50, fixtures.size()));
+        when(reranker.rankScored(eq("苹果叫法"), anyList(), eq(3)))
+                .thenReturn(List.of(
+                        new RerankerClient.ScoredDocument("3", .95), new RerankerClient.ScoredDocument("99", .90)));
+        when(reranker.rankScored(eq("另一种叫法"), anyList(), eq(3)))
+                .thenReturn(List.of(new RerankerClient.ScoredDocument("4", .94)));
+
+        boolean complete = ProductReferenceRules.completeExplicitList(query, expected, terms);
+        assertThat(complete).isTrue();
+        var reply = start(terms, expected, complete);
+
+        assertThat(reply.answer()).contains("已确认 3 款", "2 款待确认");
+        var targets = stored.get().targets();
+        assertThat(targets)
+                .extracting(item -> item.label())
+                .containsExactly("Phone 1", "苹果叫法", "Phone 2", "另一种叫法", "Phone 5");
+        assertThat(targets.get(1).confirmed()).isNull();
+        assertThat(targets.get(1).candidates()).extracting(item -> item.id()).containsExactly(3L);
+        assertThat(targets.get(3).confirmed()).isNull();
+        assertThat(targets.get(3).candidates()).extracting(item -> item.id()).containsExactly(4L);
+    }
+
+    @Test
+    void onlyAnExplicitAndCompleteListQualifiesForRuleBasedSemanticFallback() {
+        for (String query :
+                List.of("对比这 5 款手机：苹果叫法、另一种叫法", "对比苹果叫法和另一种叫法", "苹果叫法和另外两款手机有什么区别？", "不用对比这 2 款手机：苹果叫法、另一种叫法")) {
+            assertThat(ProductReferenceRules.completeExplicitList(
+                            query,
+                            ProductReferenceRules.expectedCount(query),
+                            ProductReferenceRules.comparisonTargets(query)))
+                    .as(query)
+                    .isFalse();
+        }
     }
 
     @Test

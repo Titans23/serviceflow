@@ -190,6 +190,24 @@ class ProductReferenceResolverTest {
                 .containsExactly(other);
     }
 
+    @Test
+    void comparisonKeepsCapacityInsideSkuAndRejectsConflictingCapacityOutsideIt() {
+        String sku = "HUAWEI-PURA80PRO-12-1TB";
+        var oneTb = product(32, sku, "HUAWEI", "Pura 80 Pro", "1 TB");
+        when(products.resolve(sku)).thenReturn(List.of(oneTb));
+        var resolver = resolver(true, .2);
+
+        var exact = resolver.resolveComparisonTarget(new ProductTarget(ProductReference.NEW, sku), null, true);
+        assertThat(exact.resolved()).isTrue();
+        assertThat(exact.products()).containsExactly(oneTb);
+
+        var conflict =
+                resolver.resolveComparisonTarget(new ProductTarget(ProductReference.NEW, sku + " 512GB"), null, true);
+        assertThat(conflict.resolved()).isFalse();
+        assertThat(conflict.products()).isEmpty();
+        verifyNoInteractions(reranker);
+    }
+
     private ProductReferenceResolver resolver(boolean semanticEnabled, double gap) {
         return new ProductReferenceResolver(products, reranker, semanticEnabled, "cloud", gap);
     }

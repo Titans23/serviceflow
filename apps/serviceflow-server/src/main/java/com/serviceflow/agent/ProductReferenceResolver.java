@@ -147,20 +147,29 @@ public final class ProductReferenceResolver {
             String query, String mention, ProductView current, boolean allowRerank, boolean comparison) {
         // 紧跟型号的容量用于选择规格，问题里其他位置的容量可能是用户想核实的参数。
         String normalized = Normalizer.normalize(mention, Normalizer.Form.NFKC);
-        String identity = REGION.matcher(CAPACITY.matcher(normalized).replaceAll(""))
+        // 比较时保留 SKU 内的容量后缀，只把 SKU 后面的文字当成额外规格。
+        String sku = comparison
+                ? CustomerWorkflow.skuMentions(normalized).stream()
+                        .filter(normalized::startsWith)
+                        .findFirst()
+                        .orElse("")
+                : "";
+        String qualifiers = normalized.substring(sku.length());
+        String identity = REGION.matcher(CAPACITY.matcher(qualifiers).replaceAll(""))
                 .replaceAll("")
                 .trim();
-        String capacity = first(CAPACITY, mention);
+        String capacity = first(CAPACITY, qualifiers);
         int mentionStart = query.indexOf(mention);
         if (capacity.isEmpty() && mentionStart >= 0) {
             capacity = first(ADJACENT_CAPACITY, query.substring(mentionStart + mention.length()));
         }
         String requestedCapacity = capacity;
-        List<ProductView> exact = exactModel(identity).stream()
-                .filter(p -> compatible(identity, normalized, requestedCapacity, p))
+        List<ProductView> exact = exactModel(sku.isEmpty() ? identity : sku).stream()
+                .filter(p -> sku.isEmpty() || p.sku().equalsIgnoreCase(sku))
+                .filter(p -> compatible(identity, qualifiers, requestedCapacity, p))
                 .toList();
         if (!exact.isEmpty()) return singleMatch(query, exact, current);
-        if (CustomerWorkflow.skuMentions(identity).stream().anyMatch(identity::equalsIgnoreCase)) {
+        if (!sku.isEmpty() || CustomerWorkflow.skuMentions(identity).stream().anyMatch(identity::equalsIgnoreCase)) {
             return unresolved(List.of(), true, false);
         }
         if (comparison && !allowRerank) return unresolved(List.of(), true, false);

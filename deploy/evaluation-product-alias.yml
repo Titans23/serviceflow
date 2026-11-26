@@ -1,0 +1,38 @@
+# Apply after evaluation-compose.yml and evaluation-provider-budget.yml.
+services:
+  server:
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_product_alias
+      SERVICEFLOW_AI_MODE: cloud
+      SERVICEFLOW_RAG_MODE: demo
+      SERVICEFLOW_AUDIT_RECORD_CONTENT: "false"
+      SERVICEFLOW_EVALUATION_PROVIDER_REQUEST_LIMIT: "36"
+      SERVICEFLOW_EVALUATION_STOP_ON_PROVIDER_FAILURE: "true"
+      SERVICEFLOW_PRODUCT_COMPARISON_SEMANTIC_FALLBACK_ENABLED: "true"
+      SPRING_AI_MODEL_CHAT: openai
+      OPENAI_BASE_URL: http://product-alias-classifier:8000
+      OPENAI_EMBEDDING_BASE_URL: http://product-alias-classifier:8000/v1
+      OPENAI_MODEL: fixture-classifier
+      OPENAI_API_KEY: isolated-classifier
+      OPENAI_RERANKER_BASE_URL: https://dashscope.aliyuncs.com/api/v1
+      OPENAI_RERANKER_MODEL: qwen3-rerank
+      OPENAI_RERANKER_API_KEY: ${PRODUCT_ALIAS_QWEN_API_KEY:-disabled}
+    depends_on:
+      product-alias-classifier: {condition: service_healthy}
+  mysql:
+    environment:
+      MYSQL_DATABASE: serviceflow_eval_product_alias
+  product-alias-classifier:
+    image: python:3.12-slim
+    working_dir: /workspace
+    volumes:
+      - ../scripts/evaluation:/workspace/scripts/evaluation:ro
+      - ../quality/evaluation/datasets/product-alias-gate-v1.json:/workspace/quality/evaluation/datasets/product-alias-gate-v1.json:ro
+      - ../data/retail-v1.1/catalog.json:/workspace/data/retail-v1.1/catalog.json:ro
+      - ../data/retail-holdout-v2/catalog.json:/workspace/data/retail-holdout-v2/catalog.json:ro
+    command: ["python", "-B", "scripts/evaluation/product_alias_gate.py", "serve-classifier", "--host", "0.0.0.0"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

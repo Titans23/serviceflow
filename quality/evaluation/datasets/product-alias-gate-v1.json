@@ -1,0 +1,80 @@
+{
+  "version": "product-alias-gate-v1",
+  "catalogSources": {
+    "data/retail-v1.1/catalog.json": "fa887675ac9f8e5754babeeec89601eb5e2d1d8e67cc784a655345c1e05a1a29",
+    "data/retail-holdout-v2/catalog.json": "d34b1caf87bf0c42ec391a22c7410fb0188a7e8897dec6fb545b55b07d310301"
+  },
+  "catalogAddition": {
+    "sku": "APPLE-IP16-US-256",
+    "name": "iPhone 16 美国规格 256GB",
+    "brand": "Apple",
+    "model": "iPhone 16",
+    "category": "phone",
+    "specs": {"storage": "256 GB", "region": "United States", "source_url": "https://support.apple.com/en-us/121029"},
+    "listPrice": null,
+    "saleStatus": "OFF_SALE"
+  },
+  "cases": [
+    {
+      "id": "chinese-aliases",
+      "targets": [
+        {"mention": "苹果16 256GB", "semanticSku": "APPLE-IP16-US-256"},
+        {"mention": "三星S24 美版 128GB", "semanticSku": "SAMSUNG-S24-US-128"},
+        {"mention": "华为普拉80 256GB", "semanticSku": "HUAWEI-PURA80-12-256", "otherCompatibleSkus": ["HUAWEI-PURA80PRO-12-256"]},
+        {"mention": "华为麦特70 512GB", "semanticSku": "HUAWEI-MATE70-12-512", "otherCompatibleSkus": ["HUAWEI-MATE70PLUS-16-512"]},
+        {"mention": "华为诺瓦14 512GB", "semanticSku": "HUAWEI-NOVA14-512", "otherCompatibleSkus": ["HUAWEI-NOVA14PRO-512", "HUAWEI-NOVA14ULTRA-512"]}
+      ]
+    },
+    {
+      "id": "classifier-malformed-response",
+      "invalidClassification": true,
+      "targets": [
+        {"mention": "苹果手机16 美版 128GB", "semanticSku": "APPLE-IP16-US-128"},
+        {"mention": "三桑S24 美版 128GB", "semanticSku": "SAMSUNG-S24-US-128"},
+        {"mention": "哗为 Pura80 Pro 512GB", "semanticSku": "HUAWEI-PURA80PRO-12-512"},
+        {"mention": "华为Mate70 Pro+ 1TB", "semanticSku": "HUAWEI-MATE70PLUS-16-1TB"},
+        {"mention": "华威 nova14 Pro 256GB", "semanticSku": "HUAWEI-NOVA14PRO-256"}
+      ]
+    },
+    {
+      "id": "mixed-language",
+      "targets": [
+        {"mention": "Apple 苹果 16 256GB", "semanticSku": "APPLE-IP16-US-256"},
+        {"mention": "三星 GalaxyS24 128GB", "semanticSku": "SAMSUNG-S24-US-128"},
+        {"mention": "华为普拉80 1TB", "semanticSku": "HUAWEI-PURA80-12-1TB", "otherCompatibleSkus": ["HUAWEI-PURA80PRO-12-1TB"]},
+        {"mention": "华威 Mate70 256GB", "semanticSku": "HUAWEI-MATE70-12-256"},
+        {"mention": "华为诺瓦14 Ultra 512GB", "semanticSku": "HUAWEI-NOVA14ULTRA-512"}
+      ]
+    },
+    {
+      "id": "typos-and-suffixes",
+      "targets": [
+        {"mention": "苹果 iPhone16 美版 128GB", "semanticSku": "APPLE-IP16-US-128"},
+        {"mention": "Samsng S24 美版 128GB", "semanticSku": "SAMSUNG-S24-US-128"},
+        {"mention": "华为Pura80Pro 256GB", "semanticSku": "HUAWEI-PURA80PRO-12-256"},
+        {"mention": "华威 Mate70 Pro+ 512GB", "semanticSku": "HUAWEI-MATE70PLUS-16-512"},
+        {"mention": "nova14pro华为 1TB", "semanticSku": "HUAWEI-NOVA14PRO-1TB"}
+      ]
+    },
+    {
+      "id": "sku-and-storage-controls",
+      "targets": [
+        {"mention": "HUAWEI-PURA80PRO-12-1TB", "confirmedSku": "HUAWEI-PURA80PRO-12-1TB"},
+        {"mention": "HUAWEI-MATE70-12-512", "confirmedSku": "HUAWEI-MATE70-12-512"},
+        {"mention": "nova 14", "requiredCandidates": ["HUAWEI-NOVA14-256", "HUAWEI-NOVA14-512"]},
+        {"mention": "XQ-UNKNOWN-CASE-99", "requiredCandidates": []},
+        {"mention": "HUAWEI-PURA80PRO-12-1TB 512GB", "requiredCandidates": []}
+      ]
+    },
+    {
+      "id": "model-and-variant-controls",
+      "targets": [
+        {"mention": "Pura 80 Pro 1TB", "confirmedSku": "HUAWEI-PURA80PRO-12-1TB"},
+        {"mention": "Mate 70 Pro+ 1TB", "confirmedSku": "HUAWEI-MATE70PLUS-16-1TB"},
+        {"mention": "iPhone 16", "requiredCandidates": ["APPLE-IP16-US-128", "APPLE-IP16-US-256"]},
+        {"mention": "Mate 70 2TB", "requiredCandidates": []},
+        {"mention": "APPLE-IP16-GB-1024", "requiredCandidates": []}
+      ]
+    }
+  ]
+}

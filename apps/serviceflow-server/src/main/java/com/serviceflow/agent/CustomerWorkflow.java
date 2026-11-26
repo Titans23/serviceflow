@@ -43,6 +43,7 @@ import org.bsc.langgraph4j.state.Channel;
 import org.bsc.langgraph4j.state.Channels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,7 @@ public final class CustomerWorkflow {
     private final TicketService tickets;
     private final RagService rag;
     private final ChatMemory memory;
+    private final boolean comparisonSemanticFallbackEnabled;
     private final ObjectMapper objectMapper;
     private final StringRedisTemplate redis;
     private final CompiledGraph<WorkflowGraphState> graph;
@@ -85,7 +87,9 @@ public final class CustomerWorkflow {
             ChatMemory memory,
             ObjectMapper objectMapper,
             RedisProperties redisProperties,
-            StringRedisTemplate redis) {
+            StringRedisTemplate redis,
+            @Value("${serviceflow.product-resolution.comparison-semantic-fallback-enabled:true}")
+                    boolean comparisonSemanticFallbackEnabled) {
         this.ai = ai;
         this.products = products;
         this.productReferences = productReferences;
@@ -95,6 +99,8 @@ public final class CustomerWorkflow {
         this.tickets = tickets;
         this.rag = rag;
         this.memory = memory;
+        this.comparisonSemanticFallbackEnabled =
+                comparisonSemanticFallbackEnabled && productReferences.semanticEnabled();
         this.objectMapper = objectMapper;
         this.redis = redis;
         try {
@@ -290,6 +296,11 @@ public final class CustomerWorkflow {
                         || !skuMentions(state.query()).isEmpty()
                         || ProductReferenceResolver.hasHanModel(state.query())
                         || !routing.targets().isEmpty()
+                        || (comparisonSemanticFallbackEnabled
+                                && ProductReferenceRules.completeExplicitList(
+                                        state.query(),
+                                        ProductReferenceRules.expectedCount(state.query()),
+                                        ProductReferenceRules.comparisonTargets(state.query())))
                         || !products.resolve(state.query()).isEmpty())) {
             return Intent.PRODUCT_QUERY;
         }
@@ -380,8 +391,12 @@ public final class CustomerWorkflow {
                     || ProductReferenceRules.comparesProducts(state.query(), rules, expected)) {
                 // 原文已列足用户要求的数量时，可用规则补回模型漏掉的位置，保留原来的商品顺序。
                 boolean completeSourceList = expected >= 2 && rules.size() == expected && rules.size() > targets.size();
-                boolean modelTargets = !targets.isEmpty() && !completeSourceList;
-                return comparison.start(state, modelTargets ? targets : rules, expected, modelTargets, events);
+                boolean useModelTargets = !targets.isEmpty() && !completeSourceList;
+                boolean allowSemanticMatching = useModelTargets
+                        || (comparisonSemanticFallbackEnabled
+                                && ProductReferenceRules.completeExplicitList(state.query(), expected, rules));
+                return comparison.start(
+                        state, useModelTargets ? targets : rules, expected, allowSemanticMatching, events);
             }
         }
         // 先确定商品范围。需要澄清时直接返回，等用户选择后再查说明书。

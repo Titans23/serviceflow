@@ -96,6 +96,7 @@ serviceflow:
       path: ${OPENAI_RERANKER_PATH:/services/rerank/text-rerank/text-rerank}
   product-resolution:
     semantic-enabled: ${SERVICEFLOW_PRODUCT_RESOLUTION_SEMANTIC_ENABLED:true}
+    comparison-semantic-fallback-enabled: ${SERVICEFLOW_PRODUCT_COMPARISON_SEMANTIC_FALLBACK_ENABLED:true}
     minimum-score-gap: ${SERVICEFLOW_PRODUCT_RESOLUTION_MINIMUM_SCORE_GAP:0}
   upload-dir: ${UPLOAD_DIR:./data/uploads}
   guest-rate-limit:

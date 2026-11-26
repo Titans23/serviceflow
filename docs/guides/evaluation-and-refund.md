@@ -86,6 +86,30 @@ Demo 可检查业务/SSE/权限连通性，知识题失败应如实保留。真�
 
 定向3例RAG诊断另有[已离线验证的27次provider出站上限](../../quality/evaluation/results/provider-budget-validation-2026-10-25.md)，需显式叠加 `deploy/evaluation-provider-budget.yml`。该模式关闭自动重试及后台入库；预算仅属于一个Java进程，运行期间禁止重启/扩容。报告包含批准后执行的命令与逐步骤trace采集要求；没有预算查询/重置API，也不代表已获得新付费调用授权。
 
+### 商品简称与错拼映射
+
+云模式默认允许规则补出的商品清单进入已有的语义匹配，要求原句明确数量并列全商品。需要回退时可设置 `SERVICEFLOW_PRODUCT_COMPARISON_SEMANTIC_FALLBACK_ENABLED=false`。规格过滤后的候选最多展示三款，用户可确认一款或点「都不要」。
+
+冻结集包含 6 轮五商品对比，其中 20 个位置验证简称、错拼或混合写法，另外 10 个位置验证 SKU、同型号多规格和无匹配。只有本地分类夹具处理整句，Qwen 重排收到当前商品提及与过滤后的公开目录摘要。受控失败轮返回一个已结束的 SSE 流，其中的分类枚举无效，用于验证规则拆分后仍走真实重排。[冻结评测集](../../quality/evaluation/datasets/product-alias-gate-v1.json)
+
+```powershell
+python -B scripts/evaluation/product_alias_gate.py validate
+```
+
+真实评测事先确认公开输入与费用范围，经授权后将专用密钥放入本地环境变量 `PRODUCT_ALIAS_QWEN_API_KEY`。使用独立 Compose 项目和全新的评测数据库。服务器绑定 `127.0.0.1:18080`，启动前确保该端口空闲。挂载只包含评测脚本、冻结用例和公开商品目录。
+
+```powershell
+$aliasCompose = @('-p', 'serviceflow-product-alias-eval', '-f', 'deploy/evaluation-compose.yml',
+    '-f', 'deploy/evaluation-provider-budget.yml', '-f', 'deploy/evaluation-product-alias.yml')
+docker compose @aliasCompose config --quiet
+docker compose @aliasCompose up -d --build --wait --wait-timeout 300 server
+$aliasServer = docker compose @aliasCompose ps -q server
+python -B scripts/evaluation/product_alias_gate.py run --server $aliasServer --allow-cloud
+docker compose @aliasCompose stop
+```
+
+每个别名位置都要实际调用重排，至少 18/20 命中前三，且「苹果16 256GB」必须命中对应的 256GB SKU。错自动确认、规格冲突和顺序错位都使评测失败。服务端合计最多接纳 36 次模型请求，包含本地分类，关闭自动重试。评测期间保持一个进程且不重启。报告在 `quality/evaluation/reports/`，记录位置、目录 SKU、命中、耗时和调用数。
+
 ## 6. 业务边界与演示
 
 客户页 `/orders` 展示订单、退款金额、失败原因和处理次数，查询受订单所有者权限控制。客服聊天出现取消确认卡片后，由用户明确确认；拒绝确认、换订单、重复确认和发货后取消都有回归场景。

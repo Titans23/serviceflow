@@ -70,10 +70,7 @@ final class ProductReferenceRules {
     }
 
     static List<ProductTarget> comparisonTargets(String message) {
-        String text = Normalizer.normalize(targetClause(message), Normalizer.Form.NFKC)
-                .strip();
-        // Full-width delimiters are normalized first so the same parser handles form input and chat text.
-        text = COMPARE_SUBJECT.matcher(text).replaceFirst("");
+        String text = comparisonList(message);
         text = text.replaceFirst("^" + COUNT.pattern() + "\\s*[:,]?\\s*(?:分别是|包括)?\\s*", "");
         text = COMPARE_END.matcher(text).replaceFirst("").strip().replaceFirst("[。！？!?：:\\s]+$", "");
         List<ProductTarget> targets = new ArrayList<>();
@@ -87,5 +84,24 @@ final class ProductReferenceRules {
             }
         }
         return targets;
+    }
+
+    static boolean completeExplicitList(String message, int expectedCount, List<ProductTarget> targets) {
+        // A count in the list header gives the rule-based split a check independent of model output.
+        return expectedCount >= 2
+                && expectedCount <= ProductModels.MAX_CHAT_COMPARISON
+                && targets.size() == expectedCount
+                && CustomerWorkflow.requestsProductComparison(message)
+                && COUNT.matcher(comparisonList(message)).lookingAt()
+                && targets.stream()
+                        .allMatch(target -> target.reference() == ProductReference.CURRENT
+                                || target.mention().length() <= 120);
+    }
+
+    private static String comparisonList(String message) {
+        // Normalize full-width delimiters for both list splitting and header validation.
+        String text = Normalizer.normalize(targetClause(message), Normalizer.Form.NFKC)
+                .strip();
+        return COMPARE_SUBJECT.matcher(text).replaceFirst("");
     }
 }

@@ -1180,7 +1180,8 @@ class ServiceFlowIntegrationIT {
                 memory,
                 json,
                 redisProperties,
-                redis);
+                redis,
+                false);
         String no = newOrder("PAID");
         for (String query : java.util.List.of("查询订单 " + no, "退款进度", "查物流", "查询退货进度")) {
             var state = new com.serviceflow.agent.ServiceFlowState(
