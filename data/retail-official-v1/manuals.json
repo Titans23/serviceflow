@@ -1,0 +1,616 @@
+{
+  "localArchiveBase": "local-datasets/retail-official-v1/manuals",
+  "manuals": [
+    {
+      "model": "Adder WS (addw4)",
+      "skus": [
+        "S76-ADDW4"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/addw4/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "addw4/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/external-overview.mdx",
+          "sha256": "1dfd40925f0ce5f1bc597aa4282907b0c21ad13a1254d1ddb6393fc9c267db8f"
+        },
+        {
+          "member": "addw4/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/internal-overview.md",
+          "sha256": "aa54beba4f2a2e1036cebb76dfbf080aaab02e3cdf7b2b95e2e553839b321935"
+        },
+        {
+          "member": "addw4/repairs.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/repairs.mdx",
+          "sha256": "b2d020591467bc9896345634a75203e514744251bd24f31f2537378df9bf52e1"
+        },
+        {
+          "member": "addw4/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/specs.md",
+          "sha256": "e30a910113a263078cf06b9c7a23f97a10530f2bdfee504abbfbe96e36616336"
+        }
+      ],
+      "localIllustratedArchive": "addw4.zip",
+      "localArchiveSha256": "434b315a690d09587bd6b15633868fbc1fa8501a563678cfb33ac1b06c9e8213",
+      "localArchiveBytes": 13577982,
+      "originalFileCount": 52
+    },
+    {
+      "model": "Bonobo WS (bonw15 & bonw15-b)",
+      "skus": [
+        "S76-BONW15"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/bonw15/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "bonw15/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/external-overview.mdx",
+          "sha256": "930e44a57fbefce80e23a9db7ae68f6a19a7837b45c4b32cc569e5c8baf8a3b1"
+        },
+        {
+          "member": "bonw15/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/internal-overview.md",
+          "sha256": "707752d02527d5706cb62388c18a23500e558985f5c19aac7c98bfc1d2a2e2ed"
+        },
+        {
+          "member": "bonw15/repairs.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/repairs.mdx",
+          "sha256": "0244944e2cb269e9bab9b734493537d7497088e878f4954bbe3a884d06e1e50d"
+        },
+        {
+          "member": "bonw15/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/specs.md",
+          "sha256": "46ee570c73806e42e0ea797a530add931a249bf6a8ad82389f62dedd6cdd6faf"
+        }
+      ],
+      "localIllustratedArchive": "bonw15.zip",
+      "localArchiveSha256": "cb3a4b02d170a1bac0231c826ddf3524627e7f9e2bce8bafd99a7526cfee6e23",
+      "localArchiveBytes": 9177214,
+      "originalFileCount": 48
+    },
+    {
+      "model": "Darter Pro (darp9)",
+      "skus": [
+        "S76-DARP9"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/darp9/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "darp9/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/external-overview.mdx",
+          "sha256": "5b7c32959d740479381a00bfeb8e399fe54ef84d376a15d89f7586b43f6be2b3"
+        },
+        {
+          "member": "darp9/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/internal-overview.md",
+          "sha256": "2b1441ca85afb1bf4ec3466f00dda706748ee0643d12b9295b889c5c179d0c1b"
+        },
+        {
+          "member": "darp9/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/repairs.md",
+          "sha256": "7b75c8858782b402e4b20d5d253593fcebe9de0253af31e56f004cdeb7c71724"
+        },
+        {
+          "member": "darp9/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/specs.md",
+          "sha256": "0564c000d3618e2f40e7dd493c16054e93fc3b7be0ac0ab178931354ad7314ee"
+        }
+      ],
+      "localIllustratedArchive": "darp9.zip",
+      "localArchiveSha256": "e89a28acfb5d4ad1f7d9b729502e9aefdeeb6859a0f446bb199fc332effa0a8f",
+      "localArchiveBytes": 7706818,
+      "originalFileCount": 45
+    },
+    {
+      "model": "Galago Pro (galp6)",
+      "skus": [
+        "S76-GALP6"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/galp6/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "galp6/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/external-overview.mdx",
+          "sha256": "eaa96180691417100e264cb7acd415ebf106758f1d4dfec481df31afe2a5dff9"
+        },
+        {
+          "member": "galp6/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/internal-overview.md",
+          "sha256": "964ad48b894e1aa7ea768011c6f1ad6ae92bb1ef59c12c5708b9c6ad1a3f6586"
+        },
+        {
+          "member": "galp6/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/repairs.md",
+          "sha256": "ec453c4ff20e77dc7734838fb0ddac060fb6e464338615e7ebe6cfdfa6277aa0"
+        },
+        {
+          "member": "galp6/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/specs.md",
+          "sha256": "33c64bb532d816db20db4ac580a0e714eacf8472e8e95664b8933f3146ebfb66"
+        }
+      ],
+      "localIllustratedArchive": "galp6.zip",
+      "localArchiveSha256": "2a6e995cfe5ad5bc4e79fbd21c5cb13c457a8b8f77bd014b6b6483d7dcf26573",
+      "localArchiveBytes": 8147870,
+      "originalFileCount": 43
+    },
+    {
+      "model": "Galago Pro (galp7)",
+      "skus": [
+        "S76-GALP7"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/galp7/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "galp7/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/external-overview.mdx",
+          "sha256": "7cb9a4fb37729f2f46aa76790a63a1691a0a3d7e90e60fe18de32de2afb30366"
+        },
+        {
+          "member": "galp7/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/internal-overview.md",
+          "sha256": "542fabc7555aa7c8611fa35029442375eef260860b75ca4988bb13e274ad0c36"
+        },
+        {
+          "member": "galp7/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/repairs.md",
+          "sha256": "6b334f9177f87d8281476ce8453d11ce55c7d05c7a6860ded2fca496f8d9e212"
+        },
+        {
+          "member": "galp7/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/specs.md",
+          "sha256": "804d38f293ec7f640df41e8e8680492af171ae65fabe925b42cb91feeda379cd"
+        }
+      ],
+      "localIllustratedArchive": "galp7.zip",
+      "localArchiveSha256": "45f85bcb89748bc88da4b0f738fea4c54a3a40f4aa3fe4cb20546b88a3b2fa06",
+      "localArchiveBytes": 8491230,
+      "originalFileCount": 43
+    },
+    {
+      "model": "Gazelle (gaze18)",
+      "skus": [
+        "S76-GAZE18"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/gaze18/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "gaze18/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/external-overview.mdx",
+          "sha256": "3eb7de1c3c0c0d2d5d09455de71dde024b17836e017807e917d748d7ce5022af"
+        },
+        {
+          "member": "gaze18/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/internal-overview.md",
+          "sha256": "ad31498d702dd9688bc58c71a9793ab969c6d4a76f5f59c4fa74775a9a0c01b3"
+        },
+        {
+          "member": "gaze18/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/repairs.md",
+          "sha256": "c73880af29ce058106dfea9d5805eb13efb8e9a977c94a8c78de58f92529a300"
+        },
+        {
+          "member": "gaze18/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/specs.md",
+          "sha256": "e2c3cf05b1e12ba361b569ba32f1dc9497d363049d4a9269854bb5da99ee0e20"
+        }
+      ],
+      "localIllustratedArchive": "gaze18.zip",
+      "localArchiveSha256": "bfb62d6b7fc6f54dbfb592636f8421e0e3622c816993bca8084762b6ed6a7089",
+      "localArchiveBytes": 14962193,
+      "originalFileCount": 48
+    },
+    {
+      "model": "Kudu (kudu6)",
+      "skus": [
+        "S76-KUDU6"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/kudu6/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "kudu6/external-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/external-overview.md",
+          "sha256": "a9c7f64f26957533167b1a30b27c5ec33d42d78d43936336b6f7f6314dcad37a"
+        },
+        {
+          "member": "kudu6/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/internal-overview.md",
+          "sha256": "99ab6d953faa59ed53fba73638c39e6a4257054e5005bfb9003f1afd8360a8d5"
+        },
+        {
+          "member": "kudu6/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/repairs.md",
+          "sha256": "fed8a8c388409687aee001ffc6c9ce17156ca17b613587a6e79586b6ee707c95"
+        },
+        {
+          "member": "kudu6/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/specs.md",
+          "sha256": "442659fe83b6dc7665e55bd5a8b9507413cf79ba6243cd81116c86a535d16624"
+        }
+      ],
+      "localIllustratedArchive": "kudu6.zip",
+      "localArchiveSha256": "181bf82e953dc9bff905c47d736403b8732484db398de713447c708c03ff7c4f",
+      "localArchiveBytes": 5571543,
+      "originalFileCount": 42
+    },
+    {
+      "model": "Lemur Pro (lemp12)",
+      "skus": [
+        "S76-LEMP12"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/lemp12/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "lemp12/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/external-overview.mdx",
+          "sha256": "3eea919440d919e161b3613e60172dbdfd87b326eaa575d0582c356ce5d2dd68"
+        },
+        {
+          "member": "lemp12/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/internal-overview.md",
+          "sha256": "b414ba5ba53cb314283eb5ab44f051a89e815bf0845897d078d39e2dfecd5e4c"
+        },
+        {
+          "member": "lemp12/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/repairs.md",
+          "sha256": "c474a23e66bcfff5b9510bb4922e993017e33b0880d99c0199c2fb42bfdb8a53"
+        },
+        {
+          "member": "lemp12/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/specs.md",
+          "sha256": "b6795164c1212ffbca9c1178291911be9bc0a1339a49c7e8b0676126038de39a"
+        }
+      ],
+      "localIllustratedArchive": "lemp12.zip",
+      "localArchiveSha256": "93277e918aa590a76022cc57991c4c319501c4489485401b812085f531e080cb",
+      "localArchiveBytes": 5988786,
+      "originalFileCount": 36
+    },
+    {
+      "model": "Lemur Pro (lemp13 & lemp13-b)",
+      "skus": [
+        "S76-LEMP13"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/lemp13/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "lemp13/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/external-overview.mdx",
+          "sha256": "99254ec114b1b7d878eebf1e3cec393a2c4c331a061210138e1c46b51d8fcd9c"
+        },
+        {
+          "member": "lemp13/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/internal-overview.md",
+          "sha256": "eecafe1ee9c71174bef1503ba5d5afa99bee99d48369d15e21c77e739d5818a4"
+        },
+        {
+          "member": "lemp13/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/repairs.md",
+          "sha256": "cd597b636862e6f6e706e531208282a54a7e7a6743285191324d37acaf4ec27f"
+        },
+        {
+          "member": "lemp13/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/specs.md",
+          "sha256": "c7236ada3c2af7391899fecd4eb73b3a91927d4f1ee0fa7b081dd8070be9a18a"
+        }
+      ],
+      "localIllustratedArchive": "lemp13.zip",
+      "localArchiveSha256": "b6dbbaa650f780b2860465ecf4fc8ae50344f4796e9369a661d14dedb6dd9c6c",
+      "localArchiveBytes": 11615087,
+      "originalFileCount": 38
+    },
+    {
+      "model": "Oryx Pro (oryp11)",
+      "skus": [
+        "S76-ORYP11"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/oryp11/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "oryp11/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/external-overview.mdx",
+          "sha256": "de2f2ea8fffa0509cc81cc33b4b1c7d507f3553a6d6ebb81cf1dc2431a6f9a3d"
+        },
+        {
+          "member": "oryp11/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/internal-overview.md",
+          "sha256": "8dac4e03de91bb2a7022dc6a4ec22aeda3124f304034b439e96f56605f540dc5"
+        },
+        {
+          "member": "oryp11/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/repairs.md",
+          "sha256": "ad348aed7ce28a06325208da58b2986586fb5b91c78c53e2b4b28cc06afa706f"
+        },
+        {
+          "member": "oryp11/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/specs.md",
+          "sha256": "e297ad793067907b94fbd3aef05790343d5bd9e95d906b24bb2ab484fdbd09f6"
+        }
+      ],
+      "localIllustratedArchive": "oryp11.zip",
+      "localArchiveSha256": "18726e7aebb8a9bac83c68af07e9d53c4dd32be2d9d16282829d47176c4f87ab",
+      "localArchiveBytes": 10156437,
+      "originalFileCount": 46
+    },
+    {
+      "model": "Oryx Pro (oryp12)",
+      "skus": [
+        "S76-ORYP12"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/oryp12/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "oryp12/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/external-overview.mdx",
+          "sha256": "f157f41cfd92bd60f4d278adbef0c551ff0b749147b555954355f9abbb205ae6"
+        },
+        {
+          "member": "oryp12/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/internal-overview.md",
+          "sha256": "0a09d7ec0804fc71264714b527368e7ebf0b175e9b68dac493726a6c2c208e89"
+        },
+        {
+          "member": "oryp12/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/repairs.md",
+          "sha256": "b783446763457a7627618fa8259f7214d6efe5b5eec8382b6bac8b8ba10d9984"
+        },
+        {
+          "member": "oryp12/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/specs.md",
+          "sha256": "8b70ab85506bff5ddcde3d1abf509774eea1de57e07a512ed710a70cf108d34d"
+        }
+      ],
+      "localIllustratedArchive": "oryp12.zip",
+      "localArchiveSha256": "68a9afd0c955c42fecfb4586a15394ff4b3130e3308107bcda5df6ba413c8f61",
+      "localArchiveBytes": 12278740,
+      "originalFileCount": 47
+    },
+    {
+      "model": "Pangolin (pang13)",
+      "skus": [
+        "S76-PANG13"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/pang13/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "pang13/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/external-overview.mdx",
+          "sha256": "42af95e8c5819945166891c5bc93404d2b256e53c10578be58c4f2145f4221dd"
+        },
+        {
+          "member": "pang13/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/internal-overview.md",
+          "sha256": "e89bc64d8f2fa779802c7ea06d623158008ce1d45a2c5b19c795b0de165111fa"
+        },
+        {
+          "member": "pang13/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/repairs.md",
+          "sha256": "0d8550e2130137ba687a86b13aef382a4b4b33562d9c4fc3711b95af387a607b"
+        },
+        {
+          "member": "pang13/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/specs.md",
+          "sha256": "ef8a707389da8906f8d88c920e8b5cdb80723fd1ae34415f52e7857833631492"
+        }
+      ],
+      "localIllustratedArchive": "pang13.zip",
+      "localArchiveSha256": "3120dd58e37904d6f5cdca5f59c9088165f6a1d3242b5987decb850b267126ac",
+      "localArchiveBytes": 6589282,
+      "originalFileCount": 36
+    },
+    {
+      "model": "Pangolin (pang14)",
+      "skus": [
+        "S76-PANG14"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/pang14/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "pang14/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/external-overview.mdx",
+          "sha256": "42af95e8c5819945166891c5bc93404d2b256e53c10578be58c4f2145f4221dd"
+        },
+        {
+          "member": "pang14/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/internal-overview.md",
+          "sha256": "683c845ee8d67199970b3339a80f8c01baa5a5b9fa4871f4c3880ebc2c37f31d"
+        },
+        {
+          "member": "pang14/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/repairs.md",
+          "sha256": "f17ea1cdc07a45ae71d30e8c644e24309540df2e81165f1eb34bf68a616039aa"
+        },
+        {
+          "member": "pang14/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/specs.md",
+          "sha256": "16728a173090f931287f7458aa275f6fbe3bc8498c9ef95fddd29c131d9000f0"
+        }
+      ],
+      "localIllustratedArchive": "pang14.zip",
+      "localArchiveSha256": "77efaf7b777d430307460a0773856c0696d7f62db1afc93ae663416f40bee894",
+      "localArchiveBytes": 10699101,
+      "originalFileCount": 35
+    },
+    {
+      "model": "Pangolin (pang15)",
+      "skus": [
+        "S76-PANG15"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/pang15/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "pang15/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/external-overview.mdx",
+          "sha256": "cb7ea21c70e153539e27a6e2920395c4236ed4ec211608545ac50b5c63f61a29"
+        },
+        {
+          "member": "pang15/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/internal-overview.md",
+          "sha256": "ba4916979096f5c3128d8ae5eccdaebe7917ec40b74bf6dd2321d3daccd1f942"
+        },
+        {
+          "member": "pang15/repairs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/repairs.md",
+          "sha256": "a384de245fcfca8083a757099b9f95ed3e0b50c1610547dca0428e8a55a75e3f"
+        },
+        {
+          "member": "pang15/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/specs.md",
+          "sha256": "58a6bf262d63f29ab7681f3606a2e44dc0b62735943d6ba2a13f1a3983e5720b"
+        }
+      ],
+      "localIllustratedArchive": "pang15.zip",
+      "localArchiveSha256": "781b36c5fbfb3728372e0ea5185df3b7f9e2a871cb0e9eac9312f819cb8fb967",
+      "localArchiveBytes": 8028777,
+      "originalFileCount": 38
+    },
+    {
+      "model": "Serval WS (serw13)",
+      "skus": [
+        "S76-SERW13"
+      ],
+      "publisher": "System76 and contributors",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "sourceUrl": "https://system76.com/tech-docs/models/serw13/specs/",
+      "revision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "textArchive": "originals/system76-technical-manuals.zip",
+      "chapters": [
+        {
+          "member": "serw13/external-overview.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/external-overview.mdx",
+          "sha256": "2476e376dfb1e7b7f840c432d40dff59418e0c3876a55cfeaff4ece5db036ae4"
+        },
+        {
+          "member": "serw13/internal-overview.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/internal-overview.md",
+          "sha256": "6c1e2b4a1620dae1708fd64a0f3fba734ab05f5e9f75b4faa39998bba5360c6a"
+        },
+        {
+          "member": "serw13/repairs.mdx",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/repairs.mdx",
+          "sha256": "e318e5d17775954bd669e3e94a3024316d2ea7d0e5d23d2c53b47aab79a8a0ef"
+        },
+        {
+          "member": "serw13/specs.md",
+          "url": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/specs.md",
+          "sha256": "a9b78cef95d62a5f9c1034c012daee5422395bf0b34dcbd24982d842d62d03f4"
+        }
+      ],
+      "localIllustratedArchive": "serw13.zip",
+      "localArchiveSha256": "c94d806d4b577cc4e98f48e5df402e1f1708657ee3383f046445b551209c5556",
+      "localArchiveBytes": 10625131,
+      "originalFileCount": 46
+    },
+    {
+      "model": "PinePhone Beta Edition",
+      "skus": [
+        "PINE64-PINEPHONE-BETA-2-16",
+        "PINE64-PINEPHONE-BETA-CONV-3-32"
+      ],
+      "publisher": "PINE64",
+      "sourceUrl": "https://pine64.org/documentation/PinePhone/_full/",
+      "localOriginals": [
+        {
+          "file": "pinephone.html",
+          "url": "https://pine64.org/documentation/PinePhone/_full/",
+          "bytes": 352961,
+          "sha256": "bb95314cdd4d83baff4c81b18b2f1f367f1ac4dbbafd94774a44c32102eddbb5"
+        },
+        {
+          "file": "pinephone-quickstart.pdf",
+          "url": "https://files.pine64.org/doc/PinePhone/PinePhone_User_Manual.pdf",
+          "bytes": 321139,
+          "sha256": "ca810004d1364d2ae967dfc21655b7d6c79226bf497dc484c51c1517a92bf629"
+        }
+      ],
+      "publicUse": "原厂整页与 PDF 的再分发许可未确认，公共包提供来源和独立整理的事实。"
+    },
+    {
+      "model": "PinePhone Pro",
+      "skus": [
+        "PINE64-PINEPHONEPRO-4-128"
+      ],
+      "publisher": "PINE64",
+      "sourceUrl": "https://pine64.org/documentation/PinePhone_Pro/_full/",
+      "localOriginals": [
+        {
+          "file": "pinephone-pro.html",
+          "url": "https://pine64.org/documentation/PinePhone_Pro/_full/",
+          "bytes": 168928,
+          "sha256": "8faa42f0ee0c2857afb199d400358ac883466b89d52ae7e7f55dd93e57efd4bb"
+        }
+      ],
+      "publicUse": "原厂整页与 PDF 的再分发许可未确认，公共包提供来源和独立整理的事实。"
+    }
+  ]
+}

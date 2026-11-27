@@ -1,0 +1,1464 @@
+{
+  "version": "retail-official-v1",
+  "verifiedAt": "2026-11-27",
+  "origin": "manufacturer-published hardware documentation",
+  "sources": [
+    {
+      "id": "addw4-specs",
+      "title": "System76 Adder WS (addw4) — Specifications",
+      "url": "https://system76.com/tech-docs/models/addw4/specs/",
+      "sourceGroup": "system76-adder-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/specs.md"
+    },
+    {
+      "id": "addw4-exterior",
+      "title": "System76 Adder WS (addw4) — External Overview",
+      "url": "https://system76.com/tech-docs/models/addw4/external-overview/",
+      "sourceGroup": "system76-adder-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/external-overview.mdx"
+    },
+    {
+      "id": "bonw15-specs",
+      "title": "System76 Bonobo WS (bonw15 & bonw15-b) — Specifications",
+      "url": "https://system76.com/tech-docs/models/bonw15/specs/",
+      "sourceGroup": "system76-bonobo-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/specs.md"
+    },
+    {
+      "id": "bonw15-exterior",
+      "title": "System76 Bonobo WS (bonw15 & bonw15-b) — External Overview",
+      "url": "https://system76.com/tech-docs/models/bonw15/external-overview/",
+      "sourceGroup": "system76-bonobo-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/external-overview.mdx"
+    },
+    {
+      "id": "darp9-specs",
+      "title": "System76 Darter Pro (darp9) — Specifications",
+      "url": "https://system76.com/tech-docs/models/darp9/specs/",
+      "sourceGroup": "system76-darter-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/specs.md"
+    },
+    {
+      "id": "darp9-exterior",
+      "title": "System76 Darter Pro (darp9) — External Overview",
+      "url": "https://system76.com/tech-docs/models/darp9/external-overview/",
+      "sourceGroup": "system76-darter-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/external-overview.mdx"
+    },
+    {
+      "id": "galp6-specs",
+      "title": "System76 Galago Pro (galp6) — Specifications",
+      "url": "https://system76.com/tech-docs/models/galp6/specs/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/specs.md"
+    },
+    {
+      "id": "galp6-exterior",
+      "title": "System76 Galago Pro (galp6) — External Overview",
+      "url": "https://system76.com/tech-docs/models/galp6/external-overview/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/external-overview.mdx"
+    },
+    {
+      "id": "galp7-specs",
+      "title": "System76 Galago Pro (galp7) — Specifications",
+      "url": "https://system76.com/tech-docs/models/galp7/specs/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/specs.md"
+    },
+    {
+      "id": "galp7-exterior",
+      "title": "System76 Galago Pro (galp7) — External Overview",
+      "url": "https://system76.com/tech-docs/models/galp7/external-overview/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/external-overview.mdx"
+    },
+    {
+      "id": "gaze18-specs",
+      "title": "System76 Gazelle (gaze18) — Specifications",
+      "url": "https://system76.com/tech-docs/models/gaze18/specs/",
+      "sourceGroup": "system76-gazelle",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/specs.md"
+    },
+    {
+      "id": "gaze18-exterior",
+      "title": "System76 Gazelle (gaze18) — External Overview",
+      "url": "https://system76.com/tech-docs/models/gaze18/external-overview/",
+      "sourceGroup": "system76-gazelle",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/external-overview.mdx"
+    },
+    {
+      "id": "kudu6-specs",
+      "title": "System76 Kudu (kudu6) — Specifications",
+      "url": "https://system76.com/tech-docs/models/kudu6/specs/",
+      "sourceGroup": "system76-kudu",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/specs.md"
+    },
+    {
+      "id": "kudu6-exterior",
+      "title": "System76 Kudu (kudu6) — External Overview",
+      "url": "https://system76.com/tech-docs/models/kudu6/external-overview/",
+      "sourceGroup": "system76-kudu",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/external-overview.md"
+    },
+    {
+      "id": "lemp12-specs",
+      "title": "System76 Lemur Pro (lemp12) — Specifications",
+      "url": "https://system76.com/tech-docs/models/lemp12/specs/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/specs.md"
+    },
+    {
+      "id": "lemp12-exterior",
+      "title": "System76 Lemur Pro (lemp12) — External Overview",
+      "url": "https://system76.com/tech-docs/models/lemp12/external-overview/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/external-overview.mdx"
+    },
+    {
+      "id": "lemp13-specs",
+      "title": "System76 Lemur Pro (lemp13 & lemp13-b) — Specifications",
+      "url": "https://system76.com/tech-docs/models/lemp13/specs/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/specs.md"
+    },
+    {
+      "id": "lemp13-exterior",
+      "title": "System76 Lemur Pro (lemp13 & lemp13-b) — External Overview",
+      "url": "https://system76.com/tech-docs/models/lemp13/external-overview/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/external-overview.mdx"
+    },
+    {
+      "id": "oryp11-specs",
+      "title": "System76 Oryx Pro (oryp11) — Specifications",
+      "url": "https://system76.com/tech-docs/models/oryp11/specs/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/specs.md"
+    },
+    {
+      "id": "oryp11-exterior",
+      "title": "System76 Oryx Pro (oryp11) — External Overview",
+      "url": "https://system76.com/tech-docs/models/oryp11/external-overview/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/external-overview.mdx"
+    },
+    {
+      "id": "oryp12-specs",
+      "title": "System76 Oryx Pro (oryp12) — Specifications",
+      "url": "https://system76.com/tech-docs/models/oryp12/specs/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/specs.md"
+    },
+    {
+      "id": "oryp12-exterior",
+      "title": "System76 Oryx Pro (oryp12) — External Overview",
+      "url": "https://system76.com/tech-docs/models/oryp12/external-overview/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/external-overview.mdx"
+    },
+    {
+      "id": "pang13-specs",
+      "title": "System76 Pangolin (pang13) — Specifications",
+      "url": "https://system76.com/tech-docs/models/pang13/specs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/specs.md"
+    },
+    {
+      "id": "pang13-exterior",
+      "title": "System76 Pangolin (pang13) — External Overview",
+      "url": "https://system76.com/tech-docs/models/pang13/external-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/external-overview.mdx"
+    },
+    {
+      "id": "pang14-specs",
+      "title": "System76 Pangolin (pang14) — Specifications",
+      "url": "https://system76.com/tech-docs/models/pang14/specs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/specs.md"
+    },
+    {
+      "id": "pang14-exterior",
+      "title": "System76 Pangolin (pang14) — External Overview",
+      "url": "https://system76.com/tech-docs/models/pang14/external-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/external-overview.mdx"
+    },
+    {
+      "id": "pang15-specs",
+      "title": "System76 Pangolin (pang15) — Specifications",
+      "url": "https://system76.com/tech-docs/models/pang15/specs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/specs.md"
+    },
+    {
+      "id": "pang15-exterior",
+      "title": "System76 Pangolin (pang15) — External Overview",
+      "url": "https://system76.com/tech-docs/models/pang15/external-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/external-overview.mdx"
+    },
+    {
+      "id": "serw13-specs",
+      "title": "System76 Serval WS (serw13) — Specifications",
+      "url": "https://system76.com/tech-docs/models/serw13/specs/",
+      "sourceGroup": "system76-serval-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/specs.md"
+    },
+    {
+      "id": "serw13-exterior",
+      "title": "System76 Serval WS (serw13) — External Overview",
+      "url": "https://system76.com/tech-docs/models/serw13/external-overview/",
+      "sourceGroup": "system76-serval-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/external-overview.mdx"
+    },
+    {
+      "id": "pinephone-beta-specs",
+      "title": "PinePhone Beta Edition specifications",
+      "url": "https://pine64.org/documentation/PinePhone/Further_information/Specifications/",
+      "sourceGroup": "pinephone-beta",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "中文资料仅转述公开技术事实，原始网页和 PDF 留本地。公开图片按媒体页逐图许可。",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "c139ccb137c93382a2349a23cb1e6cf41731f1d5",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/pine64/website/c139ccb137c93382a2349a23cb1e6cf41731f1d5/content/documentation/PinePhone/Further_information/Specifications.md"
+    },
+    {
+      "id": "pinephone-beta-setup",
+      "title": "PinePhone Beta Edition Getting_started",
+      "url": "https://pine64.org/documentation/PinePhone/Getting_started/",
+      "sourceGroup": "pinephone-beta",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "中文资料仅转述公开技术事实，原始网页和 PDF 留本地。公开图片按媒体页逐图许可。",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "c139ccb137c93382a2349a23cb1e6cf41731f1d5",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/pine64/website/c139ccb137c93382a2349a23cb1e6cf41731f1d5/content/documentation/PinePhone/Getting_started.md"
+    },
+    {
+      "id": "pinephone-beta-variants",
+      "title": "PinePhone Beta Edition product configurations",
+      "url": "https://pine64.org/2021/03/19/beta-edition-pre-orders/",
+      "sourceGroup": "pinephone-beta",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "中文资料仅转述公开技术事实，原始网页和 PDF 留本地。公开图片按媒体页逐图许可。",
+      "review": "official-source-checked; independent human review pending"
+    },
+    {
+      "id": "pinephone-pro-specs",
+      "title": "PinePhone Pro specifications",
+      "url": "https://pine64.org/documentation/PinePhone_Pro/Further_information/Specifications/",
+      "sourceGroup": "pinephone-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "中文资料仅转述公开技术事实，原始网页和 PDF 留本地。公开图片按媒体页逐图许可。",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "c139ccb137c93382a2349a23cb1e6cf41731f1d5",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/pine64/website/c139ccb137c93382a2349a23cb1e6cf41731f1d5/content/documentation/PinePhone_Pro/Further_information/Specifications.md"
+    },
+    {
+      "id": "pinephone-pro-setup",
+      "title": "PinePhone Pro First_time_setup",
+      "url": "https://pine64.org/documentation/PinePhone_Pro/First_time_setup/",
+      "sourceGroup": "pinephone-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "中文资料仅转述公开技术事实，原始网页和 PDF 留本地。公开图片按媒体页逐图许可。",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "c139ccb137c93382a2349a23cb1e6cf41731f1d5",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/pine64/website/c139ccb137c93382a2349a23cb1e6cf41731f1d5/content/documentation/PinePhone_Pro/First_time_setup.md"
+    }
+  ],
+  "documents": [
+    {
+      "id": "addw4",
+      "title": "retail-official-v1/addw4",
+      "file": "knowledge/addw4.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ADDW4"
+      ],
+      "sourceIds": [
+        "addw4-specs",
+        "addw4-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "addw4-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "bonw15",
+      "title": "retail-official-v1/bonw15",
+      "file": "knowledge/bonw15.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-BONW15"
+      ],
+      "sourceIds": [
+        "bonw15-specs",
+        "bonw15-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "darp9",
+      "title": "retail-official-v1/darp9",
+      "file": "knowledge/darp9.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-DARP9"
+      ],
+      "sourceIds": [
+        "darp9-specs",
+        "darp9-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "darp9-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "galp6",
+      "title": "retail-official-v1/galp6",
+      "file": "knowledge/galp6.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GALP6"
+      ],
+      "sourceIds": [
+        "galp6-specs",
+        "galp6-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "galp6-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "galp7",
+      "title": "retail-official-v1/galp7",
+      "file": "knowledge/galp7.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GALP7"
+      ],
+      "sourceIds": [
+        "galp7-specs",
+        "galp7-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "galp7-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "gaze18",
+      "title": "retail-official-v1/gaze18",
+      "file": "knowledge/gaze18.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GAZE18"
+      ],
+      "sourceIds": [
+        "gaze18-specs",
+        "gaze18-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "kudu6",
+      "title": "retail-official-v1/kudu6",
+      "file": "knowledge/kudu6.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-KUDU6"
+      ],
+      "sourceIds": [
+        "kudu6-specs",
+        "kudu6-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "lemp12",
+      "title": "retail-official-v1/lemp12",
+      "file": "knowledge/lemp12.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-LEMP12"
+      ],
+      "sourceIds": [
+        "lemp12-specs",
+        "lemp12-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "lemp13",
+      "title": "retail-official-v1/lemp13",
+      "file": "knowledge/lemp13.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-LEMP13"
+      ],
+      "sourceIds": [
+        "lemp13-specs",
+        "lemp13-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "oryp11",
+      "title": "retail-official-v1/oryp11",
+      "file": "knowledge/oryp11.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ORYP11"
+      ],
+      "sourceIds": [
+        "oryp11-specs",
+        "oryp11-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "oryp12",
+      "title": "retail-official-v1/oryp12",
+      "file": "knowledge/oryp12.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ORYP12"
+      ],
+      "sourceIds": [
+        "oryp12-specs",
+        "oryp12-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "pang13",
+      "title": "retail-official-v1/pang13",
+      "file": "knowledge/pang13.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG13"
+      ],
+      "sourceIds": [
+        "pang13-specs",
+        "pang13-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "pang13-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "pang14",
+      "title": "retail-official-v1/pang14",
+      "file": "knowledge/pang14.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG14"
+      ],
+      "sourceIds": [
+        "pang14-specs",
+        "pang14-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "pang14-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "pang15",
+      "title": "retail-official-v1/pang15",
+      "file": "knowledge/pang15.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG15"
+      ],
+      "sourceIds": [
+        "pang15-specs",
+        "pang15-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "pang15-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "serw13",
+      "title": "retail-official-v1/serw13",
+      "file": "knowledge/serw13.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-SERW13"
+      ],
+      "sourceIds": [
+        "serw13-specs",
+        "serw13-exterior"
+      ],
+      "sections": [
+        {
+          "id": "processor",
+          "title": "处理器选项",
+          "sourceId": "serw13-specs",
+          "sourceSection": "CPU"
+        },
+        {
+          "id": "display",
+          "title": "内置屏幕",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Graphics"
+        },
+        {
+          "id": "memory",
+          "title": "内存配置",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Memory"
+        },
+        {
+          "id": "storage",
+          "title": "存储与扩展",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Storage"
+        },
+        {
+          "id": "power",
+          "title": "供电与电池",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Power"
+        },
+        {
+          "id": "video",
+          "title": "外接显示器",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Graphics / External video output"
+        },
+        {
+          "id": "exterior",
+          "title": "整机与接口位置",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview"
+        },
+        {
+          "id": "weight",
+          "title": "机身重量",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Dimensions"
+        }
+      ]
+    },
+    {
+      "id": "pinephone-beta",
+      "title": "retail-official-v1/pinephone-beta",
+      "file": "knowledge/pinephone-beta.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "PINE64-PINEPHONE-BETA-2-16",
+        "PINE64-PINEPHONE-BETA-CONV-3-32"
+      ],
+      "sourceIds": [
+        "pinephone-beta-specs",
+        "pinephone-beta-variants",
+        "pinephone-beta-setup"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕与重量",
+          "sourceId": "pinephone-beta-specs",
+          "sourceSection": "Display / Weight"
+        },
+        {
+          "id": "configuration",
+          "title": "内存与存储",
+          "sourceId": "pinephone-beta-variants",
+          "sourceSection": "Beta Edition configurations"
+        },
+        {
+          "id": "battery",
+          "title": "电池容量",
+          "sourceId": "pinephone-beta-specs",
+          "sourceSection": "Battery"
+        },
+        {
+          "id": "unpacking",
+          "title": "首次开机前的绝缘片",
+          "sourceId": "pinephone-beta-setup",
+          "sourceSection": "Getting started"
+        },
+        {
+          "id": "cards",
+          "title": "SIM 与存储卡位置",
+          "sourceId": "pinephone-beta-setup",
+          "sourceSection": "SIM card and microSD slots"
+        }
+      ]
+    },
+    {
+      "id": "pinephone-pro",
+      "title": "retail-official-v1/pinephone-pro",
+      "file": "knowledge/pinephone-pro.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "PINE64-PINEPHONEPRO-4-128"
+      ],
+      "sourceIds": [
+        "pinephone-pro-specs",
+        "pinephone-pro-setup"
+      ],
+      "sections": [
+        {
+          "id": "screen",
+          "title": "屏幕与重量",
+          "sourceId": "pinephone-pro-specs",
+          "sourceSection": "Display / Weight"
+        },
+        {
+          "id": "configuration",
+          "title": "内存与存储",
+          "sourceId": "pinephone-pro-specs",
+          "sourceSection": "RAM / Internal Storage"
+        },
+        {
+          "id": "battery",
+          "title": "电池容量",
+          "sourceId": "pinephone-pro-specs",
+          "sourceSection": "Battery"
+        },
+        {
+          "id": "unpacking",
+          "title": "首次开机前的绝缘片",
+          "sourceId": "pinephone-pro-setup",
+          "sourceSection": "First time setup"
+        },
+        {
+          "id": "cards",
+          "title": "SIM 与存储卡位置",
+          "sourceId": "pinephone-pro-setup",
+          "sourceSection": "SIM card and microSD slots"
+        }
+      ]
+    }
+  ]
+}

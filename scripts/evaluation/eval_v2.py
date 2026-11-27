@@ -40,7 +40,8 @@ def validate_package(package=PACKAGE):
     for source in sources.values():
         url = urllib.parse.urlparse(source['url'])
         assert (url.scheme == 'https' and url.hostname in {
-            'consumer.huawei.com', 'support.apple.com', 'images.samsung.com', 'www.samsung.com'
+            'consumer.huawei.com', 'support.apple.com', 'images.samsung.com', 'www.samsung.com',
+            'system76.com', 'pine64.org'
         } and not url.username and not url.password and not url.port), 'unexpected source'
         assert re.fullmatch(r'\d{4}-\d{2}-\d{2}', source['checkedAt'])
         assert source['rights'] and source['review'] and source['sourceGroup']

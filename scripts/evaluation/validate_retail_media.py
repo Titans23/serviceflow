@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from zipfile import ZipFile
 
 from eval_v2 import read_json, validate_package
 
@@ -50,10 +51,24 @@ def validate_media(directory):
         missing.update(gap["skus"])
     if covered & missing or covered | missing != skus:
         raise ValueError("Image coverage does not match the catalog")
-    for original in media.get("originalFiles", []):
+    originals = {rec["file"]: rec for rec in media.get("originalFiles", [])}
+    for original in originals.values():
         verify_file(root, original)
-    return {"images": len(seen), "coveredSkus": len(covered), "missingSkus": len(missing),
-            "originalFiles": len(media.get("originalFiles", []))}
+    manual_index = root / "manuals.json"
+    chapters = 0
+    if manual_index.is_file():
+        for manual in read_json(manual_index)["manuals"]:
+            if not manual["skus"] or not set(manual["skus"]) <= skus:
+                raise ValueError(f"Unmatched manual: {manual['model']}")
+            if "textArchive" in manual:
+                archive = originals[manual["textArchive"]]
+                with ZipFile(root / archive["file"]) as bundle:
+                    for chapter in manual["chapters"]:
+                        if hashlib.sha256(bundle.read(chapter["member"])).hexdigest() != chapter["sha256"]:
+                            raise ValueError(f"Changed original chapter: {chapter['member']}")
+                        chapters += 1
+    return {"images": len(seen), "uniqueImages": len({i["sha256"] for i in media["images"]}),
+            "coveredSkus": len(covered), "missingSkus": len(missing), "originalChapters": chapters}
 
 
 if __name__ == "__main__":
