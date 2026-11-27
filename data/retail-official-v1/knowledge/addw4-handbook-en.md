@@ -1,0 +1,515 @@
+# System76 Adder WS (addw4) — Technical Manual
+
+System76 and contributors · CC BY-SA 4.0. Searchable English edition. Headings are indexed, figures are named in the text, and the source archive preserves the original layout.
+
+来源 https://system76.com/tech-docs/models/addw4/specs/
+来源 https://system76.com/tech-docs/models/addw4/external-overview/
+来源 https://system76.com/tech-docs/models/addw4/internal-overview/
+来源 https://system76.com/tech-docs/models/addw4/repairs/
+
+## specs-introduction：Specifications / Introduction
+
+[Figure: Adder WS | addw4.webp]
+
+The System76 Adder WS is a laptop with the following specifications:
+
+来源章节：Specifications / Introduction
+
+## specs-cpu：Specifications / CPU
+
+- Supports Intel 14th Generation (Raptor Lake) CPUs
+    - [Core i9-14900HX](https://ark.intel.com/content/www/us/en/ark/products/235995/intel-core-i9-processor-14900hx-36m-cache-up-to-5-80-ghz.html)
+
+来源章节：Specifications / CPU
+
+## specs-bios：Specifications / BIOS
+
+- GigaDevice GD25B256EYIGR flash chip
+    - WSON-8 form factor
+- Programmed with [System76 Open Firmware](https://github.com/system76/firmware-open)
+
+来源章节：Specifications / BIOS
+
+## specs-ec：Specifications / EC
+
+- ITE IT5570E
+- Programmed with [System76 EC](https://github.com/system76/ec)
+
+来源章节：Specifications / EC
+
+## specs-graphics：Specifications / Graphics
+
+- GPU options:
+    - NVIDIA GeForce RTX 4070
+    - NVIDIA GeForce RTX 4060
+    - NVIDIA GeForce RTX 4050
+- eDP display:
+    - 15.6" 1920x1080@144Hz LCD
+        - LCD panel: Innolux N156HMA-GA1 (or equivalent)
+            - Brightness: 250 nits (cd/m²)
+            - sRGB color coverage: 100%
+- External video outputs:
+    - 1x HDMI 2.1
+    - 1x DisplayPort 1.4 over USB-C
+
+来源章节：Specifications / Graphics
+
+## specs-memory：Specifications / Memory
+
+- Up to 96GB (2x48GB) dual-channel DDR5 SO-DIMMs @ 5600 MHz
+
+来源章节：Specifications / Memory
+
+## specs-networking：Specifications / Networking
+
+- Gigabit Ethernet
+- M.2 PCIe/CNVi WiFi/Bluetooth options:
+    - Intel Wi-Fi 7 BE200
+        - Bluetooth 5.4
+    - Intel Wi-Fi 6E AX210/AX211
+        - Bluetooth 5.3
+
+来源章节：Specifications / Networking
+
+## specs-power：Specifications / Power
+
+- 230W (20V, 11.5A) DC-in port
+    - Barrel size: 5.5mm (outer), 2.5mm (inner)
+- Included AC adapter: LiteOn PA-1231-26
+    - AC power cord type: IEC C5
+- 53.35Wh 4-cell Lithium-Ion battery
+    - Model number: V150BAT-4-53
+
+来源章节：Specifications / Power
+
+## specs-sound：Specifications / Sound
+
+- Internal speakers & microphone
+- Combined headphone & microphone 3.5mm jack
+- HDMI, USB-C DisplayPort audio
+
+来源章节：Specifications / Sound
+
+## specs-storage：Specifications / Storage
+
+- 3x M.2 (PCIe NVMe Gen 4) SSDs
+- MicroSD card reader
+
+来源章节：Specifications / Storage
+
+## specs-usb：Specifications / USB
+
+- 1x USB 3.2 Gen 2 (Type-C)
+    - Supports DisplayPort over USB-C
+- 1x USB 3.2 Gen 2 (Type-C)
+    - Does not support DisplayPort over USB-C
+- 1x USB 3.2 Gen 2 (Type-A)
+- 1x USB 3.2 Gen 1 (Type-A)
+
+来源章节：Specifications / USB
+
+## specs-dimensions：Specifications / Dimensions
+
+- 2.49cm x 36.09cm x 24.69cm, 2.3kg
+
+来源章节：Specifications / Dimensions
+
+## exterior-left-side：External Overview / Left side
+
+[Figure: Left Ports | ports-left.webp]
+
+来源章节：External Overview / Left side
+
+## exterior-right-side：External Overview / Right side
+
+[Figure: Right Ports | ports-right.webp]
+
+来源章节：External Overview / Right side
+
+## exterior-front-side：External Overview / Front side
+
+[Figure: Front Ports | ports-front.webp]
+
+来源章节：External Overview / Front side
+
+## exterior-back-side：External Overview / Back side
+
+[Figure: Back Ports | ports-back.webp]
+
+来源章节：External Overview / Back side
+
+## exterior-keyboard-touchpad：External Overview / Keyboard & touchpad
+
+[Figure: Keyboard & Touchpad | keyboard-touchpad.webp]
+
+来源章节：External Overview / Keyboard & touchpad
+
+## exterior-lid：External Overview / Lid
+
+[Figure: Lid | lid.webp]
+
+来源章节：External Overview / Lid
+
+## exterior-materials：External Overview / Materials
+
+|Part                              |Material|Part Number    |
+|----------------------------------|--------|---------------|
+|LCD back cover (lid)              |Plastic |6-39-V3501-022 |
+|LCD front cover (bezel)           |Plastic |6-39-V3501-012 |
+|Top case (palm rests/port covers) |Plastic |6-39-V3552-S12 |
+|Bottom panel                      |Plastic |6-39-V3503-012 |
+
+来源章节：External Overview / Materials
+
+## exterior-led-indicators：External Overview / LED indicators
+
+The Adder WS has the following LED indicators:
+
+|Icon                                    |Color          |Description                      |
+|----------------------------------------|---------------|---------------------------------|
+|[Figure: Power LED | led-power.png]       |Orange         |Powered off, DC power plugged in |
+|                                        |Green          |Powered on                       |
+|                                        |Blinking green |Sleeping (suspended)             |
+|[Figure: Battery LED | led-battery.png]   |Orange         |Battery charging                 |
+|                                        |Green          |Battery fully charged            |
+|                                        |Blinking orange|Battery critically low           |
+|[Figure: Storage LED | led-storage.png]   |Green          |Storage drive activity           |
+
+来源章节：External Overview / LED indicators
+
+## exterior-keyboard-shortcuts：External Overview / Keyboard Shortcuts
+
+The Adder WS has the following actions available using the Fn and Function keys:
+
+|Key                        |Shortcut|Action                             |
+|---------------------------|--------|-----------------------------------|
+|[Figure: Fn-F1 | fn-f1.png]  |Fn+F1   |Toggle trackpad                    |
+|[Figure: Fn-F2 | fn-f2.png]  |Fn+F2   |Mute/unmute microphone             |
+|[Figure: Fn-F3 | fn-f3.png]  |Fn+F3   |Mute/unmute speakers               |
+|[Figure: Fn-F5 | fn-f5.png]  |Fn+F5   |Volume down                        |
+|[Figure: Fn-F6 | fn-f6.png]  |Fn+F6   |Volume up                          |
+|[Figure: Fn-F7 | fn-f7.png]  |Fn+F7   |Toggle displays                    |
+|[Figure: Fn-F8 | fn-f8.png]  |Fn+F8   |Screen brightness down             |
+|[Figure: Fn-F9 | fn-f9.png]  |Fn+F9   |Screen brightness up               |
+|[Figure: Fn-F10 | fn-f10.png]|Fn+F10  |Toggle webcam                      |
+|[Figure: Fn-F11 | fn-f11.png]|Fn+F11  |Toggle airplane mode               |
+|[Figure: Fn-F12 | fn-f12.png]|Fn+F12  |Suspend                            |
+|[Figure: Fn-F12 | fn-dia.jpg]|Fn+`    |Play/Pause                         |
+|[Figure: Fn-* | fn-star.png] |Fn+*    |Toggle keyboard backlight          |
+|[Figure: Fn-/ | fn-slash.png]|Fn+/    |Cycle keyboard color               |
+|[Figure: Fn-- | fn-minus.png]|Fn+-    |Decrease keyboard brightness       |
+|[Figure: Fn-+ | fn-plus.png] |Fn++    |Increase keyboard brightness       |
+|1                          |Fn+1    |Toggle fan between max/automatic   |
+
+来源章节：External Overview / Keyboard Shortcuts
+
+## interior-bottom-components-and-connectors：Internal Overview / Bottom components and connectors
+
+[Figure: Internal Components and Connectors | components-highlighted.webp]
+
+- LCD panel connector (under the heatsink) is highlighted in light green
+- Keyboard adhesive access point is highlighted in pink
+- RAM slots are highlighted in navy
+- Fan connectors are highlighted in red
+    - Left fan connector (on the right) is below SSD slot #3
+- Speaker connectors are highlighted in yellow
+    - Right speaker connector (on the left) is below SSD slot #2
+- Webcam/microphone connector is highlighted in cyan
+- Wireless card is highlighted in purple
+    - Wireless card is below SSD slot #1
+- M.2 SSDs are highlighted in maroon
+    - All slots support PCIe NVMe Gen 4
+- CMOS battery connector is highlighted in blue
+    - CMOS battery is under the main battery
+- Touchpad connector is highlighted in white
+- Main battery connector is highlighted in orange
+- BIOS flash chip (U57) is highlighted in black
+
+来源章节：Internal Overview / Bottom components and connectors
+
+## interior-under-keyboard-components-and-connectors：Internal Overview / Under-keyboard components and connectors
+
+[Figure: Under-Keyboard Connectors | under-keyboard.webp]
+
+- Keyboard adhesive strip access point is highlighted in cyan
+- Keyboard connector is highlighted in green
+- Keyboard backlight connector is highlighted in yellow
+- Power button/LED connector is highlighted in red
+
+来源章节：Internal Overview / Under-keyboard components and connectors
+
+## repairs-introduction：Parts & Repairs / Introduction
+
+Many components in your Adder WS can be upgraded or replaced as necessary. Follow these step-by-step guides for instructions.
+
+来源章节：Parts & Repairs / Introduction
+
+## repairs-removing-the-bottom-cover：Parts & Repairs / Removing the bottom cover
+
+Removing the cover is required to access the internal components. Prior to removing the cover, ensure the AC power is unplugged and all peripherals (including SD cards and USB drives) are unplugged or removed from the system.
+
+**Part numbers:**
+- The bottom panel's part number is `6-39-V3503-012`.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 5 minutes
+**Difficulty:** Easy ●
+
+### Steps to remove the bottom cover:
+
+1. Place the machine lid-side down.
+    - Use a soft surface (such as a towel) to avoid scratches.
+2. Remove the 12 bottom panel screws.
+
+[Figure: Bottom panel screws | bottom-panel-screws.webp]
+
+3. Pull the bottom panel off, starting from the hinges in the back.
+
+来源章节：Parts & Repairs / Removing the bottom cover
+
+## repairs-replacing-the-ram：Parts & Repairs / Replacing the RAM
+
+The Adder WS 4 supports up to 96GB (2x48GB) of DDR5 SO-DIMMs running at 5600MHz. If you've purchased new RAM, need to replace your RAM, or are reseating your RAM, follow these steps.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 10 minutes
+**Difficulty:** Easy ●
+
+### Steps to replace the RAM:
+
+1. Follow the steps above to remove the bottom cover.
+2. Press the small tabs on both sides of the RAM simultaneously. The RAM should spring up to an angle.
+
+[Figure: RAM removal | ram-slots.webp]
+
+3. Remove the RAM from the slot.
+4. Insert the new RAM (or reseat the existing RAM) by placing it in the keyed slot and pressing down on the RAM until it clicks into place.
+
+来源章节：Parts & Repairs / Replacing the RAM
+
+## repairs-replacing-an-m-2-nvme-ssd：Parts & Repairs / Replacing an M.2/NVMe SSD
+
+This model supports up to three M.2 SSDs. All M.2 slots are size 2280 and support PCIe NVMe Generation 4.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 10 minutes
+**Difficulty:** Easy ●
+
+### Steps to replace the M.2 drive:
+
+1. Follow the steps above to remove the bottom cover.
+2. Unscrew the retainer screw opposite the M.2 slot.
+
+[Figure: M.2 slots | m2-slots.webp]
+
+3. Remove the existing M.2 drive by pulling it out of the slot.
+4. Insert the new M.2 drive into the slot and hold it in place.
+5. Replace the retainer screw.
+
+来源章节：Parts & Repairs / Replacing an M.2/NVMe SSD
+
+## repairs-replacing-the-battery：Parts & Repairs / Replacing the battery
+
+The battery provides primary power whenever the system is unplugged.
+
+**Part numbers:**
+- The battery's model number is `V150BAT-4-53`, and the original part number is `6-87-V150S-51C01`.
+   - Third-party battery sellers may list one or both of these numbers, and may offer other compatible part numbers with the same model number.
+   - You can also [contact System76](https://support.system76.com) to purchase a replacement battery.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 10 minutes
+**Difficulty:** Easy ●
+
+### Steps to replace the battery:
+
+1. Follow the steps above to remove the bottom cover.
+2. Remove the five battery screws near the corners of the battery.
+
+[Figure: Battery screws | battery.webp]
+
+3. Unplug the white connector connecting the battery to the motherboard.
+4. Remove and replace the battery.
+5. When plugging in the new battery, the red wire on the connector goes on the left, and the black wire goes on the right.
+
+来源章节：Parts & Repairs / Replacing the battery
+
+## repairs-replacing-the-cmos-battery：Parts & Repairs / Replacing the CMOS battery
+
+The CMOS battery supplies power to the system's CMOS chip. UEFI settings and the computer's hardware clock are stored on the CMOS. If your system doesn't boot, you can reset the CMOS to force a low-level hardware reset. If your clock is constantly resetting, it's likely your CMOS battery needs to be replaced.
+
+**Warning (ingestion hazard):** Keep batteries out of reach of children. Death or serious injury can occur if ingested. If a battery is suspected to be swallowed or inserted inside any part of the body, seek immediate medical attention. In the US, you can also call the National Battery Ingestion Hotline for guidance: [1 (800) 498-8666](tel:18004988666)
+
+**Part numbers:**
+- The CMOS battery is a standard 3V 3Y3 CR2032W battery.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 15 minutes
+**Difficulty:** Medium ●
+
+### Steps to replace the CMOS battery:
+
+1. Follow the steps above to remove the bottom cover and remove the main battery.
+    - If you are not replacing the CMOS battery, then removing the main battery is optional.
+
+[Figure: CMOS battery | cmos-battery.webp]
+
+2. Unplug the small white connector that connects the CMOS battery to the motherboard. If you are replacing the battery, gently pull from the sides to pry it up from where it's stuck to the case.
+3. To clear the CMOS, disconnect the main battery (if it's still installed), open the lid of the machine, and hold down the power button for at least 15 seconds to discharge any residual energy in the system.
+4. Reconnect the CMOS battery and reinstall the main battery.
+5. Replace the bottom panel and power up the Adder WS. The system may power itself off and on after initial boot; this is normal behavior when the CMOS has been reset.
+
+来源章节：Parts & Repairs / Replacing the CMOS battery
+
+## repairs-replacing-the-wireless-card：Parts & Repairs / Replacing the wireless card
+
+Your Adder WS's WiFi and Bluetooth are both handled by the same module. It is a standard M.2 2230 slot with PCIe and USB interfaces (E-key).
+
+**Part number:**
+- The standard wireless card is an Intel `AX211NGW`.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 10 minutes
+**Difficulty:** Medium ●
+
+### Steps to replace the WiFi/Bluetooth module:
+
+1. Follow the steps above to remove the bottom cover and remove the SSD from slot 1 (the innermost slot), if installed.
+    - You can optionally remove the SSD from slot 2 for easier access.
+2. Locate the wireless card. Remove any clear tape that is securing the wires.
+
+[Figure: Wireless card | wireless-card.webp]
+
+3. Gently remove the two antennas (highlighted red above) by pulling them up and away from the wireless card.
+4. Remove the retaining screw opposite the M.2 slot, highlighted yellow above.
+5. The wireless card will pop up at an angle. Remove the card from the M.2 slot.
+6. Insert the new wireless card into the M.2 slot.
+7. Replace the retaining screw.
+8. Attach the two antennas by aligning the circular fittings and pressing onto the wireless card. The connectors will snap into place. _Use caution when attaching the connectors; the pins can bend, break, or snap._
+
+来源章节：Parts & Repairs / Replacing the wireless card
+
+## repairs-replacing-the-cooling-system：Parts & Repairs / Replacing the cooling system
+
+The Adder WS 4 has a single heatsink assembly with two fans. This assembly cools the CPU and GPU.
+
+If the fans become noisy and cleaning them out doesn't fix the issue, you may need a new fan. [Contact support](https://support.system76.com) to start a warranty claim or parts purchase. These instructions can also be used if physical damage to the heatsink necessitates its replacement.
+
+Thermal paste helps facilitate effective heat transfer between the CPU/GPU and the cooling equipment; depending on your climate and the age of the machine, replacing the thermal paste may improve cooling performance. The thermal paste should generally be replaced whenever the heatsink is removed.
+
+Thermal putty (thicker than thermal paste) is used to bridge the gap between the VRAM chips and the heatsink. Replacing the thermal putty is optional when removing the heatsink. System76 suggests [Thermal Grizzly Putty Basic](https://www.thermal-grizzly.com/en/tg-putty/s-tg-p-b-030) (available at various retailers) or a similar alternative.
+
+**Part numbers:**
+- The fan/heatsink assembly's manufacturer and part number is Yingfan `6-31-V350N-201`.
+- The left fan (with stamped numbers 1/2/3) is a WINMA `EGC-85071S1-0AH`.
+- The right fan (with stamped numbers 4/5/6) is a WINMA `ECG-79731S1-0AH`.
+
+**Tools required:** Cross-head (Phillips) screwdriver, thermal putty spreader (flat plastic tool)
+**Time estimate:** 25 minutes
+**Difficulty:** High ●
+
+### Steps to replace the heatsink/thermal paste:
+
+1. Follow the steps above to remove the bottom cover and remove the SSD from slot 3 (if installed).
+2. Remove any clear tape that is securing the fan wires.
+3. Remove the thirteen heatsink and fan screws in order of the stamped numbers, starting with #1, then #2, and continuing until you have removed #13.
+    - The black screws (#1-#12) are held captive, and will not completely detatch from the heatsink/fans. The silver screw (#13) is not held captive, and will come loose when untightened.
+    - Do not remove the smaller black screws holding the fan covers onto the fans.
+
+[Figure: Thermal screws | thermal-screws.webp]
+
+4. Unplug the two black fan connectors from the motherboard (highlighted green above).
+5. Remove the heatsink/fans from the case, being careful not to bend the heatsink pipes. It may take some pressure to break the seal of the thermal paste.
+6. Using a paper towel, remove the existing thermal paste from the CPU, GPU, and heatsink. You may also use a small amount of rubbing alcohol if the old paste is dried or difficult to remove.
+    - You can optionally remove the thermal putty from the four VRAM chips surrounding the GPU chip if you have replacement thermal putty to install.
+
+[Figure: Thermal paste removal | thermal-paste-removal.webp]
+
+7. Apply a small line of thermal paste directly onto the CPU chip and the GPU chip.
+    - If you're also replacing the thermal putty, apply the new putty to the four VRAM chips.
+    - If you aren't replacing the thermal putty, scoop the existing putty (from the VRAM chip and the corresponding location on the heatsink) into the center of each VRAM chip using a flat plastic tool.
+
+[Figure: Thermal paste application | thermal-paste-application.webp]
+
+8. Carefully replace the heatsink.
+9. Replace the fan and heatsink screws, starting with #1, then #2, and so on until #13.
+10. Plug the two white fan connectors back into the motherboard.
+
+来源章节：Parts & Repairs / Replacing the cooling system
+
+## repairs-replacing-the-keyboard：Parts & Repairs / Replacing the keyboard
+
+The keyboard can be replaced if its switches or electronics have been damaged.
+
+**Warning:** The keyboard is held in by a strip of adhesive in addition to one of the bottom panel screws and the perimeter clips. The adhesive may be difficult to remove from the keyboard and/or case, and while the keyboard should still be functional if removed carefully, it is possible that permanent aesthetic damage will occur to the bottom side of the keyboard during removal. Removal is not recommended unless the keyboard is malfunctioning.
+
+**Part numbers:**
+- The keyboard's part number is `6-V355SNC-KB-MCL-US`.
+    - Keyboards shipped by System76 include a custom-printed Super key.
+
+**Tools required:** Cross-head (Phillips) screwdriver, tweezers, spudger tool (optional)
+**Time estimate:** 20 minutes
+**Difficulty:** Hard ●
+
+### Steps to replace the keyboard:
+
+1. Follow the steps above to remove the bottom cover.
+2. Pull the keyboard adhesive out of the machine to detatch it from the keyboard.
+    - The adhesive strip access point is highlighted green below.
+    - If the end of the keyboard adhesive strip is tucked behind the fan, it can be pulled out using tweezers or a small screwdriver, or the thermal system can be removed to expose it.
+        - Replacing the thermal paste is recommended if the thermal system is removed.
+    - Pull the adhesive strip slowly to avoid breaking it. Grasp farther down the strip as it comes out of the machine (don't pull the end far away from the machine.)
+    - If the adhesive strip breaks, remove as much of it as possible. The keyboard can be reinstalled without the adhesive strip.
+
+[Figure: Keyboard adhesive access point & push point | keyboard-mount-points.webp]
+
+3. Open the lid slightly and place the machine on its side.
+4. Push the screwdriver into the keyboard push point (highlighted red above) until the keyboard pops out.
+
+[Figure: Keyboard push point | keyboard-push-point.webp]
+
+5. Set the machine back down and raise the keyboard away from the chassis. The larger ribbon cable is for the keyboard, while the smaller ribbon cable is for the keyboard backlight.
+
+[Figure: Keyboard ribbon connectors | keyboard-ribbons.webp]
+
+6. Flip the black latches upwards to free the ribbon cables.
+7. Pull the ribbon cables out of the connectors.
+8. Remove the keyboard and replace it with the new one.
+9. Carefully slide both ribbon cables into their connectors.
+10. Flip the black latches back into place to secure the ribbon cables.
+11. (Optional) Replace the keyboard adhesive strip on the chassis.
+12. Place the keyboard back into position, starting with the tabs on the bottom edge.
+13. Secure the rest of the keyboard by pressing down on each of its edges.
+14. Turn the machine lid-side down again.
+15. Replace the bottom panel.
+
+来源章节：Parts & Repairs / Replacing the keyboard
+
+## repairs-replacing-the-speakers：Parts & Repairs / Replacing the speakers
+
+The system has two bottom-firing speakers, which can be removed and replaced individually.
+
+**Part numbers:**
+- The left speaker's model number is `V350-L-BASS`, and its part number is `6-23-5V350-0L0`.
+- The right speaker's model number is `V350-R-BASS`, and its part number is `6-23-5V350-0R0`.
+
+**Tools required:** Cross-head (Phillips) screwdriver
+**Time estimate:** 10 minutes
+**Difficulty:** Easy ●
+
+### Steps to replace the speakers:
+
+1. Follow the steps above to remove the bottom cover.
+    - For the right speaker, also remove the SSD from slot 2 (the outermost slot), if installed.
+    - For the left speaker, you can optionally remove the main battery to make it easier to free the wire from the channels in the chassis.
+2. Unscrew the silver screws holding the speaker in place.
+    - The right speaker is secured by three screws; the left speaker is secured by two screws.
+    - The screws are surrounded by rubber stabilizer rings, which may hold the screws in place after they're fully unscrewed.
+
+[Figure: Speaker wires and posts | speakers.webp]
+
+3. Disconnect the speaker connector from the motherboard.
+4. Connect the new speaker to the motherboard and screw it into the chassis.
+5. Replace the outermost SSD (if necessary) and bottom cover.
+
+来源章节：Parts & Repairs / Replacing the speakers

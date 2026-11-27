@@ -65,8 +65,14 @@ def check():
 
     milvus = "http://localhost:19530/v2/vectordb/entities/"
     scope = "documentVersionId in " + json.dumps(sorted(expected))
-    rows = post(milvus + "query", {"collectionName": COLLECTION, "filter": scope,
-                "limit": 1000, "outputFields": ["documentVersionId", "productId", "source", "content"]})
+    rows = []
+    while True:
+        page = post(milvus + "query", {"collectionName": COLLECTION, "filter": scope,
+                    "limit": 500, "offset": len(rows), "consistencyLevel": "Strong",
+                    "outputFields": ["documentVersionId", "productId", "source", "content"]})
+        rows.extend(page)
+        if len(page) < 500:
+            break
     found = defaultdict(set)
     for row in rows:
         version = int(row["documentVersionId"])
@@ -80,6 +86,8 @@ def check():
         ("PINE64-PINEPHONE-BETA-2-16", "micro-SIM 和 microSD 卡分别插在上层还是下层？", "cards"),
         ("S76-PANG15", "Pangolin pang15 的内置屏幕分辨率和刷新率是多少？", "display"),
         ("HUAWEI-FREEBUDS-6", "FreeBuds 6 怎么用手势调节音量？", "volume"),
+        ("S76-LEMP13", "How do I replace the CMOS battery in a Lemur Pro lemp13?",
+         "repairs-replacing-the-cmos-battery"),
     ]
     hits = {}
     for sku, question, section in probes:

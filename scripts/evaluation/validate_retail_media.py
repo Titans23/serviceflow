@@ -40,6 +40,12 @@ def validate_media(directory):
             raise ValueError(f"Wrong SKU/document pairing: {pic['id']}")
         if pic.get("sectionId") and pic["sectionId"] not in {s["id"] for s in doc["sections"]}:
             raise ValueError(f"Unknown section: {pic['id']}")
+        if "originalSection" in pic:
+            anchor = pic["originalSection"]
+            original = docs[anchor["documentId"]]
+            original_sections = {s["id"] for s in original["sections"]}
+            if not set(pic["skus"]) <= set(original["skus"]) or anchor["sectionId"] not in original_sections:
+                raise ValueError(f"Wrong original manual section: {pic['id']}")
         if not all(pic[k] for k in ("author", "license", "captionZh", "view")) or min(pic["width"], pic["height"]) <= 0:
             raise ValueError(f"Incomplete image metadata: {pic['id']}")
         if not all(pic[k].startswith("https://") for k in ("sourceUrl", "licenseUrl", "downloadUrl")):
@@ -49,6 +55,10 @@ def validate_media(directory):
         if not gap["reason"] or set(gap["skus"]) != set(docs[gap["documentId"]]["skus"]):
             raise ValueError("Invalid image coverage gap")
         missing.update(gap["skus"])
+    for excluded in media.get("excludedImages", []):
+        verify_file(root, excluded)
+        if not excluded["reason"] or excluded["id"] in seen:
+            raise ValueError("Excluded image also marked as usable or missing its reason")
     if covered & missing or covered | missing != skus:
         raise ValueError("Image coverage does not match the catalog")
     originals = {rec["file"]: rec for rec in media.get("originalFiles", [])}
@@ -68,7 +78,8 @@ def validate_media(directory):
                             raise ValueError(f"Changed original chapter: {chapter['member']}")
                         chapters += 1
     return {"images": len(seen), "uniqueImages": len({i["sha256"] for i in media["images"]}),
-            "coveredSkus": len(covered), "missingSkus": len(missing), "originalChapters": chapters}
+            "coveredSkus": len(covered), "missingSkus": len(missing), "originalChapters": chapters,
+            "excludedImages": len(media.get("excludedImages", []))}
 
 
 if __name__ == "__main__":

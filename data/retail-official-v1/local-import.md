@@ -2,9 +2,9 @@
 
 专用 Compose 项目是 `serviceflow-retail-corpus`，应用 API 监听 `127.0.0.1:28480/api`。MySQL 数据库为 `serviceflow_eval_retail_corpus`，Milvus 集合为 `retail_manuals_bge_zh_v15`。两个存储只在此项目的容器网络内开放，数据保存在独立卷中。图片由各包的 `media.json` 关联，以本地文件提供给后续多模态问答。
 
-本机已实际导入华为 v1.1 与新增厂商包。逐字段回读匹配 **41 个商品条目**。**28 份独立文档、218 个独立章节**按 SKU 绑定后，产生 **42 个活动文档和 327 个 Milvus 分块**。本地生成 512 维查询向量并限定商品、活动版本，PinePhone 卡槽、Pangolin 屏幕、FreeBuds 6 音量三次均在第一位命中指定章节。这三个样例用于验证数据能取回。
+本机已实际导入华为 v1.1 与新增厂商包。逐字段回读匹配 **41 个商品条目**。28 份中文文档和 15 份原厂英文手册共有 694 个来源章节，中英文分别计数。按 SKU 绑定后得到 **57 个活动文档，对应 857 个当前生效的 Milvus 文本分块**，已核对分块的 SKU、源文件和章节。用本地 512 维模型分别查询 PinePhone 卡槽、Pangolin 屏幕、FreeBuds 6 音量和 Lemur Pro 的 CMOS 电池更换步骤，四次均在第一位命中指定章节。最后一题命中英文维修原文。
 
-从仓库根目录运行下列只读检查，可核对这两包的 MySQL 事实字段、每个活动版本的章节和三个真实向量检索结果。
+从仓库根目录运行下列只读检查，可核对这两包的 MySQL 事实字段、每个活动版本的章节和四个真实向量检索结果。
 
 ```powershell
 python -B scripts/evaluation/check_retail_corpus.py

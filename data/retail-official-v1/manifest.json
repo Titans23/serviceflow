@@ -420,6 +420,366 @@
       "review": "official-source-checked; independent human review pending",
       "upstreamRevision": "c139ccb137c93382a2349a23cb1e6cf41731f1d5",
       "pinnedSourceUrl": "https://raw.githubusercontent.com/pine64/website/c139ccb137c93382a2349a23cb1e6cf41731f1d5/content/documentation/PinePhone_Pro/First_time_setup.md"
+    },
+    {
+      "id": "addw4-interior",
+      "title": "Adder WS (addw4) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/addw4/internal-overview/",
+      "sourceGroup": "system76-adder-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/internal-overview.md"
+    },
+    {
+      "id": "addw4-repairs",
+      "title": "Adder WS (addw4) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/addw4/repairs/",
+      "sourceGroup": "system76-adder-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/addw4/repairs.mdx"
+    },
+    {
+      "id": "bonw15-interior",
+      "title": "Bonobo WS (bonw15 & bonw15-b) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/bonw15/internal-overview/",
+      "sourceGroup": "system76-bonobo-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/internal-overview.md"
+    },
+    {
+      "id": "bonw15-repairs",
+      "title": "Bonobo WS (bonw15 & bonw15-b) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/bonw15/repairs/",
+      "sourceGroup": "system76-bonobo-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/bonw15/repairs.mdx"
+    },
+    {
+      "id": "darp9-interior",
+      "title": "Darter Pro (darp9) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/darp9/internal-overview/",
+      "sourceGroup": "system76-darter-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/internal-overview.md"
+    },
+    {
+      "id": "darp9-repairs",
+      "title": "Darter Pro (darp9) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/darp9/repairs/",
+      "sourceGroup": "system76-darter-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/darp9/repairs.md"
+    },
+    {
+      "id": "galp6-interior",
+      "title": "Galago Pro (galp6) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/galp6/internal-overview/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/internal-overview.md"
+    },
+    {
+      "id": "galp6-repairs",
+      "title": "Galago Pro (galp6) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/galp6/repairs/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp6/repairs.md"
+    },
+    {
+      "id": "galp7-interior",
+      "title": "Galago Pro (galp7) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/galp7/internal-overview/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/internal-overview.md"
+    },
+    {
+      "id": "galp7-repairs",
+      "title": "Galago Pro (galp7) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/galp7/repairs/",
+      "sourceGroup": "system76-galago-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/galp7/repairs.md"
+    },
+    {
+      "id": "gaze18-interior",
+      "title": "Gazelle (gaze18) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/gaze18/internal-overview/",
+      "sourceGroup": "system76-gazelle",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/internal-overview.md"
+    },
+    {
+      "id": "gaze18-repairs",
+      "title": "Gazelle (gaze18) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/gaze18/repairs/",
+      "sourceGroup": "system76-gazelle",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/gaze18/repairs.md"
+    },
+    {
+      "id": "kudu6-interior",
+      "title": "Kudu (kudu6) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/kudu6/internal-overview/",
+      "sourceGroup": "system76-kudu",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/internal-overview.md"
+    },
+    {
+      "id": "kudu6-repairs",
+      "title": "Kudu (kudu6) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/kudu6/repairs/",
+      "sourceGroup": "system76-kudu",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/kudu6/repairs.md"
+    },
+    {
+      "id": "lemp12-interior",
+      "title": "Lemur Pro (lemp12) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/lemp12/internal-overview/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/internal-overview.md"
+    },
+    {
+      "id": "lemp12-repairs",
+      "title": "Lemur Pro (lemp12) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/lemp12/repairs/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp12/repairs.md"
+    },
+    {
+      "id": "lemp13-interior",
+      "title": "Lemur Pro (lemp13 & lemp13-b) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/lemp13/internal-overview/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/internal-overview.md"
+    },
+    {
+      "id": "lemp13-repairs",
+      "title": "Lemur Pro (lemp13 & lemp13-b) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/lemp13/repairs/",
+      "sourceGroup": "system76-lemur-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/lemp13/repairs.md"
+    },
+    {
+      "id": "oryp11-interior",
+      "title": "Oryx Pro (oryp11) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/oryp11/internal-overview/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/internal-overview.md"
+    },
+    {
+      "id": "oryp11-repairs",
+      "title": "Oryx Pro (oryp11) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/oryp11/repairs/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp11/repairs.md"
+    },
+    {
+      "id": "oryp12-interior",
+      "title": "Oryx Pro (oryp12) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/oryp12/internal-overview/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/internal-overview.md"
+    },
+    {
+      "id": "oryp12-repairs",
+      "title": "Oryx Pro (oryp12) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/oryp12/repairs/",
+      "sourceGroup": "system76-oryx-pro",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/oryp12/repairs.md"
+    },
+    {
+      "id": "pang13-interior",
+      "title": "Pangolin (pang13) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/pang13/internal-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/internal-overview.md"
+    },
+    {
+      "id": "pang13-repairs",
+      "title": "Pangolin (pang13) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/pang13/repairs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang13/repairs.md"
+    },
+    {
+      "id": "pang14-interior",
+      "title": "Pangolin (pang14) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/pang14/internal-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/internal-overview.md"
+    },
+    {
+      "id": "pang14-repairs",
+      "title": "Pangolin (pang14) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/pang14/repairs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang14/repairs.md"
+    },
+    {
+      "id": "pang15-interior",
+      "title": "Pangolin (pang15) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/pang15/internal-overview/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/internal-overview.md"
+    },
+    {
+      "id": "pang15-repairs",
+      "title": "Pangolin (pang15) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/pang15/repairs/",
+      "sourceGroup": "system76-pangolin",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/pang15/repairs.md"
+    },
+    {
+      "id": "serw13-interior",
+      "title": "Serval WS (serw13) — Internal Overview",
+      "url": "https://system76.com/tech-docs/models/serw13/internal-overview/",
+      "sourceGroup": "system76-serval-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/internal-overview.md"
+    },
+    {
+      "id": "serw13-repairs",
+      "title": "Serval WS (serw13) — Parts & Repairs",
+      "url": "https://system76.com/tech-docs/models/serw13/repairs/",
+      "sourceGroup": "system76-serval-ws",
+      "checkedAt": "2026-11-27",
+      "region": "厂商国际版英文技术文档",
+      "rights": "CC BY-SA 4.0",
+      "review": "official-source-checked; independent human review pending",
+      "upstreamRevision": "1ab5221aa02e3ca9019d91f82f49ee1312b84f2a",
+      "pinnedSourceUrl": "https://raw.githubusercontent.com/system76/tech-docs/1ab5221aa02e3ca9019d91f82f49ee1312b84f2a/src/content/docs/models/serw13/repairs.mdx"
     }
   ],
   "documents": [
@@ -1457,6 +1817,3117 @@
           "title": "SIM 与存储卡位置",
           "sourceId": "pinephone-pro-setup",
           "sourceSection": "SIM card and microSD slots"
+        }
+      ]
+    },
+    {
+      "id": "addw4-handbook-en",
+      "title": "retail-official-v1/addw4-handbook-en",
+      "file": "knowledge/addw4-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ADDW4"
+      ],
+      "sourceIds": [
+        "addw4-specs",
+        "addw4-exterior",
+        "addw4-interior",
+        "addw4-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "addw4-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard Shortcuts",
+          "sourceId": "addw4-exterior",
+          "sourceSection": "External Overview / Keyboard Shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "addw4-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "addw4-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "addw4-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "bonw15-handbook-en",
+      "title": "retail-official-v1/bonw15-handbook-en",
+      "file": "knowledge/bonw15-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-BONW15"
+      ],
+      "sourceIds": [
+        "bonw15-specs",
+        "bonw15-exterior",
+        "bonw15-interior",
+        "bonw15-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-chipset",
+          "title": "Specifications / Chipset",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Chipset"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "bonw15-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "bonw15-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "bonw15-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "bonw15-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "bonw15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "darp9-handbook-en",
+      "title": "retail-official-v1/darp9-handbook-en",
+      "file": "knowledge/darp9-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-DARP9"
+      ],
+      "sourceIds": [
+        "darp9-specs",
+        "darp9-exterior",
+        "darp9-interior",
+        "darp9-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "darp9-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "darp9-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "darp9-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "darp9-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "darp9-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        }
+      ]
+    },
+    {
+      "id": "galp6-handbook-en",
+      "title": "retail-official-v1/galp6-handbook-en",
+      "file": "knowledge/galp6-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GALP6"
+      ],
+      "sourceIds": [
+        "galp6-specs",
+        "galp6-exterior",
+        "galp6-interior",
+        "galp6-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "galp6-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "galp6-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "galp6-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "galp6-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-removing-the-battery",
+          "title": "Parts & Repairs / Removing the battery",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Removing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "galp6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "galp7-handbook-en",
+      "title": "retail-official-v1/galp7-handbook-en",
+      "file": "knowledge/galp7-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GALP7"
+      ],
+      "sourceIds": [
+        "galp7-specs",
+        "galp7-exterior",
+        "galp7-interior",
+        "galp7-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "galp7-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "galp7-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "galp7-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "galp7-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-removing-the-battery",
+          "title": "Parts & Repairs / Removing the battery",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Removing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "galp7-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "gaze18-handbook-en",
+      "title": "retail-official-v1/gaze18-handbook-en",
+      "file": "knowledge/gaze18-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-GAZE18"
+      ],
+      "sourceIds": [
+        "gaze18-specs",
+        "gaze18-exterior",
+        "gaze18-interior",
+        "gaze18-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-chipset",
+          "title": "Specifications / Chipset",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Chipset"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "gaze18-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "gaze18-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "gaze18-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "gaze18-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "gaze18-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "kudu6-handbook-en",
+      "title": "retail-official-v1/kudu6-handbook-en",
+      "file": "knowledge/kudu6-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-KUDU6"
+      ],
+      "sourceIds": [
+        "kudu6-specs",
+        "kudu6-exterior",
+        "kudu6-interior",
+        "kudu6-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "kudu6-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "kudu6-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "kudu6-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "kudu6-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-battery",
+          "title": "Parts & Repairs / Removing the battery",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Removing the battery"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-dc-in-jack",
+          "title": "Parts & Repairs / Replacing the DC-in jack",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the DC-in jack"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "kudu6-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "lemp12-handbook-en",
+      "title": "retail-official-v1/lemp12-handbook-en",
+      "file": "knowledge/lemp12-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-LEMP12"
+      ],
+      "sourceIds": [
+        "lemp12-specs",
+        "lemp12-exterior",
+        "lemp12-interior",
+        "lemp12-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "lemp12-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-speakers",
+          "title": "External Overview / Speakers",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Speakers"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard Shortcuts",
+          "sourceId": "lemp12-exterior",
+          "sourceSection": "External Overview / Keyboard Shortcuts"
+        },
+        {
+          "id": "interior-components-and-connectors",
+          "title": "Internal Overview / Components and connectors",
+          "sourceId": "lemp12-interior",
+          "sourceSection": "Internal Overview / Components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-main-battery",
+          "title": "Parts & Repairs / Replacing the main battery",
+          "sourceId": "lemp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the main battery"
+        }
+      ]
+    },
+    {
+      "id": "lemp13-handbook-en",
+      "title": "retail-official-v1/lemp13-handbook-en",
+      "file": "knowledge/lemp13-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-LEMP13"
+      ],
+      "sourceIds": [
+        "lemp13-specs",
+        "lemp13-exterior",
+        "lemp13-interior",
+        "lemp13-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "lemp13-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-speakers",
+          "title": "External Overview / Speakers",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Speakers"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard Shortcuts",
+          "sourceId": "lemp13-exterior",
+          "sourceSection": "External Overview / Keyboard Shortcuts"
+        },
+        {
+          "id": "interior-components-and-connectors",
+          "title": "Internal Overview / Components and connectors",
+          "sourceId": "lemp13-interior",
+          "sourceSection": "Internal Overview / Components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-main-battery",
+          "title": "Parts & Repairs / Replacing the main battery",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the main battery"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "lemp13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "oryp11-handbook-en",
+      "title": "retail-official-v1/oryp11-handbook-en",
+      "file": "knowledge/oryp11-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ORYP11"
+      ],
+      "sourceIds": [
+        "oryp11-specs",
+        "oryp11-exterior",
+        "oryp11-interior",
+        "oryp11-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-chipset",
+          "title": "Specifications / Chipset",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Chipset"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "oryp11-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "oryp11-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "oryp11-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "oryp11-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "oryp11-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "oryp12-handbook-en",
+      "title": "retail-official-v1/oryp12-handbook-en",
+      "file": "knowledge/oryp12-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-ORYP12"
+      ],
+      "sourceIds": [
+        "oryp12-specs",
+        "oryp12-exterior",
+        "oryp12-interior",
+        "oryp12-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-chipset",
+          "title": "Specifications / Chipset",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Chipset"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "oryp12-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "oryp12-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "oryp12-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "oryp12-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "oryp12-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        }
+      ]
+    },
+    {
+      "id": "pang13-handbook-en",
+      "title": "retail-official-v1/pang13-handbook-en",
+      "file": "knowledge/pang13-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG13"
+      ],
+      "sourceIds": [
+        "pang13-specs",
+        "pang13-exterior",
+        "pang13-interior",
+        "pang13-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "pang13-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "pang13-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "pang13-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-removing-the-battery",
+          "title": "Parts & Repairs / Removing the battery",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Removing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "pang13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "pang14-handbook-en",
+      "title": "retail-official-v1/pang14-handbook-en",
+      "file": "knowledge/pang14-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG14"
+      ],
+      "sourceIds": [
+        "pang14-specs",
+        "pang14-exterior",
+        "pang14-interior",
+        "pang14-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "pang14-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "pang14-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "pang14-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-removing-the-battery",
+          "title": "Parts & Repairs / Removing the battery",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Removing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "pang14-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "pang15-handbook-en",
+      "title": "retail-official-v1/pang15-handbook-en",
+      "file": "knowledge/pang15-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-PANG15"
+      ],
+      "sourceIds": [
+        "pang15-specs",
+        "pang15-exterior",
+        "pang15-interior",
+        "pang15-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "pang15-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side",
+          "title": "External Overview / Left side",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Left side"
+        },
+        {
+          "id": "exterior-right-side",
+          "title": "External Overview / Right side",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Right side"
+        },
+        {
+          "id": "exterior-front-side",
+          "title": "External Overview / Front side",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Front side"
+        },
+        {
+          "id": "exterior-back-side",
+          "title": "External Overview / Back side",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Back side"
+        },
+        {
+          "id": "exterior-keyboard-touchpad",
+          "title": "External Overview / Keyboard & touchpad",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad"
+        },
+        {
+          "id": "exterior-lid",
+          "title": "External Overview / Lid",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Lid"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "exterior-keyboard-shortcuts",
+          "title": "External Overview / Keyboard shortcuts",
+          "sourceId": "pang15-exterior",
+          "sourceSection": "External Overview / Keyboard shortcuts"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "pang15-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-reseating-the-wireless-antenna-connectors",
+          "title": "Parts & Repairs / Reseating the wireless antenna connectors",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Reseating the wireless antenna connectors"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "pang15-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
+        }
+      ]
+    },
+    {
+      "id": "serw13-handbook-en",
+      "title": "retail-official-v1/serw13-handbook-en",
+      "file": "knowledge/serw13-handbook-en.md",
+      "documentType": "PRODUCT_MANUAL",
+      "skus": [
+        "S76-SERW13"
+      ],
+      "sourceIds": [
+        "serw13-specs",
+        "serw13-exterior",
+        "serw13-interior",
+        "serw13-repairs"
+      ],
+      "sections": [
+        {
+          "id": "specs-introduction",
+          "title": "Specifications / Introduction",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Introduction"
+        },
+        {
+          "id": "specs-cpu",
+          "title": "Specifications / CPU",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / CPU"
+        },
+        {
+          "id": "specs-chipset",
+          "title": "Specifications / Chipset",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Chipset"
+        },
+        {
+          "id": "specs-bios",
+          "title": "Specifications / BIOS",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / BIOS"
+        },
+        {
+          "id": "specs-ec",
+          "title": "Specifications / EC",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / EC"
+        },
+        {
+          "id": "specs-graphics",
+          "title": "Specifications / Graphics",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Graphics"
+        },
+        {
+          "id": "specs-memory",
+          "title": "Specifications / Memory",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Memory"
+        },
+        {
+          "id": "specs-networking",
+          "title": "Specifications / Networking",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Networking"
+        },
+        {
+          "id": "specs-power",
+          "title": "Specifications / Power",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Power"
+        },
+        {
+          "id": "specs-sound",
+          "title": "Specifications / Sound",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Sound"
+        },
+        {
+          "id": "specs-storage",
+          "title": "Specifications / Storage",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Storage"
+        },
+        {
+          "id": "specs-usb",
+          "title": "Specifications / USB",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / USB"
+        },
+        {
+          "id": "specs-dimensions",
+          "title": "Specifications / Dimensions",
+          "sourceId": "serw13-specs",
+          "sourceSection": "Specifications / Dimensions"
+        },
+        {
+          "id": "exterior-left-side-overview",
+          "title": "External Overview / Left side overview",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Left side overview"
+        },
+        {
+          "id": "exterior-right-side-overview",
+          "title": "External Overview / Right side overview",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Right side overview"
+        },
+        {
+          "id": "exterior-front-side-overview",
+          "title": "External Overview / Front side overview",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Front side overview"
+        },
+        {
+          "id": "exterior-back-side-overview",
+          "title": "External Overview / Back side overview",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Back side overview"
+        },
+        {
+          "id": "exterior-keyboard-touchpad-overview",
+          "title": "External Overview / Keyboard & touchpad overview",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Keyboard & touchpad overview"
+        },
+        {
+          "id": "exterior-materials",
+          "title": "External Overview / Materials",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / Materials"
+        },
+        {
+          "id": "exterior-led-indicators",
+          "title": "External Overview / LED indicators",
+          "sourceId": "serw13-exterior",
+          "sourceSection": "External Overview / LED indicators"
+        },
+        {
+          "id": "interior-bottom-components-and-connectors",
+          "title": "Internal Overview / Bottom components and connectors",
+          "sourceId": "serw13-interior",
+          "sourceSection": "Internal Overview / Bottom components and connectors"
+        },
+        {
+          "id": "interior-under-keyboard-components-and-connectors",
+          "title": "Internal Overview / Under-keyboard components and connectors",
+          "sourceId": "serw13-interior",
+          "sourceSection": "Internal Overview / Under-keyboard components and connectors"
+        },
+        {
+          "id": "repairs-introduction",
+          "title": "Parts & Repairs / Introduction",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Introduction"
+        },
+        {
+          "id": "repairs-removing-the-bottom-cover",
+          "title": "Parts & Repairs / Removing the bottom cover",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Removing the bottom cover"
+        },
+        {
+          "id": "repairs-replacing-the-battery",
+          "title": "Parts & Repairs / Replacing the battery",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the battery"
+        },
+        {
+          "id": "repairs-replacing-the-keyboard",
+          "title": "Parts & Repairs / Replacing the keyboard",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the keyboard"
+        },
+        {
+          "id": "repairs-replacing-the-ram",
+          "title": "Parts & Repairs / Replacing the RAM",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the RAM"
+        },
+        {
+          "id": "repairs-replacing-an-m-2-nvme-ssd",
+          "title": "Parts & Repairs / Replacing an M.2/NVMe SSD",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing an M.2/NVMe SSD"
+        },
+        {
+          "id": "repairs-replacing-the-cooling-system",
+          "title": "Parts & Repairs / Replacing the cooling system",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the cooling system"
+        },
+        {
+          "id": "repairs-replacing-the-wireless-card",
+          "title": "Parts & Repairs / Replacing the wireless card",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the wireless card"
+        },
+        {
+          "id": "repairs-replacing-the-cmos-battery",
+          "title": "Parts & Repairs / Replacing the CMOS battery",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the CMOS battery"
+        },
+        {
+          "id": "repairs-replacing-the-speakers",
+          "title": "Parts & Repairs / Replacing the speakers",
+          "sourceId": "serw13-repairs",
+          "sourceSection": "Parts & Repairs / Replacing the speakers"
         }
       ]
     }
