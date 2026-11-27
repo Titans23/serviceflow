@@ -1,0 +1,409 @@
+{
+  "version": "retail-v1.1-media",
+  "catalogPackage": "retail-v1.1",
+  "checkedAt": "2026-11-27",
+  "images": [
+    {
+      "id": "freebuds6-open-case",
+      "file": "images/freebuds6-open-case.jpg",
+      "skus": [
+        "HUAWEI-FREEBUDS-6"
+      ],
+      "documentId": "freebuds6",
+      "view": "open-case",
+      "captionZh": "开盖充电盒内的两只 FreeBuds 6，展台防盗线也出现在画面中。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "Kyu3a",
+      "title": "HUAWEI FreeBuds 6.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:HUAWEI_FreeBuds_6.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/HUAWEI_FreeBuds_6.jpg/1280px-HUAWEI_FreeBuds_6.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 1022,
+      "sha256": "8a6e5571fbcfc7e6263100ea7b35389a94ca60949cfeae136dd4334389dbf0ea",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/HUAWEI_FreeBuds_6.jpg",
+        "width": 3200,
+        "height": 2556,
+        "sha256": "bb11acf8d4668a608a7a2c771fae2d7d7dc846d6386aa9295e00f2b50a83e74a"
+      }
+    },
+    {
+      "id": "freeclip-open-case",
+      "file": "images/freeclip-open-case.jpg",
+      "skus": [
+        "HUAWEI-FREECLIP-1"
+      ],
+      "documentId": "freeclip",
+      "view": "open-case",
+      "captionZh": "开盖的 FreeClip 充电盒与两只弧形耳夹，画面内有展台固定线。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "Kyu3a",
+      "title": "HUAWEI FreeClip.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:HUAWEI_FreeClip.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/HUAWEI_FreeClip.jpg/1280px-HUAWEI_FreeClip.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 972,
+      "sha256": "37d613aa3d7fc0f73abcc7484eecb9f2ab474a6f206fc1de0b1a060ac924d047",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c1/HUAWEI_FreeClip.jpg",
+        "width": 3559,
+        "height": 2704,
+        "sha256": "89d445a7ba65d029fba87b5ae7f463861eb5e56793cfef0720f6911cb618764d"
+      }
+    },
+    {
+      "id": "mate70-pro-plus-rear",
+      "file": "images/mate70-pro-plus-rear.jpg",
+      "skus": [
+        "HUAWEI-MATE70PLUS-16-512",
+        "HUAWEI-MATE70PLUS-16-1TB"
+      ],
+      "documentId": "mate70-pro-plus",
+      "view": "rear",
+      "captionZh": "Mate 70 Pro+ 背面，中央靠上的圆形后摄模组及外圈清晰可见。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "毕明明",
+      "title": "HUAWEI Mate 70 Pro+ 002.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:HUAWEI_Mate_70_Pro%2B_002.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/HUAWEI_Mate_70_Pro%2B_002.jpg/1280px-HUAWEI_Mate_70_Pro%2B_002.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 1808,
+      "sha256": "f2b8d96c63cc6f2d44604d976f05f6efd56d717a77c3e5e38588ecca7c876fc4",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/HUAWEI_Mate_70_Pro%2B_002.jpg",
+        "width": 2304,
+        "height": 3254,
+        "sha256": "4cd034efd3e2f9356b498f77404e2128811763972ed2f8046455a74d6df7c3fb"
+      }
+    },
+    {
+      "id": "mate70-pro-plus-front",
+      "file": "images/mate70-pro-plus-front.jpg",
+      "skus": [
+        "HUAWEI-MATE70PLUS-16-512",
+        "HUAWEI-MATE70PLUS-16-1TB"
+      ],
+      "documentId": "mate70-pro-plus",
+      "view": "front",
+      "captionZh": "Mate 70 Pro+ 展机正面亮屏，顶部可见前置开孔。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "毕明明",
+      "title": "HUAWEI Mate 70 Pro+ 003.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:HUAWEI_Mate_70_Pro%2B_003.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/HUAWEI_Mate_70_Pro%2B_003.jpg/1280px-HUAWEI_Mate_70_Pro%2B_003.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 1841,
+      "sha256": "ea04e5cf31524e8b5f71a3576573a3ae31f557b6f9366af3f69e8e18677d879f",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/44/HUAWEI_Mate_70_Pro%2B_003.jpg",
+        "width": 2296,
+        "height": 3303,
+        "sha256": "e61694608208e80f7171d11ea65ed6a94a9e8dd890011fe0fb4a9732661b27d0"
+      }
+    },
+    {
+      "id": "mate-x6-folded-open",
+      "file": "images/mate-x6-folded-open.jpg",
+      "skus": [
+        "HUAWEI-MATEX6-12-256",
+        "HUAWEI-MATEX6-12-512"
+      ],
+      "documentId": "mate-x6",
+      "view": "folded-open",
+      "captionZh": "展台同时摆放合拢和展开的 Mate X6，可比较两种机身形态。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Mate X6 (2024-11-29).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Mate_X6_(2024-11-29).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Huawei_Mate_X6_%282024-11-29%29.jpg/1280px-Huawei_Mate_X6_%282024-11-29%29.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "width": 1280,
+      "height": 720,
+      "sha256": "3d9be9f5a629df71a49d18ef335c0c228f89ff3e1d900263ee6e083a1c02510c",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/73/Huawei_Mate_X6_%282024-11-29%29.jpg",
+        "width": 4032,
+        "height": 2268,
+        "sha256": "f37f26003e7cfdf827245d7045b4e2cc7ce7596c0d3653cf91e3ba01b64e92a6"
+      }
+    },
+    {
+      "id": "mate-x6-rear",
+      "file": "images/mate-x6-rear.jpg",
+      "skus": [
+        "HUAWEI-MATEX6-12-256",
+        "HUAWEI-MATEX6-12-512"
+      ],
+      "documentId": "mate-x6",
+      "view": "rear",
+      "captionZh": "合拢的红色 Mate X6 背面，后摄区域与展台固定装置可见。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Mate X6 Red (2024-11-30).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Mate_X6_Red_(2024-11-30).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/Huawei_Mate_X6_Red_%282024-11-30%29.jpg/1280px-Huawei_Mate_X6_Red_%282024-11-30%29.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "width": 1280,
+      "height": 1707,
+      "sha256": "873f0069ea603a68ed0f230b91e38fb3510ab802c83b4515b5237e8537ca0066",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Huawei_Mate_X6_Red_%282024-11-30%29.jpg",
+        "width": 3023,
+        "height": 4031,
+        "sha256": "9bb82efc3cebd004b1feeac5d360c8db13225c2d0f2bfd2b3b4516ee386f818d"
+      }
+    },
+    {
+      "id": "nova14-pro-rear",
+      "file": "images/nova14-pro-rear.jpg",
+      "skus": [
+        "HUAWEI-NOVA14PRO-256",
+        "HUAWEI-NOVA14PRO-512",
+        "HUAWEI-NOVA14PRO-1TB"
+      ],
+      "documentId": "nova14-pro",
+      "view": "rear",
+      "captionZh": "nova 14 Pro 后盖与椭圆形摄像头区域，下方可见 nova 标识。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 Pro back side (20250528 175255).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_Pro_back_side_(20250528_175255).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Huawei_Nova_14_Pro_back_side_%2820250528_175255%29.jpg/1280px-Huawei_Nova_14_Pro_back_side_%2820250528_175255%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "44a7ce900c8b02a6ad72440697200be1ab745cc8d455b5cc824cb0a9e6f50ea9",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Huawei_Nova_14_Pro_back_side_%2820250528_175255%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "f509e62eb982d93c124fa13e400b884e57408af1876ff22783e5d2cdf2a4f23b"
+      }
+    },
+    {
+      "id": "nova14-pro-front",
+      "file": "images/nova14-pro-front.jpg",
+      "skus": [
+        "HUAWEI-NOVA14PRO-256",
+        "HUAWEI-NOVA14PRO-512",
+        "HUAWEI-NOVA14PRO-1TB"
+      ],
+      "documentId": "nova14-pro",
+      "view": "front",
+      "captionZh": "nova 14 Pro 展机正面，屏幕上方可见前置开孔。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 Pro front side (20250528 175248).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_Pro_front_side_(20250528_175248).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Huawei_Nova_14_Pro_front_side_%2820250528_175248%29.jpg/1280px-Huawei_Nova_14_Pro_front_side_%2820250528_175248%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "8f8a26e8c0efdd061517e934fc96ad2b0af7917a9caa4ee9118be7927e0252ea",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Huawei_Nova_14_Pro_front_side_%2820250528_175248%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "ae024976d44f5c68570edcaa4c32e1fa0baf13559d5c2cface2337dd1abf3502"
+      }
+    },
+    {
+      "id": "nova14-ultra-rear",
+      "file": "images/nova14-ultra-rear.jpg",
+      "skus": [
+        "HUAWEI-NOVA14ULTRA-256",
+        "HUAWEI-NOVA14ULTRA-512",
+        "HUAWEI-NOVA14ULTRA-1TB"
+      ],
+      "documentId": "nova14-ultra",
+      "view": "rear",
+      "captionZh": "nova 14 Ultra 的浅色后盖与左上摄像头区域。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 Ultra back side (20250528 175322).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_Ultra_back_side_(20250528_175322).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Huawei_Nova_14_Ultra_back_side_%2820250528_175322%29.jpg/1280px-Huawei_Nova_14_Ultra_back_side_%2820250528_175322%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "5a1958be9b42b15da971e2c41658e02963ecbc596784645f3cce670b5660d487",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Huawei_Nova_14_Ultra_back_side_%2820250528_175322%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "7c6cef50b834820e7d46d7dbea16f4471c9fa24ea6a618c205541ea7ee676b68"
+      }
+    },
+    {
+      "id": "nova14-ultra-front",
+      "file": "images/nova14-ultra-front.jpg",
+      "skus": [
+        "HUAWEI-NOVA14ULTRA-256",
+        "HUAWEI-NOVA14ULTRA-512",
+        "HUAWEI-NOVA14ULTRA-1TB"
+      ],
+      "documentId": "nova14-ultra",
+      "view": "front",
+      "captionZh": "nova 14 Ultra 展机正面亮屏，可见屏幕顶部的前置开孔。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 Ultra front side (20250528 175315).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_Ultra_front_side_(20250528_175315).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Huawei_Nova_14_Ultra_front_side_%2820250528_175315%29.jpg/1280px-Huawei_Nova_14_Ultra_front_side_%2820250528_175315%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "5a0ae43807a6106b8d389bd31a7b7aa0469040968d4bfaf90b85820833f0861d",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Huawei_Nova_14_Ultra_front_side_%2820250528_175315%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "87f163eb902a5be97b4a2dc1bfffa80adb68bd2604c6535a9b2505ef4acd0cae"
+      }
+    },
+    {
+      "id": "nova14-rear",
+      "file": "images/nova14-rear.jpg",
+      "skus": [
+        "HUAWEI-NOVA14-256",
+        "HUAWEI-NOVA14-512"
+      ],
+      "documentId": "nova14",
+      "view": "rear",
+      "captionZh": "nova 14 后盖、左上摄像头区域和展台固定装置。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 back side (20250528 175225).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_back_side_(20250528_175225).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Huawei_Nova_14_back_side_%2820250528_175225%29.jpg/1280px-Huawei_Nova_14_back_side_%2820250528_175225%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "8965ca9e96e14805f614d7b7107a615c2a3bd9cc552f70539f70e9ff43d1ac96",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Huawei_Nova_14_back_side_%2820250528_175225%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "9ea2e7b1a4350568f9f93b8f360bb842a773546d8056e677fd2ccb2008a96556"
+      }
+    },
+    {
+      "id": "nova14-front",
+      "file": "images/nova14-front.jpg",
+      "skus": [
+        "HUAWEI-NOVA14-256",
+        "HUAWEI-NOVA14-512"
+      ],
+      "documentId": "nova14",
+      "view": "front",
+      "captionZh": "nova 14 展机正面，顶部为居中的单个开孔。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "茅野ふたば",
+      "title": "Huawei Nova 14 front side (20250528 175213).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Nova_14_front_side_(20250528_175213).jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Huawei_Nova_14_front_side_%2820250528_175213%29.jpg/1280px-Huawei_Nova_14_front_side_%2820250528_175213%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2276,
+      "sha256": "9ebb231054073331368e879e8b7afe886bc1c3cf68d90e112b21d9b488084756",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Huawei_Nova_14_front_side_%2820250528_175213%29.jpg",
+        "width": 2250,
+        "height": 4000,
+        "sha256": "ecee244a7e4b7c6f8f63c9e5ad760e293b9318b6e2ca3a1ba6d59f4fa8fec31f"
+      }
+    },
+    {
+      "id": "pura80-pro-front",
+      "file": "images/pura80-pro-front.jpg",
+      "skus": [
+        "HUAWEI-PURA80PRO-12-256",
+        "HUAWEI-PURA80PRO-12-512",
+        "HUAWEI-PURA80PRO-12-1TB"
+      ],
+      "documentId": "pura80-pro",
+      "view": "front",
+      "captionZh": "Pura 80 Pro 展机正面，屏幕中央上方为前置摄像头开孔。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "毕明明",
+      "title": "Huawei Pura80 Pro 001.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Pura80_Pro_001.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Huawei_Pura80_Pro_001.jpg/1280px-Huawei_Pura80_Pro_001.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 2274,
+      "sha256": "8610fa9b7e9b787020fc15a25e466bbb9fb17f7712c5e0a728ad076a680b3045",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/58/Huawei_Pura80_Pro_001.jpg",
+        "width": 2187,
+        "height": 3886,
+        "sha256": "a0fbba22525d01da7d96e25eebd4b7e7ddff43a64aaa8499985f3383777950fc"
+      }
+    },
+    {
+      "id": "pura80-pro-rear",
+      "file": "images/pura80-pro-rear.jpg",
+      "skus": [
+        "HUAWEI-PURA80PRO-12-256",
+        "HUAWEI-PURA80PRO-12-512",
+        "HUAWEI-PURA80PRO-12-1TB"
+      ],
+      "documentId": "pura80-pro",
+      "view": "rear",
+      "captionZh": "Pura 80 Pro 背面，三个圆形部件位于三角形后摄区域内。",
+      "sourceKind": "licensed-independent-photo",
+      "author": "毕明明",
+      "title": "Huawei Pura80 Pro 002.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Huawei_Pura80_Pro_002.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Huawei_Pura80_Pro_002.jpg/1280px-Huawei_Pura80_Pro_002.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "width": 1280,
+      "height": 880,
+      "sha256": "afada475ee6af4544659a1df3bfb453d3341816b14a2bbad41e9edba150c2622",
+      "original": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Huawei_Pura80_Pro_002.jpg",
+        "width": 3072,
+        "height": 2112,
+        "sha256": "1885eb2847123c9fd604b2812bdfe02fc11b2822705a314eb14c2abe9e037fdb"
+      }
+    }
+  ],
+  "missingImages": [
+    {
+      "documentId": "pura80",
+      "skus": [
+        "HUAWEI-PURA80-12-256",
+        "HUAWEI-PURA80-12-512",
+        "HUAWEI-PURA80-12-1TB"
+      ],
+      "reason": "检索结果可核实为 Pro、Pro+ 或 Ultra，普通版尚缺可核对的单品图。"
+    },
+    {
+      "documentId": "mate70",
+      "skus": [
+        "HUAWEI-MATE70-12-256",
+        "HUAWEI-MATE70-12-512",
+        "HUAWEI-MATE70-12-1TB"
+      ],
+      "reason": "可用照片为多机同台，当前资料不足以给单台设备做普通版正样本。"
+    }
+  ]
+}
